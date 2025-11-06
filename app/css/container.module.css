@@ -1,0 +1,22 @@
+@reference "tailwindcss";
+@reference "./../globals.css";
+
+.sm {
+  @apply container mx-auto max-w-md px-3 lg:px-5;
+}
+
+.md {
+  @apply container mx-auto max-w-4xl px-4 lg:px-6;
+}
+
+.lg {
+  @apply container mx-auto md:max-w-7/12 w-full px-4 lg:px-7;
+}
+
+.xl {
+  @apply container mx-auto 2xl:max-w-11/12 3xl:max-w-9/12 px-4 lg:px-7;
+}
+
+.xxl {
+  @apply container mx-auto max-w-screen px-4 lg:px-12;
+}
