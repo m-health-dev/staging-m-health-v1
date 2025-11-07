@@ -265,7 +265,7 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
               className={`flex w-full max-w-3xl bg-white border border-border shadow-sm transform-content ${
                 isExpanded
                   ? "flex-col rounded-2xl px-2 pt-2 pb-2 items-end"
-                  : "flex-row rounded-full px-4 py-2 max-h-16 items-center"
+                  : "lg:flex-row flex-col lg:rounded-full px-2 py-2 lg:max-h-16 lg:min-h-16 min-h-32 rounded-2xl lg:items-center items-end"
               }`}
             >
               <Textarea
@@ -275,10 +275,10 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={isLoading}
-                className={`flex-1 resize-none border-0 shadow-none rounded-none bg-transparent text-primary placeholder:3xl:text-[18px]! placeholder:text-[17px]! 3xl:text-[18px]! text-[17px]! font-sans focus-visible:ring-0 focus:outline-none hide-scroll placeholder:text-primary/50  transition-all duration-300 ${
+                className={`flex-1 resize-none border-0 shadow-none rounded-none bg-transparent text-primary placeholder:3xl:text-[18px]! placeholder:text-[17px]! 3xl:text-[18px]! text-[17px]! font-sans focus-visible:ring-0 focus:outline-none hide-scroll placeholder:text-primary/50  transition-all duration-300 wrap-anywhere ${
                   isExpanded
                     ? "max-h-52 px-2 py-2"
-                    : "min-h-16 max-h-20 px-1 3xl:py-5 py-5.5 placeholder:pt-0.5"
+                    : "min-h-16 max-h-20 px-2 3xl:pt-4.5 lg:pt-5 pt-2 placeholder:pt-0.5"
                 }`}
               />
               <button
