@@ -45,7 +45,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const hasConsultation =
     message.includes("consultation") || message.includes("konsultasi");
   let cleanMessage = message
-    .replaceAll("konsultasi", "")
     .replaceAll("consultation", "")
     .replaceAll("[", "")
     .replaceAll("]", "")
