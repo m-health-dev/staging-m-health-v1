@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import ChatMessage from "./ChatMessage";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Undo2 } from "lucide-react";
 import { Input } from "../ui/input";
 import ContainerWrap from "../utility/ContainerWrap";
 import { Textarea } from "../ui/textarea";
@@ -12,22 +12,24 @@ interface Message {
   message: string;
   sender: "user" | "bot";
   timestamp: string;
+  replyTo?: string | null;
 }
 
 interface ChatWindowProps {
   messages: Message[];
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, replyTo?: string | null) => void; // ✅ izinkan 2 argumen
   isLoading?: boolean;
-  isSidebarOpen: boolean;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
   messages,
   onSendMessage,
   isLoading = false,
-  isSidebarOpen,
 }) => {
   const [inputValue, setInputValue] = React.useState("");
+  const [isHandleReply, setIsHandleReply] = React.useState(false);
+  const [replyMessage, setReplyMessage] = React.useState<string | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,8 +38,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
   const handleSend = () => {
     if (inputValue.trim()) {
-      onSendMessage(inputValue);
+      onSendMessage(inputValue, replyMessage ?? null);
       setInputValue("");
+      setReplyMessage(null);
     }
   };
 
@@ -48,13 +51,28 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     }
   };
 
+  // 🟢 Fungsi baru untuk menerima pesan dari tombol Reply
+
+  const handleReply = (message: string) => {
+    setReplyMessage(message);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  };
+
   return (
-    <div className="overflow-y-auto relative flex flex-col items-center hide-scroll">
+    <div className="overflow-y-auto flex flex-col items-center hide-scroll">
       <div className="flex flex-col min-h-[calc(100vh-15vh)] max-h-[calc(100vh-15vh)] w-full">
         {/* <div className="h-16 w-full bg-linear-to-b from-background fixed top-22 z-10"></div> */}
-        <ContainerWrap size="md">
+        <div className="container mx-auto lg:max-w-4xl w-full lg:px-6">
           {/* Messages Container */}
-          <div className="flex-1 min-h-[calc(100vh-10vh)] max-h-[calc(100vh-10vh)] lg:px-10 pt-[8vh] space-y-10">
+          <div className="flex-1 min-h-[calc(100vh-10vh)] max-h-[calc(100vh-10vh)] lg:px-10 lg:pt-[10vh] pt-[15vh]">
+            <div>
+              <p className="text-sm! text-muted-foreground text-center mb-10">
+                Kami menyimpan percakapan ini secara anonim. Anda dapat
+                menggunakan <i>Health AI Assistant </i>
+                ini untuk mencari tahu tentang permasalahan kesehatan anda
+                secara gratis.
+              </p>
+            </div>
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full">
                 <p className="text-muted-foreground">
@@ -69,12 +87,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     message={msg.message}
                     sender={msg.sender}
                     timestamp={msg.timestamp}
+                    onReply={handleReply}
+                    replyTo={msg.replyTo}
                   />
                 ))}
                 {isLoading && (
                   <div className="flex justify-start">
                     <div className="bg-white rounded-2xl rounded-bl-none px-4 py-3">
-                      <div className="flex gap-2">
+                      <div className="flex gap-1">
                         <div className="w-1 h-1 bg-primary rounded-full animate-bounce" />
                         <div className="w-1 h-1 bg-primary rounded-full animate-bounce delay-100" />
                         <div className="w-1 h-1 bg-primary rounded-full animate-bounce delay-200" />
@@ -82,11 +102,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     </div>
                   </div>
                 )}
-                <div ref={messagesEndRef} className="pb-20" />
+                <div
+                  ref={messagesEndRef}
+                  className={`${isHandleReply ? "pb-[30vh]" : "pb-[20vh]"}`}
+                />
               </div>
             )}
           </div>
-        </ContainerWrap>
+        </div>
         {/* <div className="h-16 w-full bg-linear-to-t from-background fixed bottom-30 z-10"></div> */}
       </div>
       {/* Input Area */}
@@ -95,21 +118,42 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           className={`flex  w-full justify-center transition-all duration-300`}
         >
           <div className="relative w-full max-w-3xl h-auto bg-background py-3">
-            <Textarea
-              placeholder="Jangan ragu untuk tanyakan apapun."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyPress}
-              disabled={isLoading}
-              className="rounded-2xl hide-scroll overflow-y-auto resize-none bg-white pl-5 pr-18 min-h-16 max-h-28 py-5 border-0 focus-visible:ring-0 placeholder:font-sans placeholder:text-base font-sans! text-base! placeholder:text-primary/50 shadow-sm disabled:opacity-50"
-            />
-            <button
-              onClick={handleSend}
-              disabled={isLoading || !inputValue.trim()}
-              className="absolute right-3 top-3/8 shadow-sm -translate-y-1/2 text-primary cursor-pointer bg-background rounded-full p-3 hover:opacity-70 disabled:opacity-50 transition-opacity"
-            >
-              <ArrowUp className="size-5" />
-            </button>
+            {replyMessage && (
+              <div className="bg-white/70 p-4 rounded-2xl mb-3 flex justify-between items-start shadow-sm border border-border">
+                <div className="max-w-[85%]">
+                  <p className="text-sm! font-semibold text-primary mb-1 flex items-center gap-2">
+                    <Undo2 className="size-4" /> Membalas pesan:
+                  </p>
+                  <p className="text-muted-foreground line-clamp-2">
+                    {replyMessage}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setReplyMessage(null)}
+                  className="text-xs text-muted-foreground hover:text-foreground transition"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            <div>
+              <Textarea
+                placeholder="Jangan ragu untuk tanyakan apapun."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyPress}
+                disabled={isLoading}
+                className="rounded-2xl hide-scroll overflow-y-auto resize-none bg-white pl-5 pr-18 min-h-16 max-h-28 py-5 border-0 focus-visible:ring-0 placeholder:font-sans placeholder:text-base font-sans! text-base! placeholder:text-primary/50 shadow-sm disabled:opacity-50"
+              />
+              <button
+                onClick={handleSend}
+                disabled={isLoading || !inputValue.trim()}
+                className="absolute right-3 3xl:bottom-[2.7vh] bottom-[4.2vh] shadow-sm -translate-y-1/2 text-primary cursor-pointer bg-background rounded-full p-3 hover:opacity-70 disabled:opacity-50 transition-opacity"
+              >
+                <ArrowUp className="size-5" />
+              </button>
+            </div>
             <div>
               <p className="text-xs! text-muted-foreground mt-4 text-center">
                 M-Health AI dapat membuat kesalahan. Periksa info penting.

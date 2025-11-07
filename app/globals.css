@@ -125,15 +125,13 @@ h6 {
 }
 
 p {
-  @apply font-sans;
-  font-size: 18px;
+  @apply font-sans 3xl:text-[18px] text-base;
 }
 
 ul,
 ol,
 li {
-  @apply font-sans;
-  font-size: 18px;
+  @apply font-sans 3xl:text-[18px] text-base;
 }
 
 h1 {

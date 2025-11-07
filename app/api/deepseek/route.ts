@@ -5,11 +5,11 @@ const deepseekBaseUrl = `${process.env.DEEPSEEK_TARGET_URL}`;
 
 export async function POST(req: Request) {
   try {
-    const { message } = await req.json();
+    const { messages } = await req.json(); // 🟢 sekarang menerima array, bukan satu pesan
 
-    if (!message) {
+    if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(
-        { error: "Message is required" },
+        { error: "Messages array is required" },
         { status: 400 }
       );
     }
@@ -29,12 +29,7 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         model: "deepseek-chat",
-        messages: [
-          {
-            role: "user",
-            content: message,
-          },
-        ],
+        messages, // kirim semua konteks percakapan
         temperature: 0.7,
         max_tokens: 1024,
       }),

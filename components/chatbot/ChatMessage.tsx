@@ -7,12 +7,16 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeSanitize from "rehype-sanitize";
 import LocalDateTime from "../utility/LocaleDateTime";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Undo2 } from "lucide-react";
+import Link from "next/link";
+import { Button } from "../ui/button";
 
 interface ChatMessageProps {
   message: string;
   sender: "user" | "bot";
   timestamp?: string;
+  onReply?: (message: string) => void;
+  replyTo?: string | null;
 }
 
 function flattenListChildren(children: ReactNode): ReactNode {
@@ -30,13 +34,71 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   message,
   sender,
   timestamp,
+  onReply,
+  replyTo,
 }) => {
   const isUser = sender === "user";
   const [copied, setCopied] = useState(false);
 
+  const phoneNumber = "08159880048";
+
+  const hasConsultation = message.includes("consultation");
+  let cleanMessage = message
+    .replaceAll("consultation", "")
+    .replaceAll("[", "")
+    .replaceAll("]", "")
+    .replaceAll("RESPON UNTUK DEVELOPER:", "")
+    .replaceAll(`{ "consultaion" : true }`, ``)
+    .trim();
+  const hasPhone = message.includes(phoneNumber);
+
+  const whatsappLink = `https://wa.me/${phoneNumber.replace("0", "62")}`;
+
+  cleanMessage = cleanMessage.replaceAll(
+    phoneNumber,
+    `[${phoneNumber}](${whatsappLink})`
+  );
+
+  const fallbackCopy = (text: string) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  };
+
   const handleCopy = async () => {
+    const text = String(message ?? "");
+
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(text);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+        return;
+      } catch (err) {
+        console.warn("Clipboard API gagal, mencoba fallback...");
+      }
+    }
+
+    // Fallback
+    fallbackCopy(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyNew = async () => {
+    if (typeof navigator === "undefined" || !navigator.clipboard) {
+      console.warn("Clipboard API tidak tersedia di lingkungan ini.");
+      alert("Clipboard API tidak tersedia di browser Anda.");
+      return;
+    }
+
     try {
-      await navigator.clipboard.writeText(message);
+      await navigator.clipboard.writeText(String(message ?? ""));
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -58,11 +120,18 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             : "bg-white text-foreground rounded-bl-none max-w-full"
         }`}
       >
-        {/* Tombol Copy (hanya untuk pesan bot) */}
-        {!isUser && (
+        <div className="action_button absolute -top-4 right-2 bg-white inline-flex gap-3 p-2 rounded-full shadow-sm">
+          <button
+            onClick={() => onReply?.(cleanMessage)}
+            className="text-muted-foreground pointer-events-auto cursor-pointer"
+            title="Reply"
+          >
+            <Undo2 className="size-4" />
+          </button>
+
           <button
             onClick={handleCopy}
-            className="absolute -top-2 -right-2 text-muted-foreground hover:text-primary transition-all bg-white shadow-sm p-2 rounded-full pointer-events-auto cursor-pointer"
+            className=" text-muted-foreground pointer-events-auto cursor-pointer"
             title="Salin pesan"
           >
             {copied ? (
@@ -71,6 +140,21 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               <Copy className="size-4" />
             )}
           </button>
+        </div>
+
+        {replyTo && (
+          <div
+            className={`mb-3 p-3 rounded-xl text-sm!${
+              isUser
+                ? "border-white/70 bg-white/20 text-white/80"
+                : "border-primary/50 bg-primary/5 text-foreground/80"
+            }`}
+          >
+            <p className="text-xs! font-semibold mb-1 opacity-70 flex items-center gap-1">
+              <Undo2 className="size-3" /> Membalas:
+            </p>
+            <p className="text-sm line-clamp-2">{replyTo}</p>
+          </div>
         )}
 
         {/* Markdown Renderer */}
@@ -157,11 +241,37 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             ),
             br: (props) => <br {...props} />,
             hr: (props) => <hr className="my-3 border-primary/30" {...props} />,
+            a: ({ href, children }) => (
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-health underline underline-offset-2 decoration-2"
+              >
+                {children}
+              </a>
+            ),
           }}
         >
-          {message}
+          {cleanMessage}
         </ReactMarkdown>
 
+        {!isUser && hasConsultation && (
+          <div className="mt-3 mb-5">
+            <Link
+              href={`/connect?status=emergency`}
+              className="lg:w-fit w-full"
+            >
+              <Button
+                variant="default"
+                size={"lg"}
+                className="rounded-full bg-health hover:bg-health/80 lg:w-fit w-full cursor-pointer pointer-events-auto"
+              >
+                Konsultasi dengan Dokter
+              </Button>
+            </Link>
+          </div>
+        )}
         {/* Timestamp */}
         {timestamp && (
           <p
