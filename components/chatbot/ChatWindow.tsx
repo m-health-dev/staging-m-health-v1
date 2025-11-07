@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
 import { ArrowUp, Undo2 } from "lucide-react";
 import { Input } from "../ui/input";
 import ContainerWrap from "../utility/ContainerWrap";
 import { Textarea } from "../ui/textarea";
 
-interface Message {
+export interface Message {
   id: string;
   message: string;
   sender: "user" | "bot";
@@ -31,6 +31,20 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const [replyMessage, setReplyMessage] = React.useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const [isExpanded, setIsExpanded] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  }, [inputValue]);
+
+  useEffect(() => {
+    setIsExpanded(inputValue.length > 50);
+  }, [inputValue]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -64,11 +78,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         {/* <div className="h-16 w-full bg-linear-to-b from-background fixed top-22 z-10"></div> */}
         <div className="container mx-auto lg:max-w-4xl w-full lg:px-6">
           {/* Messages Container */}
-          <div className="flex-1 min-h-[calc(100vh-10vh)] max-h-[calc(100vh-10vh)] lg:px-10 lg:pt-[10vh] pt-[15vh]">
+          <div className="flex-1 min-h-[calc(100vh-10vh)] max-h-[calc(100vh-10vh)] lg:px-10 pt-[10vh]">
             <div>
-              <p className="text-sm! text-muted-foreground text-center mb-10">
-                Kami menyimpan percakapan ini secara anonim. Anda dapat
-                menggunakan <i>Health AI Assistant </i>
+              <p className="lg:text-sm! text-xs! text-muted-foreground/50 text-center mb-10">
+                Kami menyimpan percakapan ini secara lokal di penyimpanan Anda.
+                Anda dapat menggunakan <i>Health AI Assistant </i>
                 ini untuk mencari tahu tentang permasalahan kesehatan anda
                 secara gratis.
               </p>
@@ -102,10 +116,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     </div>
                   </div>
                 )}
-                <div
-                  ref={messagesEndRef}
-                  className={`${isHandleReply ? "pb-[30vh]" : "pb-[20vh]"}`}
-                />
+                <div ref={messagesEndRef} className={"pb-[40vh]"} />
               </div>
             )}
           </div>
@@ -113,13 +124,15 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         {/* <div className="h-16 w-full bg-linear-to-t from-background fixed bottom-30 z-10"></div> */}
       </div>
       {/* Input Area */}
-      <div className={`fixed bottom-0 bg-background w-full z-10 lg:px-10 px-3`}>
+      <div
+        className={`absolute bottom-0 bg-background w-full z-10 lg:px-10 px-3`}
+      >
         <div
           className={`flex  w-full justify-center transition-all duration-300`}
         >
           <div className="relative w-full max-w-3xl h-auto bg-background py-3">
             {replyMessage && (
-              <div className="bg-white/70 p-4 rounded-2xl mb-3 flex justify-between items-start shadow-sm border border-border">
+              <div className="bg-white/80 p-4 rounded-2xl mb-1 flex justify-between items-start shadow-sm border border-border">
                 <div className="max-w-[85%]">
                   <p className="text-sm! font-semibold text-primary mb-1 flex items-center gap-2">
                     <Undo2 className="size-4" /> Membalas pesan:
@@ -137,7 +150,44 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               </div>
             )}
 
-            <div>
+            <div className="input_conversation lg:w-3xl w-full">
+              <div className="flex w-full justify-center">
+                <div
+                  className={`flex w-full max-w-3xl bg-white border border-border shadow-sm transform-content ${
+                    isExpanded
+                      ? "flex-col rounded-2xl px-2 pt-2 pb-2 items-end"
+                      : "flex-row rounded-2xl px-4 py-2 max-h-16 items-center"
+                  }`}
+                >
+                  <Textarea
+                    ref={textareaRef}
+                    placeholder="Ketik pertanyaanmu di sini..."
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    disabled={isLoading}
+                    className={`flex-1 resize-none border-0 shadow-none rounded-none bg-transparent text-primary placeholder:3xl:text-[18px]! placeholder:text-[17px]! 3xl:text-[18px]! text-[17px]! font-sans focus-visible:ring-0 focus:outline-none hide-scroll placeholder:text-primary/50  transition-all duration-300 ${
+                      isExpanded
+                        ? "max-h-52 px-2 py-2"
+                        : "min-h-16 max-h-20 px-1 3xl:py-5 py-5.5 placeholder:pt-0.5"
+                    }`}
+                  />
+                  <button
+                    onClick={handleSend}
+                    disabled={isLoading || !inputValue.trim()}
+                    className={`ml-2 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
+                      isLoading || !inputValue.trim()
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-primary text-white hover:bg-primary/90"
+                    } ${isExpanded ? "w-11 h-11" : "w-11 h-11"}`}
+                  >
+                    <ArrowUp className="size-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* <div>
               <Textarea
                 placeholder="Jangan ragu untuk tanyakan apapun."
                 value={inputValue}
@@ -153,7 +203,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               >
                 <ArrowUp className="size-5" />
               </button>
-            </div>
+            </div> */}
             <div>
               <p className="text-xs! text-muted-foreground mt-4 text-center">
                 M-Health AI dapat membuat kesalahan. Periksa info penting.

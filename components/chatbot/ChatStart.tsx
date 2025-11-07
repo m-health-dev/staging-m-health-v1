@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Textarea } from "../ui/textarea";
 import ChatWindow from "./ChatWindow";
 import { chatDeepseek } from "@/lib/deepseekAI";
+import { nanoid } from "nanoid";
 
 interface Message {
   id: string;
@@ -15,13 +16,40 @@ interface Message {
   replyTo?: string | null;
 }
 
-const ChatStart = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+const ChatStart = ({ chat }: { chat: Message[] }) => {
+  const [messages, setMessages] = useState<Message[]>(chat);
   const [isLoading, setIsLoading] = useState(false);
   const [hasChat, setHasChat] = useState(false);
   const [text, setText] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Jika chat lama dimuat, gunakan id-nya
+    const storedId = localStorage.getItem("mhealth_active_chat_id");
+    if (storedId) setActiveChatId(storedId);
+    else if (chat.length > 0) {
+      const firstChatId = chat[0]?.id || nanoid();
+      setActiveChatId(firstChatId);
+      localStorage.setItem("mhealth_active_chat_id", firstChatId);
+    }
+  }, [chat]);
+
+  useEffect(() => {
+    if (chat.length > 0) {
+      setMessages(chat);
+      setHasChat(true);
+    }
+  }, [chat]);
+
+  // 🟡 Opsional: reset chat jika ingin mulai percakapan baru
+  const clearChatHistory = () => {
+    localStorage.removeItem("mhealth_chat_history");
+    setMessages([]);
+    setHasChat(false);
+  };
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -59,7 +87,7 @@ const ChatStart = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
         {
           role: "system",
           content:
-            "Kamu adalah asisten kesehatan virtual yang empatik dan informatif. Jawab secara alami dan sopan. Jika bisa jawab selayaknya dokter. Jika menurutmu keluhan pengguna mengindikasikan kondisi darurat silahkan arahkan pengguna untuk menghubungi 08159880048. Jika untuk menjawab diperlukan saran dokter dan takut jika informasi yang kamu berikan salah ataupun diperlukan konsultasi dengan dokter, bantu aku tampilkan respon untuk developer 'consultation' agar developer dapat menampilkan tombol untuk berinteraksi dengan dokter, arahkan pengguna untuk klik tombol yang ditampilkan developer untuk berinteraksi dengan dokter. Jika kamu menyarankan untuk berinteraksi dengan dokter jangan lupa untuk menampilkan respon untuk developer 'consultation' agar developer dapat menampilkan tombol untuk berinteraksi dengan dokter. Namamu adalah M-Health AI atau Mei. Berikan jawaban selayaknya perempuan yang lemah lembut.",
+            "You are M-Health AI, also known as Mei — a gentle, empathetic, and informative virtual health assistant. Respond naturally, politely, and with compassion. When possible, answer as a professional doctor would. If the user’s symptoms suggest an emergency, immediately advise them to call 08159880048 for urgent help.If the user’s concern requires medical expertise, doctor’s advice, or professional evaluation, include the keyword “consultation” at the end of your message. This keyword allows the system to display a button for users to connect directly with a doctor. Encourage the user to click that button when further consultation is necessary. Speak with a warm, feminine, and reassuring tone, as if you are a caring female health assistant.",
         },
         ...messages.map((m) => ({
           role: m.sender === "user" ? "user" : "assistant",
@@ -82,6 +110,54 @@ const ChatStart = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
       };
 
       setMessages((prev) => [...prev, botResponse]);
+
+      // 🟢 Simpan ke localStorage
+      const newMessages = [...messages, userMsg, botResponse];
+
+      // Ambil semua chat yang sudah ada
+      const existingChats =
+        JSON.parse(localStorage.getItem("mhealth_chat_sessions") || "[]") || [];
+
+      // Buat ID unik jika chat ini baru
+      const chatId = activeChatId || nanoid();
+
+      // Pastikan setiap kali chat baru dimulai, ID disimpan
+      if (!activeChatId) {
+        setActiveChatId(chatId);
+        localStorage.setItem("mhealth_active_chat_id", chatId);
+      }
+
+      // Simpan ID aktif (agar saat reload tahu chat mana yang terakhir)
+      localStorage.setItem("mhealth_active_chat_id", chatId || botResponse.id);
+
+      // Buat objek riwayat chat baru
+      const chatData = {
+        id: chatId,
+        title:
+          newMessages[0]?.message ||
+          "Percakapan Baru " + new Date().toLocaleString(),
+        messages: newMessages,
+        updatedAt: new Date().toISOString(),
+      };
+
+      // Cek apakah chat dengan ID ini sudah ada
+      const existingIndex = existingChats.findIndex(
+        (c: any) => c.id === chatId
+      );
+
+      if (existingIndex !== -1) {
+        // Update chat lama
+        existingChats[existingIndex] = chatData;
+      } else {
+        // Tambahkan chat baru
+        existingChats.push(chatData);
+      }
+
+      // Simpan kembali ke localStorage
+      localStorage.setItem(
+        "mhealth_chat_sessions",
+        JSON.stringify(existingChats)
+      );
     } catch (error) {
       console.error("[v0] Error sending message:", error);
       const errorMsg: Message = {
@@ -142,9 +218,15 @@ const ChatStart = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
           ))}
         </div>
 
-        <div className="input_conversation lg:w-3xl w-full lg:mt-0 mt-10">
+        {/* <div className="input_conversation lg:w-3xl w-full lg:mt-0 mt-10">
           <div className="flex w-full justify-center">
-            <div className="relative w-full max-w-3xl h-auto">
+            <div
+              className={`${
+                isExpanded
+                  ? "flex flex-col bg-white rounded-2xl shadow-sm lg:min-h-28 max-h-52"
+                  : "relative shadow-sm lg:rounded-full rounded-2xl lg:min-h-16.5 lg:max-h-16.5 min-h-24 max-h-28.5"
+              } w-full max-w-3xl border border-border`}
+            >
               <Textarea
                 ref={textareaRef}
                 placeholder="Jangan ragu untuk tanyakan apapun."
@@ -152,14 +234,61 @@ const ChatStart = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={isLoading}
-                className={`hide-scroll overflow-y-auto resize-none bg-white px-5 py-5 min-h-16 max-h-40 border-0 focus-visible:ring-0 placeholder:font-sans placeholder:text-base! font-sans text-base! placeholder:text-primary/50 shadow-sm disabled:opacity-50 transition-all duration-300 ${
-                  isExpanded ? "rounded-2xl" : "rounded-full"
+                className={`hide-scroll overflow-y-auto resize-none border-0 bg-white ${
+                  isExpanded ? "px-4 pt-4" : "lg:px-7 px-3 lg:pt-5 pt-3"
+                } pb-0 lg:min-h-16 lg:max-h-16 min-h-28 max-h-52 text-primary focus-visible:ring-0 placeholder:font-sans placeholder:text-base! font-sans text-base! placeholder:text-primary/50 disabled:opacity-50 transition-all duration-300 shadow-none ${
+                  isExpanded
+                    ? "rounded-4xl max-h-52"
+                    : "lg:rounded-full rounded-2xl"
+                }`}
+              />
+              <div className="flex justify-end w-full pt-1 pb-2 px-2">
+                <button
+                  onClick={() => handleSendMessage(text)}
+                  disabled={isLoading || !text.trim()}
+                  className={`${
+                    isExpanded
+                      ? "inline-flex w-fit items-center "
+                      : "absolute right-2 bottom-2 lg:right-3 lg:bottom-2.5"
+                  } text-primary cursor-pointer bg-background rounded-full p-3 hover:opacity-70 disabled:opacity-50 transition-opacity`}
+                >
+                  <ArrowUp className="size-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div> */}
+
+        <div className="input_conversation lg:w-3xl w-full lg:mt-0 mt-10">
+          <div className="flex w-full justify-center">
+            <div
+              className={`flex w-full max-w-3xl bg-white border border-border shadow-sm transform-content ${
+                isExpanded
+                  ? "flex-col rounded-2xl px-2 pt-2 pb-2 items-end"
+                  : "flex-row rounded-full px-4 py-2 max-h-16 items-center"
+              }`}
+            >
+              <Textarea
+                ref={textareaRef}
+                placeholder="Ketik pertanyaanmu di sini..."
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isLoading}
+                className={`flex-1 resize-none border-0 shadow-none rounded-none bg-transparent text-primary placeholder:3xl:text-[18px]! placeholder:text-[17px]! 3xl:text-[18px]! text-[17px]! font-sans focus-visible:ring-0 focus:outline-none hide-scroll placeholder:text-primary/50  transition-all duration-300 ${
+                  isExpanded
+                    ? "max-h-52 px-2 py-2"
+                    : "min-h-16 max-h-20 px-1 3xl:py-5 py-5.5 placeholder:pt-0.5"
                 }`}
               />
               <button
                 onClick={() => handleSendMessage(text)}
                 disabled={isLoading || !text.trim()}
-                className="absolute right-3 bottom-2.5 text-primary cursor-pointer bg-background rounded-full p-3 hover:opacity-70 disabled:opacity-50 transition-opacity"
+                className={`ml-2 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
+                  isLoading || !text.trim()
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-primary text-white hover:bg-primary/90"
+                } ${isExpanded ? "w-11 h-11" : "w-11 h-11"}`}
               >
                 <ArrowUp className="size-5" />
               </button>

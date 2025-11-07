@@ -42,13 +42,21 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
   const phoneNumber = "08159880048";
 
-  const hasConsultation = message.includes("consultation");
+  const hasConsultation =
+    message.includes("consultation") || message.includes("konsultasi");
   let cleanMessage = message
+    .replaceAll("konsultasi", "")
     .replaceAll("consultation", "")
     .replaceAll("[", "")
     .replaceAll("]", "")
     .replaceAll("RESPON UNTUK DEVELOPER:", "")
     .replaceAll(`{ "consultaion" : true }`, ``)
+    .replaceAll("Developer, tolong tampilkan opsi '' untuk pengguna.", "")
+    .replaceAll(
+      "Developer, tolong tampilkan opsi '' untuk memungkinkan pengguna terhubung dengan dokter.",
+      ""
+    )
+    .replaceAll("Untuk developer: .", "")
     .trim();
   const hasPhone = message.includes(phoneNumber);
 
@@ -71,7 +79,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   };
 
   const handleCopy = async () => {
-    const text = String(message ?? "");
+    const text = String(cleanMessage ?? "");
 
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       try {
@@ -113,177 +121,194 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       transition={{ duration: 0.3 }}
       className={`flex ${isUser ? "justify-end" : "justify-start"} mb-8 group`}
     >
-      <div
-        className={`relative p-5 rounded-2xl transition-all ${
-          isUser
-            ? "bg-primary text-primary-foreground rounded-br-none max-w-xs lg:max-w-md"
-            : "bg-white text-foreground rounded-bl-none max-w-full"
-        }`}
-      >
-        <div className="action_button absolute -top-4 right-2 bg-white inline-flex gap-3 p-2 rounded-full shadow-sm">
-          <button
-            onClick={() => onReply?.(cleanMessage)}
-            className="text-muted-foreground pointer-events-auto cursor-pointer"
-            title="Reply"
-          >
-            <Undo2 className="size-4" />
-          </button>
-
-          <button
-            onClick={handleCopy}
-            className=" text-muted-foreground pointer-events-auto cursor-pointer"
-            title="Salin pesan"
-          >
-            {copied ? (
-              <Check className="size-4 text-green-500" />
-            ) : (
-              <Copy className="size-4" />
-            )}
-          </button>
-        </div>
-
-        {replyTo && (
-          <div
-            className={`mb-3 p-3 rounded-xl text-sm!${
-              isUser
-                ? "border-white/70 bg-white/20 text-white/80"
-                : "border-primary/50 bg-primary/5 text-foreground/80"
-            }`}
-          >
-            <p className="text-xs! font-semibold mb-1 opacity-70 flex items-center gap-1">
-              <Undo2 className="size-3" /> Membalas:
-            </p>
-            <p className="text-sm line-clamp-2">{replyTo}</p>
-          </div>
-        )}
-
-        {/* Markdown Renderer */}
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkBreaks]}
-          rehypePlugins={[rehypeSanitize]}
-          components={{
-            h1: (props) => (
-              <h1
-                className="text-2xl! font-semibold mb-4 font-sans"
-                {...props}
-              />
-            ),
-            h2: (props) => (
-              <h2
-                className="text-xl! font-semibold mb-3 font-sans"
-                {...props}
-              />
-            ),
-            h3: (props) => (
-              <h3
-                className="text-lg! font-semibold mb-2 font-sans"
-                {...props}
-              />
-            ),
-            h4: (props) => (
-              <h3
-                className="text-[18px]! font-semibold mb-2 font-sans"
-                {...props}
-              />
-            ),
-            p: ({ node, children, ...props }) => (
-              <p
-                className="text-base leading-relaxed mb-3 font-sans"
-                {...props}
-              >
-                {children}
+      <div>
+        <div
+          className={`relative p-5 rounded-2xl transition-all ${
+            isUser
+              ? "bg-primary text-primary-foreground rounded-br-none max-w-xs lg:max-w-md"
+              : "bg-white text-foreground rounded-bl-none max-w-full"
+          }`}
+        >
+          {replyTo && (
+            <div
+              className={`mb-3 p-3 rounded-xl text-sm!${
+                isUser
+                  ? "border-white/70 bg-white/20 text-white/80"
+                  : "border-primary/50 bg-primary/5 text-foreground/80"
+              }`}
+            >
+              <p className="text-xs! font-semibold mb-1 opacity-70 flex items-center gap-1">
+                <Undo2 className="size-3" /> Membalas:
               </p>
-            ),
-            ul: (props) => (
-              <ul
-                className="list-disc list-inside space-y-1 mb-3 font-sans"
-                {...props}
-              />
-            ),
-            ol: (props) => (
-              <ol
-                className="list-decimal list-inside space-y-1 mb-3 font-sans"
-                {...props}
-              />
-            ),
-            li: ({ children, ...props }) => {
-              const flattened = flattenListChildren(children);
-              return (
-                <li
-                  className="ml-4 text-base leading-relaxed font-sans"
+              <p className="text-sm line-clamp-2">{replyTo}</p>
+            </div>
+          )}
+
+          {/* Markdown Renderer */}
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkBreaks]}
+            rehypePlugins={[rehypeSanitize]}
+            components={{
+              h1: (props) => (
+                <h1
+                  className="text-2xl! font-semibold mb-4 font-sans"
+                  {...props}
+                />
+              ),
+              h2: (props) => (
+                <h2
+                  className="text-xl! font-semibold mb-3 font-sans"
+                  {...props}
+                />
+              ),
+              h3: (props) => (
+                <h3
+                  className="text-lg! font-semibold mb-2 font-sans"
+                  {...props}
+                />
+              ),
+              h4: (props) => (
+                <h3
+                  className="text-[18px]! font-semibold mb-2 font-sans"
+                  {...props}
+                />
+              ),
+              p: ({ node, children, ...props }) => (
+                <p
+                  className="text-base leading-relaxed mb-3 font-sans"
                   {...props}
                 >
-                  {flattened}
-                </li>
-              );
-            },
-            strong: (props) => (
-              <strong className="font-semibold text-primary" {...props} />
-            ),
-            em: (props) => <em className="italic text-primary/90" {...props} />,
-            pre: (props) => (
-              <pre
-                className="bg-gray-100 p-4 rounded-2xl font-mono mb-4 overflow-x-auto"
-                {...props}
-              />
-            ),
-            code: (props) => (
-              <code
-                className="bg-gray-200 text-primary font-mono px-1.5 py-0.5 rounded"
-                {...props}
-              />
-            ),
-            blockquote: (props) => (
-              <blockquote
-                className="border-l-4 border-primary pl-3 italic text-primary/80 mb-3"
-                {...props}
-              />
-            ),
-            br: (props) => <br {...props} />,
-            hr: (props) => <hr className="my-3 border-primary/30" {...props} />,
-            a: ({ href, children }) => (
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-health underline underline-offset-2 decoration-2"
-              >
-                {children}
-              </a>
-            ),
-          }}
-        >
-          {cleanMessage}
-        </ReactMarkdown>
-
-        {!isUser && hasConsultation && (
-          <div className="mt-3 mb-5">
-            <Link
-              href={`/connect?status=emergency`}
-              className="lg:w-fit w-full"
-            >
-              <Button
-                variant="default"
-                size={"lg"}
-                className="rounded-full bg-health hover:bg-health/80 lg:w-fit w-full cursor-pointer pointer-events-auto"
-              >
-                Konsultasi dengan Dokter
-              </Button>
-            </Link>
-          </div>
-        )}
-        {/* Timestamp */}
-        {timestamp && (
-          <p
-            className={`text-xs! mt-1 ${
-              isUser
-                ? "text-primary-foreground/70 text-end"
-                : "text-muted-foreground"
-            }`}
+                  {children}
+                </p>
+              ),
+              ul: (props) => (
+                <ul
+                  className="list-disc list-inside space-y-1 mb-3 font-sans"
+                  {...props}
+                />
+              ),
+              ol: (props) => (
+                <ol
+                  className="list-decimal list-inside space-y-1 mb-3 font-sans"
+                  {...props}
+                />
+              ),
+              li: ({ children, ...props }) => {
+                const flattened = flattenListChildren(children);
+                return (
+                  <li
+                    className="ml-4 text-base leading-relaxed font-sans"
+                    {...props}
+                  >
+                    {flattened}
+                  </li>
+                );
+              },
+              strong: (props) => (
+                <strong className="font-semibold text-primary" {...props} />
+              ),
+              em: (props) => (
+                <em className="italic text-primary/90" {...props} />
+              ),
+              pre: (props) => (
+                <pre
+                  className="bg-gray-100 p-4 rounded-2xl font-mono mb-4 overflow-x-auto"
+                  {...props}
+                />
+              ),
+              code: (props) => (
+                <code
+                  className="bg-gray-200 text-primary font-mono px-1.5 py-0.5 rounded"
+                  {...props}
+                />
+              ),
+              blockquote: (props) => (
+                <blockquote
+                  className="border-l-4 border-primary pl-3 italic text-primary/80 mb-3"
+                  {...props}
+                />
+              ),
+              br: (props) => <br {...props} />,
+              hr: (props) => (
+                <hr className="mb-5 border-primary/30" {...props} />
+              ),
+              a: ({ href, children }) => (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-health underline underline-offset-2 decoration-2"
+                >
+                  {children}
+                </a>
+              ),
+            }}
           >
-            <LocalDateTime date={timestamp} />
-          </p>
-        )}
+            {cleanMessage}
+          </ReactMarkdown>
+
+          {!isUser && hasConsultation && (
+            <div className="mt-3 mb-5">
+              <Link
+                href={`/connect?status=emergency`}
+                className="lg:w-fit w-full"
+              >
+                <Button
+                  variant="default"
+                  size={"lg"}
+                  className="rounded-full bg-health hover:bg-health/80 lg:w-fit w-full cursor-pointer pointer-events-auto"
+                >
+                  Konsultasi dengan Dokter
+                </Button>
+              </Link>
+            </div>
+          )}
+          {/* Timestamp */}
+          {timestamp && (
+            <p
+              className={`text-xs! mt-1 ${
+                isUser
+                  ? "text-primary-foreground/70 text-end"
+                  : "text-muted-foreground"
+              }`}
+            >
+              <LocalDateTime date={timestamp} />
+            </p>
+          )}
+        </div>
+        <div
+          className={`flex ${
+            isUser ? "justify-end" : "justify-start"
+          } mt-2 group`}
+        >
+          <div
+            className={`action_button bg-white inline-flex gap-0.5 px-2 py-1.5 ${
+              isUser
+                ? "rounded-b-full rounded-tl-full"
+                : "rounded-b-full rounded-tr-full"
+            }   shadow-sm`}
+          >
+            <button
+              onClick={() => onReply?.(cleanMessage)}
+              className="text-muted-foreground pointer-events-auto cursor-pointer hover:bg-gray-100 p-1 rounded-full"
+              title="Reply"
+            >
+              <Undo2 className="size-4.5" />
+            </button>
+
+            <button
+              onClick={handleCopy}
+              className=" text-muted-foreground pointer-events-auto cursor-pointer hover:bg-gray-100 p-1 rounded-full"
+              title="Salin pesan"
+            >
+              {copied ? (
+                <Check className="size-4 text-green-500" />
+              ) : (
+                <Copy className="size-4" />
+              )}
+            </button>
+          </div>
+        </div>
       </div>
     </motion.div>
   );

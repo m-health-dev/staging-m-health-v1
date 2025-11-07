@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronRight, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Suspense, useEffect, useState } from "react";
 import ChatStart from "./ChatStart";
@@ -18,10 +18,40 @@ import Link from "next/link";
 import { Spinner } from "../ui/spinner";
 import { useResponsiveSidebar } from "@/hooks/ChatSidebar";
 import ChatSidebarShowreels from "./ChatSidebarShowreels";
+import { Message } from "./ChatWindow";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 
 const ChatContent = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useResponsiveSidebar();
   const [showSidebarContent, setShowSidebarContent] = useState(true);
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+
+  const [selectedChat, setSelectedChat] = useState<Message[]>([]);
+
+  const handleSelectChat = (chatId: string) => {
+    const allChats = JSON.parse(
+      localStorage.getItem("mhealth_chat_sessions") || "[]"
+    );
+    const selected = allChats.find((c: any) => c.id === chatId);
+    if (selected) {
+      setSelectedChat(selected.messages);
+    }
+  };
+
+  // const handleSelectChat = (id: string) => {
+  //   setSelectedChatId(id);
+  // };
+
+  // const handleNewChat = () => {
+  //   setSelectedChatId(null); // mulai baru
+  // };
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -55,14 +85,14 @@ const ChatContent = () => {
     <div className="flex lg:flex-row flex-col lg:flex-wrap lg:min-h-[calc(100vh-13.5vh)] 3xl:min-h-[calc(100vh-8vh)]">
       <div className="lg:flex hidden">
         <div className="flex flex-row items-start gap-2">
-          <motion.div
+          <motion.nav
             animate={{ width: isSidebarOpen ? 380 : 0 }}
             transition={{
               duration: 0.4,
               ease: "easeInOut",
             }}
             style={{ willChange: "width" }}
-            className="bg-white 3xl:max-h-[calc(100vh-8vh)] 3xl:min-h-[calc(100vh-8vh)] lg:max-h-[calc(100vh-13.5vh)] lg:min-h-[calc(100vh-13.5vh)] max-h-[calc(100vh-8vh)] min-h-[calc(100vh-8vh)] overflow-y-auto hide-scroll rounded-2xl ml-5 shadow-sm overflow-hidden flex flex-col lg:max-w-5/6 max-w-4/6"
+            className="print:hidden bg-white 3xl:max-h-[calc(100vh-8vh)] 3xl:min-h-[calc(100vh-8vh)] lg:max-h-[calc(100vh-13.5vh)] lg:min-h-[calc(100vh-13.5vh)] max-h-[calc(100vh-8vh)] min-h-[calc(100vh-8vh)] overflow-y-auto hide-scroll rounded-2xl ml-5 shadow-sm overflow-hidden flex flex-col lg:max-w-5/6 max-w-4/6"
           >
             {/* Header */}
             <div className="px-4 flex justify-between items-start gap-4 md:w-[380px] w-[300px]">
@@ -78,11 +108,11 @@ const ChatContent = () => {
                   }}
                   className="flex flex-col"
                 >
-                  <ChatSidebarShowreels />
+                  <ChatSidebarShowreels onSelectChat={handleSelectChat} />
                 </motion.div>
               </AnimatePresence>
             </div>
-          </motion.div>
+          </motion.nav>
           <div
             className={`flex flex-col space-y-2 transition-all duration-700 ${
               isSidebarOpen ? "ml-0" : "-ml-2"
@@ -135,7 +165,59 @@ const ChatContent = () => {
           !isSidebarOpen ? "lg:-translate-x-10" : "lg:translate-x-0"
         }`}
       >
-        <ChatStart isSidebarOpen={isSidebarOpen} />
+        <div className="lg:hidden flex">
+          <div
+            className={`flex flex-row space-x-2 transition-all duration-700 `}
+          >
+            <Sheet>
+              <SheetTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="bg-white text-primary rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer">
+                      <ChevronRight className={`"rotate-0"`} />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="right"
+                    className="bg-white text-primary font-medium"
+                  >
+                    <p>{"Buka Menu"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-3 bg-white z-999">
+                <SheetTitle />
+                <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer -mt-3">
+                  <h4 className="text-primary font-bold">Tutup</h4>
+                  <div className="text-primary bg-background p-2 rounded-full">
+                    <X />
+                  </div>
+                </SheetClose>
+                <div className="flex flex-col space-y-7 overflow-y-scroll hide-scroll">
+                  <ChatSidebarShowreels onSelectChat={handleSelectChat} />
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="bg-white text-primary rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer"
+                >
+                  <Plus />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent
+                side="right"
+                className="bg-white text-primary font-medium"
+              >
+                <p>Mulai Obrolan Baru</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </div>
+        <ChatStart chat={selectedChat} />
       </ContainerWrap>
     </div>
   );

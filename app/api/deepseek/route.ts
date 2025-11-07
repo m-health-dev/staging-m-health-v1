@@ -5,7 +5,7 @@ const deepseekBaseUrl = `${process.env.DEEPSEEK_TARGET_URL}`;
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json(); // 🟢 sekarang menerima array, bukan satu pesan
+    const { messages } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         model: "deepseek-chat",
-        messages, // kirim semua konteks percakapan
+        messages,
         temperature: 0.7,
         max_tokens: 1024,
       }),
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
 
     if (!response.ok) {
       const error = await response.json();
-      console.error("[v0] DeepSeek API Error:", error);
+      console.error("DeepSeek API Error:", error);
       return NextResponse.json(
         { error: "Failed to get response from DeepSeek" },
         { status: response.status }
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       message: botMessage,
     });
   } catch (error: any) {
-    console.error("[v0] Chat API Error:", error.message);
+    console.error("Chat API Error:", error.message);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

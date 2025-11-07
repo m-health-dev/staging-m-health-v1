@@ -9,12 +9,18 @@ import {
 } from "@/lib/unsplashImage";
 import Link from "next/link";
 import { Spinner } from "../ui/spinner";
+import { Trash2 } from "lucide-react";
 
-const ChatSidebarShowreels = () => {
+const ChatSidebarShowreels = ({
+  onSelectChat,
+}: {
+  onSelectChat: (id: string) => void;
+}) => {
   const [imageWellness, setImageWellness] = useState<any[]>([]);
   const [imageMedical, setImageMedical] = useState<any[]>([]);
   const [imageEvents, setImageEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [sessions, setSessions] = useState<any[]>([]);
 
   useEffect(() => {
     const imageData = async () => {
@@ -46,13 +52,65 @@ const ChatSidebarShowreels = () => {
     imageData();
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const stored = localStorage.getItem("mhealth_chat_sessions");
+      if (stored) {
+        setSessions(JSON.parse(stored));
+      }
+    }, 1000); // cek setiap 1 detik
+
+    return () => clearInterval(interval);
+  }, []);
+
   return loading ? (
     <div className="flex w-full max-h-[calc(100vh-13.5vh)] min-h-[calc(100vh-13.5vh)] justify-center items-center">
       <Spinner className="text-primary" />
     </div>
   ) : (
     <div className="flex flex-col">
-      <h4 className="font-bold text-primary sticky top-0 bg-white py-5">
+      <h4 className="font-bold text-primary sticky top-0 bg-white py-5 border-b border-border mb-5">
+        Riwayat Obrolan
+      </h4>
+      <div className="space-y-5 py-3">
+        <div className="space-y-2">
+          {sessions.length > 0 ? (
+            sessions.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => onSelectChat(s.id)}
+                className="w-full text-left border border-border p-2 rounded-xl"
+              >
+                <p className="font-medium text-primary text-base! line-clamp-2 wrap-break-word">
+                  {s.title}
+                </p>
+                <p className="text-xs! uppercase text-muted-foreground">
+                  {s.id.slice(0, 7)}
+                </p>
+                <div className="text-xs text-muted-foreground truncate">
+                  {s.messages?.[s.messages.length - 1]?.content}
+                </div>
+              </button>
+            ))
+          ) : (
+            <p className="text-base! text-muted-foreground italic">
+              Belum ada riwayat
+            </p>
+          )}
+          {sessions.length >= 1 && (
+            <button
+              onClick={() => {
+                localStorage.removeItem("mhealth_chat_sessions");
+                window.location.reload(); // reset tampilan
+              }}
+              className="text-xs text-red-500 hover:text-red-700 inline-flex gap-1 items-center mt-2 transition"
+            >
+              <Trash2 className="size-3" /> Hapus riwayat percakapan
+            </button>
+          )}
+        </div>
+      </div>
+      <h4 className="font-bold text-primary sticky top-0 bg-white py-5 border-b border-border mb-5">
         Welness
       </h4>
       <div className="space-y-5">
@@ -91,7 +149,7 @@ const ChatSidebarShowreels = () => {
           </Link>
         ))}
       </div>
-      <h4 className="font-bold text-primary sticky top-0 bg-white py-5">
+      <h4 className="font-bold text-primary sticky top-0 bg-white py-5 border-b border-border mb-5">
         Medical
       </h4>
       <div className="space-y-5">
@@ -128,7 +186,7 @@ const ChatSidebarShowreels = () => {
           </Link>
         ))}
       </div>
-      <h4 className="font-bold text-primary sticky top-0 bg-white py-5">
+      <h4 className="font-bold text-primary sticky top-0 bg-white py-5 border-b border-border mb-5">
         Events
       </h4>
       <div className="space-y-5">
