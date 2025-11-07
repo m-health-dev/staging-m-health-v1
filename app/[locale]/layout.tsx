@@ -53,9 +53,9 @@ export default async function RootLayout({ children, params }: Props) {
                 height={10}
                 className="rounded-full"
               />
-              <p className="text-xs! text-muted-foreground  py-1 px-3">
-                {buildId?.slice(0, 6) || "Local Build"} -{" "}
-                {deployId?.slice(4, 9) || "Local Deploy"}
+              <p className="text-xs! text-muted-foreground uppercase py-1 px-3">
+                {buildId?.slice(0, 7) || "Local Build"} -{" "}
+                {deployId?.split("_")[1].slice(0, 7) || "Local Deploy"}
               </p>
             </div>
           </div>
