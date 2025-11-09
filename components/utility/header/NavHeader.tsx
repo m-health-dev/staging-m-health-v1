@@ -61,7 +61,10 @@ const NavHeader = () => {
                   />
                 </svg>
               </SheetTrigger>
-              <SheetContent side="right" className="p-8 bg-white z-999">
+              <SheetContent
+                side="right"
+                className="p-8 bg-white z-999 overflow-y-scroll hide-scroll"
+              >
                 <SheetTitle />
                 <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer">
                   <h4 className="text-primary font-bold">Tutup</h4>
@@ -128,7 +131,7 @@ const NavHeader = () => {
                   </Link>
                 </div>
 
-                <SheetFooter className="bg-gray-50 rounded-2xl border border-primary/10">
+                <SheetFooter className="bg-gray-50 rounded-2xl border border-primary/10 mt-10">
                   <h5 className="text-primary font-bold mb-0">Preferensi</h5>
                   <div className="z-9999">
                     <LanguageSwitcher />

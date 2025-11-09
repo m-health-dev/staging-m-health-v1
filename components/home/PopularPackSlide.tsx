@@ -66,7 +66,7 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
             {data.map((slide, key) => (
               <SwiperSlide
                 key={key}
-                className="flex flex-col justify-between grow min-h-[430px] max-h-[430px] bg-white rounded-2xl border shadow mb-2"
+                className="flex flex-col justify-between grow min-h-[330px] max-h-[330px] bg-white rounded-2xl border shadow mb-2"
               >
                 <Link href={slide.author.profile} target="_blank">
                   <Image

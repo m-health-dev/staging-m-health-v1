@@ -190,7 +190,7 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
   }
 
   return (
-    <div className="justify-center items-center max-h-[calc(100vh-15vh)] min-h-[calc(100vh-15vh)] flex">
+    <div className="justify-center items-center max-h-[calc(100vh-15vh)] min-h-[calc(100vh-15vh)] lg:mt-0 mt-[8vh] flex">
       <div className="flex flex-col lg:items-center">
         <div className="start_conversation mb-16 lg:text-center text-start">
           <h2 className="text-primary font-bold mb-2">

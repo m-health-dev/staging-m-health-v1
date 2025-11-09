@@ -37,10 +37,10 @@ const QuickAccess = () => {
         </div>
 
         {/* Quick Links Bar */}
-        <div className="flex px-1 w-full overflow-x-auto lg:overflow-x-visible hide-scroll pb-2 gap-4 items-center justify-start lg:justify-center no-scrollbar cursor-grab">
+        <div className="flex w-full overflow-x-auto lg:overflow-x-visible hide-scroll pb-2 gap-4 items-center justify-start lg:justify-center no-scrollbar cursor-grab">
           {quickLinks.map(({ id, href, label, icon }) => (
             <Link key={href} href={href} className="group shrink-0">
-              <button className="cursor-pointer bg-white py-1.5 pl-2 pr-5 rounded-full inline-flex gap-3 items-center shadow-sm group-hover:bg-primary transition-all duration-300">
+              <button className="cursor-pointer bg-white py-1.5 pl-2 pr-5 border rounded-full inline-flex gap-3 items-center shadow-sm group-hover:bg-primary transition-all duration-300">
                 <div className="bg-background w-10 h-10 rounded-full flex items-center justify-center text-primary">
                   {icon}
                 </div>
