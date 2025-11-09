@@ -7,6 +7,7 @@ import { Textarea } from "../ui/textarea";
 import ChatWindow from "./ChatWindow";
 import { chatDeepseek } from "@/lib/deepseekAI";
 import { nanoid } from "nanoid";
+import { quickLinks } from "../home/QuickAction";
 
 interface Message {
   id: string;
@@ -190,27 +191,23 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
   }
 
   return (
-    <div className="justify-center items-center max-h-[calc(100vh-15vh)] min-h-[calc(100vh-15vh)] lg:mt-0 mt-[8vh] flex">
-      <div className="flex flex-col lg:items-center">
-        <div className="start_conversation mb-16 lg:text-center text-start">
+    <div className="justify-center items-center lg:max-h-[calc(100vh-15vh)] lg:min-h-[calc(100vh-15vh)] max-h-[calc(100vh-25vh)] min-h-[calc(100vh-25vh)] lg:mt-0 mt-[8vh] flex">
+      <div className="flex flex-col lg:items-center max-w-full">
+        <div className="start_conversation mb-10 lg:text-center text-start">
           <h2 className="text-primary font-bold mb-2">
             Sedang nggak enak badan?
           </h2>
           <h3 className="text-primary">Tenang, aku di sini buat bantu</h3>
         </div>
 
-        <div className="quicklinks flex flex-wrap w-full items-center lg:justify-center md:space-y-0 space-y-3 md:space-x-3 space-x-0 mb-5 lg:scale-95">
-          {[
-            { href: "/medical", label: "Paket Medis" },
-            { href: "/wellness", label: "Paket Kesehatan" },
-            { href: "/events", label: "Acara Terbaru" },
-          ].map(({ href, label }) => (
-            <Link key={href} href={href} className="group md:w-fit w-full">
-              <button className="cursor-pointer bg-white py-1.5 pl-2 pr-3 rounded-full inline-flex lg:w-fit w-full gap-3 items-center shadow-sm group-hover:bg-primary transition-all duration-300">
-                <div className="bg-background w-10 h-10 rounded-full flex items-center justify-center text-primary">
-                  <ArrowRight className="-rotate-45 group-hover:rotate-0 transition-all duration-300" />
+        <div className="flex max-w-2xl w-full overflow-x-auto lg:overflow-x-visible hide-scroll pb-2 gap-4 items-center justify-start lg:justify-center hide-scroll cursor-grab lg:mb-5">
+          {quickLinks.map(({ id, href, label, icon }) => (
+            <Link key={href} href={href} className="group shrink-0">
+              <button className="cursor-pointer bg-white py-1.5 pl-2 pr-5 border rounded-full inline-flex gap-3 items-center shadow-sm group-hover:bg-primary transition-all duration-300">
+                <div className="bg-background lg:w-10 w-9 lg:h-10 h-9 rounded-full flex items-center justify-center text-primary">
+                  {icon}
                 </div>
-                <p className="text-primary font-medium text-[18px] group-hover:text-white transition-all duration-300">
+                <p className="text-primary font-medium group-hover:text-white transition-all duration-300 whitespace-nowrap">
                   {label}
                 </p>
               </button>
@@ -237,7 +234,7 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
                 className={`flex-1 resize-none border-0 shadow-none rounded-none bg-transparent text-primary placeholder:3xl:text-[18px]! placeholder:text-[17px]! 3xl:text-[18px]! text-[17px]! font-sans focus-visible:ring-0 focus:outline-none hide-scroll placeholder:text-primary/50  transition-all duration-300 wrap-anywhere ${
                   isExpanded
                     ? "max-h-52 px-2 py-2"
-                    : "min-h-16 max-h-20 px-5 3xl:pt-4.5 lg:pt-5 pt-2 placeholder:pt-0.5"
+                    : "min-h-16 max-h-20 px-2 3xl:pt-4.5 lg:pt-5 pt-2 placeholder:pt-0.5"
                 }`}
               />
               <button

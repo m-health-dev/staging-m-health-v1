@@ -11,7 +11,7 @@ const PopularPackage = async () => {
   const wellness = await get5ImageWellness();
   const medical = await get5ImageMedical();
   const random = await get5Image();
-  const data = [...wellness.results, ...medical.results, ...random.results];
+  const data = [...medical.results, ...random.results];
   return (
     <div>
       <ContainerWrap>

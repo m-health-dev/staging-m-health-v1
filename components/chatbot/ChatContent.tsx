@@ -1,6 +1,12 @@
 "use client";
 
-import { ChevronDown, ChevronRight, Plus, X } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  PanelRightClose,
+  Plus,
+  X,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Suspense, useEffect, useState } from "react";
 import ChatStart from "./ChatStart";
@@ -34,6 +40,8 @@ const ChatContent = () => {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
 
   const [selectedChat, setSelectedChat] = useState<Message[]>([]);
+
+  const [openSheet, setOpenSheet] = useState(false);
 
   const handleSelectChat = (chatId: string) => {
     const allChats = JSON.parse(
@@ -158,6 +166,50 @@ const ChatContent = () => {
           </div>
         </div>
       </div>
+      <div className="lg:hidden flex bg-transparent fixed z-10 top-26 left-3 w-full">
+        <div
+          className={`flex flex-row justify-between w-[calc(100%-7%)] space-x-2 transition-all duration-700 bg-transparent!`}
+        >
+          <Sheet open={openSheet}>
+            <SheetTrigger>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    className="bg-white border border-primary/20 text-primary rounded-full shadow-sm h-12 w-12 px-3 flex items-center justify-between transition-all duration-300 z-50 pointer-events-auto cursoir-pointer"
+                    onClick={() => setOpenSheet(true)}
+                  >
+                    <PanelRightClose />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="right"
+                  className="bg-white text-primary font-medium"
+                >
+                  <p>{"Buka Menu"}</p>
+                </TooltipContent>
+              </Tooltip>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-3 bg-white z-999">
+              <SheetTitle />
+              <SheetClose
+                className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer -mt-3"
+                onClick={() => setOpenSheet(false)}
+              >
+                <h4 className="text-primary font-bold">Tutup</h4>
+                <div className="text-primary bg-background p-2 rounded-full">
+                  <X />
+                </div>
+              </SheetClose>
+              <div className="flex flex-col space-y-7 overflow-y-scroll hide-scroll">
+                <ChatSidebarShowreels
+                  onSelectChat={handleSelectChat}
+                  setOpenSheet={setOpenSheet} // ✅ kirim fungsi setter
+                />
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
 
       <ContainerWrap
         size="xxl"
@@ -165,57 +217,6 @@ const ChatContent = () => {
           !isSidebarOpen ? "lg:-translate-x-10" : "lg:translate-x-0"
         }`}
       >
-        <div className="lg:hidden flex bg-transparent fixed z-10 top-2 left-5 w-full">
-          <div
-            className={`flex flex-row justify-between w-[calc(100%-8%)] space-x-2 transition-all duration-700 bg-transparent!`}
-          >
-            <Sheet>
-              <SheetTrigger>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="bg-white border border-primary/20 text-primary rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer">
-                      <ChevronRight className={`"rotate-0"`} />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="right"
-                    className="bg-white text-primary font-medium"
-                  >
-                    <p>{"Buka Menu"}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </SheetTrigger>
-              <SheetContent side="left" className="p-3 bg-white z-999">
-                <SheetTitle />
-                <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer -mt-3">
-                  <h4 className="text-primary font-bold">Tutup</h4>
-                  <div className="text-primary bg-background p-2 rounded-full">
-                    <X />
-                  </div>
-                </SheetClose>
-                <div className="flex flex-col space-y-7 overflow-y-scroll hide-scroll">
-                  <ChatSidebarShowreels onSelectChat={handleSelectChat} />
-                </div>
-              </SheetContent>
-            </Sheet>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => window.location.reload()}
-                  className="inline-flex bg-white border border-primary/20 text-primary rounded-2xl shadow-sm h-12 w-fit px-3 items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer"
-                >
-                  <Plus />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent
-                side="left"
-                className="bg-white text-primary font-medium"
-              >
-                <p>Mulai Obrolan Baru</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
         <ChatStart chat={selectedChat} />
       </ContainerWrap>
     </div>

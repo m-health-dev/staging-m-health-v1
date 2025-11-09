@@ -79,7 +79,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         {/* <div className="h-16 w-full bg-linear-to-b from-background fixed top-22 z-10"></div> */}
         <div className="container mx-auto lg:max-w-4xl w-full lg:px-6">
           {/* Messages Container */}
-          <div className="flex-1 min-h-[calc(100vh-10vh)] max-h-[calc(100vh-10vh)] lg:px-10 pt-[10vh]">
+          <div className="flex-1 min-h-[calc(100vh-10vh)] max-h-[calc(100vh-10vh)] lg:px-10 lg:pt-[10vh] pt-[16vh]">
             <div>
               <p className="lg:text-sm! text-xs! text-muted-foreground/50 text-center mb-10">
                 Kami menyimpan percakapan ini secara lokal di penyimpanan Anda.

@@ -31,7 +31,9 @@ export default async function Changelog() {
                   alt={c.committer.login}
                   className="w-5 h-5 aspect-square rounded-full"
                 />
-                <p className="text-sm!">by. {c.committer.login}</p>
+                <p className="text-sm! capitalize">
+                  {c.committer.login.replaceAll("-", " ")}
+                </p>
               </div>
             </div>
           ))}

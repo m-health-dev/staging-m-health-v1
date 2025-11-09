@@ -3,6 +3,24 @@ import { NextResponse } from "next/server";
 const UNSPLASH_URL = "https://api.unsplash.com/search/photos";
 
 export async function GET(req: Request) {
+  const apiKey = process.env.API_SECRET_KEY;
+  const authHeader = req.headers.get("authorization");
+  const clientToken = req.headers.get("x-client-token");
+
+  // console.log("AuthHeader:", clientToken);
+  // console.log("Expected:", `Bearer ${apiKey}`);
+
+  if (clientToken !== process.env.NEXT_PUBLIC_INTERNAL_TOKEN) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // if (authHeader !== `Bearer ${apiKey}`) {
+  //   return NextResponse.json(
+  //     { success: false, code: "401", error: "Unauthorized" },
+  //     { status: 401 }
+  //   );
+  // }
+
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query") || "nature";

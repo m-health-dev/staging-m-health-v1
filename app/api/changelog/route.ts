@@ -1,7 +1,16 @@
 // /app/api/changelog/route.ts
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const apiKey = process.env.API_SECRET_KEY;
+  const authHeader = req.headers.get("authorization");
+
+  if (authHeader !== `Bearer ${apiKey}`) {
+    return NextResponse.json(
+      { success: false, code: "401", error: "Unauthorized" },
+      { status: 401 }
+    );
+  }
   const res = await fetch(
     "https://api.github.com/repos/m-health-dev/staging-m-health-v1/commits",
     {

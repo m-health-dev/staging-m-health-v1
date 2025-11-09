@@ -5,6 +5,7 @@ export async function getImage() {
       next: { revalidate: 60 },
       headers: {
         Authorization: `Bearer ${process.env.API_SECRET_KEY}`,
+        "x-client-token": `${process.env.NEXT_PUBLIC_INTERNAL_TOKEN}`,
       },
     }
   );
@@ -19,6 +20,7 @@ export async function get3Image() {
       next: { revalidate: 60 },
       headers: {
         Authorization: `Bearer ${process.env.API_SECRET_KEY}`,
+        "x-client-token": `${process.env.NEXT_PUBLIC_INTERNAL_TOKEN}`,
       },
     }
   );
@@ -33,6 +35,7 @@ export async function get5Image() {
       next: { revalidate: 60 },
       headers: {
         Authorization: `Bearer ${process.env.API_SECRET_KEY}`,
+        "x-client-token": `${process.env.NEXT_PUBLIC_INTERNAL_TOKEN}`,
       },
     }
   );
@@ -47,6 +50,7 @@ export async function get5ImageWellness() {
       next: { revalidate: 60 },
       headers: {
         Authorization: `Bearer ${process.env.API_SECRET_KEY}`,
+        "x-client-token": `${process.env.NEXT_PUBLIC_INTERNAL_TOKEN}`,
       },
     }
   );
@@ -61,6 +65,7 @@ export async function get5ImageMedical() {
       next: { revalidate: 60 },
       headers: {
         Authorization: `Bearer ${process.env.API_SECRET_KEY}`,
+        "x-client-token": `${process.env.NEXT_PUBLIC_INTERNAL_TOKEN}`,
       },
     }
   );
@@ -75,6 +80,7 @@ export async function get5ImageEvents() {
       next: { revalidate: 60 },
       headers: {
         Authorization: `Bearer ${process.env.API_SECRET_KEY}`,
+        "x-client-token": `${process.env.NEXT_PUBLIC_INTERNAL_TOKEN}`,
       },
     }
   );

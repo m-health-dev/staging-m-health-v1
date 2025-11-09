@@ -69,16 +69,6 @@ export default function JumbotronSlide({ data }: { data: any[] }) {
                     className="aspect-20/7 w-full object-cover object-center rounded-2xl"
                   />
                 </Link>
-                {/* <div className="max-w-full mt-5">
-                  <p className="text-muted-foreground mb-0.5">{slide.id}</p>
-                  <h3 className="capitalize font-semibold text-primary">
-                    {slide.alt}
-                  </h3>
-                  <p className="line-clamp-2 mt-5">
-                    {slide.author.name} - Lorem ipsum dolor sit amet,
-                    consectetur adipisicing elit. Consequatur, aliquam.
-                  </p>
-                </div> */}
               </SwiperSlide>
             ))}
           </Swiper>

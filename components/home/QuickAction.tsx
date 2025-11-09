@@ -11,26 +11,26 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-const QuickAccess = () => {
-  const quickLinks = [
-    { id: 1, href: "/medical", label: "Paket Medis", icon: <Activity /> },
-    { id: 2, href: "/wellness", label: "Paket Kesehatan", icon: <HeartPlus /> },
-    { id: 3, href: "/events", label: "Acara Terbaru", icon: <CalendarHeart /> },
-    { id: 4, href: "/article", label: "Artikel Terbaru", icon: <Newspaper /> },
-    { id: 5, href: "/", label: "Chat w/ AI", icon: <MessageCircleHeart /> },
-  ];
+export const quickLinks = [
+  { id: 1, href: "/medical", label: "Paket Medis", icon: <Activity /> },
+  { id: 2, href: "/wellness", label: "Paket Kesehatan", icon: <HeartPlus /> },
+  { id: 3, href: "/events", label: "Acara Terbaru", icon: <CalendarHeart /> },
+  { id: 4, href: "/article", label: "Artikel Terbaru", icon: <Newspaper /> },
+  { id: 5, href: "/", label: "Chat w/ AI", icon: <MessageCircleHeart /> },
+];
 
+const QuickAction = () => {
   return (
     <ContainerWrap className="flex w-full justify-center">
       <div className="lg:max-w-2xl max-w-full w-full">
         {/* Search Bar */}
         <div className="search_anything mb-4">
-          <form className="flex gap-2 justify-center items-center">
+          <form className="flex gap-2 justify-end items-center relative group">
             <Input
               placeholder="Search anything"
-              className="h-14 rounded-full bg-white px-5 placeholder:text-primary/50 lg:text-[18px] text-base w-full border border-border focus-visible:ring-primary focus-visible:ring-1"
+              className="h-14 rounded-full bg-white px-5 placeholder:text-primary/50 lg:text-[18px] text-base w-full focus-visible:border-muted-foreground/20 focus-visible:ring-0! outline-0!"
             />
-            <div className="bg-white text-primary w-16 h-14 inline-flex items-center justify-center rounded-full border border-border shadow hover:bg-primary hover:text-background transition-all duration-300 cursor-pointer">
+            <div className="absolute bg-white text-primary w-14 h-14 inline-flex items-center justify-center rounded-full border border-border shadow group-hover:bg-primary group-hover:text-background group-focus:bg-primary group-focus:text-background transition-all duration-300 cursor-pointer">
               <Search />
             </div>
           </form>
@@ -56,4 +56,4 @@ const QuickAccess = () => {
   );
 };
 
-export default QuickAccess;
+export default QuickAction;

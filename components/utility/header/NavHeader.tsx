@@ -35,18 +35,20 @@ const NavHeader = () => {
     path.startsWith(`/${locale}`) && path.endsWith(`/${locale}`);
   return pathCheck ? (
     <nav className="sticky top-0 px-5 bg-background z-99 lg:border-b-0 border-b border-primary/10">
-      <header className="py-5 flex w-full justify-between">
-        <Image
-          src={"/mhealth_logo.PNG"}
-          width={150}
-          height={40}
-          className="object-contain"
-          alt="M-Health Logo"
-        />
+      <header className="py-5 flex items-center w-full justify-between">
+        <Link href={`/${locale}/home`}>
+          <Image
+            src={"/mhealth_logo.PNG"}
+            width={150}
+            height={40}
+            className="object-contain"
+            alt="M-Health Logo"
+          />
+        </Link>
         <div>
           <div>
             <Sheet>
-              <SheetTrigger className=" bg-white text-primary p-2 rounded-full">
+              <SheetTrigger className=" bg-white text-primary p-2 rounded-full shadow border">
                 {" "}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -145,15 +147,17 @@ const NavHeader = () => {
     </nav>
   ) : (
     <ContainerWrap className="sticky top-10 z-99">
-      <nav className="px-5 z-99 lg:border-b-0 border-b border-primary/10 bg-white rounded-full mt-10">
-        <header className="py-5 flex w-full justify-between">
-          <Image
-            src={"/mhealth_logo.PNG"}
-            width={150}
-            height={40}
-            className="object-contain"
-            alt="M-Health Logo"
-          />
+      <nav className="px-5 z-99 lg:border-b-0 border-b border-primary/10 bg-white shadow rounded-full mt-10">
+        <header className="lg:py-4 py-3 flex w-full items-center justify-between">
+          <Link href={`/${locale}/home`}>
+            <Image
+              src={"/mhealth_logo.PNG"}
+              width={150}
+              height={40}
+              className="object-contain"
+              alt="M-Health Logo"
+            />
+          </Link>
           <div>
             <div className="lg:hidden flex">
               <Sheet>

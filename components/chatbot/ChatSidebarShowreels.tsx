@@ -13,8 +13,10 @@ import { Trash2 } from "lucide-react";
 
 const ChatSidebarShowreels = ({
   onSelectChat,
+  setOpenSheet,
 }: {
   onSelectChat: (id: string) => void;
+  setOpenSheet?: (value: boolean) => void;
 }) => {
   const [imageWellness, setImageWellness] = useState<any[]>([]);
   const [imageMedical, setImageMedical] = useState<any[]>([]);
@@ -78,7 +80,10 @@ const ChatSidebarShowreels = ({
             sessions.map((s) => (
               <button
                 key={s.id}
-                onClick={() => onSelectChat(s.id)}
+                onClick={() => {
+                  onSelectChat(s.id);
+                  if (setOpenSheet) setOpenSheet(false);
+                }}
                 className="w-full text-left border border-border p-2 rounded-xl"
               >
                 <p className="font-medium text-primary text-base! line-clamp-2 wrap-break-word">
@@ -93,20 +98,21 @@ const ChatSidebarShowreels = ({
               </button>
             ))
           ) : (
-            <p className="text-base! text-muted-foreground italic">
-              Belum ada riwayat
+            <p className="bg-muted py-5 px-3 rounded-2xl text-muted-foreground text-sm!">
+              Belum ada obrolan.
             </p>
           )}
           {sessions.length >= 1 && (
-            <button
+            <div
               onClick={() => {
                 localStorage.removeItem("mhealth_chat_sessions");
-                window.location.reload(); // reset tampilan
+                if (setOpenSheet) setOpenSheet(false);
+                window.location.reload();
               }}
               className="text-xs text-red-500 hover:text-red-700 inline-flex gap-1 items-center mt-2 transition"
             >
               <Trash2 className="size-3" /> Hapus riwayat percakapan
-            </button>
+            </div>
           )}
         </div>
       </div>
@@ -148,6 +154,11 @@ const ChatSidebarShowreels = ({
             </div>
           </Link>
         ))}
+        {imageWellness.length <= 0 && (
+          <p className="bg-muted py-5 px-3 rounded-2xl text-muted-foreground text-sm!">
+            Belum ada data.
+          </p>
+        )}
       </div>
       <h4 className="font-bold text-primary sticky top-0 bg-white py-5 border-b border-border mb-5">
         Medical
@@ -185,6 +196,11 @@ const ChatSidebarShowreels = ({
             </div>
           </Link>
         ))}
+        {imageWellness.length <= 0 && (
+          <p className="bg-muted py-5 px-3 rounded-2xl text-muted-foreground text-sm!">
+            Belum ada data.
+          </p>
+        )}
       </div>
       <h4 className="font-bold text-primary sticky top-0 bg-white py-5 border-b border-border mb-5">
         Events
@@ -222,6 +238,11 @@ const ChatSidebarShowreels = ({
             </div>
           </Link>
         ))}
+        {imageEvents.length <= 0 && (
+          <p className="bg-muted py-5 px-3 rounded-2xl text-muted-foreground text-sm!">
+            Belum ada data.
+          </p>
+        )}
       </div>
     </div>
   );
