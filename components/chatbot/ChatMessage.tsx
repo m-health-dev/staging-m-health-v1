@@ -43,7 +43,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const phoneNumber = "08159880048";
 
   const hasConsultation =
-    message.includes("consultation") || message.includes("konsultasi");
+    message.includes("consultation") || message.includes("Konsultasi");
   let cleanMessage = message
     .replaceAll("consultation", "")
     .replaceAll("[", "")

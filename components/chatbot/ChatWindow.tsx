@@ -2,10 +2,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
-import { ArrowUp, Undo2 } from "lucide-react";
+import { ArrowUp, Plus, Undo2 } from "lucide-react";
 import { Input } from "../ui/input";
 import ContainerWrap from "../utility/ContainerWrap";
 import { Textarea } from "../ui/textarea";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export interface Message {
   id: string;
@@ -125,7 +126,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       </div>
       {/* Input Area */}
       <div
-        className={`absolute bottom-0 bg-background w-full z-10 lg:px-10 px-3`}
+        className={`absolute bottom-0 bg-background lg:border-t-0 border-t border-primary/10 w-full z-10 lg:px-10 px-3`}
       >
         <div
           className={`flex  w-full justify-center transition-all duration-300`}

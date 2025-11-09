@@ -60,7 +60,7 @@
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
+  --accent: #f7f7f7;
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
@@ -94,7 +94,7 @@
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --accent: oklch(88.224% 0.0001 271.152);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
@@ -135,32 +135,50 @@ li {
 }
 
 h1 {
-  @apply 3xl:text-7xl lg:text-6xl text-4xl;
+  @apply 3xl:text-7xl lg:text-6xl text-5xl;
 }
 
 h2 {
-  @apply 3xl:text-6xl lg:text-5xl text-3xl;
+  @apply 3xl:text-6xl lg:text-5xl text-4xl;
 }
 
 h3 {
-  @apply 3xl:text-5xl lg:text-4xl text-2xl;
+  @apply 3xl:text-5xl lg:text-4xl text-3xl;
 }
 
 h4 {
-  @apply 3xl:text-4xl lg:text-3xl text-xl;
+  @apply 3xl:text-4xl lg:text-3xl text-2xl;
 }
 
 h5 {
-  @apply 3xl:text-3xl text-2xl;
+  @apply 3xl:text-3xl lg:text-2xl text-xl;
 }
 
 h6 {
-  @apply 3xl:text-2xl text-xl;
+  @apply 3xl:text-2xl lg:text-xl text-base;
 }
 
 .hide-scroll::-webkit-scrollbar {
   display: none;
 }
+
+/* .custom-scrollbar::-webkit-scrollbar {
+  @apply w-2 rounded-2xl;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-primary/10 opacity-10;
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-primary hover:bg-gray-700 transition-all duration-300;
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-700 transition-all duration-300;
+} */
 
 .prose > p {
   @apply md:text-[20px] text-[18px] -mb-2 text-wrap break-words;

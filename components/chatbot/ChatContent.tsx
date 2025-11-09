@@ -161,19 +161,19 @@ const ChatContent = () => {
 
       <ContainerWrap
         size="xxl"
-        className={`md:flex-1 transition-all duration-300 translate-x-0 ${
+        className={`md:flex-1 transition-all bg-transparent duration-300 translate-x-0 overflow-hidden ${
           !isSidebarOpen ? "lg:-translate-x-10" : "lg:translate-x-0"
         }`}
       >
-        <div className="lg:hidden flex">
+        <div className="lg:hidden flex bg-transparent fixed z-10 top-2 left-5 w-full">
           <div
-            className={`flex flex-row space-x-2 transition-all duration-700 `}
+            className={`flex flex-row justify-between w-[calc(100%-8%)] space-x-2 transition-all duration-700 bg-transparent!`}
           >
             <Sheet>
               <SheetTrigger>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="bg-white text-primary rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer">
+                    <div className="bg-white border border-primary/20 text-primary rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer">
                       <ChevronRight className={`"rotate-0"`} />
                     </div>
                   </TooltipTrigger>
@@ -198,18 +198,17 @@ const ChatContent = () => {
                 </div>
               </SheetContent>
             </Sheet>
-
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={() => window.location.reload()}
-                  className="bg-white text-primary rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer"
+                  className="inline-flex bg-white border border-primary/20 text-primary rounded-2xl shadow-sm h-12 w-fit px-3 items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer"
                 >
                   <Plus />
                 </button>
               </TooltipTrigger>
               <TooltipContent
-                side="right"
+                side="left"
                 className="bg-white text-primary font-medium"
               >
                 <p>Mulai Obrolan Baru</p>

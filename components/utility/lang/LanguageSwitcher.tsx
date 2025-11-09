@@ -12,8 +12,15 @@ import {
 import { supportedLocales, getLocaleFromPath } from "@/lib/locales";
 import { useLanguage } from "./LanguageContext";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({
+  className,
+  short,
+}: {
+  className?: string;
+  short?: boolean;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const { locale, setLocale } = useLanguage();
@@ -43,13 +50,29 @@ export function LanguageSwitcher() {
 
   return (
     <Select value={locale} onValueChange={handleChange}>
-      <SelectTrigger className="border border-primary font-sans">
-        <SelectValue placeholder="Language" className=" h-24" />
+      <SelectTrigger
+        className={cn(
+          "border border-primary font-sans rounded-full bg-white relative z-9999 w-full h-12! px-5",
+          className
+        )}
+      >
+        <SelectValue placeholder="Language" />
       </SelectTrigger>
-      <SelectContent className="border border-primary font-sans" side="right">
+      <SelectContent
+        className="border border-primary rounded-2xl font-sans z-9999 py-1 px-1"
+        side="bottom"
+      >
         {supportedLocales.map((lang) => (
-          <SelectItem key={lang.code} value={lang.code}>
-            <span className="inline-flex items-center gap-2 uppercase">
+          <SelectItem
+            key={lang.code}
+            value={lang.code}
+            className="rounded-2xl py-2"
+          >
+            <span
+              className={`inline-flex items-center gap-2 ${
+                short ? "uppercase" : "capitalize"
+              }`}
+            >
               <Image
                 src={lang.code === "id" ? "/id.png" : "/en.png"}
                 width={50}
@@ -59,7 +82,7 @@ export function LanguageSwitcher() {
                 quality={50}
                 alt={lang.code}
               />
-              {lang.code}
+              {short ? lang.code : lang.label}
             </span>
           </SelectItem>
         ))}

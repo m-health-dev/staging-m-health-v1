@@ -218,47 +218,6 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
           ))}
         </div>
 
-        {/* <div className="input_conversation lg:w-3xl w-full lg:mt-0 mt-10">
-          <div className="flex w-full justify-center">
-            <div
-              className={`${
-                isExpanded
-                  ? "flex flex-col bg-white rounded-2xl shadow-sm lg:min-h-28 max-h-52"
-                  : "relative shadow-sm lg:rounded-full rounded-2xl lg:min-h-16.5 lg:max-h-16.5 min-h-24 max-h-28.5"
-              } w-full max-w-3xl border border-border`}
-            >
-              <Textarea
-                ref={textareaRef}
-                placeholder="Jangan ragu untuk tanyakan apapun."
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={isLoading}
-                className={`hide-scroll overflow-y-auto resize-none border-0 bg-white ${
-                  isExpanded ? "px-4 pt-4" : "lg:px-7 px-3 lg:pt-5 pt-3"
-                } pb-0 lg:min-h-16 lg:max-h-16 min-h-28 max-h-52 text-primary focus-visible:ring-0 placeholder:font-sans placeholder:text-base! font-sans text-base! placeholder:text-primary/50 disabled:opacity-50 transition-all duration-300 shadow-none ${
-                  isExpanded
-                    ? "rounded-4xl max-h-52"
-                    : "lg:rounded-full rounded-2xl"
-                }`}
-              />
-              <div className="flex justify-end w-full pt-1 pb-2 px-2">
-                <button
-                  onClick={() => handleSendMessage(text)}
-                  disabled={isLoading || !text.trim()}
-                  className={`${
-                    isExpanded
-                      ? "inline-flex w-fit items-center "
-                      : "absolute right-2 bottom-2 lg:right-3 lg:bottom-2.5"
-                  } text-primary cursor-pointer bg-background rounded-full p-3 hover:opacity-70 disabled:opacity-50 transition-opacity`}
-                >
-                  <ArrowUp className="size-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div> */}
-
         <div className="input_conversation lg:w-3xl w-full lg:mt-0 mt-10">
           <div className="flex w-full justify-center">
             <div
@@ -278,7 +237,7 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
                 className={`flex-1 resize-none border-0 shadow-none rounded-none bg-transparent text-primary placeholder:3xl:text-[18px]! placeholder:text-[17px]! 3xl:text-[18px]! text-[17px]! font-sans focus-visible:ring-0 focus:outline-none hide-scroll placeholder:text-primary/50  transition-all duration-300 wrap-anywhere ${
                   isExpanded
                     ? "max-h-52 px-2 py-2"
-                    : "min-h-16 max-h-20 px-2 3xl:pt-4.5 lg:pt-5 pt-2 placeholder:pt-0.5"
+                    : "min-h-16 max-h-20 px-5 3xl:pt-4.5 lg:pt-5 pt-2 placeholder:pt-0.5"
                 }`}
               />
               <button

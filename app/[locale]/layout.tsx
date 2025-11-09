@@ -6,6 +6,7 @@ import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { LanguageProvider } from "@/components/utility/lang/LanguageContext";
 import Image from "next/image";
+import ContainerWrap from "@/components/utility/ContainerWrap";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +28,6 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-const buildId = process.env.VERCEL_GIT_COMMIT_SHA;
-const deployId = process.env.VERCEL_DEPLOYMENT_ID;
-
 export default async function RootLayout({ children, params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
@@ -43,23 +41,6 @@ export default async function RootLayout({ children, params }: Props) {
         <LanguageProvider>
           <NextIntlClientProvider>{children}</NextIntlClientProvider>
         </LanguageProvider>
-        <div className="fixed left-0 bottom-5 w-full">
-          <div className="flex justify-center items-center">
-            <div className="flex justify-center w-fit items-center rounded-full bg-white shadow-sm">
-              <Image
-                src={"/vyg.png"}
-                alt="vyg.re"
-                width={50}
-                height={10}
-                className="rounded-full"
-              />
-              <p className="text-xs! text-muted-foreground uppercase py-1 px-3">
-                {buildId?.slice(0, 7) || "Local Build"} -{" "}
-                {deployId?.split("_")[1].slice(0, 7) || "Local Deploy"}
-              </p>
-            </div>
-          </div>
-        </div>
       </body>
     </html>
   );
