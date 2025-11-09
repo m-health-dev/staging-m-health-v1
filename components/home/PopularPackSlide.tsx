@@ -92,7 +92,7 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
                               ease: "easeInOut",
                             }}
                           >
-                            <p className="capitalize font-semibold text-primary line-clamp-3 text-sm!">
+                            <p className="capitalize font-semibold text-primary line-clamp-3">
                               {slide.alt}
                             </p>
                           </motion.div>
@@ -108,7 +108,7 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
                               ease: "easeInOut",
                             }}
                           >
-                            <p className="capitalize font-semibold text-primary text-sm! line-clamp-1">
+                            <p className="capitalize font-semibold text-primary line-clamp-1">
                               {slide.alt}
                             </p>
                           </motion.div>
