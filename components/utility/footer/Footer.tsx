@@ -125,22 +125,24 @@ const Footer = () => {
             &copy; 2025, PT. Medika Integrasi Persada. M-Health. Hak cipta
             dilindungi undang-undang.
           </p>
-          <div className="flex lg:justify-center lg:items-center">
-            <div className="flex lg:flex-row flex-col lg:items-center justify-center w-fit rounded-full">
-              <p className="text-xs! text-muted-foreground uppercase py-1 pr-3 font-mono">
-                {buildId?.slice(0, 8) || "Local Build"} -{" "}
-                {deployId?.split("_")[1].slice(0, 8) || "Local Deploy"} -{" "}
-                {locale}
-              </p>
-              <Image
-                src={"/vyg.png"}
-                alt="vyg.re"
-                width={50}
-                height={10}
-                className="rounded-full"
-              />
+          <Link href={"/changelog"}>
+            <div className="flex lg:justify-center lg:items-center">
+              <div className="flex lg:flex-row flex-col lg:items-center justify-center w-fit rounded-full">
+                <p className="text-xs! text-muted-foreground uppercase py-1 pr-3 font-mono">
+                  {buildId?.slice(0, 8) || "Local Build"} -{" "}
+                  {deployId?.split("_")[1].slice(0, 8) || "Local Deploy"} -{" "}
+                  {locale}
+                </p>
+                <Image
+                  src={"/vyg.png"}
+                  alt="vyg.re"
+                  width={50}
+                  height={10}
+                  className="rounded-full"
+                />
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
       </ContainerWrap>
     </footer>
