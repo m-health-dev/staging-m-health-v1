@@ -9,7 +9,13 @@ import { useLocale } from "next-intl";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export default function LocalDateTime({ date }: { date: string }) {
+export default function LocalDateTime({
+  date,
+  specificFormat,
+}: {
+  date: string;
+  specificFormat?: string;
+}) {
   const locale = useLocale();
 
   let formattedDate: string;
@@ -19,13 +25,13 @@ export default function LocalDateTime({ date }: { date: string }) {
     formattedDate = dayjs(date)
       .tz("Asia/Jakarta")
       .locale("id")
-      .format("DD MMMM YYYY - HH:mm");
+      .format(specificFormat || "DD MMMM YYYY - HH:mm");
   } else {
     // English → Pacific Time (America/Los_Angeles)
     formattedDate = dayjs(date)
       .tz("UTC")
       .locale("en")
-      .format("DD MMMM YYYY - HH:mm UTC");
+      .format(specificFormat || "DD MMMM YYYY - HH:mm UTC");
   }
 
   return <span>{formattedDate}</span>;

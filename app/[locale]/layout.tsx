@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Be_Vietnam_Pro,
+  Geist,
+  Geist_Mono,
+  Instrument_Sans,
+  Manrope,
+} from "next/font/google";
 import "../globals.css";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -8,9 +14,15 @@ import { LanguageProvider } from "@/components/utility/lang/LanguageContext";
 import Image from "next/image";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const manrope = Manrope({
+  variable: "--font-manrope-sans",
   subsets: ["latin"],
+});
+
+const vietnamPro = Be_Vietnam_Pro({
+  variable: "--font-content",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 const geistMono = Geist_Mono({
@@ -36,7 +48,7 @@ export default async function RootLayout({ children, params }: Props) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${manrope.variable} ${vietnamPro.variable} ${geistMono.variable} antialiased`}
       >
         <LanguageProvider>
           <NextIntlClientProvider>{children}</NextIntlClientProvider>

@@ -36,7 +36,7 @@ export default function JumbotronSlide({ data }: { data: any[] }) {
 
   return (
     <>
-      <div className="lg:my-10 my-8 overflow-hidden">
+      <div className="my-8 overflow-hidden">
         <div className="w-full flex flex-col items-center relative group/slide">
           {/* Swiper Container */}
           <Swiper
@@ -59,7 +59,7 @@ export default function JumbotronSlide({ data }: { data: any[] }) {
             className="w-full rounded-2xl"
           >
             {data.map((slide, key) => (
-              <SwiperSlide key={key}>
+              <SwiperSlide key={key} className="border">
                 <Link href={slide.author.profile} target="_blank">
                   <Image
                     src={slide.full}

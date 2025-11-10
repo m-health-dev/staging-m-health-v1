@@ -13,15 +13,7 @@ import ChatStart from "./ChatStart";
 import { useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import ContainerWrap from "../utility/ContainerWrap";
-import {
-  get5ImageEvents,
-  get5ImageMedical,
-  get5ImageWellness,
-} from "@/lib/unsplashImage";
-import Image from "next/image";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import { Spinner } from "../ui/spinner";
+
 import { useResponsiveSidebar } from "@/hooks/ChatSidebar";
 import ChatSidebarShowreels from "./ChatSidebarShowreels";
 import { Message } from "./ChatWindow";
@@ -33,6 +25,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import { nanoid } from "nanoid";
 
 const ChatContent = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useResponsiveSidebar();
@@ -76,6 +69,11 @@ const ChatContent = () => {
     return () => clearTimeout(timer);
   }, [isSidebarOpen]);
 
+  const startNewChat = () => {
+    const newId = nanoid();
+    localStorage.setItem("mhealth_active_chat_id", newId);
+  };
+
   // Handler toggle
   const toggleSidebar = () => {
     if (isSidebarOpen) {
@@ -100,10 +98,10 @@ const ChatContent = () => {
               ease: "easeInOut",
             }}
             style={{ willChange: "width" }}
-            className="print:hidden bg-white 3xl:max-h-[calc(100vh-8vh)] 3xl:min-h-[calc(100vh-8vh)] lg:max-h-[calc(100vh-13.5vh)] lg:min-h-[calc(100vh-13.5vh)] max-h-[calc(100vh-8vh)] min-h-[calc(100vh-8vh)] overflow-y-auto hide-scroll rounded-2xl ml-5 shadow-sm overflow-hidden flex flex-col lg:max-w-5/6 max-w-4/6"
+            className="print:hidden bg-transparent 3xl:max-h-[calc(100vh-8vh)] 3xl:min-h-[calc(100vh-8vh)] lg:max-h-[calc(100vh-13.5vh)] lg:min-h-[calc(100vh-13.5vh)] max-h-[calc(100vh-8vh)] min-h-[calc(100vh-8vh)] overflow-y-auto hide-scroll ml-5 overflow-hidden flex flex-col lg:max-w-5/6 max-w-4/6"
           >
             {/* Header */}
-            <div className="px-4 flex justify-between items-start gap-4 md:w-[380px] w-[300px]">
+            <div className="flex justify-between items-start gap-4 md:w-[380px] w-[300px]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key="sidebar-content"
@@ -130,7 +128,7 @@ const ChatContent = () => {
               <TooltipTrigger asChild>
                 <button
                   onClick={toggleSidebar}
-                  className="bg-white text-primary rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer"
+                  className="bg-white text-primary border rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer"
                 >
                   <ChevronRight
                     className={`${
@@ -150,8 +148,10 @@ const ChatContent = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
-                  onClick={() => window.location.reload()}
-                  className="bg-white text-primary rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer"
+                  onClick={() => {
+                    window.location.reload(), startNewChat();
+                  }}
+                  className="bg-white text-primary border rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer"
                 >
                   <Plus />
                 </button>
@@ -195,7 +195,7 @@ const ChatContent = () => {
                 className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer -mt-3"
                 onClick={() => setOpenSheet(false)}
               >
-                <h4 className="text-primary font-bold">Tutup</h4>
+                <h4 className="text-primary font-extrabold">Tutup</h4>
                 <div className="text-primary bg-background p-2 rounded-full">
                   <X />
                 </div>
@@ -214,7 +214,7 @@ const ChatContent = () => {
       <ContainerWrap
         size="xxl"
         className={`md:flex-1 transition-all bg-transparent duration-300 translate-x-0 overflow-hidden ${
-          !isSidebarOpen ? "lg:-translate-x-10" : "lg:translate-x-0"
+          !isSidebarOpen ? "lg:-translate-x-8" : "lg:-translate-x-5"
         }`}
       >
         <ChatStart chat={selectedChat} />

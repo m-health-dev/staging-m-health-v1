@@ -135,7 +135,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             {replyMessage && (
               <div className="bg-white/80 p-4 rounded-2xl mb-1 flex justify-between items-start shadow-sm border border-border">
                 <div className="max-w-[85%]">
-                  <p className="text-sm! font-semibold text-primary mb-1 flex items-center gap-2">
+                  <p className="text-sm! font-bold text-primary mb-1 flex items-center gap-2">
                     <Undo2 className="size-4" /> Membalas pesan:
                   </p>
                   <p className="text-muted-foreground line-clamp-2">

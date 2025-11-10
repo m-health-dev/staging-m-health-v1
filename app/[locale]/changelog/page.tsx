@@ -1,5 +1,5 @@
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import LocalDateTime from "@/components/utility/LocaleDateTime";
+import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import Wrapper from "@/components/utility/Wrapper";
 import { getCommits } from "@/lib/GitChangeLog";
 import Image from "next/image";
@@ -10,7 +10,7 @@ export default async function Changelog() {
   return (
     <Wrapper>
       <ContainerWrap>
-        <h2 className="font-semibold text-primary text-center my-10">
+        <h2 className="font-bold text-primary text-center my-10">
           Deployment Changelog
         </h2>
         <div className="space-y-4 divide-y divide-primary/20 *:pb-4">
@@ -19,7 +19,7 @@ export default async function Changelog() {
               <p className="text-muted-foreground text-sm!">
                 {c.sha.slice(0, 7)}
               </p>
-              <h5 className="text-primary font-semibold">{c.commit.message}</h5>
+              <h5 className="text-primary font-bold">{c.commit.message}</h5>
               <div className="text-health">
                 <LocalDateTime date={c.commit.committer.date} />
               </div>

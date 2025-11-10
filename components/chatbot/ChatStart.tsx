@@ -7,7 +7,7 @@ import { Textarea } from "../ui/textarea";
 import ChatWindow from "./ChatWindow";
 import { chatDeepseek } from "@/lib/deepseekAI";
 import { nanoid } from "nanoid";
-import { quickLinks } from "../home/QuickAction";
+import QuickAction, { quickLinks } from "../home/QuickAction";
 
 interface Message {
   id: string;
@@ -83,7 +83,7 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
     setText("");
 
     try {
-      // Buat history chat dengan format untuk API DeepSeek
+      // Siapkan format chat untuk API
       const chatHistory = [
         {
           role: "system",
@@ -112,26 +112,21 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
 
       setMessages((prev) => [...prev, botResponse]);
 
-      // 🟢 Simpan ke localStorage
       const newMessages = [...messages, userMsg, botResponse];
 
-      // Ambil semua chat yang sudah ada
+      // Ambil semua chat yang sudah ada di localStorage
       const existingChats =
         JSON.parse(localStorage.getItem("mhealth_chat_sessions") || "[]") || [];
 
-      // Buat ID unik jika chat ini baru
-      const chatId = activeChatId || nanoid();
-
-      // Pastikan setiap kali chat baru dimulai, ID disimpan
-      if (!activeChatId) {
+      // 🔹 Jika belum ada activeChatId, buat ID baru (chat baru)
+      let chatId = activeChatId;
+      if (!chatId) {
+        chatId = nanoid();
         setActiveChatId(chatId);
         localStorage.setItem("mhealth_active_chat_id", chatId);
       }
 
-      // Simpan ID aktif (agar saat reload tahu chat mana yang terakhir)
-      localStorage.setItem("mhealth_active_chat_id", chatId || botResponse.id);
-
-      // Buat objek riwayat chat baru
+      // Buat data sesi chat baru
       const chatData = {
         id: chatId,
         title:
@@ -141,20 +136,20 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
         updatedAt: new Date().toISOString(),
       };
 
-      // Cek apakah chat dengan ID ini sudah ada
+      // 🔹 Cari apakah sesi ini sudah ada di daftar (update), kalau tidak, tambahkan
       const existingIndex = existingChats.findIndex(
         (c: any) => c.id === chatId
       );
 
+      console.log(existingIndex);
+
       if (existingIndex !== -1) {
-        // Update chat lama
         existingChats[existingIndex] = chatData;
       } else {
-        // Tambahkan chat baru
         existingChats.push(chatData);
       }
 
-      // Simpan kembali ke localStorage
+      // Simpan ulang daftar sesi ke localStorage
       localStorage.setItem(
         "mhealth_chat_sessions",
         JSON.stringify(existingChats)
@@ -194,25 +189,14 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
     <div className="justify-center items-center lg:max-h-[calc(100vh-15vh)] lg:min-h-[calc(100vh-15vh)] max-h-[calc(100vh-25vh)] min-h-[calc(100vh-25vh)] lg:mt-0 mt-[8vh] flex">
       <div className="flex flex-col lg:items-center max-w-full">
         <div className="start_conversation mb-10 lg:text-center text-start">
-          <h2 className="text-primary font-bold mb-2">
+          <h2 className="text-primary font-extrabold mb-2">
             Sedang nggak enak badan?
           </h2>
           <h3 className="text-primary">Tenang, aku di sini buat bantu</h3>
         </div>
 
-        <div className="flex max-w-2xl w-full overflow-x-auto lg:overflow-x-visible hide-scroll pb-2 gap-4 items-center justify-start lg:justify-center hide-scroll cursor-grab lg:mb-5">
-          {quickLinks.map(({ id, href, label, icon }) => (
-            <Link key={href} href={href} className="group shrink-0">
-              <button className="cursor-pointer bg-white py-1.5 pl-2 pr-5 border rounded-full inline-flex gap-3 items-center shadow-sm group-hover:bg-primary transition-all duration-300">
-                <div className="bg-background lg:w-10 w-9 lg:h-10 h-9 rounded-full flex items-center justify-center text-primary">
-                  {icon}
-                </div>
-                <p className="text-primary font-medium group-hover:text-white transition-all duration-300 whitespace-nowrap">
-                  {label}
-                </p>
-              </button>
-            </Link>
-          ))}
+        <div className="mb-2">
+          <QuickAction />
         </div>
 
         <div className="input_conversation lg:w-3xl w-full lg:mt-0 mt-10">
@@ -234,7 +218,7 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
                 className={`flex-1 resize-none border-0 shadow-none rounded-none bg-transparent text-primary placeholder:3xl:text-[18px]! placeholder:text-[17px]! 3xl:text-[18px]! text-[17px]! font-sans focus-visible:ring-0 focus:outline-none hide-scroll placeholder:text-primary/50  transition-all duration-300 wrap-anywhere ${
                   isExpanded
                     ? "max-h-52 px-2 py-2"
-                    : "min-h-16 max-h-20 px-2 3xl:pt-4.5 lg:pt-5 pt-2 placeholder:pt-0.5"
+                    : "min-h-16 max-h-20 lg:px-4 px-2 3xl:pt-4.5 lg:pt-5 pt-2 placeholder:pt-0.5"
                 }`}
               />
               <button

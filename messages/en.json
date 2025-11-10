@@ -3,5 +3,10 @@
     "title": "Something Awesome is Coming!",
     "desc": "We’re crafting something special for you. See you soon!",
     "note": "Developed by. vyg.re at Batu City, East Java, Indonesia"
+  },
+  "FailedNotice": {
+    "title": "Failed to Retrieve Data",
+    "desc": "No data received or error in receiving data.",
+    "action": "We have recorded this failure. Please try again in a few moments."
   }
 }

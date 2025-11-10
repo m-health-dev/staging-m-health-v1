@@ -39,7 +39,22 @@ export async function get5Image() {
       },
     }
   );
-  if (!res.ok) throw new Error("Failed to fetch Wellness Unsplash Image");
+  if (!res.ok) throw new Error("Failed to fetch Unsplash Image");
+  return res.json();
+}
+
+export async function get10ImageHospital() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/unsplash?query=hospital%20indonesia&page=1&per_page=10`,
+    {
+      next: { revalidate: 60 },
+      headers: {
+        Authorization: `Bearer ${process.env.API_SECRET_KEY}`,
+        "x-client-token": `${process.env.NEXT_PUBLIC_INTERNAL_TOKEN}`,
+      },
+    }
+  );
+  if (!res.ok) throw new Error("Failed to fetch Hospital Unsplash Image");
   return res.json();
 }
 
@@ -73,9 +88,9 @@ export async function get5ImageMedical() {
   return res.json();
 }
 
-export async function get5ImageEvents() {
+export async function get10ImageEvents() {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/unsplash?query=Events%20indonesia&page=1&per_page=5`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/unsplash?query=Events&page=1&per_page=10`,
     {
       next: { revalidate: 60 },
       headers: {
@@ -85,5 +100,20 @@ export async function get5ImageEvents() {
     }
   );
   if (!res.ok) throw new Error("Failed to fetch Events Unsplash Image");
+  return res.json();
+}
+
+export async function get5ImageNews() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/unsplash?query=News&page=1&per_page=5`,
+    {
+      next: { revalidate: 60 },
+      headers: {
+        Authorization: `Bearer ${process.env.API_SECRET_KEY}`,
+        "x-client-token": `${process.env.NEXT_PUBLIC_INTERNAL_TOKEN}`,
+      },
+    }
+  );
+  if (!res.ok) throw new Error("Failed to fetch News Unsplash Image");
   return res.json();
 }

@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeSanitize from "rehype-sanitize";
-import LocalDateTime from "../utility/LocaleDateTime";
+import LocalDateTime from "../utility/lang/LocaleDateTime";
 import { Check, Copy, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -122,7 +122,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     >
       <div>
         <div
-          className={`relative p-5 rounded-2xl transition-all ${
+          className={`relative p-3 rounded-2xl transition-all ${
             isUser
               ? "bg-primary text-primary-foreground rounded-br-none max-w-xs lg:max-w-md"
               : "bg-white text-foreground rounded-bl-none max-w-full"
@@ -136,7 +136,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                   : "border-primary/50 bg-primary/5 text-foreground/80"
               }`}
             >
-              <p className="text-xs! font-semibold mb-1 opacity-70 flex items-center gap-1">
+              <p className="text-xs! font-bold mb-1 opacity-70 flex items-center gap-1">
                 <Undo2 className="size-3" /> Membalas:
               </p>
               <p className="text-sm line-clamp-2">{replyTo}</p>
@@ -149,26 +149,17 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             rehypePlugins={[rehypeSanitize]}
             components={{
               h1: (props) => (
-                <h1
-                  className="text-2xl! font-semibold mb-4 font-sans"
-                  {...props}
-                />
+                <h1 className="text-2xl! font-bold mb-4 font-sans" {...props} />
               ),
               h2: (props) => (
-                <h2
-                  className="text-xl! font-semibold mb-3 font-sans"
-                  {...props}
-                />
+                <h2 className="text-xl! font-bold mb-3 font-sans" {...props} />
               ),
               h3: (props) => (
-                <h3
-                  className="text-lg! font-semibold mb-2 font-sans"
-                  {...props}
-                />
+                <h3 className="text-lg! font-bold mb-2 font-sans" {...props} />
               ),
               h4: (props) => (
                 <h3
-                  className="text-[18px]! font-semibold mb-2 font-sans"
+                  className="text-[18px]! font-bold mb-2 font-sans"
                   {...props}
                 />
               ),
@@ -204,7 +195,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                 );
               },
               strong: (props) => (
-                <strong className="font-semibold text-primary" {...props} />
+                <strong className="font-bold text-primary" {...props} />
               ),
               em: (props) => (
                 <em className="italic text-primary/90" {...props} />

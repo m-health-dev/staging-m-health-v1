@@ -56,10 +56,13 @@ export async function GET(req: Request) {
       full: img.urls.full,
       width: img.width,
       height: img.height,
+      created_at: img.created_at,
       author: {
         name: img.user.name,
         profile: img.user.links.html,
       },
+      location: img.user.location,
+      topic: img.topic_submissions,
     }));
 
     return NextResponse.json({

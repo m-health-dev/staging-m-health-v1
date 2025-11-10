@@ -69,7 +69,7 @@ const NavHeader = () => {
               >
                 <SheetTitle />
                 <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer">
-                  <h4 className="text-primary font-bold">Tutup</h4>
+                  <h4 className="text-primary font-extrabold">Tutup</h4>
                   <div className="text-primary bg-background p-2 rounded-full">
                     <X />
                   </div>
@@ -80,61 +80,67 @@ const NavHeader = () => {
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-bold text-primary">Beranda</h3>
+                    <h3 className="font-extrabold text-primary">Beranda</h3>
                   </Link>
                   <Link
                     href={`/${locale}/about`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-bold text-primary">Tentang Kami</h3>
+                    <h3 className="font-extrabold text-primary">
+                      Tentang Kami
+                    </h3>
                   </Link>
                   <Link
                     href={`/${locale}/wellness`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-bold text-primary">Kesehatan</h3>
+                    <h3 className="font-extrabold text-primary">Kesehatan</h3>
                   </Link>
                   <Link
                     href={`/${locale}/medical`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-bold text-primary">Medis</h3>
+                    <h3 className="font-extrabold text-primary">Medis</h3>
                   </Link>
                   <Link
                     href={`/${locale}/medical-equipment`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-bold text-primary">Alat Kesehatan</h3>
+                    <h3 className="font-extrabold text-primary">
+                      Alat Kesehatan
+                    </h3>
                   </Link>
                   <Link
                     href={`/${locale}/article`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-bold text-primary">Artikel</h3>
+                    <h3 className="font-extrabold text-primary">Artikel</h3>
                   </Link>
                   <Link
                     href={`/${locale}/events`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-bold text-primary">Acara</h3>
+                    <h3 className="font-extrabold text-primary">Acara</h3>
                   </Link>
                   <Link
                     href={`/${locale}/events`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-bold text-primary">Kontak</h3>
+                    <h3 className="font-extrabold text-primary">Kontak</h3>
                   </Link>
                 </div>
 
                 <SheetFooter className="bg-gray-50 rounded-2xl border border-primary/10 mt-10">
-                  <h5 className="text-primary font-bold mb-0">Preferensi</h5>
+                  <h5 className="text-primary font-extrabold mb-0">
+                    Preferensi
+                  </h5>
                   <div className="z-9999">
                     <LanguageSwitcher />
                   </div>
@@ -146,8 +152,8 @@ const NavHeader = () => {
       </header>
     </nav>
   ) : (
-    <ContainerWrap className="sticky top-10 z-99">
-      <nav className="px-5 z-99 lg:border-b-0 border-b border-primary/10 bg-white shadow rounded-full mt-10">
+    <ContainerWrap className="sticky top-8 z-99 hover:scale-101 transition-all duration-300 group">
+      <nav className="px-5 z-99 lg:border-b-0 border-b border-primary/10 bg-white shadow group-hover:shadow-2xl transition-all duration-300 rounded-full mt-8">
         <header className="lg:py-4 py-3 flex w-full items-center justify-between">
           <Link href={`/${locale}/home`}>
             <Image
@@ -179,7 +185,7 @@ const NavHeader = () => {
                 <SheetContent side="right" className="p-8 bg-white z-999">
                   <SheetTitle />
                   <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer">
-                    <h4 className="text-primary font-bold">Tutup</h4>
+                    <h4 className="text-primary font-extrabold">Tutup</h4>
                     <div className="text-primary bg-background p-2 rounded-full">
                       <X />
                     </div>
@@ -190,54 +196,60 @@ const NavHeader = () => {
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-bold text-primary">Tentang Kami</h3>
+                      <h3 className="font-extrabold text-primary">
+                        Tentang Kami
+                      </h3>
                     </Link>
                     <Link
                       href={`/${locale}/wellness`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-bold text-primary">Kesehatan</h3>
+                      <h3 className="font-extrabold text-primary">Kesehatan</h3>
                     </Link>
                     <Link
                       href={`/${locale}/medical`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-bold text-primary">Medis</h3>
+                      <h3 className="font-extrabold text-primary">Medis</h3>
                     </Link>
                     <Link
                       href={`/${locale}/medical-equipment`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-bold text-primary">Alat Kesehatan</h3>
+                      <h3 className="font-extrabold text-primary">
+                        Alat Kesehatan
+                      </h3>
                     </Link>
                     <Link
                       href={`/${locale}/article`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-bold text-primary">Artikel</h3>
+                      <h3 className="font-extrabold text-primary">Artikel</h3>
                     </Link>
                     <Link
                       href={`/${locale}/events`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-bold text-primary">Acara</h3>
+                      <h3 className="font-extrabold text-primary">Acara</h3>
                     </Link>
                     <Link
                       href={`/${locale}/events`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-bold text-primary">Kontak</h3>
+                      <h3 className="font-extrabold text-primary">Kontak</h3>
                     </Link>
                   </div>
 
                   <SheetFooter className="bg-gray-50 rounded-2xl border border-primary/10">
-                    <h5 className="text-primary font-bold mb-0">Preferensi</h5>
+                    <h5 className="text-primary font-extrabold mb-0">
+                      Preferensi
+                    </h5>
                     <div className="z-9999">
                       <LanguageSwitcher />
                     </div>
@@ -246,7 +258,7 @@ const NavHeader = () => {
               </Sheet>
             </div>
 
-            <div className="flex-row items-center flex-wrap gap-10 lg:flex hidden">
+            <div className="flex-row items-center flex-wrap gap-7 lg:flex md:hidden hidden">
               <Link
                 href={`/${locale}/about`}
                 className="group"
@@ -262,7 +274,7 @@ const NavHeader = () => {
                     </NavigationMenuTrigger>
                     <NavigationMenuContent className="w-sm!">
                       <NavigationMenuLink href={`/${locale}/wellness`}>
-                        <p className="text-primary font-semibold">
+                        <p className="text-primary font-bold">
                           Paket Kesehatan
                         </p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
@@ -271,9 +283,7 @@ const NavHeader = () => {
                         </p>
                       </NavigationMenuLink>
                       <NavigationMenuLink href={`/${locale}/medical`}>
-                        <p className="text-primary font-semibold">
-                          Paket Medis
-                        </p>
+                        <p className="text-primary font-bold">Paket Medis</p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
                           Lorem ipsum dolor sit amet, consectetur adipisicing
                           elit. Officiis atque unde sint!
@@ -312,9 +322,7 @@ const NavHeader = () => {
               >
                 <p className="text-primary">Kontak</p>
               </Link>
-              <div>
-                <LanguageSwitcher short className="w-fit h-10!" />
-              </div>
+
               <Link href={`/sign-in`} className="group" data-cursor-clickable>
                 <Button
                   size={"lg"}
@@ -324,6 +332,9 @@ const NavHeader = () => {
                   <LogIn />
                 </Button>
               </Link>
+              <div>
+                <LanguageSwitcher short className="w-fit h-10!" />
+              </div>
             </div>
           </div>
         </header>
