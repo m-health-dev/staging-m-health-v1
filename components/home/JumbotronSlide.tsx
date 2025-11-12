@@ -14,22 +14,6 @@ import "swiper/css/effect-fade";
 export default function JumbotronSlide({ data }: { data: any[] }) {
   const swiperRef = useRef<any>(null);
 
-  // const [images, setImages] = useState<any[]>([]);
-  // const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   async function fetchImages() {
-  //     setLoading(true);
-  //     const res = await fetch(
-  //       "/api/unsplash?query=indonesia&page=5&per_page=8"
-  //     );
-  //     const data = await res.json();
-  //     setImages(data.results || []);
-  //     setLoading(false);
-  //   }
-  //   fetchImages();
-  // }, []);
-
   if (!data) {
     return notFound();
   }
@@ -61,13 +45,7 @@ export default function JumbotronSlide({ data }: { data: any[] }) {
             {data.map((slide, key) => (
               <SwiperSlide key={key} className="border">
                 <Link href={slide.author.profile} target="_blank">
-                  <Image
-                    src={slide.full}
-                    width={720}
-                    height={405}
-                    alt={slide.alt}
-                    className="aspect-20/7 w-full object-cover object-center rounded-2xl"
-                  />
+                  <SlideImage slide={slide} />
                 </Link>
               </SwiperSlide>
             ))}
@@ -132,5 +110,30 @@ export default function JumbotronSlide({ data }: { data: any[] }) {
         </div>
       </div>
     </>
+  );
+}
+
+function SlideImage({ slide }: { slide: any }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <div className="relative w-full aspect-20/7 rounded-2xl overflow-hidden">
+      {/* Skeleton Loader */}
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+      )}
+
+      {/* Gambar */}
+      <Image
+        src={slide.full}
+        width={720}
+        height={405}
+        alt={slide.alt}
+        onLoadingComplete={() => setIsLoaded(true)}
+        className={`w-full h-full object-cover object-center rounded-2xl transition-opacity duration-700 ${
+          isLoaded ? "opacity-100" : "opacity-0"
+        }`}
+      />
+    </div>
   );
 }

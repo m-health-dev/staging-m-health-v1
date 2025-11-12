@@ -51,10 +51,11 @@ const CurrentEventsGrid = ({ data }: { data: any[] }) => {
             {i % 2 === 0 ? (
               <Link href={e.url}>
                 <Button
-                  className="text-base rounded-full lg:w-fit w-full lg:h-10 h-14 font-medium cursor-pointer"
+                  className="rounded-full lg:w-fit w-full lg:h-10 h-14 font-medium cursor-pointer"
                   size={"lg"}
                 >
-                  <ArrowUpRight /> Register to this Event
+                  <ArrowUpRight className="size-5" />{" "}
+                  <p>Register to this Event</p>
                 </Button>
               </Link>
             ) : (

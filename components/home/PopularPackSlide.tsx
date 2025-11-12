@@ -44,9 +44,9 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
               spaceBetween={10}
               centeredSlides={true}
               breakpoints={{
-                280: { slidesPerView: "auto", spaceBetween: 10 },
-                640: { slidesPerView: "auto", spaceBetween: 10 }, // tablet
-                1024: { slidesPerView: "auto", spaceBetween: 15 }, // desktop biasa
+                280: { slidesPerView: "auto", spaceBetween: 15 },
+                640: { slidesPerView: "auto", spaceBetween: 15 }, // tablet
+                1024: { slidesPerView: "auto", spaceBetween: 20 }, // desktop biasa
                 1920: { slidesPerView: "auto", spaceBetween: 20 }, // 1440p
               }}
               pagination={{
@@ -61,7 +61,7 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
               {data.map((slide, key) => (
                 <SwiperSlide
                   key={key}
-                  className="flex flex-col justify-between rounded-2xl mb-2 max-w-[280px] 3xl:min-h-[45vh] 3xl:max-h-[45vh]  min-h-[60vh] max-h-[60vh] group cursor-pointer"
+                  className="flex flex-col justify-between rounded-2xl mb-2 max-w-[280px] 3xl:min-h-[45vh] 3xl:max-h-[45vh]  min-h-[60vh] max-h-[60vh] group cursor-pointer group"
                   onMouseEnter={() => setHoveredIndex(key)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
@@ -77,7 +77,7 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
                     initial={{ y: 0, z: 50 }}
                     animate={{ y: hoveredIndex === key ? -100 : 0 }}
                     transition={{ duration: 0.1, ease: "easeInOut" }}
-                    className="flex flex-col justify-center grow max-w-full bg-white border rounded-2xl -mt-5 p-4 h-full shadow transition-all duration-300 z-50"
+                    className="flex flex-col justify-center grow max-w-full bg-white border rounded-2xl -mt-5 p-4 h-full shadow transition-all duration-100 z-50 group-hover:outline-2 group-hover:outline-health"
                   >
                     <p className="text-muted-foreground text-sm! mb-1">
                       {key} Day {key === 0 ? key + 1 : key - 1} Night
@@ -88,7 +88,10 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
                         {hoveredIndex === key ? (
                           <motion.div
                             key="expanded"
-                            initial={{ opacity: 1, height: 60 }}
+                            initial={{
+                              opacity: 1,
+                              height: slide.alt.length > 40 ? 60 : 30,
+                            }}
                             animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 1, height: 60 }}
                             transition={{
@@ -104,9 +107,9 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
                         ) : (
                           <motion.div
                             key="short"
-                            initial={{ opacity: 1, height: 60 }}
-                            animate={{ opacity: 1, height: 60 }}
-                            exit={{ opacity: 1, height: 60 }}
+                            initial={{ opacity: 1, height: "auto" }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 1, height: "auto" }}
                             transition={{
                               delay: 0.2,
                               duration: 0.3,
@@ -148,9 +151,9 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
                         ) : (
                           <motion.div
                             key="short"
-                            initial={{ opacity: 1, height: 40 }}
-                            animate={{ opacity: 1, height: 40 }}
-                            exit={{ opacity: 1, height: 40 }}
+                            initial={{ opacity: 1, height: "auto" }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 1, height: "auto" }}
                             transition={{
                               delay: 0.2,
                               duration: 0.3,
@@ -247,11 +250,11 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
           </div>
         ) : (
           <ContainerWrap>
-            <div className="grid 3xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-3 grid-cols-1 lg:gap-3 gap-48 lg:pb-0 pb-[30vh]">
+            <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5 lg:pb-0 pb-[30vh]">
               {data.map((slide, key) => (
                 <div
                   key={key}
-                  className="flex flex-col justify-between rounded-2xl mb-2 lg:max-w-[280px] w-full 3xl:min-h-[38vh] 3xl:max-h-[38vh] min-h-[60vh] max-h-[60vh] group cursor-pointer"
+                  className="flex flex-col justify-between rounded-2xl mb-2 lg:max-w-full w-full 3xl:min-h-[40vh] 3xl:max-h-[40vh] lg:min-h-[65vh] lg:max-h-[65vh] min-h-[60vh] max-h-[60vh] group cursor-pointer"
                   onMouseEnter={() => setHoveredIndex(key)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
@@ -267,7 +270,7 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
                     initial={{ y: 0, z: 50 }}
                     animate={{ y: hoveredIndex === key ? -100 : 0 }}
                     transition={{ duration: 0.1, ease: "easeInOut" }}
-                    className="flex flex-col justify-center grow max-w-full bg-white border rounded-2xl -mt-5 p-4 h-full shadow transition-all duration-300 z-50"
+                    className="flex flex-col justify-center grow max-w-full bg-white border rounded-2xl -mt-5 p-4 h-full shadow transition-all duration-100 group-hover:outline-2 group-hover:outline-health z-50"
                   >
                     <p className="text-muted-foreground text-sm! mb-1">
                       {key} Day {key === 0 ? key + 1 : key - 1} Night
@@ -278,9 +281,15 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
                         {hoveredIndex === key ? (
                           <motion.div
                             key="expanded"
-                            initial={{ opacity: 1, height: 60 }}
+                            initial={{
+                              opacity: 1,
+                              height: slide.alt.length > 40 ? 50 : 25,
+                            }}
                             animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 1, height: 60 }}
+                            exit={{
+                              opacity: 1,
+                              height: slide.alt.length > 40 ? 50 : 25,
+                            }}
                             transition={{
                               delay: 0.2,
                               duration: 0.3,
@@ -294,16 +303,16 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
                         ) : (
                           <motion.div
                             key="short"
-                            initial={{ opacity: 1, height: 60 }}
-                            animate={{ opacity: 1, height: 60 }}
-                            exit={{ opacity: 1, height: 60 }}
+                            initial={{ opacity: 1, height: "auto" }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 1, height: "auto" }}
                             transition={{
                               delay: 0.2,
                               duration: 0.3,
                               ease: "easeInOut",
                             }}
                           >
-                            <h6 className="capitalize font-bold text-primary line-clamp-2">
+                            <h6 className="capitalize font-bold text-primary lg:line-clamp-2 line-clamp-1">
                               {slide.alt}
                             </h6>
                           </motion.div>
@@ -338,16 +347,16 @@ export default function PopularPackSlide({ data }: { data: any[] }) {
                         ) : (
                           <motion.div
                             key="short"
-                            initial={{ opacity: 1, height: 40 }}
-                            animate={{ opacity: 1, height: 40 }}
-                            exit={{ opacity: 1, height: 40 }}
+                            initial={{ opacity: 1, height: "auto" }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 1, height: "auto" }}
                             transition={{
                               delay: 0.2,
                               duration: 0.3,
                               ease: "easeInOut",
                             }}
                           >
-                            <p className="text-muted-foreground text-sm! line-clamp-2">
+                            <p className="text-muted-foreground text-sm! lg:line-clamp-2 line-clamp-1">
                               {`${slide.description}` +
                                 `_` +
                                 `Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
