@@ -9,7 +9,10 @@ const About = async () => {
   const data = img.results[0];
   return (
     <Wrapper>
-      <ContainerWrap size="xl" className="pb-20 grid grid-cols-2 gap-10 my-20">
+      <ContainerWrap
+        size="xl"
+        className="pb-20 grid lg:grid-cols-2 gap-10 my-20"
+      >
         <div className="">
           <Image
             src={data.full}

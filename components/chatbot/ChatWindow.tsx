@@ -209,7 +209,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               <p className="text-xs! text-muted-foreground mt-4 text-center">
                 M-Health AI dapat membuat kesalahan. Periksa info penting.
               </p>
-              <p className="text-xs! text-muted-foreground mt-0 text-center">
+              <p className="text-xs! text-primary font-semibold mt-0 text-center">
                 Gemini 2.5 Flash in Charge
               </p>
             </div>
