@@ -69,71 +69,71 @@ const NavHeader = () => {
               >
                 <SheetTitle />
                 <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer">
-                  <h4 className="text-primary font-extrabold">Tutup</h4>
+                  <h5 className="text-primary font-extrabold">Tutup</h5>
                   <div className="text-primary bg-background p-2 rounded-full">
                     <X />
                   </div>
                 </SheetClose>
-                <div className="flex flex-col space-y-7 mt-5">
+                <div className="flex flex-col space-y-4 mt-5">
                   <Link
                     href={`/${locale}/home`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-extrabold text-primary">Beranda</h3>
+                    <h5 className="font-extrabold text-primary">Beranda</h5>
                   </Link>
                   <Link
                     href={`/${locale}/about`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-extrabold text-primary">
+                    <h5 className="font-extrabold text-primary">
                       Tentang Kami
-                    </h3>
+                    </h5>
                   </Link>
                   <Link
                     href={`/${locale}/wellness`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-extrabold text-primary">Kesehatan</h3>
+                    <h5 className="font-extrabold text-primary">Kesehatan</h5>
                   </Link>
                   <Link
                     href={`/${locale}/medical`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-extrabold text-primary">Medis</h3>
+                    <h5 className="font-extrabold text-primary">Medis</h5>
                   </Link>
                   <Link
                     href={`/${locale}/medical-equipment`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-extrabold text-primary">
+                    <h5 className="font-extrabold text-primary">
                       Alat Kesehatan
-                    </h3>
+                    </h5>
                   </Link>
                   <Link
                     href={`/${locale}/article`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-extrabold text-primary">Artikel</h3>
+                    <h5 className="font-extrabold text-primary">Artikel</h5>
                   </Link>
                   <Link
                     href={`/${locale}/events`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-extrabold text-primary">Acara</h3>
+                    <h5 className="font-extrabold text-primary">Acara</h5>
                   </Link>
                   <Link
                     href={`/${locale}/events`}
                     className="group"
                     data-cursor-clickable
                   >
-                    <h3 className="font-extrabold text-primary">Kontak</h3>
+                    <h5 className="font-extrabold text-primary">Kontak</h5>
                   </Link>
                 </div>
 
@@ -185,64 +185,64 @@ const NavHeader = () => {
                 <SheetContent side="right" className="p-8 bg-white z-999">
                   <SheetTitle />
                   <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer">
-                    <h4 className="text-primary font-extrabold">Tutup</h4>
+                    <h5 className="text-primary font-extrabold">Tutup</h5>
                     <div className="text-primary bg-background p-2 rounded-full">
                       <X />
                     </div>
                   </SheetClose>
-                  <div className="flex flex-col space-y-7 mt-5">
+                  <div className="flex flex-col space-y-4 mt-5">
                     <Link
                       href={`/${locale}/about`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-extrabold text-primary">
+                      <h5 className="font-extrabold text-primary">
                         Tentang Kami
-                      </h3>
+                      </h5>
                     </Link>
                     <Link
                       href={`/${locale}/wellness`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-extrabold text-primary">Kesehatan</h3>
+                      <h5 className="font-extrabold text-primary">Kesehatan</h5>
                     </Link>
                     <Link
                       href={`/${locale}/medical`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-extrabold text-primary">Medis</h3>
+                      <h5 className="font-extrabold text-primary">Medis</h5>
                     </Link>
                     <Link
                       href={`/${locale}/medical-equipment`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-extrabold text-primary">
+                      <h5 className="font-extrabold text-primary">
                         Alat Kesehatan
-                      </h3>
+                      </h5>
                     </Link>
                     <Link
                       href={`/${locale}/article`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-extrabold text-primary">Artikel</h3>
+                      <h5 className="font-extrabold text-primary">Artikel</h5>
                     </Link>
                     <Link
                       href={`/${locale}/events`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-extrabold text-primary">Acara</h3>
+                      <h5 className="font-extrabold text-primary">Acara</h5>
                     </Link>
                     <Link
                       href={`/${locale}/events`}
                       className="group"
                       data-cursor-clickable
                     >
-                      <h3 className="font-extrabold text-primary">Kontak</h3>
+                      <h5 className="font-extrabold text-primary">Kontak</h5>
                     </Link>
                   </div>
 
