@@ -5,7 +5,7 @@ import { ArrowRight, ArrowUp } from "lucide-react";
 import Link from "next/link";
 import { Textarea } from "../ui/textarea";
 import ChatWindow from "./ChatWindow";
-import { chatDeepseek } from "@/lib/deepseekAI";
+import { chatGemini } from "@/lib/geminiAPI";
 import { nanoid } from "nanoid";
 import QuickAction, { quickLinks } from "../home/QuickAction";
 
@@ -97,7 +97,7 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
         { role: "user", content: userMessage },
       ];
 
-      const data = await chatDeepseek(chatHistory);
+      const data = await chatGemini(chatHistory);
 
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
