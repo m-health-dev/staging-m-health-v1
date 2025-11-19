@@ -201,6 +201,18 @@ h6 {
   @apply font-sans md:text-[20px] text-[18px] -mb-8 mt-8;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
