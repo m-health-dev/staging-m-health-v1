@@ -3,7 +3,9 @@
 import {
   ChevronDown,
   ChevronRight,
+  PanelLeftOpen,
   PanelRightClose,
+  PanelRightOpen,
   Plus,
   X,
 } from "lucide-react";
@@ -130,9 +132,9 @@ const ChatContent = () => {
                   onClick={toggleSidebar}
                   className="bg-white text-primary border rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer"
                 >
-                  <ChevronRight
+                  <PanelRightOpen
                     className={`${
-                      isSidebarOpen ? "rotate-180" : "rotate-0"
+                      isSidebarOpen ? "rotate-0" : "rotate-180"
                     } transition-all duration-500`}
                   />
                 </button>
@@ -145,7 +147,7 @@ const ChatContent = () => {
               </TooltipContent>
             </Tooltip>
 
-            <Tooltip>
+            {/* <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={() => {
@@ -162,7 +164,7 @@ const ChatContent = () => {
               >
                 <p>Mulai Obrolan Baru</p>
               </TooltipContent>
-            </Tooltip>
+            </Tooltip> */}
           </div>
         </div>
       </div>
@@ -178,7 +180,7 @@ const ChatContent = () => {
                     className="bg-white border border-primary/20 text-primary rounded-full shadow-sm h-12 w-12 px-3 flex items-center justify-between transition-all duration-300 z-50 pointer-events-auto cursoir-pointer"
                     onClick={() => setOpenSheet(true)}
                   >
-                    <PanelRightClose />
+                    <PanelLeftOpen />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
