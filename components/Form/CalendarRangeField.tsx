@@ -13,6 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import dayjs from "dayjs";
+import { cn } from "@/lib/utils";
 
 export function CalendarRangeField({
   value,
@@ -31,7 +32,12 @@ export function CalendarRangeField({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="w-full justify-between border-input bg-white hover:bg-muted hover:text-foreground"
+          className={cn(
+            "w-full justify-between border-input bg-white hover:bg-muted text-muted-foreground hover:text-foreground h-12 rounded-2xl",
+            value?.from &&
+              value?.to &&
+              "text-primary font-semibold hover:text-primary"
+          )}
         >
           {value?.from && value?.to
             ? `${dayjs(value.from).format("DD MMMM YYYY")} - ${dayjs(
