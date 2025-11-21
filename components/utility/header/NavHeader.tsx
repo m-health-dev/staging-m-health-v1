@@ -153,7 +153,7 @@ const NavHeader = () => {
     </nav>
   ) : (
     <ContainerWrap className="sticky top-8 z-99 hover:scale-101 transition-all duration-300 group">
-      <nav className="px-5 z-99 lg:border-b-0 border-b border-primary/10 bg-white shadow group-hover:shadow-2xl transition-all duration-300 rounded-full mt-8">
+      <nav className="px-5 z-99 lg:border-b-0 border-b border-primary/10 bg-white shadow-lg group-hover:shadow-2xl shadow-background transition-all duration-300 rounded-full mt-8">
         <header className="lg:py-4 py-3 flex w-full items-center justify-between">
           <Link href={`/${locale}/home`}>
             <Image

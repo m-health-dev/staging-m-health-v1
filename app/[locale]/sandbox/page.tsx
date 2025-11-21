@@ -40,11 +40,7 @@ import {
 
 import { ComboBoxField } from "@/components/Form/ComboBox";
 
-import {
-  emailSchema,
-  indonesiaPhoneSchema,
-  phoneSchema,
-} from "@/lib/zodSchema";
+import { emailSchema, phoneSchema } from "@/lib/zodSchema";
 import { PhoneInput } from "@/components/Form/phone-input";
 import {
   Eye,
@@ -689,25 +685,6 @@ const SandBoxComponents = () => {
                 </div>
 
                 <div className="lg:col-span-2 col-span-1">
-                  {/* Rich Text */}
-                  <FormField
-                    control={form.control}
-                    name="content"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary font-semibold!">
-                          Content
-                        </FormLabel>
-                        <FormControl>
-                          <RichEditor {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="lg:col-span-2 col-span-1">
                   {/* Schedule */}
                   <FormField
                     control={form.control}
@@ -726,6 +703,25 @@ const SandBoxComponents = () => {
                               form.setValue("meetingTime", time)
                             }
                           />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="lg:col-span-2 col-span-1">
+                  {/* Rich Text */}
+                  <FormField
+                    control={form.control}
+                    name="content"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          Content
+                        </FormLabel>
+                        <FormControl>
+                          <RichEditor {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

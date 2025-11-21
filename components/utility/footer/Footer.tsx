@@ -13,6 +13,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
+import { Diamond } from "lucide-react";
 
 const Footer = () => {
   const buildId = process.env.VERCEL_GIT_COMMIT_SHA;
@@ -21,8 +22,8 @@ const Footer = () => {
   return (
     <footer className="pt-[10vh] bg-white">
       <ContainerWrap>
-        <div className="flex flex-wrap lg:flex-row flex-col lg:gap-32 gap-10">
-          <div className="shrink">
+        <div className="flex flex-wrap lg:flex-row flex-col lg:gap-20 gap-10">
+          <div className="3xl:shrink lg:basis-1/4">
             <Link href={`/${locale}/home`}>
               <Image
                 src={"/mhealth_logo.PNG"}
@@ -125,6 +126,7 @@ const Footer = () => {
             &copy; 2025, PT. Medika Integrasi Persada. M-Health. Hak cipta
             dilindungi undang-undang.
           </p>
+
           <Link href={"/changelog"}>
             <div className="flex lg:justify-center lg:items-center">
               <div className="flex lg:flex-row flex-col lg:items-center justify-center w-fit rounded-full">
@@ -142,6 +144,14 @@ const Footer = () => {
                 />
               </div>
             </div>
+          </Link>
+        </div>
+        <div className="flex justify-center pb-[5vh]">
+          <Link href={"/sandbox"}>
+            <p className="bg-health py-1 px-3 text-white rounded-full inline-flex items-center gap-2 hover:scale-105 transition-transform group shadow-lg shadow-health/30">
+              <Diamond className="size-4 group-hover:rotate-45 transition-all duration-200" />{" "}
+              Sandbox
+            </p>
           </Link>
         </div>
       </ContainerWrap>

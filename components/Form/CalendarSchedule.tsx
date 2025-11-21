@@ -100,7 +100,7 @@ export default function CalendarSchedule({
                 variant={selectedTime === time ? "default" : "outline"}
                 onClick={() => onTimeChange(time)}
                 disabled={isTimePast(time)}
-                className="w-full shadow-none"
+                className="w-full shadow-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:border-gray-500 rounded-xl text-sm! md:text-base!"
               >
                 {time}
               </Button>

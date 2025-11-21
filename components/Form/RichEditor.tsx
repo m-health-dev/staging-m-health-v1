@@ -43,10 +43,7 @@ interface RichEditorProps {
 }
 
 export const RichEditor = React.forwardRef<HTMLDivElement, RichEditorProps>(
-  (
-    { value = "", onChange, placeholder = "Start typing...", className },
-    ref
-  ) => {
+  ({ value = "", onChange, className }, ref) => {
     const editor = useEditor({
       extensions: [
         StarterKit.configure({
@@ -75,7 +72,7 @@ export const RichEditor = React.forwardRef<HTMLDivElement, RichEditorProps>(
           allowBase64: true,
         }),
       ],
-      content: value || `<p>${placeholder}</p>`,
+      content: value,
       immediatelyRender: false,
       onUpdate: ({ editor }) => {
         if (onChange) {

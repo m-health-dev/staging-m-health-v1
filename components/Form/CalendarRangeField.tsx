@@ -33,7 +33,7 @@ export function CalendarRangeField({
         <Button
           variant="outline"
           className={cn(
-            "w-full justify-between border-input bg-white hover:bg-muted text-muted-foreground hover:text-foreground h-12 rounded-2xl",
+            "w-full justify-between border-input bg-white hover:bg-muted text-muted-foreground font-normal text-base! hover:text-foreground h-12 rounded-2xl",
             value?.from &&
               value?.to &&
               "text-primary font-semibold hover:text-primary"
