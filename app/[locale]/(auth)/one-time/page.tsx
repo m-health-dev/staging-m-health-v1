@@ -1,11 +1,11 @@
 import React from "react";
-import SignInClient from "./SignIn-Client";
+import OTPClient from "./OTP-Client";
 import { get5ImageWellness } from "@/lib/unsplashImage";
 
-const SignInPage = async () => {
+const OTPPage = async () => {
   const data = await get5ImageWellness();
   const image = data.results[1];
-  return <SignInClient image={image} />;
+  return <OTPClient image={image} />;
 };
 
-export default SignInPage;
+export default OTPPage;

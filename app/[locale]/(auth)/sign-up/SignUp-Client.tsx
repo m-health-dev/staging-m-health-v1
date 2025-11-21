@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import { AuthSignInSchema } from "@/lib/zodSchema";
+import { AuthSignUpSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -26,20 +26,21 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 
-const SignInClient = ({ image }: { image: any }) => {
+const SignUpClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof AuthSignInSchema>>({
-    resolver: zodResolver(AuthSignInSchema),
+  const form = useForm<z.infer<typeof AuthSignUpSchema>>({
+    resolver: zodResolver(AuthSignUpSchema),
     defaultValues: {
       email: "",
       password: "",
+      full_name: "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof AuthSignInSchema>) {
+  async function onSubmit(data: z.infer<typeof AuthSignUpSchema>) {
     setLoading(true);
 
     // Delay 2 detik
@@ -66,16 +67,31 @@ const SignInClient = ({ image }: { image: any }) => {
         alt="M-Health Logo"
       />
       <ContainerWrap size="xl">
-        <div className="flex items-center justify-center lg:min-h-screen 3xl:min-h-[calc(100vh-80px)] bg-white py-10 mt-5 mb-10 p-5 rounded-4xl">
+        <div className="flex items-center justify-center lg:min-h-screen 3xl:min-h-[calc(100vh-80px)] bg-white py-10 mt-5 mb-10 rounded-4xl p-5">
           <div className="md:max-w-sm w-full col-span-1">
             <h3 className="font-bold text-primary mb-10">
-              Log In to Your Account
+              Create Your Account
             </h3>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="*:mb-5 mt-5"
               >
+                <FormField
+                  control={form.control}
+                  name="full_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Full Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} type="text" className="h-12" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="email"
@@ -125,20 +141,26 @@ const SignInClient = ({ image }: { image: any }) => {
                     </FormItem>
                   )}
                 />
-                <div className="flex w-full justify-end">
-                  <button
-                    className="text-primary text-end"
-                    onClick={() =>
-                      router.push(`/forgot-password?access=${uuid()}`)
-                    }
-                  >
-                    <p className="text-sm! underline cursor-pointer">
-                      I forgot my password
-                    </p>
-                  </button>
+                <div>
+                  <p className="text-muted-foreground text-sm!">
+                    By signing up you agree to the{" "}
+                    <span
+                      className="text-health underline cursor-pointer"
+                      onClick={() => router.push("/terms-of-service")}
+                    >
+                      Terms of Service
+                    </span>{" "}
+                    and{" "}
+                    <span
+                      className="text-health underline cursor-pointer"
+                      onClick={() => router.push("/privacy-policy")}
+                    >
+                      Privacy Policy
+                    </span>
+                  </p>
                 </div>
                 <Button type="submit" className="w-full h-12 rounded-full">
-                  {loading ? <Spinner /> : <p>Sign In</p>}
+                  {loading ? <Spinner /> : <p>Sign Up</p>}
                 </Button>
                 <div className="flex justify-center items-center">
                   <div className="border-b border-gray-300 w-full"></div>
@@ -149,23 +171,23 @@ const SignInClient = ({ image }: { image: any }) => {
                   variant="outline"
                   type="button"
                   className="w-full h-12 rounded-full"
-                  onClick={() => router.push("/auth/sign-in/google")}
+                  onClick={() => router.push("/auth/sign-up/google")}
                 >
                   <p>
-                    <FontAwesomeIcon icon={faGoogle} /> Sign In with Google
+                    <FontAwesomeIcon icon={faGoogle} /> Sign Up with Google
                   </p>
                 </Button>
               </form>
             </Form>
             <p className="text-muted-foreground text-sm!">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <span
-                onClick={() => router.push(`/sign-up`)}
+                onClick={() => router.push(`/sign-in`)}
                 className="text-health cursor-pointer underline"
               >
-                Sign Up
-              </span>{" "}
-              now.
+                Sign In
+              </span>
+              .
             </p>
           </div>
           <div className="col-span-2">
@@ -184,4 +206,4 @@ const SignInClient = ({ image }: { image: any }) => {
   );
 };
 
-export default SignInClient;
+export default SignUpClient;
