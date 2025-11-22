@@ -25,7 +25,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
-import { EmailLogIn } from "@/lib/auth/auth";
+import { emailLogin } from "@/lib/auth/auth";
 import { sign } from "crypto";
 
 const SignInClient = ({ image }: { image: any }) => {
@@ -43,7 +43,7 @@ const SignInClient = ({ image }: { image: any }) => {
 
   async function onSubmit(data: z.infer<typeof AuthSignInSchema>) {
     setLoading(true);
-    const signingIn = await EmailLogIn({
+    const signingIn = await emailLogin({
       email: data.email,
       password: data.password,
     });
@@ -63,6 +63,7 @@ const SignInClient = ({ image }: { image: any }) => {
           </pre>
         ),
       });
+      router.push("/dashboard");
     } else {
       toast.error("Sign In Failed. Please check your credentials.", {
         description: "If you encounter issues, please contact support.",
@@ -142,6 +143,7 @@ const SignInClient = ({ image }: { image: any }) => {
                 />
                 <div className="flex w-full justify-end">
                   <button
+                    type="button"
                     className="text-primary text-end"
                     onClick={() =>
                       router.push(`/forgot-password?access=${uuid()}`)
