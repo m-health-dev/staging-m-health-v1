@@ -25,22 +25,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
+import Link from "next/link";
+import { EmailSignUp } from "@/lib/auth/register";
 
 const SignUpClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
+  const apiBaseUrl = process.env.NEXT_PUBLIC_PROD_BACKEND_URL;
+
   const form = useForm<z.infer<typeof AuthSignUpSchema>>({
     resolver: zodResolver(AuthSignUpSchema),
     defaultValues: {
+      fullname: "",
       email: "",
       password: "",
-      full_name: "",
     },
   });
 
   async function onSubmit(data: z.infer<typeof AuthSignUpSchema>) {
+    const signingUp = await EmailSignUp(data);
     setLoading(true);
 
     // Delay 2 detik
@@ -51,7 +56,11 @@ const SignUpClient = ({ image }: { image: any }) => {
     toast("Signed In As :", {
       description: (
         <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30">
-          <code>{JSON.stringify(data, null, 2)}</code>
+          <code>
+            {JSON.stringify(data, null, 2)}
+            <br />
+            {signingUp.message}
+          </code>
         </pre>
       ),
     });
@@ -79,7 +88,7 @@ const SignUpClient = ({ image }: { image: any }) => {
               >
                 <FormField
                   control={form.control}
-                  name="full_name"
+                  name="fullname"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
@@ -167,16 +176,17 @@ const SignUpClient = ({ image }: { image: any }) => {
                   <p className="px-5 text-gray-500">or</p>
                   <div className="border-b border-gray-300 w-full"></div>
                 </div>
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="w-full h-12 rounded-full"
-                  onClick={() => router.push("/auth/sign-up/google")}
-                >
-                  <p>
-                    <FontAwesomeIcon icon={faGoogle} /> Sign Up with Google
-                  </p>
-                </Button>
+                <Link href={`${apiBaseUrl}/auth/google/redirect`}>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className="w-full h-12 rounded-full"
+                  >
+                    <p>
+                      <FontAwesomeIcon icon={faGoogle} /> Sign Up with Google
+                    </p>
+                  </Button>
+                </Link>
               </form>
             </Form>
             <p className="text-muted-foreground text-sm!">

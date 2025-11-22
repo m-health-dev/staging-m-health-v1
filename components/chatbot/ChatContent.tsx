@@ -28,8 +28,9 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { nanoid } from "nanoid";
+import { Package } from "@/types/packages.types";
 
-const ChatContent = () => {
+const ChatContent = ({ data }: { data: Package[] }) => {
   const { isSidebarOpen, setIsSidebarOpen } = useResponsiveSidebar();
   const [showSidebarContent, setShowSidebarContent] = useState(true);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -116,7 +117,10 @@ const ChatContent = () => {
                   }}
                   className="flex flex-col"
                 >
-                  <ChatSidebarShowreels onSelectChat={handleSelectChat} />
+                  <ChatSidebarShowreels
+                    data={data}
+                    onSelectChat={handleSelectChat}
+                  />
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -204,6 +208,7 @@ const ChatContent = () => {
               </SheetClose>
               <div className="flex flex-col space-y-7 overflow-y-scroll hide-scroll">
                 <ChatSidebarShowreels
+                  data={data}
                   onSelectChat={handleSelectChat}
                   setOpenSheet={setOpenSheet} // ✅ kirim fungsi setter
                 />

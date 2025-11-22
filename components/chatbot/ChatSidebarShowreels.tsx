@@ -12,13 +12,17 @@ import { Spinner } from "../ui/spinner";
 import { Plus, Trash2 } from "lucide-react";
 import { nanoid } from "nanoid";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
+import { getImagePicsum } from "@/lib/picsumPhotos";
+import { Package } from "@/types/packages.types";
 
 const ChatSidebarShowreels = ({
   onSelectChat,
   setOpenSheet,
+  data,
 }: {
   onSelectChat: (id: string) => void;
   setOpenSheet?: (value: boolean) => void;
+  data: Package[];
 }) => {
   const [imageWellness, setImageWellness] = useState<any[]>([]);
   const [imageMedical, setImageMedical] = useState<any[]>([]);
@@ -26,35 +30,36 @@ const ChatSidebarShowreels = ({
   const [loading, setLoading] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
 
-  useEffect(() => {
-    const imageData = async () => {
-      setLoading(true);
-      try {
-        const resWel = await get5ImageWellness();
+  // useEffect(() => {
+  //   const imageData = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const resWel = await getImagePicsum();
+  //       console.log("Image Picsum:", resWel);
 
-        if (!resWel) throw new Error("Failed to Fetch 5 Images Wellness");
-        setImageWellness(resWel.results.slice(0, 3));
+  //       if (!resWel) throw new Error("Failed to Fetch Images Wellness");
+  //       setImageWellness(resWel.results.slice(0, 3));
 
-        const resMed = await get5ImageMedical();
+  //       const resMed = await getImagePicsum();
 
-        if (!resMed) throw new Error("Failed to Fetch 5 Images Medical");
-        setImageMedical(resMed.results.slice(0, 3));
+  //       if (!resMed) throw new Error("Failed to Fetch Images Medical");
+  //       setImageMedical(resMed.results.slice(4, 6));
 
-        const resEv = await get10ImageEvents();
+  //       const resEv = await getImagePicsum();
 
-        if (!resEv) throw new Error("Failed to Fetch 5 Images Events");
-        setImageEvents(resEv.results.slice(0, 3));
-        setLoading(false);
-      } catch (error: any) {
-        if (error) {
-          throw new Error("Undefined Error!");
-        }
-        setLoading(false);
-      }
-    };
+  //       if (!resEv) throw new Error("Failed to Fetch Images Events");
+  //       setImageEvents(resEv.results.slice(7, 9));
+  //       setLoading(false);
+  //     } catch (error: any) {
+  //       if (error) {
+  //         throw new Error("Undefined Error!");
+  //       }
+  //       setLoading(false);
+  //     }
+  //   };
 
-    imageData();
-  }, []);
+  //   imageData();
+  // }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -134,7 +139,7 @@ const ChatSidebarShowreels = ({
       <div className="bg-white p-4 rounded-2xl border">
         <h4 className="font-extrabold text-primary mb-3">Welness</h4>
         <div className="space-y-5">
-          {imageWellness.map((img, i) => (
+          {data.map((img, i) => (
             <Link
               key={img.id}
               href={`/wellness/package-${i + 1}`}
@@ -142,14 +147,14 @@ const ChatSidebarShowreels = ({
             >
               <div
                 className={`grid grid-cols-3 items-center group-hover:bg-muted group-hover:shadow-sm transition-all duration-300 rounded-xl py-3 border border-border ${
-                  i + 1 === imageWellness.length ? "mb-0" : "mb-4"
+                  i + 1 === data.length ? "mb-0" : "mb-4"
                 }`}
               >
                 <div className="col-span-1 px-3">
                   <Suspense fallback={<Spinner />}>
                     <Image
-                      src={img.full}
-                      alt={img.alt}
+                      src={"https://placehold.co/600x400.png"}
+                      alt={"https://placehold.co/600x400.png"}
                       width={720}
                       height={720}
                       className="aspect-square object-cover object-center rounded-xl"
@@ -158,7 +163,7 @@ const ChatSidebarShowreels = ({
                 </div>
                 <div className="col-span-2">
                   <h6 className="font-extrabold text-primary line-clamp-3 ">
-                    Package item {i + 1} by. {i + 5 * 3} Hospital in Bali
+                    {img.title}
                   </h6>
                 </div>
                 <div className="col-span-3 mt-2 px-3">
@@ -172,7 +177,7 @@ const ChatSidebarShowreels = ({
               </div>
             </Link>
           ))}
-          {imageWellness.length <= 0 && (
+          {data.length <= 0 && (
             <p className="bg-muted py-5 px-3 rounded-2xl text-muted-foreground text-sm!">
               Belum ada data.
             </p>
@@ -183,7 +188,7 @@ const ChatSidebarShowreels = ({
       <div className="bg-white p-4 rounded-2xl border">
         <h4 className="font-extrabold text-primary mb-3">Medical</h4>
         <div className="space-y-5">
-          {imageMedical.map((img, i) => (
+          {data.map((img, i) => (
             <Link
               key={img.id}
               href={`/wellness/package-${i + 1}`}
@@ -191,13 +196,13 @@ const ChatSidebarShowreels = ({
             >
               <div
                 className={`grid grid-cols-3 items-center group-hover:bg-muted group-hover:shadow-sm transition-all duration-300 rounded-xl py-3 border border-border ${
-                  i + 1 === imageWellness.length ? "mb-0" : "mb-4"
+                  i + 1 === data.length ? "mb-0" : "mb-4"
                 }`}
               >
                 <div className="col-span-1 px-3">
                   <Image
-                    src={img.full}
-                    alt={img.alt}
+                    src={"https://placehold.co/600x400.png"}
+                    alt={"https://placehold.co/600x400.png"}
                     width={720}
                     height={720}
                     className="aspect-square object-cover object-center rounded-xl"
@@ -205,7 +210,7 @@ const ChatSidebarShowreels = ({
                 </div>
                 <div className="col-span-2">
                   <h6 className="font-extrabold text-primary line-clamp-3 ">
-                    Package item {i + 1} by. {i + 5 * 3} Hospital in Bali
+                    {img.title}
                   </h6>
                 </div>
                 <div className="col-span-3 mt-2 px-3">
@@ -219,7 +224,7 @@ const ChatSidebarShowreels = ({
               </div>
             </Link>
           ))}
-          {imageWellness.length <= 0 && (
+          {data.length <= 0 && (
             <p className="bg-muted py-5 px-3 rounded-2xl text-muted-foreground text-sm!">
               Belum ada data.
             </p>

@@ -25,6 +25,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
+import { EmailLogIn } from "@/lib/auth/login";
 
 const SignInClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -40,6 +41,7 @@ const SignInClient = ({ image }: { image: any }) => {
   });
 
   async function onSubmit(data: z.infer<typeof AuthSignInSchema>) {
+    await EmailLogIn(data);
     setLoading(true);
 
     // Delay 2 detik

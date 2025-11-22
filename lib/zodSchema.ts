@@ -18,7 +18,7 @@ export const AuthSignInSchema = z.object({
 });
 
 export const AuthSignUpSchema = z.object({
-  full_name: z.string().min(3, "Full Name is Required."),
+  fullname: z.string().min(3, "Full Name is Required."),
   email: z.email("Email is Required."),
   password: z
     .string()

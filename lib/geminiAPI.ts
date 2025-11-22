@@ -9,11 +9,6 @@ export async function chatGemini(messages: any[]) {
         },
         body: JSON.stringify({
           prompt: messages,
-          options: {
-            generationConfig: {
-              temperature: 0.4,
-            },
-          },
         }),
       }
     );
