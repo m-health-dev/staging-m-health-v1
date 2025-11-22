@@ -1,4 +1,10 @@
-export async function EmailLogIn(formData: any) {
+export async function EmailLogIn({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_PROD_BACKEND_URL}/api/v1/login`,
@@ -7,7 +13,10 @@ export async function EmailLogIn(formData: any) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ formData }),
+        body: JSON.stringify({
+          email,
+          password,
+        }),
       }
     );
 

@@ -46,7 +46,11 @@ const SignUpClient = ({ image }: { image: any }) => {
 
   async function onSubmit(data: z.infer<typeof AuthSignUpSchema>) {
     setLoading(true);
-    const signingUp = await EmailSignUp(data);
+    const signingUp = await EmailSignUp({
+      fullname: data.fullname,
+      email: data.email,
+      password: data.password,
+    });
 
     if (signingUp) {
       toast("Log", {

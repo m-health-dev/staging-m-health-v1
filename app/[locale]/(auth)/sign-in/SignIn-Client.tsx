@@ -43,7 +43,10 @@ const SignInClient = ({ image }: { image: any }) => {
 
   async function onSubmit(data: z.infer<typeof AuthSignInSchema>) {
     setLoading(true);
-    const signingIn = await EmailLogIn(data);
+    const signingIn = await EmailLogIn({
+      email: data.email,
+      password: data.password,
+    });
 
     if (signingIn) {
       toast("Log", {
