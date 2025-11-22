@@ -244,6 +244,13 @@ const NavHeader = () => {
                     >
                       <h5 className="font-extrabold text-primary">Kontak</h5>
                     </Link>
+                    <Link
+                      href={`/${locale}/sign-in`}
+                      className="group"
+                      data-cursor-clickable
+                    >
+                      <h5 className="font-extrabold text-primary">Masuk</h5>
+                    </Link>
                   </div>
 
                   <SheetFooter className="bg-gray-50 rounded-2xl border border-primary/10">

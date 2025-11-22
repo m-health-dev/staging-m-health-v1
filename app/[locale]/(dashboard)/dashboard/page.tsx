@@ -1,24 +1,15 @@
-"use client";
+import Wrapper from "@/components/utility/Wrapper";
+import { getAuthServer } from "@/lib/auth/auth-server";
 
-import { getAuth } from "@/lib/auth/checkAuth";
-import { useEffect } from "react";
+const DashboardPage = async () => {
+  const auth = await getAuthServer();
 
-const DashboardPage = () => {
-  useEffect(() => {
-    const checkAuth = async () => {
-      const user = await getAuth();
-
-      if (user) {
-        console.log("User sudah login:", user);
-      } else {
-        console.log("User belum login");
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  return <p>Dashboard</p>;
+  return (
+    <Wrapper>
+      <p>Dashboard</p>
+      <pre>{JSON.stringify(auth, null, 2)}</pre>
+    </Wrapper>
+  );
 };
 
 export default DashboardPage;

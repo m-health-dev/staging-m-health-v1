@@ -26,7 +26,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
-import { EmailSignUp } from "@/lib/auth/register";
+import { EmailSignUp } from "@/lib/auth/auth";
 
 const SignUpClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);

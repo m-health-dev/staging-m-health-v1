@@ -25,7 +25,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
-import { EmailLogIn } from "@/lib/auth/login";
+import { EmailLogIn } from "@/lib/auth/auth";
 import { sign } from "crypto";
 
 const SignInClient = ({ image }: { image: any }) => {
