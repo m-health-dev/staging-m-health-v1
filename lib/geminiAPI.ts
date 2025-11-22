@@ -47,24 +47,6 @@ const pickFirstValidMessage = (messages: Array<string | undefined>): string | un
 
 export async function chatGemini(messages: ChatMessage[]) {
   try {
-    // Flatten conversation into a single prompt accepted by the backend Gemini proxy
-    const prompt = messages
-      ?.map((msg) => {
-        const label =
-          msg.role === "system"
-            ? "System"
-            : msg.role === "assistant"
-            ? "Mei"
-            : "User";
-        return `${label}: ${msg.content}`;
-      })
-      .join("\n\n")
-      .trim();
-
-    if (!prompt) {
-      throw new Error("Prompt kosong. Tidak ada pesan yang bisa dikirim ke Gemini.");
-    }
-
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_PROD_BACKEND_URL}/api/v1/gemini/generate`,
       {
@@ -73,22 +55,15 @@ export async function chatGemini(messages: ChatMessage[]) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          prompt,
+          prompt: messages,
           options: {
             generationConfig: {
-              temperature: DEFAULT_TEMPERATURE,
+              temperature: 0.4,
             },
           },
         }),
       }
     );
-
-    if (!res.ok) {
-      const errorPayload = await res.text();
-      throw new Error(
-        `Gemini API ${res.status} ${res.statusText}: ${errorPayload || "No response body"}`
-      );
-    }
 
     const data = await res.json();
     console.log("Gemini API Response:", data);

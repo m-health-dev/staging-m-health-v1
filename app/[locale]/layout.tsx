@@ -13,6 +13,7 @@ import { notFound } from "next/navigation";
 import { LanguageProvider } from "@/components/utility/lang/LanguageContext";
 import Image from "next/image";
 import ContainerWrap from "@/components/utility/ContainerWrap";
+import { Toaster } from "sonner";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -51,7 +52,20 @@ export default async function RootLayout({ children, params }: Props) {
         className={`${manrope.variable} ${vietnamPro.variable} ${geistMono.variable} antialiased`}
       >
         <LanguageProvider>
-          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+          <NextIntlClientProvider>
+            <Toaster
+              richColors
+              position="top-right"
+              toastOptions={{
+                classNames: {
+                  title: "font-sans text-base font-semibold!",
+                  description: "font-content",
+                  toast: "lg:min-w-lg rounded-2xl! min-h-16",
+                },
+              }}
+            />
+            {children}
+          </NextIntlClientProvider>
         </LanguageProvider>
       </body>
     </html>
