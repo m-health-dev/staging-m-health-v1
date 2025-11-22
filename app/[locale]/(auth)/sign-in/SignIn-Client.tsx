@@ -26,6 +26,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { EmailLogIn } from "@/lib/auth/login";
+import { sign } from "crypto";
 
 const SignInClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -41,21 +42,30 @@ const SignInClient = ({ image }: { image: any }) => {
   });
 
   async function onSubmit(data: z.infer<typeof AuthSignInSchema>) {
-    await EmailLogIn(data);
     setLoading(true);
+    const signingIn = await EmailLogIn(data);
 
-    // Delay 2 detik
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
+    if (signingIn) {
+      toast("Log", {
+        description: (
+          <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30 space-y-4">
+            <div>
+              <p className="mb-2 text-sm! text-muted-foreground">Sent</p>
+              <code>{JSON.stringify(data, null, 2)}</code>
+            </div>
+            <div>
+              <p className="mb-2 text-sm! text-muted-foreground">Response</p>
+              <code>{JSON.stringify(signingIn, null, 2)}</code>
+            </div>
+          </pre>
+        ),
+      });
+    } else {
+      toast.error("Sign In Failed. Please check your credentials.", {
+        description: "If you encounter issues, please contact support.",
+      });
+    }
     setLoading(false);
-
-    toast("Signed In As :", {
-      description: (
-        <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
   }
 
   return (

@@ -13,9 +13,7 @@ export async function EmailLogIn(formData: any) {
 
     const data = await res.json();
 
-    return {
-      message: data.message,
-    };
+    return data;
   } catch (error) {
     console.error("Log In API Error:", error);
     return { message: "(Log In) Terjadi kesalahan saat terhubung ke server." };

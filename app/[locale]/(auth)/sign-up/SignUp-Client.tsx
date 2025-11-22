@@ -45,25 +45,30 @@ const SignUpClient = ({ image }: { image: any }) => {
   });
 
   async function onSubmit(data: z.infer<typeof AuthSignUpSchema>) {
-    const signingUp = await EmailSignUp(data);
     setLoading(true);
+    const signingUp = await EmailSignUp(data);
 
-    // Delay 2 detik
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
+    if (signingUp) {
+      toast("Log", {
+        description: (
+          <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30 space-y-4">
+            <div>
+              <p className="mb-2 text-sm! text-muted-foreground">Sent</p>
+              <code>{JSON.stringify(data, null, 2)}</code>
+            </div>
+            <div>
+              <p className="mb-2 text-sm! text-muted-foreground">Response</p>
+              <code>{JSON.stringify(signingUp, null, 2)}</code>
+            </div>
+          </pre>
+        ),
+      });
+    } else {
+      toast.error("Sign Up Failed", {
+        description: "If you encounter issues, please contact support.",
+      });
+    }
     setLoading(false);
-
-    toast("Signed In As :", {
-      description: (
-        <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30">
-          <code>
-            {JSON.stringify(data, null, 2)}
-            <br />
-            {signingUp.message}
-          </code>
-        </pre>
-      ),
-    });
   }
 
   return (
@@ -189,7 +194,7 @@ const SignUpClient = ({ image }: { image: any }) => {
                 </Link>
               </form>
             </Form>
-            <p className="text-muted-foreground text-sm!">
+            <p className="text-muted-foreground text-sm! mt-5">
               Already have an account?{" "}
               <span
                 onClick={() => router.push(`/sign-in`)}
