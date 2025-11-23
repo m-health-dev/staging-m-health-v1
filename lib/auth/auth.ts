@@ -13,15 +13,15 @@ export async function getAuthClient() {
     });
 
     if (res.status === 401) {
-      console.log("[v0] User not authenticated (401)");
+      console.log("User not authenticated (401)");
       return null;
     }
 
     const data = await res.json();
-    console.log("[v0] Auth client - User:", data?.email || data?.id);
+    console.log("Auth client - User:", data?.email || data?.id);
     return data;
   } catch (error) {
-    console.error("[v0] Get auth client error:", error);
+    console.error("Get auth client error:", error);
     return null;
   }
 }
@@ -34,7 +34,7 @@ export async function emailLogin({
   password: string;
 }) {
   try {
-    console.log("[v0] Starting login...");
+    console.log("Starting login...");
 
     // Step 1: Get CSRF token
     const csrfRes = await fetch(`${apiBaseUrl}/sanctum/csrf-cookie`, {
@@ -44,7 +44,7 @@ export async function emailLogin({
     });
 
     if (!csrfRes.ok) {
-      console.error("[v0] CSRF fetch failed");
+      console.error("CSRF fetch failed");
     }
 
     // Step 2: Login with credentials
@@ -59,11 +59,11 @@ export async function emailLogin({
     });
 
     const data = await res.json();
-    console.log("[v0] Login response:", res.status, data?.message);
+    console.log("Login response:", res.status, data?.message);
 
     return data;
   } catch (error) {
-    console.error("[v0] Login error:", error);
+    console.error("Login error:", error);
     return { message: "Connection error", error: String(error) };
   }
 }
@@ -78,7 +78,7 @@ export async function emailSignUp({
   password: string;
 }) {
   try {
-    console.log("[v0] Starting signup...");
+    console.log("Starting signup...");
 
     const res = await fetch(`${apiBaseUrl}/api/v1/register`, {
       method: "POST",
@@ -91,18 +91,18 @@ export async function emailSignUp({
     });
 
     const data = await res.json();
-    console.log("[v0] Signup response:", res.status, data?.message);
+    console.log("Signup response:", res.status, data?.message);
 
     return data;
   } catch (error) {
-    console.error("[v0] Signup error:", error);
+    console.error("Signup error:", error);
     return { message: "Connection error", error: String(error) };
   }
 }
 
 export async function logout() {
   try {
-    console.log("[v0] Starting logout...");
+    console.log("Starting logout...");
 
     const res = await fetch(`${apiBaseUrl}/api/v1/logout`, {
       method: "POST",
@@ -113,10 +113,10 @@ export async function logout() {
       },
     });
 
-    console.log("[v0] Logout response:", res.status);
+    console.log("Logout response:", res.status);
     return res.ok;
   } catch (error) {
-    console.error("[v0] Logout error:", error);
+    console.error("Logout error:", error);
     return false;
   }
 }

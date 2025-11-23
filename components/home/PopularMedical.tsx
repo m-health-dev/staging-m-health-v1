@@ -37,7 +37,6 @@ const PopularMedical = async () => {
           Popular Medical
         </h1>
       </ContainerWrap>
-      {/* <pre>{JSON.stringify(rsCity, null, 2)}</pre> */}
       <PopularMedSlide data={data} hospital={rsCity} />
     </div>
   );

@@ -101,7 +101,7 @@ const ChatContent = ({ data }: { data: Package[] }) => {
               ease: "easeInOut",
             }}
             style={{ willChange: "width" }}
-            className="print:hidden bg-transparent 3xl:max-h-[calc(100vh-8vh)] 3xl:min-h-[calc(100vh-8vh)] lg:max-h-[calc(100vh-13.5vh)] lg:min-h-[calc(100vh-13.5vh)] max-h-[calc(100vh-8vh)] min-h-[calc(100vh-8vh)] overflow-y-auto hide-scroll ml-5 overflow-hidden flex flex-col lg:max-w-5/6 max-w-4/6"
+            className="print:hidden bg-transparent 3xl:max-h-[calc(100vh-8vh)] 3xl:min-h-[calc(100vh-8vh)] lg:max-h-[calc(100vh-13.5vh)] lg:min-h-[calc(100vh-13.5vh)] max-h-[calc(100vh-8vh)] min-h-[calc(100vh-8vh)] overflow-y-auto hide-scroll ml-5 overflow-hidden flex flex-col lg:max-w-5/6 max-w-4/6 rounded-2xl"
           >
             {/* Header */}
             <div className="flex justify-between items-start gap-4 md:w-[380px] w-[300px]">
@@ -150,25 +150,6 @@ const ChatContent = ({ data }: { data: Package[] }) => {
                 <p>{isSidebarOpen ? "Tutup Menu" : "Buka Menu"}</p>
               </TooltipContent>
             </Tooltip>
-
-            {/* <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => {
-                    window.location.reload(), startNewChat();
-                  }}
-                  className="bg-white text-primary border rounded-2xl shadow-sm h-12 w-full px-3 flex items-center justify-between transition-all duration-300 relative z-50 pointer-events-auto cursoir-pointer"
-                >
-                  <Plus />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent
-                side="right"
-                className="bg-white text-primary font-medium"
-              >
-                <p>Mulai Obrolan Baru</p>
-              </TooltipContent>
-            </Tooltip> */}
           </div>
         </div>
       </div>

@@ -65,7 +65,7 @@ const NavHeader = () => {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="p-8 bg-white z-999 overflow-y-scroll hide-scroll"
+                className="p-8 bg-white z-999 overflow-y-scroll hide-scroll lg:max-w-md!"
               >
                 <SheetTitle />
                 <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer">
@@ -76,15 +76,24 @@ const NavHeader = () => {
                 </SheetClose>
                 <div className="flex flex-col space-y-4 mt-5">
                   <Link
+                    href={`/${locale}/sign-in`}
+                    className="group flex w-full"
+                    data-cursor-clickable
+                  >
+                    <Button className="flex w-full rounded-full">
+                      <h5 className="font-extrabold">Masuk</h5>
+                    </Button>
+                  </Link>
+                  <Link
                     href={`/${locale}/home`}
-                    className="group"
+                    className="group mt-5  hover:underline decoration-health underline-offset-2 transition-all duration-300"
                     data-cursor-clickable
                   >
                     <h5 className="font-extrabold text-primary">Beranda</h5>
                   </Link>
                   <Link
                     href={`/${locale}/about`}
-                    className="group"
+                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
                     data-cursor-clickable
                   >
                     <h5 className="font-extrabold text-primary">
@@ -93,21 +102,21 @@ const NavHeader = () => {
                   </Link>
                   <Link
                     href={`/${locale}/wellness`}
-                    className="group"
+                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
                     data-cursor-clickable
                   >
                     <h5 className="font-extrabold text-primary">Kesehatan</h5>
                   </Link>
                   <Link
                     href={`/${locale}/medical`}
-                    className="group"
+                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
                     data-cursor-clickable
                   >
                     <h5 className="font-extrabold text-primary">Medis</h5>
                   </Link>
                   <Link
                     href={`/${locale}/medical-equipment`}
-                    className="group"
+                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
                     data-cursor-clickable
                   >
                     <h5 className="font-extrabold text-primary">
@@ -116,35 +125,34 @@ const NavHeader = () => {
                   </Link>
                   <Link
                     href={`/${locale}/article`}
-                    className="group"
+                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
                     data-cursor-clickable
                   >
                     <h5 className="font-extrabold text-primary">Artikel</h5>
                   </Link>
                   <Link
                     href={`/${locale}/events`}
-                    className="group"
+                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
                     data-cursor-clickable
                   >
                     <h5 className="font-extrabold text-primary">Acara</h5>
                   </Link>
                   <Link
                     href={`/${locale}/events`}
-                    className="group"
+                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
                     data-cursor-clickable
                   >
                     <h5 className="font-extrabold text-primary">Kontak</h5>
                   </Link>
-                </div>
-
-                <SheetFooter className="bg-gray-50 rounded-2xl border border-primary/10 mt-10">
-                  <h5 className="text-primary font-extrabold mb-0">
-                    Preferensi
-                  </h5>
-                  <div className="z-9999">
-                    <LanguageSwitcher />
+                  <div className="bg-gray-50 rounded-2xl border border-primary/10 mt-5 p-4">
+                    <h5 className="text-primary font-extrabold mb-2">
+                      Preferensi
+                    </h5>
+                    <div className="z-9999">
+                      <LanguageSwitcher />
+                    </div>
                   </div>
-                </SheetFooter>
+                </div>
               </SheetContent>
             </Sheet>
           </div>
@@ -153,7 +161,7 @@ const NavHeader = () => {
     </nav>
   ) : (
     <ContainerWrap className="sticky top-8 z-99 hover:scale-101 transition-all duration-300 group">
-      <nav className="px-5 z-99 lg:border-b-0 border-b border-primary/10 bg-white shadow-lg group-hover:shadow-2xl shadow-background transition-all duration-300 rounded-full mt-8">
+      <nav className="px-5 z-99 lg:border-b-0 border-b border-primary/10 bg-white transition-all duration-300 rounded-full mt-8">
         <header className="lg:py-4 py-3 flex w-full items-center justify-between">
           <Link href={`/${locale}/home`}>
             <Image
@@ -182,7 +190,10 @@ const NavHeader = () => {
                     />
                   </svg>
                 </SheetTrigger>
-                <SheetContent side="right" className="p-8 bg-white z-999">
+                <SheetContent
+                  side="right"
+                  className="p-8 bg-white z-999 lg:max-w-md!"
+                >
                   <SheetTitle />
                   <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer">
                     <h5 className="text-primary font-extrabold">Tutup</h5>
@@ -192,8 +203,17 @@ const NavHeader = () => {
                   </SheetClose>
                   <div className="flex flex-col space-y-4 mt-5">
                     <Link
+                      href={`/${locale}/sign-in`}
+                      className="group flex w-full"
+                      data-cursor-clickable
+                    >
+                      <Button className="flex w-full rounded-full">
+                        <h5 className="font-extrabold">Masuk</h5>
+                      </Button>
+                    </Link>
+                    <Link
                       href={`/${locale}/about`}
-                      className="group"
+                      className="group mt-5 hover:underline decoration-health underline-offset-2 transition-all duration-300"
                       data-cursor-clickable
                     >
                       <h5 className="font-extrabold text-primary">
@@ -202,21 +222,21 @@ const NavHeader = () => {
                     </Link>
                     <Link
                       href={`/${locale}/wellness`}
-                      className="group"
+                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
                       data-cursor-clickable
                     >
                       <h5 className="font-extrabold text-primary">Kesehatan</h5>
                     </Link>
                     <Link
                       href={`/${locale}/medical`}
-                      className="group"
+                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
                       data-cursor-clickable
                     >
                       <h5 className="font-extrabold text-primary">Medis</h5>
                     </Link>
                     <Link
                       href={`/${locale}/medical-equipment`}
-                      className="group"
+                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
                       data-cursor-clickable
                     >
                       <h5 className="font-extrabold text-primary">
@@ -225,42 +245,34 @@ const NavHeader = () => {
                     </Link>
                     <Link
                       href={`/${locale}/article`}
-                      className="group"
+                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
                       data-cursor-clickable
                     >
                       <h5 className="font-extrabold text-primary">Artikel</h5>
                     </Link>
                     <Link
                       href={`/${locale}/events`}
-                      className="group"
+                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
                       data-cursor-clickable
                     >
                       <h5 className="font-extrabold text-primary">Acara</h5>
                     </Link>
                     <Link
                       href={`/${locale}/events`}
-                      className="group"
+                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
                       data-cursor-clickable
                     >
                       <h5 className="font-extrabold text-primary">Kontak</h5>
                     </Link>
-                    <Link
-                      href={`/${locale}/sign-in`}
-                      className="group"
-                      data-cursor-clickable
-                    >
-                      <h5 className="font-extrabold text-primary">Masuk</h5>
-                    </Link>
-                  </div>
-
-                  <SheetFooter className="bg-gray-50 rounded-2xl border border-primary/10">
-                    <h5 className="text-primary font-extrabold mb-0">
-                      Preferensi
-                    </h5>
-                    <div className="z-9999">
-                      <LanguageSwitcher />
+                    <div className="bg-gray-50 rounded-2xl border border-primary/10 p-4 mt-5">
+                      <h5 className="text-primary font-extrabold mb-2">
+                        Preferensi
+                      </h5>
+                      <div className="z-9999">
+                        <LanguageSwitcher />
+                      </div>
                     </div>
-                  </SheetFooter>
+                  </div>
                 </SheetContent>
               </Sheet>
             </div>

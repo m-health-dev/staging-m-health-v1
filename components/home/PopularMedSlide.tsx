@@ -68,7 +68,7 @@ export default function PopularMedSlide({
               {data.map((slide, key) => (
                 <SwiperSlide
                   key={key}
-                  className="flex flex-col justify-between rounded-2xl mb-2 max-w-[280px] 3xl:min-h-[45vh] 3xl:max-h-[45vh]  min-h-[60vh] max-h-[60vh] group cursor-pointer"
+                  className="flex flex-col justify-between rounded-2xl mb-2 max-w-[280px] group cursor-pointer"
                   onMouseEnter={() => setHoveredIndex(key)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
@@ -80,12 +80,7 @@ export default function PopularMedSlide({
                     className="w-full aspect-square! object-cover object-center rounded-t-2xl -z-10"
                   />
 
-                  <motion.div
-                    initial={{ y: 0, z: 50 }}
-                    animate={{ y: hoveredIndex === key ? -100 : 0 }}
-                    transition={{ duration: 0.1, ease: "easeInOut" }}
-                    className="flex flex-col justify-center grow max-w-full bg-white border rounded-2xl -mt-5 p-4 h-full shadow transition-all duration-100 z-50  group-hover:outline-2 group-hover:outline-primary"
-                  >
+                  <div className="flex flex-col justify-center 3xl:min-h-[15vh] min-h-[22vh] grow max-w-full bg-white border rounded-2xl -translate-y-5 p-4 h-full shadow transition-all duration-100 z-50  group-hover:outline-2 group-hover:outline-primary">
                     <div className="inline-flex gap-2 items-center">
                       <Avatar
                         name={hospital[key + 2].nama}
@@ -104,93 +99,23 @@ export default function PopularMedSlide({
                       </p>
                     </div>
                     <div className="overflow-hidden mt-2">
-                      <AnimatePresence mode="wait">
-                        {hoveredIndex === key ? (
-                          <motion.div
-                            key="expanded"
-                            initial={{
-                              opacity: 1,
-                              height: slide.alt.length > 40 ? 60 : 30,
-                            }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 1, height: 60 }}
-                            transition={{
-                              delay: 0.2,
-                              duration: 0.3,
-                              ease: "easeInOut",
-                            }}
-                          >
-                            <h6 className="capitalize font-bold text-primary line-clamp-3">
-                              {slide.alt}
-                            </h6>
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="short"
-                            initial={{ opacity: 1, height: "auto" }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 1, height: "auto" }}
-                            transition={{
-                              delay: 0.2,
-                              duration: 0.3,
-                              ease: "easeInOut",
-                            }}
-                          >
-                            <h6 className="capitalize font-bold text-primary line-clamp-2">
-                              {slide.alt}
-                            </h6>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                      <div>
+                        <h6 className="capitalize font-bold text-primary line-clamp-2">
+                          {slide.alt}
+                        </h6>
+                      </div>
                     </div>
                     <div className="mt-2 overflow-hidden">
-                      <AnimatePresence mode="wait">
-                        {hoveredIndex === key ? (
-                          <motion.div
-                            key="expanded"
-                            initial={{ opacity: 1, height: 40 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 1, height: 40 }}
-                            transition={{
-                              delay: 0.2,
-                              duration: 0.3,
-                              ease: "easeInOut",
-                            }}
-                          >
-                            <p className="text-muted-foreground line-clamp-5 text-sm!">
-                              {`${slide.description}` +
-                                `_` +
-                                `Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
-          quaerat nobis fugiat praesentium officia quis, quidem voluptatum eos.
-          Quae nemo earum quis cum labore fuga nihil! Sit illum dolores
-          perspiciatis minus molestiae consequuntur? Rerum quisquam, cumque
-          voluptatem ipsum libero inventore qui. Quo obcaecati et repudiandae,
-          tempora quisquam doloremque quaerat molestiae.`}
-                            </p>
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="short"
-                            initial={{ opacity: 1, height: "auto" }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 1, height: "auto" }}
-                            transition={{
-                              delay: 0.2,
-                              duration: 0.3,
-                              ease: "easeInOut",
-                            }}
-                          >
-                            <p className="text-muted-foreground text-sm! line-clamp-2">
-                              {`${slide.description}` +
-                                `_` +
-                                `Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
+                      <div>
+                        <p className="text-muted-foreground text-sm! line-clamp-2">
+                          {`${slide.description}` +
+                            ` ` +
+                            `Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
           quaerat nobis fugiat praesentium officia quis.`}
-                            </p>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                        </p>
+                      </div>
                     </div>
-                  </motion.div>
+                  </div>
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -253,11 +178,11 @@ export default function PopularMedSlide({
           </div>
         ) : (
           <ContainerWrap>
-            <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5 lg:pb-0 pb-[30vh]">
+            <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 lg:pb-0">
               {data.map((slide, key) => (
                 <div
                   key={key}
-                  className="flex flex-col justify-between rounded-2xl mb-2 lg:max-w-full w-full 3xl:min-h-[40vh] 3xl:max-h-[40vh] lg:min-h-[55vh] lg:max-h-[65vh] min-h-[60vh] max-h-[60vh] group cursor-pointer"
+                  className="flex flex-col justify-between rounded-2xl mb-2 lg:max-w-full w-full group cursor-pointer"
                   onMouseEnter={() => setHoveredIndex(key)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
@@ -269,12 +194,7 @@ export default function PopularMedSlide({
                     className="w-full aspect-square! object-cover object-center rounded-t-2xl"
                   />
 
-                  <motion.div
-                    initial={{ y: 0, z: 50 }}
-                    animate={{ y: hoveredIndex === key ? -100 : 0 }}
-                    transition={{ duration: 0.1, ease: "easeInOut" }}
-                    className="flex flex-col justify-center grow max-w-full bg-white border rounded-2xl -mt-5 p-4 h-full shadow transition-all duration-100 group-hover:outline-2 group-hover:outline-primary z-50"
-                  >
+                  <div className="flex flex-col justify-center  3xl:min-h-[15vh] min-h-[22vh] max-w-full bg-white border rounded-2xl -mt-5 p-4 h-full shadow transition-all duration-100 group-hover:outline-2 group-hover:outline-primary z-50">
                     <div className="inline-flex gap-2 items-center">
                       <Avatar
                         name={hospital[key + 2].nama}
@@ -294,96 +214,23 @@ export default function PopularMedSlide({
                     </div>
 
                     <div className="overflow-hidden mt-2">
-                      <AnimatePresence mode="wait">
-                        {hoveredIndex === key ? (
-                          <motion.div
-                            key="expanded"
-                            initial={{
-                              opacity: 1,
-                              height: slide.alt.length > 40 ? 50 : 25,
-                            }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{
-                              opacity: 1,
-                              height: slide.alt.length > 40 ? 50 : 25,
-                            }}
-                            transition={{
-                              delay: 0.2,
-                              duration: 0.3,
-                              ease: "easeInOut",
-                            }}
-                          >
-                            <h6 className="capitalize font-bold text-primary line-clamp-3">
-                              {slide.alt}
-                            </h6>
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="short"
-                            initial={{ opacity: 1, height: "auto" }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 1, height: "auto" }}
-                            transition={{
-                              delay: 0.2,
-                              duration: 0.3,
-                              ease: "easeInOut",
-                            }}
-                          >
-                            <h6 className="capitalize font-bold text-primary  lg:line-clamp-2 line-clamp-1">
-                              {slide.alt}
-                            </h6>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                      <div>
+                        <h6 className="capitalize font-bold text-primary  lg:line-clamp-2 line-clamp-1">
+                          {slide.alt}
+                        </h6>
+                      </div>
                     </div>
                     <div className="mt-2 overflow-hidden">
-                      <AnimatePresence mode="wait">
-                        {hoveredIndex === key ? (
-                          <motion.div
-                            key="expanded"
-                            initial={{ opacity: 1, height: 40 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 1, height: 40 }}
-                            transition={{
-                              delay: 0.2,
-                              duration: 0.3,
-                              ease: "easeInOut",
-                            }}
-                          >
-                            <p className="text-muted-foreground line-clamp-5 text-sm!">
-                              {`${slide.description}` +
-                                `_` +
-                                `Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
-          quaerat nobis fugiat praesentium officia quis, quidem voluptatum eos.
-          Quae nemo earum quis cum labore fuga nihil! Sit illum dolores
-          perspiciatis minus molestiae consequuntur? Rerum quisquam, cumque
-          voluptatem ipsum libero inventore qui. Quo obcaecati et repudiandae,
-          tempora quisquam doloremque quaerat molestiae.`}
-                            </p>
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="short"
-                            initial={{ opacity: 1, height: "auto" }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 1, height: "auto" }}
-                            transition={{
-                              delay: 0.2,
-                              duration: 0.3,
-                              ease: "easeInOut",
-                            }}
-                          >
-                            <p className="text-muted-foreground text-sm! line-clamp-2">
-                              {`${slide.description}` +
-                                `_` +
-                                `Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
+                      <div>
+                        <p className="text-muted-foreground text-sm! line-clamp-2">
+                          {`${slide.description}` +
+                            ` ` +
+                            `Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
           quaerat nobis fugiat praesentium officia quis.`}
-                            </p>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                        </p>
+                      </div>
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
               ))}
             </div>

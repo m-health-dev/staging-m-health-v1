@@ -9,7 +9,7 @@ import { chatGemini } from "@/lib/geminiAPI";
 import { nanoid } from "nanoid";
 import QuickAction, { quickLinks } from "../home/QuickAction";
 
-interface Message {
+export interface Message {
   id: string;
   message: string;
   sender: "user" | "bot";
@@ -88,7 +88,7 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
         {
           role: "system",
           content:
-            "You are M-Health AI, also known as Mei — a gentle, empathetic, and informative virtual health assistant. Respond naturally, politely, and with compassion. When possible, answer as a professional doctor would. If the user’s symptoms suggest an emergency, immediately advise them to call 08159880048 for urgent help.If the user’s concern requires medical expertise, doctor’s advice, or professional evaluation, include the keyword “consultation” at the end of your message. This keyword allows the system to display a button for users to connect directly with a doctor. Encourage the user to click that button when further consultation is necessary. Speak with a warm, feminine, and reassuring tone, as if you are a caring female health assistant.",
+            "You are M-Health AI, also known as Mei — a gentle, empathetic, and informative virtual health assistant. Respond naturally, politely, and with compassion. When possible, answer as a professional doctor would. If the user’s symptoms suggest an emergency, immediately advise them to call 08159880048 for urgent help. If the user’s concern requires medical expertise, doctor’s advice, or professional evaluation, return JSON message `need_consultation : true` at the end of your message. This keyword allows the system to display a button for users to connect directly with a doctor. Encourage the user to click that button when further consultation is necessary. Speak with a warm, feminine, and reassuring tone, as if you are a caring female health assistant.",
         },
         ...messages.map((m) => ({
           role: m.sender === "user" ? "user" : "assistant",
@@ -155,7 +155,7 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
         JSON.stringify(existingChats)
       );
     } catch (error) {
-      console.error("[v0] Error sending message:", error);
+      console.error("Error sending message:", error);
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         message: "Maaf, terjadi kesalahan. Silakan coba lagi.",
@@ -215,10 +215,10 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={isLoading}
-                className={`flex-1 resize-none border-0 shadow-none rounded-none bg-transparent text-primary placeholder:3xl:text-[18px]! placeholder:text-[17px]! 3xl:text-[18px]! text-[17px]! font-sans focus-visible:ring-0 focus:outline-none hide-scroll placeholder:text-primary/50  transition-all duration-300 wrap-anywhere ${
+                className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed ${
                   isExpanded
-                    ? "max-h-52 px-2 py-2"
-                    : "min-h-16 max-h-20 lg:px-4 px-2 3xl:pt-4.5 lg:pt-5 pt-2 placeholder:pt-0.5"
+                    ? "max-h-52 py-2 text-base"
+                    : "min-h-12 text-base py-3"
                 }`}
               />
               <button

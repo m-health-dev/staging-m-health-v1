@@ -7,6 +7,7 @@ import { Input } from "../ui/input";
 import ContainerWrap from "../utility/ContainerWrap";
 import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Spinner } from "../ui/spinner";
 
 export interface Message {
   id: string;
@@ -44,7 +45,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   }, [inputValue]);
 
   useEffect(() => {
-    setIsExpanded(inputValue.length > 50);
+    setIsExpanded(inputValue.length > 40);
   }, [inputValue]);
 
   useEffect(() => {
@@ -131,7 +132,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         <div
           className={`flex  w-full justify-center transition-all duration-300`}
         >
-          <div className="relative w-full max-w-3xl h-auto bg-background py-3">
+          <div className="relative w-full max-w-3xl h-auto bg-background pt-3">
             {replyMessage && (
               <div className="bg-white/80 p-4 rounded-2xl mb-1 flex justify-between items-start shadow-sm border border-border">
                 <div className="max-w-[85%]">
@@ -157,7 +158,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                   className={`flex w-full max-w-3xl bg-white border border-border shadow-sm transform-content ${
                     isExpanded
                       ? "flex-col rounded-2xl px-2 pt-2 pb-2 items-end"
-                      : "flex-row rounded-2xl px-4 py-2 max-h-16 items-center"
+                      : "flex-row rounded-2xl pl-2 pr-3 py-2 max-h-16 items-center"
                   }`}
                 >
                   <Textarea
@@ -167,10 +168,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyPress}
                     disabled={isLoading}
-                    className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:3xl:text-[18px]! placeholder:text-[17px]! 3xl:text-[18px]! text-[17px]! font-sans focus-visible:ring-0 focus:outline-none hide-scroll placeholder:text-primary/50  transition-all duration-300 ${
+                    className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed ${
                       isExpanded
-                        ? "max-h-52 px-2 py-2"
-                        : "min-h-16 max-h-20 px-1 3xl:py-5 py-5.5 placeholder:pt-0.5"
+                        ? "max-h-52 py-2 text-base"
+                        : "min-h-12 text-base py-3"
                     }`}
                   />
                   <button
@@ -182,35 +183,17 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                         : "bg-primary text-white hover:bg-primary/90"
                     } ${isExpanded ? "w-11 h-11" : "w-11 h-11"}`}
                   >
-                    <ArrowUp className="size-5" />
+                    {isLoading ? <Spinner /> : <ArrowUp className="size-5" />}
                   </button>
                 </div>
               </div>
             </div>
-
-            {/* <div>
-              <Textarea
-                placeholder="Jangan ragu untuk tanyakan apapun."
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyPress}
-                disabled={isLoading}
-                className="rounded-2xl hide-scroll overflow-y-auto resize-none bg-white pl-5 pr-18 min-h-16 max-h-28 py-5 border-0 focus-visible:ring-0 placeholder:font-sans placeholder:text-base font-sans! text-base! placeholder:text-primary/50 shadow-sm disabled:opacity-50"
-              />
-              <button
-                onClick={handleSend}
-                disabled={isLoading || !inputValue.trim()}
-                className="absolute right-3 3xl:bottom-[2.7vh] bottom-[4.2vh] shadow-sm -translate-y-1/2 text-primary cursor-pointer bg-background rounded-full p-3 hover:opacity-70 disabled:opacity-50 transition-opacity"
-              >
-                <ArrowUp className="size-5" />
-              </button>
-            </div> */}
             <div>
               <p className="text-xs! text-muted-foreground mt-4 text-center">
                 M-Health AI dapat membuat kesalahan. Periksa info penting.
               </p>
               <p className="text-xs! text-primary font-semibold mt-0 text-center">
-                Gemini 2.5 Flash in Charge
+                Gemini 2.5 Flash
               </p>
             </div>
           </div>

@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeSanitize from "rehype-sanitize";
 import LocalDateTime from "../utility/lang/LocaleDateTime";
-import { Check, Copy, Undo2 } from "lucide-react";
+import { Check, ClipboardPlus, Copy, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
@@ -45,17 +45,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const hasConsultation =
     message.includes("consultation") || message.includes("Konsultasi");
   let cleanMessage = message
-    .replaceAll("consultation", "")
-    .replaceAll("[", "")
-    .replaceAll("]", "")
-    .replaceAll("RESPON UNTUK DEVELOPER:", "")
-    .replaceAll(`{ "consultaion" : true }`, ``)
-    .replaceAll("Developer, tolong tampilkan opsi '' untuk pengguna.", "")
-    .replaceAll(
-      "Developer, tolong tampilkan opsi '' untuk memungkinkan pengguna terhubung dengan dokter.",
-      ""
-    )
-    .replaceAll("Untuk developer: .", "")
+    .replaceAll("```json\nneed_consultation : true\n```", ``)
     .trim();
   const hasPhone = message.includes(phoneNumber);
 
@@ -238,17 +228,17 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           </ReactMarkdown>
 
           {!isUser && hasConsultation && (
-            <div className="mt-3 mb-5">
+            <div className="mt-3 mb-5 bg-background py-10 px-3 rounded-2xl">
               <Link
                 href={`/connect?status=emergency`}
-                className="lg:w-fit w-full"
+                className="flex items-center justify-center w-full"
               >
                 <Button
                   variant="default"
                   size={"lg"}
                   className="rounded-full bg-health hover:bg-health/80 lg:w-fit w-full cursor-pointer pointer-events-auto"
                 >
-                  Konsultasi dengan Dokter
+                  <ClipboardPlus /> Konsultasi dengan Dokter
                 </Button>
               </Link>
             </div>

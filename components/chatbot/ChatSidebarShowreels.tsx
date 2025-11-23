@@ -83,7 +83,7 @@ const ChatSidebarShowreels = ({
     </div>
   ) : (
     <div className="flex flex-col space-y-5">
-      <div className="lg:bg-white shadow-sm bg-background p-4 rounded-2xl border border-primary">
+      <div className="lg:bg-white shadow-sm bg-background p-4 rounded-2xl border border-primary sticky top-0">
         <button
           onClick={() => {
             startNewChat(), window.location.reload();
@@ -93,53 +93,57 @@ const ChatSidebarShowreels = ({
           <Plus /> <p className="font-bold">Obrolan Baru</p>
         </button>
       </div>
-      <div className="bg-white p-4 rounded-2xl border">
-        <h4 className="font-extrabold text-primary">Riwayat Obrolan</h4>
-        <div className="space-y-5 pt-3">
-          <div className="space-y-2">
-            {sessions.length > 0 ? (
-              sessions.map((s) => (
-                <button
-                  key={s.id}
+
+      {sessions.length > 0 && (
+        <div className="bg-white p-4 rounded-2xl border">
+          <h4 className="font-extrabold text-primary">Riwayat Obrolan</h4>
+          <div className="space-y-5 pt-3">
+            <div className="space-y-2">
+              {sessions.length > 0 ? (
+                sessions.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => {
+                      onSelectChat(s.id);
+                      if (setOpenSheet) setOpenSheet(false);
+                    }}
+                    className="w-full text-left border border-border p-2 rounded-xl hover:bg-muted cursor-pointer"
+                  >
+                    <p className="font-medium text-primary text-base! line-clamp-2 wrap-break-word">
+                      {s.title}
+                    </p>
+                    <p className="text-xs! uppercase text-muted-foreground">
+                      {s.id.slice(0, 7)}
+                    </p>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {s.messages?.[s.messages.length - 1]?.content}
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <FailedGetDataNotice size="sm" />
+              )}
+              {sessions.length >= 1 && (
+                <div
                   onClick={() => {
-                    onSelectChat(s.id);
+                    localStorage.removeItem("mhealth_chat_sessions");
                     if (setOpenSheet) setOpenSheet(false);
+                    window.location.reload();
                   }}
-                  className="w-full text-left border border-border p-2 rounded-xl"
+                  className="text-xs text-red-500 hover:text-red-700 inline-flex gap-1 items-center mt-2 transition cursor-pointer"
                 >
-                  <p className="font-medium text-primary text-base! line-clamp-2 wrap-break-word">
-                    {s.title}
-                  </p>
-                  <p className="text-xs! uppercase text-muted-foreground">
-                    {s.id.slice(0, 7)}
-                  </p>
-                  <div className="text-xs text-muted-foreground truncate">
-                    {s.messages?.[s.messages.length - 1]?.content}
-                  </div>
-                </button>
-              ))
-            ) : (
-              <FailedGetDataNotice size="sm" />
-            )}
-            {sessions.length >= 1 && (
-              <div
-                onClick={() => {
-                  localStorage.removeItem("mhealth_chat_sessions");
-                  if (setOpenSheet) setOpenSheet(false);
-                  window.location.reload();
-                }}
-                className="text-xs text-red-500 hover:text-red-700 inline-flex gap-1 items-center mt-2 transition cursor-pointer"
-              >
-                <Trash2 className="size-3" /> Hapus riwayat percakapan
-              </div>
-            )}
+                  <Trash2 className="size-3" /> Hapus riwayat percakapan
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
       <div className="bg-white p-4 rounded-2xl border">
-        <h4 className="font-extrabold text-primary mb-3">Welness</h4>
+        <h4 className="font-extrabold text-primary mb-3">Packages</h4>
         <div className="space-y-5">
-          {data.map((img, i) => (
+          {data.slice(10, 13).map((img, i) => (
             <Link
               key={img.id}
               href={`/wellness/package-${i + 1}`}
@@ -150,7 +154,7 @@ const ChatSidebarShowreels = ({
                   i + 1 === data.length ? "mb-0" : "mb-4"
                 }`}
               >
-                <div className="col-span-1 px-3">
+                <div className="px-3 col-span-1">
                   <Suspense fallback={<Spinner />}>
                     <Image
                       src={"https://placehold.co/600x400.png"}
@@ -161,34 +165,29 @@ const ChatSidebarShowreels = ({
                     />
                   </Suspense>
                 </div>
-                <div className="col-span-2">
-                  <h6 className="font-extrabold text-primary line-clamp-3 ">
-                    {img.title}
-                  </h6>
-                </div>
-                <div className="col-span-3 mt-2 px-3">
-                  <p className="text-sm! text-muted-foreground line-clamp-2">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Suscipit tenetur cum vel, adipisci provident, voluptas
-                    magnam veniam saepe ut ipsum aut veritatis voluptatum
-                    quisquam pariatur vero consequatur? Possimus, fugiat minima?
-                  </p>
+                <div className="col-span-2 pr-3">
+                  <div className="">
+                    <p className="font-extrabold text-primary line-clamp-2 ">
+                      {img.title}
+                    </p>
+                  </div>
+                  <div className="mt-1">
+                    <p className="text-sm! text-muted-foreground line-clamp-2">
+                      {img.tagline}
+                    </p>
+                  </div>
                 </div>
               </div>
             </Link>
           ))}
-          {data.length <= 0 && (
-            <p className="bg-muted py-5 px-3 rounded-2xl text-muted-foreground text-sm!">
-              Belum ada data.
-            </p>
-          )}
+          {data.length <= 0 && <FailedGetDataNotice size="sm" />}
         </div>
       </div>
 
       <div className="bg-white p-4 rounded-2xl border">
-        <h4 className="font-extrabold text-primary mb-3">Medical</h4>
+        <h4 className="font-extrabold text-primary mb-3">Welness</h4>
         <div className="space-y-5">
-          {data.map((img, i) => (
+          {data.slice(0, 3).map((img, i) => (
             <Link
               key={img.id}
               href={`/wellness/package-${i + 1}`}
@@ -199,36 +198,77 @@ const ChatSidebarShowreels = ({
                   i + 1 === data.length ? "mb-0" : "mb-4"
                 }`}
               >
-                <div className="col-span-1 px-3">
-                  <Image
-                    src={"https://placehold.co/600x400.png"}
-                    alt={"https://placehold.co/600x400.png"}
-                    width={720}
-                    height={720}
-                    className="aspect-square object-cover object-center rounded-xl"
-                  />
+                <div className="px-3 col-span-1">
+                  <Suspense fallback={<Spinner />}>
+                    <Image
+                      src={"https://placehold.co/600x400.png"}
+                      alt={"https://placehold.co/600x400.png"}
+                      width={720}
+                      height={720}
+                      className="aspect-square object-cover object-center rounded-xl"
+                    />
+                  </Suspense>
                 </div>
-                <div className="col-span-2">
-                  <h6 className="font-extrabold text-primary line-clamp-3 ">
-                    {img.title}
-                  </h6>
-                </div>
-                <div className="col-span-3 mt-2 px-3">
-                  <p className="text-sm! text-muted-foreground line-clamp-2">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Suscipit tenetur cum vel, adipisci provident, voluptas
-                    magnam veniam saepe ut ipsum aut veritatis voluptatum
-                    quisquam pariatur vero consequatur? Possimus, fugiat minima?
-                  </p>
+                <div className="col-span-2 pr-3">
+                  <div className="">
+                    <p className="font-extrabold text-primary line-clamp-2 ">
+                      {img.title}
+                    </p>
+                  </div>
+                  <div className="mt-1">
+                    <p className="text-sm! text-muted-foreground line-clamp-2">
+                      {img.tagline}
+                    </p>
+                  </div>
                 </div>
               </div>
             </Link>
           ))}
-          {data.length <= 0 && (
-            <p className="bg-muted py-5 px-3 rounded-2xl text-muted-foreground text-sm!">
-              Belum ada data.
-            </p>
-          )}
+          {data.length <= 0 && <FailedGetDataNotice size="sm" />}
+        </div>
+      </div>
+
+      <div className="bg-white p-4 rounded-2xl border">
+        <h4 className="font-extrabold text-primary mb-3">Medical</h4>
+        <div className="space-y-5">
+          {data.slice(4, 7).map((img, i) => (
+            <Link
+              key={img.id}
+              href={`/wellness/package-${i + 1}`}
+              className="group"
+            >
+              <div
+                className={`grid grid-cols-3 items-center group-hover:bg-muted group-hover:shadow-sm transition-all duration-300 rounded-xl py-3 border border-border ${
+                  i + 1 === data.length ? "mb-0" : "mb-4"
+                }`}
+              >
+                <div className="px-3 col-span-1">
+                  <Suspense fallback={<Spinner />}>
+                    <Image
+                      src={"https://placehold.co/600x400.png"}
+                      alt={"https://placehold.co/600x400.png"}
+                      width={720}
+                      height={720}
+                      className="aspect-square object-cover object-center rounded-xl"
+                    />
+                  </Suspense>
+                </div>
+                <div className="col-span-2 pr-3">
+                  <div className="">
+                    <p className="font-extrabold text-primary line-clamp-2 ">
+                      {img.title}
+                    </p>
+                  </div>
+                  <div className="mt-1">
+                    <p className="text-sm! text-muted-foreground line-clamp-2">
+                      {img.tagline}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+          {data.length <= 0 && <FailedGetDataNotice size="sm" />}
         </div>
       </div>
     </div>

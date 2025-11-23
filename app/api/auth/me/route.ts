@@ -6,8 +6,8 @@ export async function GET(request: NextRequest) {
   try {
     const cookie = request.headers.get("cookie") ?? "";
 
-    console.log("[v0] Auth ME - Forwarding cookie:", cookie?.slice(0, 50));
-    console.log("[v0] Backend URL:", apiBaseUrl);
+    console.log("Auth ME - Forwarding cookie:", cookie?.slice(0, 50));
+    console.log("Backend URL:", apiBaseUrl);
 
     // Step 1: Get CSRF token (required by Sanctum)
     const csrfRes = await fetch(`${apiBaseUrl}/sanctum/csrf-cookie`, {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!csrfRes.ok) {
-      console.error("[v0] CSRF fetch failed:", csrfRes.status);
+      console.error("CSRF fetch failed:", csrfRes.status);
     }
 
     // Step 2: Get user data with cookies
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       credentials: "include",
     });
 
-    console.log("[v0] User data response:", res.status);
+    console.log("User data response:", res.status);
 
     if (res.status === 401) {
       return NextResponse.json({ authenticated: false }, { status: 401 });
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error("[v0] Failed to fetch user:", res.status, errorText);
+      console.error("Failed to fetch user:", res.status, errorText);
       return NextResponse.json(
         { authenticated: false, error: "Failed to fetch user" },
         { status: 500 }
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     }
 
     const user = await res.json();
-    console.log("[v0] User fetched successfully:", user?.email || user?.id);
+    console.log("User fetched successfully:", user?.email || user?.id);
 
     const response = NextResponse.json({ authenticated: true, user });
 
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("[v0] Auth ME error:", error);
+    console.error("Auth ME error:", error);
     return NextResponse.json(
       { authenticated: false, error: "Internal server error" },
       { status: 500 }
