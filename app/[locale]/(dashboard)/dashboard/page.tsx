@@ -1,20 +1,34 @@
-import Wrapper from "@/components/utility/Wrapper";
-import { getUserRole, signOutAction } from "@/lib/auth/auth";
-import { createClient } from "@/utils/supabase/server";
-import { supabaseClient } from "@/utils/supabase/helper";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import ContainerWrap from "@/components/utility/ContainerWrap";
+import Wrapper from "@/components/utility/Wrapper";
+import { createClient } from "@/utils/supabase/server";
+import { jwtDecode } from "jwt-decode";
+import Link from "next/link";
 
 const DashboardPage = async () => {
   const supabase = await createClient();
-  const data = await supabase.auth.getUser();
-  const role = await supabase.auth.getClaims();
+
+  const { data: userData } = await supabase.auth.getUser();
+
+  const { data: claims } = await supabase.auth.getClaims();
+
+  const { data: session } = await supabase.auth.getSession();
+
   return (
     <Wrapper>
-      <p>Dashboard</p>
-
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-      <pre>{JSON.stringify(role, null, 2)}</pre>
+      <ContainerWrap>
+        <div className="flex justify-between my-20">
+          <h3 className="font-bold text-primary">Dashboard</h3>
+          <Link href={"/sign-out"}>
+            <Button variant={"destructive"}>Sign Out</Button>
+          </Link>
+        </div>
+        <pre>{JSON.stringify(userData, null, 2)}</pre>
+        <pre className="text-wrap wrap-anywhere">
+          User Role is {JSON.stringify(claims, null, 2)} |{" "}
+          {JSON.stringify(session, null, 2)}
+        </pre>
+      </ContainerWrap>
     </Wrapper>
   );
 };

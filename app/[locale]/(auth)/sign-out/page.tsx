@@ -1,0 +1,93 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { AlertCircle, LogOut } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { toast } from "sonner";
+
+export default function SignOutPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Kamu Berhasil Keluar!");
+
+      // Redirect to login page after successful sign out
+      router.push("/sign-in");
+    } catch (err: any) {
+      setError(err.message || "An error occurred while signing out");
+      toast.error("Yah, Kamu Tidak Berhasil Keluar", {
+        description: err.message || "An error occurred while signing out",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    router.back();
+  };
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl font-normal">Sign Out</CardTitle>
+          <CardDescription>
+            Are you sure you want to sign out of your account?
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          <p className="text-sm text-muted-foreground">
+            You will be logged out of your account and will need to sign in
+            again to access your data.
+          </p>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={handleSignOut}
+            disabled={isLoading}
+            className="gap-2"
+          >
+            {isLoading ? "Signing out..." : "Sign Out"}
+            {!isLoading && <LogOut className="h-4 w-4" />}
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
+  );
+}

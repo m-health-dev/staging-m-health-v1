@@ -14,7 +14,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { AuthSignInSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -25,48 +25,68 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
-import { signInAction } from "@/lib/auth/auth";
+import { signInAction, signWithGoogle } from "@/lib/auth/auth";
 import { sign } from "crypto";
+import { useLocale } from "next-intl";
 
 const SignInClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
+  const locale = useLocale();
+  const params = useSearchParams();
+  const redirectData = params.get("redirect") || "/dashboard";
 
   const form = useForm<z.infer<typeof AuthSignInSchema>>({
     resolver: zodResolver(AuthSignInSchema),
     defaultValues: {
       email: "",
       password: "",
-      redirect: "",
+      redirect: redirectData?.toString() || `/${locale}/dashboard`,
     },
   });
 
+  const handleGoogleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const response = await signWithGoogle(redirectData);
+
+    if (response?.error) {
+      toast.error(`Verifikasi Gagal`, {
+        description: `${response.error}`,
+      });
+    } else if (response?.warning) {
+      toast.warning(`Verifikasi Gagal`, {
+        description: `${response.warning}`,
+      });
+    } else {
+      return;
+    }
+  };
+
   async function onSubmit(data: z.infer<typeof AuthSignInSchema>) {
     setLoading(true);
-    const signingIn = await signInAction(data);
+    const res = await signInAction(data);
 
-    if (signingIn) {
-      toast("Log", {
-        description: (
-          <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30 space-y-4">
-            <div>
-              <p className="mb-2 text-sm! text-muted-foreground">Sent</p>
-              <code>{JSON.stringify(data, null, 2)}</code>
-            </div>
-            <div>
-              <p className="mb-2 text-sm! text-muted-foreground">Response</p>
-              <code>{JSON.stringify(signingIn, null, 2)}</code>
-            </div>
-          </pre>
-        ),
+    if (res?.error) {
+      setLoading(false);
+      toast.error(`Autentifikasi Gagal`, {
+        description: `${res.error}`,
       });
-      router.push("/dashboard");
+    } else if (res?.warning) {
+      setLoading(false);
+      toast.warning(`Autentifikasi Gagal`, {
+        description: `${res.warning}`,
+      });
     } else {
-      toast.error("Sign In Failed. Please check your credentials.", {
-        description: "If you encounter issues, please contact support.",
-      });
+      setLoading(false);
+      return;
     }
+    // } else {
+    //   toast.error("Sign In Failed. Please check your credentials.", {
+    //     description: "If you encounter issues, please contact support.",
+    //   });
+    // }
     setLoading(false);
   }
 
@@ -164,7 +184,7 @@ const SignInClient = ({ image }: { image: any }) => {
                   variant="outline"
                   type="button"
                   className="w-full h-12 rounded-full"
-                  onClick={() => router.push("/auth/sign-in/google")}
+                  onClick={handleGoogleSignIn}
                 >
                   <p>
                     <FontAwesomeIcon icon={faGoogle} /> Sign In with Google
@@ -175,7 +195,7 @@ const SignInClient = ({ image }: { image: any }) => {
             <p className="text-muted-foreground text-sm!">
               Don't have an account?{" "}
               <span
-                onClick={() => router.push(`/sign-up`)}
+                onClick={() => router.push(`/${locale}/sign-up`)}
                 className="text-health cursor-pointer underline"
               >
                 Sign Up

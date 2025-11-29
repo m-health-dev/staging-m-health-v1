@@ -1,8 +1,8 @@
 import { Message } from "@/components/chatbot/ChatStart";
 
-export async function chatGemini(messages: any[]) {
+export async function chatGemini(payload: { messages: any[]; prompt: string }) {
   try {
-    console.log("Sending messages to Gemini API:", messages);
+    console.log("Sending messages to Gemini API:", payload);
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_PROD_BACKEND_URL}/api/v1/gemini/generate`,
       {
@@ -10,14 +10,14 @@ export async function chatGemini(messages: any[]) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: messages }),
+        body: JSON.stringify(payload),
       }
     );
 
     const data = await res.json();
 
     return {
-      message: data.message,
+      message: data.raw.candidates[0].content.parts[0].text,
     };
   } catch (error) {
     console.error("Gemini API Error:", error);

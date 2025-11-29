@@ -9,6 +9,7 @@ import { getAuthTypes } from "@/utils/supabase/getAuthTypes";
 import { createClientAdmin } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 import { AuthSignUpSchema } from "../zodSchema";
+import { getLocale } from "next-intl/server";
 
 const signUpSchema = z.object({
   fullname: z
@@ -110,12 +111,22 @@ const resetPasswordSchema = z.object({
     }),
 });
 
+// export async function getUserRole() {
+//   const supabase = await createClient();
+//   const checkUserRole = (await supabase.auth.getClaims()).data?.claims;
+//   const readUserRole = checkUserRole?.user_role as string | "404";
+
+//   return readUserRole;
+// }
+
 export async function getUserRole() {
   const supabase = await createClient();
-  const checkUserRole = (await supabase.auth.getClaims()).data?.claims;
-  const readUserRole = checkUserRole?.user_role as string | undefined;
+  const { data, error } = await supabase.auth.getClaims();
 
-  return readUserRole;
+  if (error || !data) return "404";
+
+  const claims = data.claims as any;
+  return claims.user_role ?? "404";
 }
 
 export const signUpAction = async (data: {
@@ -230,6 +241,7 @@ export const signInAction = async (data: {
 }) => {
   const supabase = await createClient();
   const validatedData = signInSchema.safeParse(data);
+  const locale = await getLocale();
 
   if (!validatedData.success) {
     return {
@@ -242,7 +254,8 @@ export const signInAction = async (data: {
     return { error: "Email and password are required" };
   }
 
-  const redirectTo = (validatedData.data?.redirect as string) || "/dashboard";
+  const redirectTo =
+    (validatedData.data?.redirect as string) || `/${locale}/dashboard`;
 
   const { data: user, error } = await supabase.auth.signInWithPassword({
     email: validatedData.data?.email,
@@ -275,9 +288,9 @@ export const signInAction = async (data: {
     } else if (error.code) {
       return { error: `${error.message}` };
     }
+  } else {
+    return redirect(redirectTo);
   }
-
-  return redirect(redirectTo);
 };
 
 export const handleSendMagicLinkAction = async (data: { email: string }) => {
@@ -430,7 +443,7 @@ export const signWithGoogle = async (redirectTo?: string) => {
 
     options: {
       redirectTo: `${origin}/auth/oauth?next=${encodeURIComponent(
-        redirectTo?.replace("https://staging.m-health.id", "") || "/nusa"
+        redirectTo?.replace("https://staging.m-health.id", "") || "/dashboard"
       )}`,
       queryParams: {
         access_type: "offline",

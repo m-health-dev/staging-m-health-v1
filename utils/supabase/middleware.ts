@@ -1,11 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
-import { getLocale } from "next-intl/server";
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
-export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  });
+export async function updateSession(
+  request: NextRequest,
+  response: NextResponse // Response dari next-intl diterima di sini
+) {
+  // Ambil locale dari URL path, misal /en/dashboard -> en
+  // Asumsi format: /{locale}/...
+  const locale = request.nextUrl.pathname.split("/")[1] || "en";
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,65 +18,53 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
+          // 1. Update cookies di Request (agar tersedia di server components)
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
-          supabaseResponse = NextResponse.next({
-            request,
-          });
-          cookiesToSet.forEach(({ name, value }) =>
-            supabaseResponse.cookies.set(name, value)
+
+          // 2. Update cookies di Response (agar tersimpan di browser user)
+          // PENTING: Kita update response yang dipassing dari next-intl
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
           );
         },
       },
     }
   );
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // supabase.auth.getClaims(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
+  // Mengambil user untuk cek auth
 
-  // IMPORTANT: Don't remove getClaims()
-  const { data } = await supabase.auth.getClaims();
-  const locale = await getLocale();
+  await supabase.auth.getClaims();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const user = await supabase.auth.getUser();
+  // --- LOGIC PROTEKSI ROUTE ---
 
-  if (
-    user.error &&
-    request.nextUrl.pathname.startsWith(`/${locale}/dashboard`)
-  ) {
-    const reqPath = request.nextUrl.pathname;
-    // Encode the API path to ensure it's URL-safe
-    const encodedReqPath = encodeURIComponent(reqPath);
-
-    // Construct the redirect URL
-    const redirectUrl = new URL(
-      `/sign-in?redirect_to=${encodedReqPath}`,
-      request.url
-    );
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  if (!user && !request.nextUrl.pathname.startsWith(`/sign-in`)) {
-    // no user, potentially respond by redirecting the user to the login page
+  // 1. Jika User BELUM login dan mencoba akses Dashboard
+  if (!user && request.nextUrl.pathname.startsWith(`/${locale}/dashboard`)) {
     const url = request.nextUrl.clone();
-    url.pathname = "/sign-in";
+    url.pathname = `/${locale}/sign-in`;
+
+    // Opsional: Simpan halaman yang ingin diakses untuk redirect balik nanti
+    url.searchParams.set("redirect", request.nextUrl.pathname);
+
     return NextResponse.redirect(url);
   }
 
-  // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
-  // creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally:
-  //    return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely!
+  // 2. Jika User SUDAH login dan mencoba akses halaman Sign-In/Sign-Up
+  if (user) {
+    if (
+      request.nextUrl.pathname.startsWith(`/${locale}/sign-in`) ||
+      request.nextUrl.pathname.startsWith(`/${locale}/sign-up`)
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${locale}/dashboard`;
+      return NextResponse.redirect(url);
+    }
+  }
 
-  return supabaseResponse;
+  // PENTING: Kembalikan response object yang sudah dimodifikasi (cookie set)
+  return response;
 }

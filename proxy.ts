@@ -1,26 +1,23 @@
-import createIntlMiddleware from "next-intl/middleware";
-import { routing } from "./i18n/routing";
-import { updateSession } from "./utils/supabase/middleware";
-import { NextRequest, NextResponse } from "next/server";
+import createMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing"; // Sesuaikan path import
+import { type NextRequest } from "next/server";
+import { updateSession } from "./utils/supabase/middleware"; // Sesuaikan path import
 
-const intlMiddleware = createIntlMiddleware(routing);
+const handleI18nRouting = createMiddleware(routing);
 
 export async function proxy(request: NextRequest) {
-  const sessionResponse = await updateSession(request);
+  // 1. Jalankan middleware next-intl.
+  // Ini akan mengembalikan NextResponse (bisa berupa rewrite, redirect, atau next)
+  const response = handleI18nRouting(request);
 
-  if (sessionResponse.redirected || sessionResponse.status === 302) {
-    return sessionResponse;
-  }
-
-  const intlResponse = intlMiddleware(request) as NextResponse;
-
-  sessionResponse.cookies.getAll().forEach((cookie) => {
-    intlResponse.cookies.set(cookie);
-  });
-
-  return intlResponse;
+  // 2. Teruskan request DAN response dari next-intl ke Supabase helper
+  // Supabase akan menyisipkan cookies auth ke dalam response tersebut
+  return await updateSession(request, response);
 }
 
 export const config = {
-  matcher: "/((?!api|coming-soon|trpc|_next|_vercel|auth|.*\\..*).*)",
+  // Matcher: Abaikan api, _next, file statis, dll.
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

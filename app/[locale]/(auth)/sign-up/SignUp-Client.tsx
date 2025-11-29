@@ -27,11 +27,13 @@ import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 import { signUpAction } from "@/lib/auth/auth";
+import { useLocale } from "next-intl";
 
 const SignUpClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
+  const locale = useLocale();
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_PROD_BACKEND_URL;
 
@@ -197,7 +199,7 @@ const SignUpClient = ({ image }: { image: any }) => {
             <p className="text-muted-foreground text-sm! mt-5">
               Already have an account?{" "}
               <span
-                onClick={() => router.push(`/sign-in`)}
+                onClick={() => router.push(`/${locale}/sign-in`)}
                 className="text-health cursor-pointer underline"
               >
                 Sign In

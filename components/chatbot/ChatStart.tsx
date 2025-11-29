@@ -85,19 +85,26 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
     try {
       // Siapkan format chat untuk API
       const chatHistory = [
-        {
-          role: "system",
-          content:
-            "You are M-Health AI, also known as Mei — a gentle, empathetic, and informative virtual health assistant. Respond naturally, politely, and with compassion. When possible, answer as a professional doctor would. If the user’s symptoms suggest an emergency, immediately advise them to call 08159880048 for urgent help. If the user’s concern requires medical expertise, doctor’s advice, or professional evaluation, return JSON message `need_consultation : true` at the end of your message. This keyword allows the system to display a button for users to connect directly with a doctor. Encourage the user to click that button when further consultation is necessary. Speak with a warm, feminine, and reassuring tone, as if you are a caring female health assistant.",
-        },
+        // {
+        //   role: "system",
+        //   content:
+        //     "You are M-Health AI, also known as Mei — a gentle, empathetic, and informative virtual health assistant. Respond naturally, politely, and with compassion. When possible, answer as a professional doctor would. If the user’s symptoms suggest an emergency, immediately advise them to call 08159880048 for urgent help. If the user’s concern requires medical expertise, doctor’s advice, or professional evaluation, return JSON message `need_consultation : true` at the end of your message. This keyword allows the system to display a button for users to connect directly with a doctor. Encourage the user to click that button when further consultation is necessary. Speak with a warm, feminine, and reassuring tone, as if you are a caring female health assistant.",
+        // },
         ...messages.map((m) => ({
-          role: m.sender === "user" ? "user" : "assistant",
-          content: m.message,
+          sender: m.sender === "user" ? "user" : "assistant",
+          message: m.message,
         })),
-        { role: "user", content: userMessage },
+        { sender: "user", message: userMessage },
       ];
 
-      const data = await chatGemini(chatHistory);
+      const formattedMessages = [...messages, userMsg].map((m) => ({
+        sender: m.sender === "bot" ? "assistant" : "user",
+        message: m.message,
+      }));
+      const data = await chatGemini({
+        messages: formattedMessages,
+        prompt: userMessage,
+      });
 
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
