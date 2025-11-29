@@ -18,6 +18,6 @@ export async function proxy(request: NextRequest) {
 export const config = {
   // Matcher: Abaikan api, _next, file statis, dll.
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|auth|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
