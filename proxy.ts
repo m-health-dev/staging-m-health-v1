@@ -1,10 +1,26 @@
-import createMiddleware from "next-intl/middleware";
+import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
+import { updateSession } from "./utils/supabase/middleware";
+import { NextRequest, NextResponse } from "next/server";
 
-export default createMiddleware(routing);
+const intlMiddleware = createIntlMiddleware(routing);
+
+export async function proxy(request: NextRequest) {
+  const sessionResponse = await updateSession(request);
+
+  if (sessionResponse.redirected || sessionResponse.status === 302) {
+    return sessionResponse;
+  }
+
+  const intlResponse = intlMiddleware(request) as NextResponse;
+
+  sessionResponse.cookies.getAll().forEach((cookie) => {
+    intlResponse.cookies.set(cookie);
+  });
+
+  return intlResponse;
+}
+
 export const config = {
-  // Match all pathnames except for
-  // // - … if they start with /api, /trpc, /_next or /_vercel
-  // // - … the ones containing a dot (e.g. favicon.ico)
-  matcher: "/((?!api|coming-soon|trpc|_next|_vercel|.*\\..*).*)",
+  matcher: "/((?!api|coming-soon|trpc|_next|_vercel|auth|.*\\..*).*)",
 };

@@ -1,122 +1,668 @@
-"use client";
+"use server";
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_PROD_BACKEND_URL;
+import { cookies, headers } from "next/headers";
+import z from "zod";
 
-export async function getAuthClient() {
-  try {
-    const res = await fetch(`${apiBaseUrl}/api/v1/me`, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    });
+import crypto from "crypto";
+import { redirect } from "next/navigation";
+import { getAuthTypes } from "@/utils/supabase/getAuthTypes";
+import { createClientAdmin } from "@/utils/supabase/admin";
+import { createClient } from "@/utils/supabase/server";
+import { AuthSignUpSchema } from "../zodSchema";
 
-    if (res.status === 401) {
-      console.log("User not authenticated (401)");
-      return null;
-    }
+const signUpSchema = z.object({
+  fullname: z
+    .string()
+    .min(5, {
+      message: "Email Wajib Diisi!",
+    })
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+      message: "Email yang kamu gunakan salah!",
+    }),
+  email: z
+    .email()
+    .min(5, {
+      message: "Email Wajib Diisi!",
+    })
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+      message: "Email yang kamu gunakan salah!",
+    }),
+  password: z
+    .string()
+    .min(8, {
+      message: "Kami mengharuskan password berisi setidaknya 8 karakter",
+    })
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
+      message:
+        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, dan karakter spesial",
+    }),
+});
+const signInSchema = z.object({
+  email: z
+    .string()
+    .min(5, {
+      message: "Email Wajib Diisi!",
+    })
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+      message: "Email yang kamu gunakan salah!",
+    }),
+  password: z
+    .string()
+    .min(8, {
+      message: "Kami mengharuskan password berisi setidaknya 8 karakter",
+    })
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
+      message:
+        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, dan karakter spesial",
+    }),
+  redirect: z.string(),
+});
+const magicSchema = z.object({
+  email: z
+    .string()
+    .min(5, {
+      message: "Email Wajib Diisi!",
+    })
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+      message: "Email yang kamu gunakan salah!",
+    }),
+});
 
-    const data = await res.json();
-    console.log("Auth client - User:", data?.email || data?.id);
-    return data;
-  } catch (error) {
-    console.error("Get auth client error:", error);
-    return null;
-  }
+// Zod schemas
+const emailSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+});
+
+const otpSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  otp: z.string().min(6, { message: "OTP must be at least 6 characters" }),
+});
+
+const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .min(5, {
+      message: "Email Wajib Diisi!",
+    })
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+      message: "Email yang kamu gunakan salah!",
+    }),
+  callbackUrl: z.string(),
+});
+const resetPasswordSchema = z.object({
+  password: z
+    .string()
+    .min(8, {
+      message: "Kami mengharuskan password berisi setidaknya 8 karakter",
+    })
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
+      message:
+        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, serta karakter spesial",
+    }),
+  confirmPassword: z
+    .string()
+    .min(8, {
+      message: "Kami mengharuskan password berisi setidaknya 8 karakter",
+    })
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
+      message:
+        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, serta karakter spesial",
+    }),
+});
+
+export async function getUserRole() {
+  const supabase = await createClient();
+  const checkUserRole = (await supabase.auth.getClaims()).data?.claims;
+  const readUserRole = checkUserRole?.user_role as string | undefined;
+
+  return readUserRole;
 }
 
-export async function emailLogin({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) {
-  try {
-    console.log("Starting login...");
-
-    // Step 1: Get CSRF token
-    const csrfRes = await fetch(`${apiBaseUrl}/sanctum/csrf-cookie`, {
-      method: "GET",
-      credentials: "include",
-      headers: { Accept: "application/json" },
-    });
-
-    if (!csrfRes.ok) {
-      console.error("CSRF fetch failed");
-    }
-
-    // Step 2: Login with credentials
-    const res = await fetch(`${apiBaseUrl}/api/v1/login`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-    console.log("Login response:", res.status, data?.message);
-
-    return data;
-  } catch (error) {
-    console.error("Login error:", error);
-    return { message: "Connection error", error: String(error) };
-  }
-}
-
-export async function emailSignUp({
-  fullname,
-  email,
-  password,
-}: {
+export const signUpAction = async (data: {
   fullname: string;
   email: string;
   password: string;
-}) {
-  try {
-    console.log("Starting signup...");
+}) => {
+  const supabase = await createClient();
+  const origin = (await headers()).get("origin");
+  const validatedData = AuthSignUpSchema.safeParse(data);
 
-    const res = await fetch(`${apiBaseUrl}/api/v1/register`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      body: JSON.stringify({ fullname, email, password }),
-    });
-
-    const data = await res.json();
-    console.log("Signup response:", res.status, data?.message);
-
-    return data;
-  } catch (error) {
-    console.error("Signup error:", error);
-    return { message: "Connection error", error: String(error) };
+  if (!validatedData.success) {
+    return {
+      success: false,
+      errors: validatedData.error.cause,
+    };
   }
-}
 
-export async function logout() {
+  if (!validatedData.data.email || !validatedData.data.password) {
+    return { error: "Email and password are required" };
+  }
+
+  // Check if password has been pwned
+  const hashedPassword = crypto
+    .createHash("sha1")
+    .update(validatedData.data.password)
+    .digest("hex")
+    .toUpperCase();
+  const prefix = hashedPassword.slice(0, 5);
+  const suffix = hashedPassword.slice(5);
+
   try {
-    console.log("Starting logout...");
+    const response = await fetch(
+      `https://api.pwnedpasswords.com/range/${prefix}`
+    );
+    const text = await response.text();
+    const breachedHashes = text.split("\n");
 
-    const res = await fetch(`${apiBaseUrl}/api/v1/logout`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
+    for (const hash of breachedHashes) {
+      const [hashSuffix, count] = hash.split(":");
+      const localCount = Number(count).toLocaleString(`id-ID`);
+      if (hashSuffix === suffix) {
+        return {
+          error: `Password ini telah ditemukan sebanyak ${localCount} kali dalam kebocoran data. Silakan pilih password lain yang lebih aman. - Have I Been Pwned`,
+        };
+      }
+    }
+  } catch (error) {
+    console.error("Error checking password breach:", error);
+    // If the API check fails, we'll continue with the sign-up process
+  }
+
+  const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+    email: validatedData.data.email,
+    password: validatedData.data.password,
+    options: {
+      emailRedirectTo: `${origin}/auth/callback`,
+    },
+  });
+
+  const { data: insertFullname, error: errInsertFullname } = await supabase
+    .from("accounts")
+    .update({ fullname: validatedData.data.fullname })
+    .eq("id", signUpData.user?.id);
+
+  if (errInsertFullname) {
+    console.error(
+      `${errInsertFullname.code}: ${
+        errInsertFullname.message ||
+        "Terjadi kesalahan saat melakukan pengiriman nama."
+      }`
+    );
+  }
+
+  if (signUpError) {
+    console.error(
+      `${signUpError.code}: ${
+        signUpError.message || "Terjadi kesalahan saat melakukan pendaftaran."
+      }`
+    );
+
+    if (signUpError?.code === "weak_password") {
+      return {
+        warning:
+          "Password harus memiliki minimal 8 karakter dan mencakup huruf besar, huruf kecil, angka, dan karakter spesial.",
+      };
+    }
+
+    return {
+      error:
+        signUpError.message ||
+        "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi.",
+    };
+  } else if (
+    signUpData.user &&
+    signUpData.user.identities &&
+    signUpData.user.identities.length === 0
+  ) {
+    return { warning: "Email ini sudah terdaftar." };
+  } else {
+    return {
+      success:
+        "Terima kasih telah mendaftar! Silakan periksa email Anda untuk link verifikasi.",
+    };
+  }
+};
+
+export const signInAction = async (data: {
+  email: string;
+  password: string;
+  redirect: string;
+}) => {
+  const supabase = await createClient();
+  const validatedData = signInSchema.safeParse(data);
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      errors: validatedData.error.cause,
+    };
+  }
+
+  if (!validatedData.data.email || !validatedData.data.password) {
+    return { error: "Email and password are required" };
+  }
+
+  const redirectTo = (validatedData.data?.redirect as string) || "/dashboard";
+
+  const { data: user, error } = await supabase.auth.signInWithPassword({
+    email: validatedData.data?.email,
+    password: validatedData.data?.password,
+  });
+
+  console.log(user);
+
+  if (error) {
+    console.error(error.code + " " + error.message);
+    if (error?.code === "unexpected_failure") {
+      return {
+        error:
+          "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi. Jika, masalah ini terus terjadi hubungi kami di halaman bantuan.",
+      };
+    } else if (error?.code === "invalid_credentials") {
+      return {
+        error: "Silahkan cek kembali email dan password yang kamu gunakan.",
+      };
+    } else if (error?.code === "email_not_confirmed") {
+      return {
+        warning:
+          "Silahkan cek email kamu dan konfirmasi email yang kamu gunakan.",
+      };
+    } else if (error?.code === "user_banned") {
+      return {
+        error:
+          "Akun kamu telah ditangguhkan. Untuk informasi selengkapnya silahkan hubungi kami di halaman bantuan.",
+      };
+    } else if (error.code) {
+      return { error: `${error.message}` };
+    }
+  }
+
+  return redirect(redirectTo);
+};
+
+export const handleSendMagicLinkAction = async (data: { email: string }) => {
+  const supabase = await createClient();
+  const origin = (await headers()).get("origin");
+
+  const validatedData = magicSchema.safeParse(data);
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      errors: validatedData.error.cause,
+    };
+  }
+
+  if (!validatedData.data.email) {
+    return { error: "Email are required" };
+  }
+
+  let options = {
+    emailRedirectTo: `${origin}/auth/callback`,
+    shouldCreateUser: true,
+  };
+
+  const { allowPassword } = getAuthTypes();
+  if (allowPassword) options.shouldCreateUser = false;
+
+  const { error } = await supabase.auth.signInWithOtp({
+    email: validatedData.data.email,
+    options: options,
+  });
+
+  if (error?.code == `otp_disabled`) {
+    console.error(error.code + " " + error.message);
+    return {
+      warning: "Kamu tidak dapat menggunakan Magic Link untuk registrasi akun.",
+    };
+    // return encodedRedirect("error", "/magic", "Pengiriman OTP Gagal. Kamu tidak dapat menggunakan metode OTP untuk registrasi akun.");
+  } else if (error) {
+    console.error(error.code + " " + error.message);
+    return { warning: "Silahkan cek kembali email yang kamu kirimkan." };
+    // return encodedRedirect("error", "/magic", "Silahkan cek kembali email yang kamu kirimkan.");
+  }
+  // return encodedRedirect(
+  //   "success",
+  //   "/magic/verify",
+  //   "Link verifikasi telah terkirim. Silahkan cek email kamu."
+  // );
+};
+
+export const handleSendOTPAction = async (data: { email: string }) => {
+  const supabase = await createClient();
+  const origin = (await headers()).get("origin");
+
+  const validatedData = emailSchema.safeParse(data);
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      errors: validatedData.error.cause,
+    };
+  }
+
+  if (!validatedData.data.email) {
+    return { error: "Email are required" };
+  }
+
+  let options = {
+    emailRedirectTo: `${origin}/auth/callback`,
+    shouldCreateUser: true,
+  };
+
+  const { allowPassword } = getAuthTypes();
+  if (allowPassword) options.shouldCreateUser = false;
+
+  const { error } = await supabase.auth.signInWithOtp({
+    email: validatedData.data.email,
+    options: options,
+  });
+
+  if (error?.code == `otp_disabled`) {
+    console.error(error.code + " " + error.message);
+    return {
+      warning: "Kamu tidak dapat menggunakan Magic Link untuk registrasi akun.",
+    };
+    // return encodedRedirect("error", "/magic", "Pengiriman OTP Gagal. Kamu tidak dapat menggunakan metode OTP untuk registrasi akun.");
+  } else if (error?.code === "unexpected_failure") {
+    return {
+      error:
+        "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi. Jika, masalah ini terus terjadi hubungi kami di halaman bantuan.",
+    };
+  } else if (error) {
+    console.error(error.code + " " + error.message);
+    return { warning: error.message };
+    // return encodedRedirect("error", "/magic", "Silahkan cek kembali email yang kamu kirimkan.");
+  }
+  // return encodedRedirect("req", "/otp/verify", `${validatedData.data.email}`)
+  return redirect(`/otp/verify?email=${validatedData.data.email}`);
+};
+
+export const handleVerifyOTPAction = async (data: {
+  email: string;
+  otp: string;
+}) => {
+  const supabase = await createClient();
+  const validatedData = otpSchema.safeParse(data);
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      errors: validatedData.error.cause,
+    };
+  }
+
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.verifyOtp({
+    email: validatedData.data.email,
+    token: validatedData.data.otp,
+    type: "email",
+  });
+
+  if (error) {
+    console.error(error.code + " " + error.message);
+    if (error.code === "invalid_otp") {
+      return { warning: "Kode OTP tidak valid. Silakan coba lagi." };
+    } else {
+      return {
+        error: "Terjadi kesalahan saat memverifikasi OTP. Silakan coba lagi.",
+      };
+    }
+  }
+
+  if (!session) {
+    return { error: "Sesi tidak berhasil dibuat. Silakan coba lagi." };
+  }
+
+  return redirect("/nusa");
+};
+
+export const signWithGoogle = async (redirectTo?: string) => {
+  const supabase = await createClient();
+  const origin = (await headers()).get("origin");
+
+  // const redirectTo = (formData.get("redirect") as string) || "/nusa";
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+
+    options: {
+      redirectTo: `${origin}/auth/oauth?next=${encodeURIComponent(
+        redirectTo?.replace("https://staging.m-health.id", "") || "/nusa"
+      )}`,
+      queryParams: {
+        access_type: "offline",
+        prompt: "consent",
       },
+    },
+  });
+  if (error) {
+    console.error(error.code + " " + error.message);
+    if (error?.code === "unexpected_failure") {
+      return {
+        error:
+          "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi. Jika, masalah ini terus terjadi hubungi kami di halaman bantuan.",
+      };
+    } else if (error?.code === "invalid_credentials") {
+      return {
+        warning: "Silahkan cek kembali email dan password yang kamu gunakan.",
+      };
+    } else if (error?.code === "email_not_confirmed") {
+      return {
+        warning:
+          "Silahkan cek email kamu dan konfirmasi email yang kamu gunakan.",
+      };
+    } else if (error.code) {
+      return { error: `${error.message}` };
+    }
+  }
+
+  if (data?.url) {
+    return redirect(data.url);
+  }
+
+  // return redirect(redirectTo);
+};
+
+export const forgotPasswordAction = async (data: {
+  email: string;
+  callbackUrl: string;
+}) => {
+  const supabase = await createClient();
+  const validatedData = forgotPasswordSchema.safeParse(data);
+  const origin = (await headers()).get("origin");
+  // const callbackUrl = formData.get("callbackUrl")?.toString();
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      errors: validatedData.error.cause,
+    };
+  }
+
+  if (!validatedData.data.email) {
+    return { error: "Email are required" };
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    validatedData.data.email,
+    {
+      redirectTo: `${origin}/auth/callback?redirect_to=/nusa/account/reset-password`,
+    }
+  );
+
+  if (error) {
+    console.error(error.code + " " + error.message);
+    return {
+      warning:
+        "Untuk sementara, kami tidak dapat mengirimkan tautan untuk Reset Password. Coba beberapa saat lagi.",
+    };
+  }
+
+  if (validatedData.data.callbackUrl) {
+    return {
+      success:
+        "Silahkan cek email kamu, Kami telah mengirimkan tautan untuk Reset Password.",
+    };
+  }
+
+  return {
+    success:
+      "Silahkan cek email kamu, Kami telah mengirimkan tautan untuk Reset Password.",
+  };
+};
+
+export const resetPasswordAction = async (data: {
+  password: string;
+  confirmPassword: string;
+}) => {
+  const supabase = await createClient();
+  const validatedData = resetPasswordSchema.safeParse(data);
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      errors: validatedData.error.cause,
+    };
+  }
+
+  if (!validatedData.data.password || !validatedData.data.confirmPassword) {
+    return { warning: "Password diperlukan untuk melanjutkan." };
+  }
+
+  if (validatedData.data.password !== validatedData.data.confirmPassword) {
+    return { warning: "Password tidak sama." };
+  }
+
+  // Check if password has been pwned
+  const hashedPassword = crypto
+    .createHash("sha1")
+    .update(validatedData.data.confirmPassword)
+    .digest("hex")
+    .toUpperCase();
+  const prefix = hashedPassword.slice(0, 5);
+  const suffix = hashedPassword.slice(5);
+
+  try {
+    const response = await fetch(
+      `https://api.pwnedpasswords.com/range/${prefix}`
+    );
+    const text = await response.text();
+    const breachedHashes = text.split("\n");
+
+    for (const hash of breachedHashes) {
+      const [hashSuffix, count] = hash.split(":");
+      const localCount = Number(count).toLocaleString(`id-ID`);
+      if (hashSuffix === suffix) {
+        return {
+          error: `Password ini telah ditemukan sebanyak ${localCount} kali dalam kebocoran data. Silakan pilih password lain yang lebih aman. - Have I Been Pwned`,
+        };
+      }
+    }
+  } catch (error) {
+    console.error("Error checking password breach:", error);
+    // If the API check fails, we'll continue with the sign-up process
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: validatedData.data.password,
+  });
+
+  if (error) {
+    console.error(error.code + " " + error.message);
+    return { error: "Password tidak berhasil diperbarui." };
+  }
+
+  return { success: "Password berhasil diperbarui." };
+};
+
+export const signOutAction = async () => {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  return redirect("/?sign-out=success");
+};
+
+export async function deleteUser() {
+  const supabase = await createClient();
+  const cookieStore = cookies();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data, error: fetchError } = await supabase
+    .from("accounts")
+    .select("avatar_url")
+    .eq("id", user?.id)
+    .single();
+  const { data: files, error: listError } = await supabase.storage
+    .from("avatars")
+    .list("", {
+      offset: 0,
+      sortBy: { column: "name", order: "asc" },
+      search: `${user?.id}`,
     });
 
-    console.log("Logout response:", res.status);
-    return res.ok;
+  console.log(
+    "from bucket:",
+    files?.map((file) => `${file.name}`)
+  );
+
+  if (!files) {
+    return { error: "Avatar not found!" };
+  }
+
+  const fileToDelete = files.map((file) => `${file.name}`);
+
+  if (!user) {
+    return { error: "User not found" };
+  }
+
+  if (fetchError) {
+    return { error: "Avatar not found", fetchError };
+  }
+
+  const supabaseAdmin = await createClientAdmin();
+
+  try {
+    const { error: storageError } = await supabase.storage
+      .from("avatars")
+      .remove(fileToDelete); // Hapus file avatar dari storage
+
+    if (storageError) {
+      throw new Error(
+        `Failed to delete avatar from storage: ${storageError.message}`
+      );
+    }
+
+    // Delete user data (replace 'your_data_table' with your actual table name)
+    const { error: deleteDataError } = await supabase
+      .from("account")
+      .delete()
+      .eq("id", user.id);
+
+    if (deleteDataError) {
+      throw new Error("Failed to delete user data");
+    }
+
+    // Delete the user
+    const { error: deleteUserError } =
+      await supabaseAdmin.auth.admin.deleteUser(user.id);
+
+    if (deleteUserError) {
+      throw new Error("Failed to delete user account");
+    }
+
+    // Sign out the user
+    await supabase.auth.signOut();
+
+    return { success: true };
   } catch (error) {
-    console.error("Logout error:", error);
-    return false;
+    return {
+      error:
+        error instanceof Error ? error.message : "An unexpected error occurred",
+    };
   }
 }

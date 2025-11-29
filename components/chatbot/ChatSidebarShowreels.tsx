@@ -157,8 +157,8 @@ const ChatSidebarShowreels = ({
                 <div className="px-3 col-span-1">
                   <Suspense fallback={<Spinner />}>
                     <Image
-                      src={"https://placehold.co/600x400.png"}
-                      alt={"https://placehold.co/600x400.png"}
+                      src={"https://placehold.co/720x720.png"}
+                      alt={"https://placehold.co/720x720.png"}
                       width={720}
                       height={720}
                       className="aspect-square object-cover object-center rounded-xl"
@@ -201,8 +201,8 @@ const ChatSidebarShowreels = ({
                 <div className="px-3 col-span-1">
                   <Suspense fallback={<Spinner />}>
                     <Image
-                      src={"https://placehold.co/600x400.png"}
-                      alt={"https://placehold.co/600x400.png"}
+                      src={"https://placehold.co/720x720.png"}
+                      alt={"https://placehold.co/720x720.png"}
                       width={720}
                       height={720}
                       className="aspect-square object-cover object-center rounded-xl"
@@ -245,8 +245,8 @@ const ChatSidebarShowreels = ({
                 <div className="px-3 col-span-1">
                   <Suspense fallback={<Spinner />}>
                     <Image
-                      src={"https://placehold.co/600x400.png"}
-                      alt={"https://placehold.co/600x400.png"}
+                      src={"https://placehold.co/720x720.png"}
+                      alt={"https://placehold.co/720x720.png"}
                       width={720}
                       height={720}
                       className="aspect-square object-cover object-center rounded-xl"

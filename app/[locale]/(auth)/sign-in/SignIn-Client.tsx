@@ -25,7 +25,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
-import { emailLogin } from "@/lib/auth/auth";
+import { signInAction } from "@/lib/auth/auth";
 import { sign } from "crypto";
 
 const SignInClient = ({ image }: { image: any }) => {
@@ -38,15 +38,13 @@ const SignInClient = ({ image }: { image: any }) => {
     defaultValues: {
       email: "",
       password: "",
+      redirect: "",
     },
   });
 
   async function onSubmit(data: z.infer<typeof AuthSignInSchema>) {
     setLoading(true);
-    const signingIn = await emailLogin({
-      email: data.email,
-      password: data.password,
-    });
+    const signingIn = await signInAction(data);
 
     if (signingIn) {
       toast("Log", {

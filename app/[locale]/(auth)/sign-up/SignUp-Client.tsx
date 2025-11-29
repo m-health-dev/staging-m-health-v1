@@ -26,7 +26,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
-import { emailSignUp } from "@/lib/auth/auth";
+import { signUpAction } from "@/lib/auth/auth";
 
 const SignUpClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -46,11 +46,7 @@ const SignUpClient = ({ image }: { image: any }) => {
 
   async function onSubmit(data: z.infer<typeof AuthSignUpSchema>) {
     setLoading(true);
-    const signingUp = await emailSignUp({
-      fullname: data.fullname,
-      email: data.email,
-      password: data.password,
-    });
+    const signingUp = await signUpAction(data);
 
     if (signingUp) {
       toast("Log", {

@@ -125,10 +125,11 @@ function SlideImage({ slide }: { slide: any }) {
 
       {/* Gambar */}
       <Image
-        src={slide.full}
-        width={720}
-        height={405}
+        src={"https://placehold.co/800x280.png"}
+        width={800}
+        height={280}
         alt={slide.alt}
+        unoptimized
         onLoadingComplete={() => setIsLoaded(true)}
         className={`w-full h-full object-cover object-center rounded-2xl transition-opacity duration-700 ${
           isLoaded ? "opacity-100" : "opacity-0"

@@ -15,6 +15,7 @@ export const AuthSignInSchema = z.object({
   password: z
     .string()
     .min(8, "Password is Required and must be at least 8 characters."),
+  redirect: z.string(),
 });
 
 export const AuthSignUpSchema = z.object({

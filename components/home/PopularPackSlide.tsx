@@ -71,11 +71,11 @@ export default function PopularPackSlide({
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <Link
-                    href={`/package/detail/${slide.id}`}
+                    href={`/package/${slide.id}`}
                     className="flex flex-col w-full h-full"
                   >
                     <Image
-                      src={"https://placehold.co/400x400.png"} // TODO: Ganti dengan slide.img ketika sudah ada gambarnya
+                      src={"https://placehold.co/720x720.png"} // TODO: Ganti dengan slide.img ketika sudah ada gambarnya
                       width={720}
                       height={405}
                       alt={slide.title}
@@ -196,11 +196,11 @@ export default function PopularPackSlide({
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <Link
-                    href={`/package/detail/${slide.id}`}
+                    href={`/package/${slide.id}`}
                     className="flex flex-col w-full h-full"
                   >
                     <Image
-                      src={"https://placehold.co/400x400.png"} // TODO: Ganti dengan slide.full ketika sudah ada gambarnya
+                      src={"https://placehold.co/720x720.png"} // TODO: Ganti dengan slide.full ketika sudah ada gambarnya
                       width={720}
                       height={405}
                       alt={slide.title}
