@@ -34,7 +34,37 @@ export const ForgotPassSchema = z.object({
   // callbackUrl: z.string(),
 });
 
+export const resetPasswordSchema = z.object({
+  password: z
+    .string()
+    .min(8, {
+      message: "Kami mengharuskan password berisi setidaknya 8 karakter",
+    })
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
+      message:
+        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, serta karakter spesial",
+    }),
+  confirmPassword: z
+    .string()
+    .min(8, {
+      message: "Kami mengharuskan password berisi setidaknya 8 karakter",
+    })
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
+      message:
+        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, serta karakter spesial",
+    }),
+});
+
 export const OTPSignInSchema = z.object({
   email: z.email("Email is Required."),
   otp: z.string().min(6, "OTP is Required and must be 6 characters."),
+});
+
+export const RequestOTPSchema = z.object({
+  email: z.email(),
+});
+
+export const VerifyOTPSchema = z.object({
+  email: z.email(),
+  otp: z.string().min(6),
 });

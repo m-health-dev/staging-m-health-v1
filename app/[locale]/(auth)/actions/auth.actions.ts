@@ -335,6 +335,10 @@ export const handleSendMagicLinkAction = async (data: { email: string }) => {
     return { warning: "Silahkan cek kembali email yang kamu kirimkan." };
     // return encodedRedirect("error", "/magic", "Silahkan cek kembali email yang kamu kirimkan.");
   }
+  return {
+    success:
+      "Silahkan cek email anda, kami telah mengirimkan tautan untuk masuk.",
+  };
   // return encodedRedirect(
   //   "success",
   //   "/magic/verify",
@@ -389,7 +393,7 @@ export const handleSendOTPAction = async (data: { email: string }) => {
     // return encodedRedirect("error", "/magic", "Silahkan cek kembali email yang kamu kirimkan.");
   }
   // return encodedRedirect("req", "/otp/verify", `${validatedData.data.email}`)
-  return redirect(`/otp/verify?email=${validatedData.data.email}`);
+  return redirect(`/one-time/verify?email=${validatedData.data.email}`);
 };
 
 export const handleVerifyOTPAction = async (data: {
@@ -430,7 +434,7 @@ export const handleVerifyOTPAction = async (data: {
     return { error: "Sesi tidak berhasil dibuat. Silakan coba lagi." };
   }
 
-  return redirect("/nusa");
+  return redirect("/dashboard");
 };
 
 export const signWithGoogle = async (redirectTo?: string) => {
@@ -497,12 +501,21 @@ export const forgotPasswordAction = async (data: { email: string }) => {
     return { error: "Email are required" };
   }
 
-  const { data: checkRequested } = await supabase
+  // Cek jumlah permintaan reset berdasarkan email
+  const { data: checkRequested, error: reqErr } = await supabase
     .from("recover_account")
     .select("email, request")
     .eq("email", validatedData.data.email)
     .maybeSingle();
 
+  if (reqErr) {
+    return {
+      success: false,
+      error: "Terjadi kesalahan saat memeriksa permintaan reset.",
+    };
+  }
+
+  // Jika sudah pernah tercatat dan melebihi batas
   if (checkRequested && checkRequested.request >= 3) {
     return {
       success: false,
@@ -511,12 +524,45 @@ export const forgotPasswordAction = async (data: { email: string }) => {
     };
   }
 
-  const { data: checkEmail } = await supabase
-    .from("accounts")
-    .select()
-    .eq("email", validatedData.data.email);
+  // Update jumlah permintaan (insert jika belum ada)
+  const newRequestCount = (checkRequested?.request ?? 0) + 1;
 
-  if (checkEmail) {
+  const { data: updateRequested, error: updateErr } = await supabase
+    .from("recover_account")
+    .upsert(
+      {
+        email: validatedData.data.email,
+        request: newRequestCount,
+      },
+      { onConflict: "email" }
+    )
+    .select("request")
+    .maybeSingle();
+
+  if (updateErr) {
+    return {
+      success: false,
+      error: "Terjadi kesalahan saat mencatat permintaan reset.",
+    };
+  }
+
+  console.log("Request Recover :", updateRequested?.request);
+
+  // Cek apakah email ada di tabel accounts
+  const { data: checkEmail, error: emailErr } = await supabase
+    .from("accounts")
+    .select("*")
+    .eq("email", validatedData.data.email)
+    .maybeSingle();
+
+  if (emailErr) {
+    return {
+      success: false,
+      error: "Terjadi kesalahan saat memeriksa email.",
+    };
+  }
+
+  if (!checkEmail) {
     return {
       success: false,
       error: "Email tidak terdata dalam basis data kami.",

@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { AuthSignInSchema, ForgotPassSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye } from "lucide-react";
+import { EyeClosed, Eye, ChevronsRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -209,12 +209,19 @@ const SignInClient = ({ image }: { image: any }) => {
             <Button
               variant="outline"
               type="button"
-              className="w-full h-12 rounded-full"
+              className="w-full h-12 rounded-full flex items-center gap-2 mb-3"
               onClick={handleGoogleSignIn}
             >
-              <p>
-                <FontAwesomeIcon icon={faGoogle} /> Sign In with Google
-              </p>
+              <FontAwesomeIcon icon={faGoogle} /> <p>Sign In with Google</p>
+            </Button>
+
+            <Button
+              variant="outline"
+              type="button"
+              className="w-full h-12 rounded-full flex items-center gap-2"
+              onClick={() => router.push(`/${locale}/magic`)}
+            >
+              <ChevronsRight className="size-5" /> <p>Magic Sign In</p>
             </Button>
             <p className="text-muted-foreground text-center text-sm! mt-5">
               Don't have an account?{" "}

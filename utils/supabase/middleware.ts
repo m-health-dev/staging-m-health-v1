@@ -53,6 +53,19 @@ export async function updateSession(
     return NextResponse.redirect(url);
   }
 
+  if (
+    !user &&
+    request.nextUrl.pathname.startsWith(`/${locale}/reset-password`)
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}/sign-in`;
+
+    // Opsional: Simpan halaman yang ingin diakses untuk redirect balik nanti
+    url.searchParams.set("redirect", request.nextUrl.pathname);
+
+    return NextResponse.redirect(url);
+  }
+
   // 2. Jika User SUDAH login dan mencoba akses halaman Sign-In/Sign-Up
   if (user) {
     if (
