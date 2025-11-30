@@ -1,15 +1,16 @@
 "use server";
 
 import { cookies, headers } from "next/headers";
-import z from "zod";
+import z, { check, success } from "zod";
 
 import crypto from "crypto";
 import { redirect } from "next/navigation";
 import { getAuthTypes } from "@/utils/supabase/getAuthTypes";
 import { createClientAdmin } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
-import { AuthSignUpSchema } from "../zodSchema";
+
 import { getLocale } from "next-intl/server";
+import { AuthSignUpSchema, ForgotPassSchema } from "@/lib/zodSchema";
 
 const signUpSchema = z.object({
   fullname: z
@@ -479,12 +480,9 @@ export const signWithGoogle = async (redirectTo?: string) => {
   // return redirect(redirectTo);
 };
 
-export const forgotPasswordAction = async (data: {
-  email: string;
-  callbackUrl: string;
-}) => {
+export const forgotPasswordAction = async (data: { email: string }) => {
   const supabase = await createClient();
-  const validatedData = forgotPasswordSchema.safeParse(data);
+  const validatedData = ForgotPassSchema.safeParse(data);
   const origin = (await headers()).get("origin");
   // const callbackUrl = formData.get("callbackUrl")?.toString();
 
@@ -499,10 +497,36 @@ export const forgotPasswordAction = async (data: {
     return { error: "Email are required" };
   }
 
+  const { data: checkRequested } = await supabase
+    .from("recover_account")
+    .select("email, request")
+    .eq("email", validatedData.data.email)
+    .maybeSingle();
+
+  if (checkRequested && checkRequested.request >= 3) {
+    return {
+      success: false,
+      error:
+        "Anda sudah melakukan percobaan reset password sebanyak 3 (tiga) kali. Silahkan hubungi dukungan.",
+    };
+  }
+
+  const { data: checkEmail } = await supabase
+    .from("accounts")
+    .select()
+    .eq("email", validatedData.data.email);
+
+  if (checkEmail) {
+    return {
+      success: false,
+      error: "Email tidak terdata dalam basis data kami.",
+    };
+  }
+
   const { error } = await supabase.auth.resetPasswordForEmail(
     validatedData.data.email,
     {
-      redirectTo: `${origin}/auth/callback?redirect_to=/nusa/account/reset-password`,
+      redirectTo: `${origin}/auth/callback?redirect=/reset-password`,
     }
   );
 
@@ -514,12 +538,12 @@ export const forgotPasswordAction = async (data: {
     };
   }
 
-  if (validatedData.data.callbackUrl) {
-    return {
-      success:
-        "Silahkan cek email kamu, Kami telah mengirimkan tautan untuk Reset Password.",
-    };
-  }
+  // if (validatedData.data.callbackUrl) {
+  //   return {
+  //     success:
+  //       "Silahkan cek email kamu, Kami telah mengirimkan tautan untuk Reset Password.",
+  //   };
+  // }
 
   return {
     success:

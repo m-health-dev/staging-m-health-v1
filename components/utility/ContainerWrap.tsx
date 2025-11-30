@@ -6,10 +6,12 @@ import container from "@/app/css/container.module.css";
 const ContainerWrap = ({
   children,
   className,
+  type = "default",
   size = "xl",
 }: {
   className?: string;
   children: React.ReactNode;
+  type?: "carousel" | "default";
   size?: "sm" | "md" | "lg" | "xl" | "xxl";
 }) => {
   const sizeClasses = {
@@ -20,7 +22,24 @@ const ContainerWrap = ({
     xxl: `${container.xxl}`,
   };
 
-  return <div className={cn(sizeClasses[size], className)}>{children}</div>;
+  const sizeClassesCarousel = {
+    sm: `${container.car_sm}`,
+    md: `${container.car_md}`,
+    lg: `${container.car_lg}`,
+    xl: `${container.car_xl}`,
+    xxl: `${container.car_xxl}`,
+  };
+
+  return (
+    <div
+      className={cn(
+        type === "default" ? sizeClasses[size] : sizeClassesCarousel[size],
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
 };
 
 export default ContainerWrap;

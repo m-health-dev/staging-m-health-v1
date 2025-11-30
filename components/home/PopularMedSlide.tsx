@@ -17,12 +17,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import "swiper/css";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { RumahSakit } from "@/lib/dummyRS";
+import { Medical } from "@/types/medical.types";
+import { routing } from "@/i18n/routing";
 
 export default function PopularMedSlide({
   data,
+  locale,
   hospital,
 }: {
-  data: any[];
+  data: Medical[];
+  locale: string;
   hospital: RumahSakit[];
 }) {
   const swiperRef = useRef<any>(null);
@@ -37,7 +41,7 @@ export default function PopularMedSlide({
   }
 
   return (
-    <>
+    <ContainerWrap type="carousel">
       <div className="overflow-hidden">
         {data.length >= 5 ? (
           <div className="w-full flex-col items-center relative group/slide">
@@ -63,7 +67,7 @@ export default function PopularMedSlide({
                 delay: 7500,
                 disableOnInteraction: true,
               }}
-              className="w-full "
+              className="w-full"
             >
               {data.map((slide, key) => (
                 <SwiperSlide
@@ -73,10 +77,14 @@ export default function PopularMedSlide({
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <Image
-                    src={slide.full}
+                    src={"https://placehold.co/500x500.png"}
                     width={720}
                     height={405}
-                    alt={slide.alt}
+                    alt={
+                      locale === routing.defaultLocale
+                        ? slide.id_title
+                        : slide.en_title
+                    }
                     className="w-full aspect-square! object-cover object-center rounded-t-2xl -z-10"
                   />
 
@@ -101,17 +109,18 @@ export default function PopularMedSlide({
                     <div className="overflow-hidden mt-2">
                       <div>
                         <h6 className="capitalize font-bold text-primary line-clamp-2">
-                          {slide.alt}
+                          {locale === routing.defaultLocale
+                            ? slide.id_title
+                            : slide.en_title}
                         </h6>
                       </div>
                     </div>
                     <div className="mt-2 overflow-hidden">
                       <div>
                         <p className="text-muted-foreground text-sm! line-clamp-2">
-                          {`${slide.description}` +
-                            ` ` +
-                            `Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
-          quaerat nobis fugiat praesentium officia quis.`}
+                          {locale === routing.defaultLocale
+                            ? slide.id_tagline
+                            : slide.en_tagline}
                         </p>
                       </div>
                     </div>
@@ -119,6 +128,8 @@ export default function PopularMedSlide({
                 </SwiperSlide>
               ))}
             </Swiper>
+            {/* <div className="absolute right-0 top-0 lg:w-32 w-5 h-full bg-linear-to-l from-health z-10"></div>
+            <div className="absolute left-0 top-0 lg:w-32 w-5 h-full bg-linear-to-r from-health z-10"></div> */}
             <div className="lg:px-10 px-3 absolute top-0 left-0 z-20 lg:flex hidden h-full items-center transition-all duration-300 lg:translate-x-20 lg:group-hover/slide:translate-x-0 lg:opacity-0 lg:group-hover/slide:opacity-100">
               <button
                 onClick={(e) => {
@@ -128,7 +139,7 @@ export default function PopularMedSlide({
                     swiperRef.current.slidePrev();
                   }
                 }}
-                className="bg-white h-12 w-12 rounded-full border border-primary flex justify-center items-center transition-all duration-500 pointer-events-auto cursor-pointer relative overflow-hidden group"
+                className="bg-white h-12 w-12 rounded-full border border-health flex justify-center items-center transition-all duration-500 pointer-events-auto cursor-pointer relative overflow-hidden group"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +147,7 @@ export default function PopularMedSlide({
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="size-6 text-primary group-hover:text-background z-20 transition-all duration-300"
+                  className="size-6 text-health group-hover:text-background z-20 transition-all duration-300"
                 >
                   <path
                     strokeLinecap="round"
@@ -144,7 +155,7 @@ export default function PopularMedSlide({
                     d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
                   />
                 </svg>
-                <div className="absolute -left-0.5 h-16 w-16 rounded-full bg-primary translate-x-50 group-hover:translate-x-0 transition-transform duration-500  ease-in-out z-19"></div>
+                <div className="absolute -left-0.5 h-16 w-16 rounded-full bg-health translate-x-50 group-hover:translate-x-0 transition-transform duration-500  ease-in-out z-19"></div>
               </button>
             </div>
             <div className="lg:px-10 px-3 absolute top-0 right-0 z-10 lg:flex hidden h-full items-center transition-all duration-300 lg:-translate-x-20 lg:group-hover/slide:translate-x-0 lg:opacity-0 lg:group-hover/slide:opacity-100">
@@ -156,7 +167,7 @@ export default function PopularMedSlide({
                     swiperRef.current.slideNext();
                   }
                 }}
-                className="bg-white h-12 w-12 rounded-full border border-primary flex justify-center items-center transition-all duration-500 pointer-events-auto cursor-pointer relative overflow-hidden group"
+                className="bg-white h-12 w-12 rounded-full border border-health flex justify-center items-center transition-all duration-500 pointer-events-auto cursor-pointer relative overflow-hidden group"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -164,7 +175,7 @@ export default function PopularMedSlide({
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="size-6 text-primary group-hover:text-background z-20 transition-all duration-300"
+                  className="size-6 text-health group-hover:text-background z-20 transition-all duration-300"
                 >
                   <path
                     strokeLinecap="round"
@@ -172,7 +183,7 @@ export default function PopularMedSlide({
                     d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                   />
                 </svg>
-                <div className="absolute -left-0.5 h-16 w-16 rounded-full bg-primary -translate-x-20 group-hover:translate-x-0 transition-transform duration-500  ease-in-out z-19"></div>
+                <div className="absolute -left-0.5 h-16 w-16 rounded-full bg-health -translate-x-20 group-hover:translate-x-0 transition-transform duration-500  ease-in-out z-19"></div>
               </button>
             </div>
           </div>
@@ -187,10 +198,14 @@ export default function PopularMedSlide({
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <Image
-                    src={slide.full}
+                    src={"https://placehold.co/500x500.png"}
                     width={720}
                     height={405}
-                    alt={slide.alt}
+                    alt={
+                      locale === routing.defaultLocale
+                        ? slide.id_title
+                        : slide.en_title
+                    }
                     className="w-full aspect-square! object-cover object-center rounded-t-2xl"
                   />
 
@@ -216,17 +231,18 @@ export default function PopularMedSlide({
                     <div className="overflow-hidden mt-2">
                       <div>
                         <h6 className="capitalize font-bold text-primary  lg:line-clamp-2 line-clamp-1">
-                          {slide.alt}
+                          {locale === routing.defaultLocale
+                            ? slide.id_title
+                            : slide.en_title}
                         </h6>
                       </div>
                     </div>
                     <div className="mt-2 overflow-hidden">
                       <div>
                         <p className="text-muted-foreground text-sm! line-clamp-2">
-                          {`${slide.description}` +
-                            ` ` +
-                            `Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
-          quaerat nobis fugiat praesentium officia quis.`}
+                          {locale === routing.defaultLocale
+                            ? slide.id_tagline
+                            : slide.en_tagline}
                         </p>
                       </div>
                     </div>
@@ -237,6 +253,6 @@ export default function PopularMedSlide({
           </ContainerWrap>
         )}
       </div>
-    </>
+    </ContainerWrap>
   );
 }

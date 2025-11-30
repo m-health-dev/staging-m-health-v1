@@ -69,7 +69,9 @@ const OTPClient = ({ image }: { image: any }) => {
   return (
     <>
       <Image
-        src={"/mhealth_logo.PNG"}
+        src={
+          "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+        }
         width={180}
         height={60}
         className="object-contain mt-5 flex justify-center items-center mx-auto"

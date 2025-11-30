@@ -26,7 +26,9 @@ const Footer = () => {
           <div className="3xl:shrink lg:basis-1/4">
             <Link href={`/${locale}/home`}>
               <Image
-                src={"/mhealth_logo.PNG"}
+                src={
+                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+                }
                 width={250}
                 height={60}
                 className="object-contain"

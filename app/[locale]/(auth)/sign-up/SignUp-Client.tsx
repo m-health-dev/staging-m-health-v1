@@ -14,7 +14,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { AuthSignUpSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -26,14 +26,20 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
-import { signUpAction } from "@/lib/auth/auth";
+
 import { useLocale } from "next-intl";
+import { signUpAction, signWithGoogle } from "../actions/auth.actions";
 
 const SignUpClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const [warning, setWarning] = React.useState("");
+  const [success, setSuccess] = React.useState("");
   const router = useRouter();
   const locale = useLocale();
+  const params = useSearchParams();
+  const redirectData = params.get("redirect") || `/${locale}/dashboard`;
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_PROD_BACKEND_URL;
 
@@ -46,29 +52,46 @@ const SignUpClient = ({ image }: { image: any }) => {
     },
   });
 
-  async function onSubmit(data: z.infer<typeof AuthSignUpSchema>) {
-    setLoading(true);
-    const signingUp = await signUpAction(data);
+  const handleGoogleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    if (signingUp) {
-      toast("Log", {
-        description: (
-          <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30 space-y-4">
-            <div>
-              <p className="mb-2 text-sm! text-muted-foreground">Sent</p>
-              <code>{JSON.stringify(data, null, 2)}</code>
-            </div>
-            <div>
-              <p className="mb-2 text-sm! text-muted-foreground">Response</p>
-              <code>{JSON.stringify(signingUp, null, 2)}</code>
-            </div>
-          </pre>
-        ),
+    const response = await signWithGoogle(redirectData);
+
+    if (response?.error) {
+      toast.error(`Autentifikasi Google Gagal`, {
+        description: `${response.error}`,
+      });
+    } else if (response?.warning) {
+      toast.warning(`Autentifikasi Google Gagal`, {
+        description: `${response.warning}`,
       });
     } else {
-      toast.error("Sign Up Failed", {
-        description: "If you encounter issues, please contact support.",
-      });
+      return;
+    }
+  };
+
+  async function onSubmit(data: z.infer<typeof AuthSignUpSchema>) {
+    setLoading(true);
+    const response = await signUpAction(data);
+
+    if (response?.error) {
+      setLoading(false);
+      setError(response.error);
+      // toast.error(`Registrasi Gagal`, {
+      //   description: `${response.error}`,
+      // });
+    } else if (response?.warning) {
+      setLoading(false);
+      setWarning(response.warning);
+      // toast.warning(`Registrasi Gagal`, {
+      //   description: `${response.warning}`,
+      // });
+    } else if (response?.success) {
+      setLoading(false);
+      setSuccess(`${response.success}`);
+      // toast.success(`Registrasi Berhasil`, {
+      //   description: `${response.success}`,
+      // });
     }
     setLoading(false);
   }
@@ -76,7 +99,9 @@ const SignUpClient = ({ image }: { image: any }) => {
   return (
     <>
       <Image
-        src={"/mhealth_logo.PNG"}
+        src={
+          "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+        }
         width={180}
         height={60}
         className="object-contain mt-5 flex justify-center items-center mx-auto"
@@ -88,6 +113,24 @@ const SignUpClient = ({ image }: { image: any }) => {
             <h3 className="font-bold text-primary mb-10">
               Create Your Account
             </h3>
+            {error && (
+              <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
+                <p className="font-bold mb-1">Registrasi Akun Gagal</p>
+                <p className="text-sm!">{error}</p>
+              </div>
+            )}
+            {warning && (
+              <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
+                <p className="font-bold mb-1">Registrasi Akun Gagal</p>
+                <p className="text-sm!">{warning}</p>
+              </div>
+            )}
+            {success && (
+              <div className="bg-green-50 text-green-500 p-4 border border-green-500 rounded-2xl mb-2">
+                <p className="font-bold mb-1">Registrasi Akun Berhasil</p>
+                <p className="text-sm!">{success}</p>
+              </div>
+            )}
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -178,25 +221,23 @@ const SignUpClient = ({ image }: { image: any }) => {
                 <Button type="submit" className="w-full h-12 rounded-full">
                   {loading ? <Spinner /> : <p>Sign Up</p>}
                 </Button>
-                <div className="flex justify-center items-center">
-                  <div className="border-b border-gray-300 w-full"></div>
-                  <p className="px-5 text-gray-500">or</p>
-                  <div className="border-b border-gray-300 w-full"></div>
-                </div>
-                <Link href={`${apiBaseUrl}/auth/google/redirect`}>
-                  <Button
-                    variant="outline"
-                    type="button"
-                    className="w-full h-12 rounded-full"
-                  >
-                    <p>
-                      <FontAwesomeIcon icon={faGoogle} /> Sign Up with Google
-                    </p>
-                  </Button>
-                </Link>
               </form>
             </Form>
-            <p className="text-muted-foreground text-sm! mt-5">
+            <div className="flex justify-center items-center mb-5">
+              <div className="border-b border-gray-300 w-full"></div>
+              <p className="px-5 text-gray-500">or</p>
+              <div className="border-b border-gray-300 w-full"></div>
+            </div>
+
+            <Button
+              variant="outline"
+              type="button"
+              className="w-full h-12 rounded-full flex items-center"
+              onClick={handleGoogleSignIn}
+            >
+              <FontAwesomeIcon icon={faGoogle} /> <p>Sign Up with Google</p>
+            </Button>
+            <p className="text-muted-foreground text-sm! mt-5 text-center">
               Already have an account?{" "}
               <span
                 onClick={() => router.push(`/${locale}/sign-in`)}

@@ -14,7 +14,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { AuthSignInSchema, ForgotPassSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -25,40 +25,66 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
+import { forgotPasswordAction } from "../actions/auth.actions";
 
 const ForgotPassClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const [warning, setWarning] = React.useState("");
+  const [success, setSuccess] = React.useState("");
   const router = useRouter();
+  const params = useSearchParams();
+  const emailParams = params.get("email");
 
   const form = useForm<z.infer<typeof ForgotPassSchema>>({
     resolver: zodResolver(ForgotPassSchema),
     defaultValues: {
-      email: "",
+      email: emailParams?.toString() || "",
     },
   });
 
   async function onSubmit(data: z.infer<typeof ForgotPassSchema>) {
     setLoading(true);
 
-    // Delay 2 detik
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const response = await forgotPasswordAction(data);
 
+    if (response?.warning) {
+      setLoading(false);
+      setWarning(response.warning);
+      // toast.warning(`Gagal Mengirim`, {
+      //   description: `${response.warning}`,
+      // });
+    } else if (response?.error) {
+      setLoading(false);
+      setError(response.error);
+      // toast.error(`Gagal Mengirim`, {
+      //   description: `${response.error}`,
+      // });
+    } else if (response?.success) {
+      setLoading(false);
+      setSuccess(`${response.success}`);
+      // toast.success(`Berhasil Terkirim`, {
+      //   description: `${response.success}`,
+      // });
+    }
     setLoading(false);
 
-    toast("Signed In As :", {
-      description: (
-        <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    // toast("Signed In As :", {
+    //   description: (
+    //     <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30">
+    //       <code>{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // });
   }
 
   return (
     <>
       <Image
-        src={"/mhealth_logo.PNG"}
+        src={
+          "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+        }
         width={180}
         height={60}
         className="object-contain mt-5 flex justify-center items-center mx-auto"
@@ -70,6 +96,24 @@ const ForgotPassClient = ({ image }: { image: any }) => {
             <h3 className="font-bold text-primary mb-10">
               Recover Your Account
             </h3>
+            {error && (
+              <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
+                <p className="font-bold mb-1">Permintaan Gagal</p>
+                <p className="text-sm!">{error}</p>
+              </div>
+            )}
+            {warning && (
+              <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
+                <p className="font-bold mb-1">Permintaan Gagal</p>
+                <p className="text-sm!">{warning}</p>
+              </div>
+            )}
+            {success && (
+              <div className="bg-green-50 text-green-500 p-4 border border-green-500 rounded-2xl mb-2">
+                <p className="font-bold mb-1">Permintaan Berhasil</p>
+                <p className="text-sm!">{success}</p>
+              </div>
+            )}
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}

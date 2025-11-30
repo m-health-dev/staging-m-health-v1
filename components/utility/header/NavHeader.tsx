@@ -38,7 +38,9 @@ const NavHeader = () => {
       <header className="py-5 flex items-center w-full justify-between">
         <Link href={`/${locale}/home`}>
           <Image
-            src={"/mhealth_logo.PNG"}
+            src={
+              "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+            }
             width={150}
             height={40}
             className="object-contain"
@@ -165,7 +167,9 @@ const NavHeader = () => {
         <header className="lg:py-4 py-3 flex w-full items-center justify-between">
           <Link href={`/${locale}/home`}>
             <Image
-              src={"/mhealth_logo.PNG"}
+              src={
+                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+              }
               width={150}
               height={40}
               className="object-contain"

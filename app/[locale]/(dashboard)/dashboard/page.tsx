@@ -4,15 +4,16 @@ import Wrapper from "@/components/utility/Wrapper";
 import { createClient } from "@/utils/supabase/server";
 import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
+import { getUserRole } from "../../(auth)/actions/auth.actions";
 
 const DashboardPage = async () => {
   const supabase = await createClient();
 
   const { data: userData } = await supabase.auth.getUser();
-
   const { data: claims } = await supabase.auth.getClaims();
-
   const { data: session } = await supabase.auth.getSession();
+
+  const role = await getUserRole();
 
   return (
     <Wrapper>
@@ -23,10 +24,15 @@ const DashboardPage = async () => {
             <Button variant={"destructive"}>Sign Out</Button>
           </Link>
         </div>
+
         <pre>{JSON.stringify(userData, null, 2)}</pre>
+
         <pre className="text-wrap wrap-anywhere">
-          User Role is {JSON.stringify(claims, null, 2)} |{" "}
-          {JSON.stringify(session, null, 2)}
+          Claims: {JSON.stringify(claims, null, 2)}
+        </pre>
+
+        <pre className="text-wrap wrap-anywhere">
+          Decoded Token: {JSON.stringify(role, null, 2)}
         </pre>
       </ContainerWrap>
     </Wrapper>

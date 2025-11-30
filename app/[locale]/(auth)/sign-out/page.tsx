@@ -53,11 +53,13 @@ export default function SignOutPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md shadow-none">
         <CardHeader>
-          <CardTitle className="text-2xl font-normal">Sign Out</CardTitle>
+          <CardTitle className="text-2xl font-semibold text-primary">
+            <h4>Sign Out</h4>
+          </CardTitle>
           <CardDescription>
-            Are you sure you want to sign out of your account?
+            <p>Are you sure you want to sign out of your account?</p>
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -68,20 +70,25 @@ export default function SignOutPage() {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm! text-muted-foreground">
             You will be logged out of your account and will need to sign in
             again to access your data.
           </p>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
+          <Button
+            variant="outline"
+            className="rounded-full"
+            onClick={handleCancel}
+            disabled={isLoading}
+          >
             Cancel
           </Button>
           <Button
             variant="destructive"
             onClick={handleSignOut}
             disabled={isLoading}
-            className="gap-2"
+            className="gap-2 rounded-full px-5!"
           >
             {isLoading ? "Signing out..." : "Sign Out"}
             {!isLoading && <LogOut className="h-4 w-4" />}

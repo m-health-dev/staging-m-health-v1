@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import { AuthSignInSchema } from "@/lib/zodSchema";
+import { AuthSignInSchema, ForgotPassSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -25,24 +25,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
-import { signInAction, signWithGoogle } from "@/lib/auth/auth";
 import { sign } from "crypto";
 import { useLocale } from "next-intl";
+import {
+  forgotPasswordAction,
+  signInAction,
+  signWithGoogle,
+} from "../actions/auth.actions";
 
 const SignInClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const [warning, setWarning] = React.useState("");
+  const [success, setSuccess] = React.useState("");
   const router = useRouter();
   const locale = useLocale();
   const params = useSearchParams();
-  const redirectData = params.get("redirect") || "/dashboard";
+  const redirectData = params.get("redirect") || `/${locale}/dashboard`;
 
   const form = useForm<z.infer<typeof AuthSignInSchema>>({
     resolver: zodResolver(AuthSignInSchema),
     defaultValues: {
       email: "",
       password: "",
-      redirect: redirectData?.toString() || `/${locale}/dashboard`,
+      redirect: redirectData?.toString(),
     },
   });
 
@@ -52,11 +59,11 @@ const SignInClient = ({ image }: { image: any }) => {
     const response = await signWithGoogle(redirectData);
 
     if (response?.error) {
-      toast.error(`Verifikasi Gagal`, {
+      toast.error(`Autentifikasi Google Gagal`, {
         description: `${response.error}`,
       });
     } else if (response?.warning) {
-      toast.warning(`Verifikasi Gagal`, {
+      toast.warning(`Autentifikasi Google Gagal`, {
         description: `${response.warning}`,
       });
     } else {
@@ -70,14 +77,10 @@ const SignInClient = ({ image }: { image: any }) => {
 
     if (res?.error) {
       setLoading(false);
-      toast.error(`Autentifikasi Gagal`, {
-        description: `${res.error}`,
-      });
+      setError(res?.error);
     } else if (res?.warning) {
       setLoading(false);
-      toast.warning(`Autentifikasi Gagal`, {
-        description: `${res.warning}`,
-      });
+      setWarning(res?.warning);
     } else {
       setLoading(false);
       return;
@@ -93,10 +96,12 @@ const SignInClient = ({ image }: { image: any }) => {
   return (
     <>
       <Image
-        src={"/mhealth_logo.PNG"}
+        src={
+          "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+        }
         width={180}
         height={60}
-        className="object-contain mt-5 flex justify-center items-center mx-auto"
+        className="object-contain my-8 flex justify-center items-center mx-auto"
         alt="M-Health Logo"
       />
       <ContainerWrap size="xl">
@@ -105,6 +110,19 @@ const SignInClient = ({ image }: { image: any }) => {
             <h3 className="font-bold text-primary mb-10">
               Log In to Your Account
             </h3>
+            {error && (
+              <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
+                <p className="font-bold mb-1">Autentifikasi Gagal</p>
+                <p className="text-sm!">{error}</p>
+              </div>
+            )}
+            {warning && (
+              <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
+                <p className="font-bold mb-1">Autentifikasi Gagal</p>
+                <p className="text-sm!">{warning}</p>
+              </div>
+            )}
+
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -159,12 +177,18 @@ const SignInClient = ({ image }: { image: any }) => {
                     </FormItem>
                   )}
                 />
-                <div className="flex w-full justify-end">
+                <div className="flex w-full justify-end select-none">
                   <button
                     type="button"
                     className="text-primary text-end"
                     onClick={() =>
-                      router.push(`/forgot-password?access=${uuid()}`)
+                      router.push(
+                        `/forgot-password${
+                          form.getValues().email !== ""
+                            ? `?email=${form.getValues().email}`
+                            : ""
+                        }`
+                      )
                     }
                   >
                     <p className="text-sm! underline cursor-pointer">
@@ -175,24 +199,24 @@ const SignInClient = ({ image }: { image: any }) => {
                 <Button type="submit" className="w-full h-12 rounded-full">
                   {loading ? <Spinner /> : <p>Sign In</p>}
                 </Button>
-                <div className="flex justify-center items-center">
-                  <div className="border-b border-gray-300 w-full"></div>
-                  <p className="px-5 text-gray-500">or</p>
-                  <div className="border-b border-gray-300 w-full"></div>
-                </div>
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="w-full h-12 rounded-full"
-                  onClick={handleGoogleSignIn}
-                >
-                  <p>
-                    <FontAwesomeIcon icon={faGoogle} /> Sign In with Google
-                  </p>
-                </Button>
               </form>
             </Form>
-            <p className="text-muted-foreground text-sm!">
+            <div className="flex justify-center items-center mb-5">
+              <div className="border-b border-gray-300 w-full"></div>
+              <p className="px-5 text-gray-500">or</p>
+              <div className="border-b border-gray-300 w-full"></div>
+            </div>
+            <Button
+              variant="outline"
+              type="button"
+              className="w-full h-12 rounded-full"
+              onClick={handleGoogleSignIn}
+            >
+              <p>
+                <FontAwesomeIcon icon={faGoogle} /> Sign In with Google
+              </p>
+            </Button>
+            <p className="text-muted-foreground text-center text-sm! mt-5">
               Don't have an account?{" "}
               <span
                 onClick={() => router.push(`/${locale}/sign-up`)}

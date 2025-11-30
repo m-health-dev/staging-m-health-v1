@@ -14,9 +14,29 @@
 }
 
 .xl {
-  @apply container mx-auto 2xl:max-w-11/12 3xl:max-w-9/12 px-4 lg:px-7;
+  @apply container mx-auto 2xl:max-w-11/12 3xl:max-w-7/12 px-4 lg:px-7;
 }
 
 .xxl {
+  @apply container mx-auto max-w-screen px-4 lg:px-12;
+}
+
+.car_sm {
+  @apply container mx-auto max-w-md px-3 lg:px-5;
+}
+
+.car_md {
+  @apply container mx-auto max-w-4xl px-4 lg:px-6;
+}
+
+.car_lg {
+  @apply container mx-auto md:max-w-7/12 w-full px-4 lg:px-7;
+}
+
+.car_xl {
+  @apply container mx-auto lg:max-w-full 3xl:max-w-7/12 lg:px-0 3xl:px-7;
+}
+
+.car_xxl {
   @apply container mx-auto max-w-screen px-4 lg:px-12;
 }

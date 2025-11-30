@@ -14,7 +14,10 @@ export const AuthSignInSchema = z.object({
   email: z.email("Email is Required."),
   password: z
     .string()
-    .min(8, "Password is Required and must be at least 8 characters."),
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
+      message:
+        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, dan karakter spesial",
+    }),
   redirect: z.string(),
 });
 
@@ -28,6 +31,7 @@ export const AuthSignUpSchema = z.object({
 
 export const ForgotPassSchema = z.object({
   email: z.email("Email is Required."),
+  // callbackUrl: z.string(),
 });
 
 export const OTPSignInSchema = z.object({

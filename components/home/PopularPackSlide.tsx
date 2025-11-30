@@ -8,7 +8,7 @@ import "swiper/css/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Star, StarOff } from "lucide-react";
+import { Container, Star, StarOff } from "lucide-react";
 import { Button } from "../ui/button";
 import ContainerWrap from "../utility/ContainerWrap";
 import Avatar from "boring-avatars";
@@ -20,8 +20,10 @@ import { Package } from "@/types/packages.types";
 
 export default function PopularPackSlide({
   packages,
+  locale,
 }: {
   packages: Package[];
+  locale: string;
 }) {
   const swiperRef = useRef<any>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -35,7 +37,7 @@ export default function PopularPackSlide({
   }
 
   return (
-    <>
+    <ContainerWrap type="carousel">
       <div className="lg:my-10 my-8 overflow-hidden">
         {packages.length >= 10 ? (
           <div className="w-full flex-col items-center relative group/slide">
@@ -71,14 +73,14 @@ export default function PopularPackSlide({
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <Link
-                    href={`/package/${slide.id}`}
+                    href={`/package/${slide.slug}`}
                     className="flex flex-col w-full h-full"
                   >
                     <Image
-                      src={"https://placehold.co/720x720.png"} // TODO: Ganti dengan slide.img ketika sudah ada gambarnya
+                      src={slide.highlight_image} // TODO: Ganti dengan slide.img ketika sudah ada gambarnya
                       width={720}
                       height={405}
-                      alt={slide.title}
+                      alt={locale === "id" ? slide.id_title : slide.en_title}
                       className="w-full aspect-square! object-cover object-center rounded-t-2xl -z-10"
                     />
 
@@ -94,21 +96,23 @@ export default function PopularPackSlide({
                       <div className="overflow-hidden">
                         <div>
                           <h6 className="capitalize font-bold text-primary line-clamp-2">
-                            {slide.title}
+                            {locale === "id" ? slide.id_title : slide.en_title}
                           </h6>
                         </div>
                       </div>
                       <div className="mt-2 overflow-hidden">
                         <div>
                           <p className="text-muted-foreground text-sm! line-clamp-2">
-                            {slide.tagline}
+                            {locale === "id"
+                              ? slide.id_tagline
+                              : slide.en_tagline}
                           </p>
                         </div>
                       </div>
 
                       <div className="inline-flex gap-2 items-center mt-5">
                         <Avatar
-                          name={slide.hospital_name || "M Health"}
+                          name={"M Health"}
                           colors={[
                             "#3e77ab",
                             "#22b26e",
@@ -119,15 +123,15 @@ export default function PopularPackSlide({
                           variant="beam"
                           size={20}
                         />
-                        <p className="text-sm! text-health">
-                          {slide.hospital_name || "M Health"}
-                        </p>
+                        <p className="text-sm! text-health">{"M Health"}</p>
                       </div>
                     </div>
                   </Link>
                 </SwiperSlide>
               ))}
             </Swiper>
+            {/* <div className="absolute right-0 top-0 lg:w-32 w-5 h-full bg-linear-to-l from-background z-10"></div>
+            <div className="absolute left-0 top-0 lg:w-32 w-5 h-full bg-linear-to-r from-background z-10"></div> */}
             <div className="lg:px-10 px-3 absolute top-0 left-0 z-20 lg:flex hidden h-full items-center transition-all duration-300 lg:translate-x-20 lg:group-hover/slide:translate-x-0 lg:opacity-0 lg:group-hover/slide:opacity-100">
               <button
                 onClick={(e) => {
@@ -203,7 +207,7 @@ export default function PopularPackSlide({
                       src={"https://placehold.co/720x720.png"} // TODO: Ganti dengan slide.full ketika sudah ada gambarnya
                       width={720}
                       height={405}
-                      alt={slide.title}
+                      alt={locale === "id" ? slide.id_title : slide.en_title}
                       className="w-full aspect-square! object-cover object-center rounded-t-2xl"
                     />
 
@@ -215,23 +219,22 @@ export default function PopularPackSlide({
                       <div className="overflow-hidden">
                         <div>
                           <h6 className="capitalize font-bold text-primary lg:line-clamp-2 line-clamp-1">
-                            {slide.title}
+                            {locale === "id" ? slide.id_title : slide.en_title}
                           </h6>
                         </div>
                       </div>
                       <div className="mt-2 overflow-hidden">
                         <div>
                           <p className="text-muted-foreground text-sm! lg:line-clamp-2 line-clamp-1">
-                            {`${slide.description}` +
-                              `_` +
-                              `Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
-          quaerat nobis fugiat praesentium officia quis.`}
+                            {locale === "id"
+                              ? slide.id_tagline
+                              : slide.en_tagline}
                           </p>
                         </div>
                       </div>
                       <div className="inline-flex gap-2 items-center mt-5">
                         <Avatar
-                          name={slide.hospital_name || "M Health"}
+                          name={"M Health"}
                           colors={[
                             "#3e77ab",
                             "#22b26e",
@@ -242,9 +245,7 @@ export default function PopularPackSlide({
                           variant="beam"
                           size={20}
                         />
-                        <p className="text-sm! text-health">
-                          {slide.hospital_name || "M Health"}
-                        </p>
+                        <p className="text-sm! text-health">{"M Health"}</p>
                       </div>
                     </div>
                   </Link>
@@ -254,6 +255,6 @@ export default function PopularPackSlide({
           </ContainerWrap>
         )}
       </div>
-    </>
+    </ContainerWrap>
   );
 }
