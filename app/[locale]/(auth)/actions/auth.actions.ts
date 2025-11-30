@@ -13,6 +13,7 @@ import { getLocale } from "next-intl/server";
 import { AuthSignUpSchema, ForgotPassSchema } from "@/lib/zodSchema";
 
 import sha1 from "crypto-js/sha1";
+import { NextResponse } from "next/server";
 
 const signUpSchema = z.object({
   fullname: z
@@ -619,6 +620,7 @@ export const resetPasswordAction = async (data: {
 }) => {
   const supabase = await createClient();
   const validatedData = resetPasswordSchema.safeParse(data);
+  const locale = await getLocale();
 
   if (!validatedData.success) {
     return {
@@ -679,8 +681,9 @@ export const resetPasswordAction = async (data: {
     console.error(error.code + " " + error.message);
     return { error: "Password tidak berhasil diperbarui." };
   }
-
-  return { success: "Password berhasil diperbarui." };
+  return (
+    redirect(`/${locale}/sign-in`), { success: "Password berhasil diperbarui." }
+  );
 };
 
 export const signOutAction = async () => {
