@@ -681,6 +681,8 @@ export const resetPasswordAction = async (data: {
     console.error(error.code + " " + error.message);
     return { error: "Password tidak berhasil diperbarui." };
   }
+
+  await supabase.auth.signOut();
   return (
     redirect(`/${locale}/sign-in`), { success: "Password berhasil diperbarui." }
   );
