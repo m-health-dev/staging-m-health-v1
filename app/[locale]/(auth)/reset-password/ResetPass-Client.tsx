@@ -29,15 +29,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  forgotPasswordAction,
-  resetPasswordAction,
-} from "../actions/auth.actions";
+import { resetPasswordAction } from "../actions/auth.actions";
 
 const ResetPassClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [error, setError] = React.useState("");
   const [warning, setWarning] = React.useState("");
@@ -62,31 +58,14 @@ const ResetPassClient = ({ image }: { image: any }) => {
     if (response?.warning) {
       setLoading(false);
       setWarning(response.warning);
-      // toast.warning(`Gagal Mengirim`, {
-      //   description: `${response.warning}`,
-      // });
     } else if (response?.error) {
       setLoading(false);
       setError(response.error);
-      // toast.error(`Gagal Mengirim`, {
-      //   description: `${response.error}`,
-      // });
     } else if (response?.success) {
       setLoading(false);
       setSuccess(`${response.success}`);
-      // toast.success(`Berhasil Terkirim`, {
-      //   description: `${response.success}`,
-      // });
     }
     setLoading(false);
-
-    // toast("Signed In As :", {
-    //   description: (
-    //     <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30">
-    //       <code>{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // });
   }
 
   return (
@@ -206,15 +185,6 @@ const ResetPassClient = ({ image }: { image: any }) => {
                 <Button type="submit" className="w-full h-12 rounded-full">
                   {loading ? <Spinner /> : <p>Reset Password</p>}
                 </Button>
-
-                {/* <div className="mt-8">
-                  <HelpLink />
-                  <p className="!text-xs text-muted-foreground mt-2">
-                    Pastikan jaringan internet yang kamu gunakan aman. Kami
-                    menyarankan kamu untuk menggunakan jaringan internet yang
-                    kamu percaya.
-                  </p>
-                </div> */}
               </form>
             </Form>
           </div>

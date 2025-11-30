@@ -65,7 +65,7 @@ const MagicLinkClient = ({ image }: { image: any }) => {
     resetMessages();
     setLoading(true);
 
-    const response = await handleSendMagicLinkAction({ email: data.email });
+    const response = await handleSendMagicLinkAction(data);
 
     handleResponse(response);
     setLoading(false);

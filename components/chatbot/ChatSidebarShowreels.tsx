@@ -14,15 +14,23 @@ import { nanoid } from "nanoid";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { getImagePicsum } from "@/lib/picsumPhotos";
 import { Package } from "@/types/packages.types";
+import { useLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
+import { Medical } from "@/types/medical.types";
+import { Wellness } from "@/types/wellness.types";
 
 const ChatSidebarShowreels = ({
   onSelectChat,
   setOpenSheet,
-  data,
+  packages,
+  medical,
+  wellness,
 }: {
   onSelectChat: (id: string) => void;
   setOpenSheet?: (value: boolean) => void;
-  data: Package[];
+  packages: Package[];
+  medical: Medical[];
+  wellness: Wellness[];
 }) => {
   const [imageWellness, setImageWellness] = useState<any[]>([]);
   const [imageMedical, setImageMedical] = useState<any[]>([]);
@@ -30,36 +38,7 @@ const ChatSidebarShowreels = ({
   const [loading, setLoading] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
 
-  // useEffect(() => {
-  //   const imageData = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const resWel = await getImagePicsum();
-  //       console.log("Image Picsum:", resWel);
-
-  //       if (!resWel) throw new Error("Failed to Fetch Images Wellness");
-  //       setImageWellness(resWel.results.slice(0, 3));
-
-  //       const resMed = await getImagePicsum();
-
-  //       if (!resMed) throw new Error("Failed to Fetch Images Medical");
-  //       setImageMedical(resMed.results.slice(4, 6));
-
-  //       const resEv = await getImagePicsum();
-
-  //       if (!resEv) throw new Error("Failed to Fetch Images Events");
-  //       setImageEvents(resEv.results.slice(7, 9));
-  //       setLoading(false);
-  //     } catch (error: any) {
-  //       if (error) {
-  //         throw new Error("Undefined Error!");
-  //       }
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   imageData();
-  // }, []);
+  const locale = useLocale();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -143,7 +122,7 @@ const ChatSidebarShowreels = ({
       <div className="bg-white p-4 rounded-2xl border">
         <h4 className="font-extrabold text-primary mb-3">Packages</h4>
         <div className="space-y-5">
-          {data.slice(10, 13).map((img, i) => (
+          {packages.map((img, i) => (
             <Link
               key={img.id}
               href={`/wellness/package-${i + 1}`}
@@ -151,7 +130,7 @@ const ChatSidebarShowreels = ({
             >
               <div
                 className={`grid grid-cols-3 items-center group-hover:bg-muted group-hover:shadow-sm transition-all duration-300 rounded-xl py-3 border border-border ${
-                  i + 1 === data.length ? "mb-0" : "mb-4"
+                  i + 1 === packages.length ? "mb-0" : "mb-4"
                 }`}
               >
                 <div className="px-3 col-span-1">
@@ -168,26 +147,30 @@ const ChatSidebarShowreels = ({
                 <div className="col-span-2 pr-3">
                   <div className="">
                     <p className="font-extrabold text-primary line-clamp-2 ">
-                      {img.title}
+                      {locale === routing.defaultLocale
+                        ? img.id_title
+                        : img.en_title}
                     </p>
                   </div>
                   <div className="mt-1">
                     <p className="text-sm! text-muted-foreground line-clamp-2">
-                      {img.tagline}
+                      {locale === routing.defaultLocale
+                        ? img.id_tagline
+                        : img.en_tagline}
                     </p>
                   </div>
                 </div>
               </div>
             </Link>
           ))}
-          {data.length <= 0 && <FailedGetDataNotice size="sm" />}
+          {packages.length <= 0 && <FailedGetDataNotice size="sm" />}
         </div>
       </div>
 
       <div className="bg-white p-4 rounded-2xl border">
         <h4 className="font-extrabold text-primary mb-3">Welness</h4>
         <div className="space-y-5">
-          {data.slice(0, 3).map((img, i) => (
+          {wellness.map((img, i) => (
             <Link
               key={img.id}
               href={`/wellness/package-${i + 1}`}
@@ -195,7 +178,7 @@ const ChatSidebarShowreels = ({
             >
               <div
                 className={`grid grid-cols-3 items-center group-hover:bg-muted group-hover:shadow-sm transition-all duration-300 rounded-xl py-3 border border-border ${
-                  i + 1 === data.length ? "mb-0" : "mb-4"
+                  i + 1 === wellness.length ? "mb-0" : "mb-4"
                 }`}
               >
                 <div className="px-3 col-span-1">
@@ -212,26 +195,30 @@ const ChatSidebarShowreels = ({
                 <div className="col-span-2 pr-3">
                   <div className="">
                     <p className="font-extrabold text-primary line-clamp-2 ">
-                      {img.title}
+                      {locale === routing.defaultLocale
+                        ? img.id_title
+                        : img.en_title}
                     </p>
                   </div>
                   <div className="mt-1">
                     <p className="text-sm! text-muted-foreground line-clamp-2">
-                      {img.tagline}
+                      {locale === routing.defaultLocale
+                        ? img.id_tagline
+                        : img.en_tagline}
                     </p>
                   </div>
                 </div>
               </div>
             </Link>
           ))}
-          {data.length <= 0 && <FailedGetDataNotice size="sm" />}
+          {wellness.length <= 0 && <FailedGetDataNotice size="sm" />}
         </div>
       </div>
 
       <div className="bg-white p-4 rounded-2xl border">
         <h4 className="font-extrabold text-primary mb-3">Medical</h4>
         <div className="space-y-5">
-          {data.slice(4, 7).map((img, i) => (
+          {medical.map((img, i) => (
             <Link
               key={img.id}
               href={`/wellness/package-${i + 1}`}
@@ -239,7 +226,7 @@ const ChatSidebarShowreels = ({
             >
               <div
                 className={`grid grid-cols-3 items-center group-hover:bg-muted group-hover:shadow-sm transition-all duration-300 rounded-xl py-3 border border-border ${
-                  i + 1 === data.length ? "mb-0" : "mb-4"
+                  i + 1 === medical.length ? "mb-0" : "mb-4"
                 }`}
               >
                 <div className="px-3 col-span-1">
@@ -256,19 +243,23 @@ const ChatSidebarShowreels = ({
                 <div className="col-span-2 pr-3">
                   <div className="">
                     <p className="font-extrabold text-primary line-clamp-2 ">
-                      {img.title}
+                      {locale === routing.defaultLocale
+                        ? img.id_title
+                        : img.en_title}
                     </p>
                   </div>
                   <div className="mt-1">
                     <p className="text-sm! text-muted-foreground line-clamp-2">
-                      {img.tagline}
+                      {locale === routing.defaultLocale
+                        ? img.id_tagline
+                        : img.en_tagline}
                     </p>
                   </div>
                 </div>
               </div>
             </Link>
           ))}
-          {data.length <= 0 && <FailedGetDataNotice size="sm" />}
+          {medical.length <= 0 && <FailedGetDataNotice size="sm" />}
         </div>
       </div>
     </div>

@@ -29,8 +29,18 @@ import {
 } from "../ui/sheet";
 import { nanoid } from "nanoid";
 import { Package } from "@/types/packages.types";
+import { Medical } from "@/types/medical.types";
+import { Wellness } from "@/types/wellness.types";
 
-const ChatContent = ({ data }: { data: Package[] }) => {
+const ChatContent = ({
+  packages,
+  medical,
+  wellness,
+}: {
+  packages: Package[];
+  medical: Medical[];
+  wellness: Wellness[];
+}) => {
   const { isSidebarOpen, setIsSidebarOpen } = useResponsiveSidebar();
   const [showSidebarContent, setShowSidebarContent] = useState(true);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -118,7 +128,9 @@ const ChatContent = ({ data }: { data: Package[] }) => {
                   className="flex flex-col"
                 >
                   <ChatSidebarShowreels
-                    data={data}
+                    packages={packages}
+                    medical={medical}
+                    wellness={wellness}
                     onSelectChat={handleSelectChat}
                   />
                 </motion.div>
@@ -189,7 +201,9 @@ const ChatContent = ({ data }: { data: Package[] }) => {
               </SheetClose>
               <div className="flex flex-col space-y-7 overflow-y-scroll hide-scroll">
                 <ChatSidebarShowreels
-                  data={data}
+                  packages={packages}
+                  medical={medical}
+                  wellness={wellness}
                   onSelectChat={handleSelectChat}
                   setOpenSheet={setOpenSheet} // ✅ kirim fungsi setter
                 />

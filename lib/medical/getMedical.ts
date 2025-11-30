@@ -7,3 +7,11 @@ export async function getAllMedical() {
   if (!res.ok) throw new Error("Failed to fetch All Medical Data");
   return res.json();
 }
+
+export async function getLatest3Medical() {
+  const res = await fetch(`${apiBaseUrl}/api/v1/medical?per_page=3`, {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) throw new Error("Failed to fetch Latest 3 Medical Data");
+  return res.json();
+}

@@ -12,6 +12,8 @@ import { createClient } from "@/utils/supabase/server";
 import { getLocale } from "next-intl/server";
 import { AuthSignUpSchema, ForgotPassSchema } from "@/lib/zodSchema";
 
+import sha1 from "crypto-js/sha1";
+
 const signUpSchema = z.object({
   fullname: z
     .string()
@@ -488,6 +490,7 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   const supabase = await createClient();
   const validatedData = ForgotPassSchema.safeParse(data);
   const origin = (await headers()).get("origin");
+  const locale = await getLocale();
   // const callbackUrl = formData.get("callbackUrl")?.toString();
 
   if (!validatedData.success) {
@@ -504,7 +507,7 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   // Cek jumlah permintaan reset berdasarkan email
   const { data: checkRequested, error: reqErr } = await supabase
     .from("recover_account")
-    .select("email, request")
+    .select("*")
     .eq("email", validatedData.data.email)
     .maybeSingle();
 
@@ -524,29 +527,42 @@ export const forgotPasswordAction = async (data: { email: string }) => {
     };
   }
 
-  // Update jumlah permintaan (insert jika belum ada)
+  // Hitung request baru
   const newRequestCount = (checkRequested?.request ?? 0) + 1;
 
-  const { data: updateRequested, error: updateErr } = await supabase
+  // Lakukan UPSERT sederhana tanpa .select()
+  const { error: updateErr } = await supabase
     .from("recover_account")
-    .upsert(
-      {
-        email: validatedData.data.email,
-        request: newRequestCount,
-      },
-      { onConflict: "email" }
-    )
-    .select("request")
-    .maybeSingle();
+    .update({
+      email: validatedData.data.email,
+      request: newRequestCount,
+    })
+    .eq("email", validatedData.data.email);
 
   if (updateErr) {
+    console.error("UPSERT ERROR:", updateErr);
     return {
       success: false,
       error: "Terjadi kesalahan saat mencatat permintaan reset.",
     };
   }
 
-  console.log("Request Recover :", updateRequested?.request);
+  // Ambil nilai request terbaru setelah sukses
+  const { data: finalData, error: selectErr } = await supabase
+    .from("recover_account")
+    .select("request")
+    .eq("email", validatedData.data.email)
+    .single();
+
+  if (selectErr) {
+    console.error("SELECT ERROR:", selectErr);
+    return {
+      success: false,
+      error: "Tidak dapat mengambil data permintaan reset.",
+    };
+  }
+
+  console.log("Request Recover :", finalData?.request);
 
   // Cek apakah email ada di tabel accounts
   const { data: checkEmail, error: emailErr } = await supabase
@@ -572,7 +588,7 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   const { error } = await supabase.auth.resetPasswordForEmail(
     validatedData.data.email,
     {
-      redirectTo: `${origin}/auth/callback?redirect=/reset-password`,
+      redirectTo: `${origin}/auth/callback?redirect=/${locale}/reset-password`,
     }
   );
 
@@ -619,12 +635,18 @@ export const resetPasswordAction = async (data: {
     return { warning: "Password tidak sama." };
   }
 
+  const hashedPasswordSHA = sha1(validatedData.data.confirmPassword);
+  const hashedPassword = hashedPasswordSHA.toString().toUpperCase();
+  // .createHash("sha1")
+  // .update(validatedData.data.confirmPassword)
+  // .digest("hex")
+
   // Check if password has been pwned
-  const hashedPassword = crypto
-    .createHash("sha1")
-    .update(validatedData.data.confirmPassword)
-    .digest("hex")
-    .toUpperCase();
+  // const hashedPassword = crypto
+  //   .createHash("sha1")
+  //   .update(validatedData.data.confirmPassword)
+  //   .digest("hex")
+  //   .toUpperCase();
   const prefix = hashedPassword.slice(0, 5);
   const suffix = hashedPassword.slice(5);
 
@@ -650,7 +672,7 @@ export const resetPasswordAction = async (data: {
   }
 
   const { error } = await supabase.auth.updateUser({
-    password: validatedData.data.password,
+    password: validatedData.data.confirmPassword,
   });
 
   if (error) {

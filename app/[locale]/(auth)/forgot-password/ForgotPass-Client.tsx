@@ -52,31 +52,14 @@ const ForgotPassClient = ({ image }: { image: any }) => {
     if (response?.warning) {
       setLoading(false);
       setWarning(response.warning);
-      // toast.warning(`Gagal Mengirim`, {
-      //   description: `${response.warning}`,
-      // });
     } else if (response?.error) {
       setLoading(false);
       setError(response.error);
-      // toast.error(`Gagal Mengirim`, {
-      //   description: `${response.error}`,
-      // });
     } else if (response?.success) {
       setLoading(false);
       setSuccess(`${response.success}`);
-      // toast.success(`Berhasil Terkirim`, {
-      //   description: `${response.success}`,
-      // });
     }
     setLoading(false);
-
-    // toast("Signed In As :", {
-    //   description: (
-    //     <pre className="mt-2 rounded-md text-wrap wrap-anywhere line-clamp-30">
-    //       <code>{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // });
   }
 
   return (
