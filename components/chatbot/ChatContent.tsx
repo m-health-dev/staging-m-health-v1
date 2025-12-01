@@ -12,7 +12,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Suspense, useEffect, useState } from "react";
 import ChatStart from "./ChatStart";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import ContainerWrap from "../utility/ContainerWrap";
 
@@ -31,41 +31,89 @@ import { nanoid } from "nanoid";
 import { Package } from "@/types/packages.types";
 import { Medical } from "@/types/medical.types";
 import { Wellness } from "@/types/wellness.types";
+import { getChatHistory } from "@/lib/chatbot/getChatActivity";
+
+import { v4 as uuidv4 } from "uuid";
+import { ChatHistory } from "@/types/chat.types";
 
 const ChatContent = ({
   packages,
   medical,
   wellness,
+  history,
+  session,
+  sessionID,
+  publicIDFetch,
 }: {
   packages: Package[];
   medical: Medical[];
   wellness: Wellness[];
+  session?: any[];
+  history: any[];
+  sessionID?: string;
+  publicIDFetch: string;
 }) => {
   const { isSidebarOpen, setIsSidebarOpen } = useResponsiveSidebar();
   const [showSidebarContent, setShowSidebarContent] = useState(true);
-  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
 
+  // State chat yang sedang aktif
   const [selectedChat, setSelectedChat] = useState<Message[]>([]);
-
+  const [chatHistory, setChatHistory] = useState<any[]>([]);
   const [openSheet, setOpenSheet] = useState(false);
 
-  const handleSelectChat = (chatId: string) => {
-    const allChats = JSON.parse(
-      localStorage.getItem("mhealth_chat_sessions") || "[]"
-    );
-    const selected = allChats.find((c: any) => c.id === chatId);
-    if (selected) {
-      setSelectedChat(selected.messages);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+  const path = usePathname();
+
+  const [publicID, setPublicID] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getPublicID = async () => {
+      const response = await fetch("/api/public-id");
+      const data = await response.json();
+      setPublicID(data.publicID);
+    };
+
+    getPublicID();
+  }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    async function fetchHistory() {
+      setIsLoading(true);
+      try {
+        const historyData = await getChatHistory(publicID!);
+        const json = historyData;
+        setChatHistory(json.data || []);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Fetch history error:", error);
+        setIsLoading(false);
+      }
     }
-  };
 
-  // const handleSelectChat = (id: string) => {
-  //   setSelectedChatId(id);
-  // };
+    // Fetch pertama saat komponen mount
+    fetchHistory();
 
-  // const handleNewChat = () => {
-  //   setSelectedChatId(null); // mulai baru
-  // };
+    // Fetch setiap 5 detik
+    interval = setInterval(fetchHistory, 30000);
+    setIsLoading(false);
+    return () => clearInterval(interval);
+  }, [publicID]);
+
+  // 2. Effect: Sinkronisasi URL (initialSessionId) dengan Konten Chat
+  useEffect(() => {
+    if (session) {
+      // Cari chat yang sesuai dengan ID di URL
+
+      setSelectedChat(session);
+    } else if (!session) {
+      // Jika di root (/), kosongkan chat
+      setSelectedChat([]);
+    }
+  }, [session]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -82,10 +130,10 @@ const ChatContent = ({
     return () => clearTimeout(timer);
   }, [isSidebarOpen]);
 
-  const startNewChat = () => {
-    const newId = nanoid();
-    localStorage.setItem("mhealth_active_chat_id", newId);
-  };
+  // const startNewChat = () => {
+  //   const newId = nanoid();
+  //   localStorage.setItem("mhealth_active_chat_id", newId);
+  // };
 
   // Handler toggle
   const toggleSidebar = () => {
@@ -131,7 +179,8 @@ const ChatContent = ({
                     packages={packages}
                     medical={medical}
                     wellness={wellness}
-                    onSelectChat={handleSelectChat}
+                    chatHistory={chatHistory}
+                    isLoading={isLoading}
                   />
                 </motion.div>
               </AnimatePresence>
@@ -204,8 +253,9 @@ const ChatContent = ({
                   packages={packages}
                   medical={medical}
                   wellness={wellness}
-                  onSelectChat={handleSelectChat}
+                  chatHistory={chatHistory}
                   setOpenSheet={setOpenSheet} // ✅ kirim fungsi setter
+                  isLoading={isLoading}
                 />
               </div>
             </SheetContent>
@@ -219,7 +269,16 @@ const ChatContent = ({
           !isSidebarOpen ? "lg:-translate-x-8" : "lg:-translate-x-5"
         }`}
       >
-        <ChatStart chat={selectedChat} />
+        <ChatStart
+          chat={selectedChat}
+          session={session}
+          sessionID={sessionID}
+          publicID={publicIDFetch}
+        />
+        <p className="text-xs! text-muted-foreground text-center">
+          <span>Your Anon/ Public ID</span> <br />{" "}
+          <span className="text-primary">{publicID}</span>
+        </p>
       </ContainerWrap>
     </div>
   );

@@ -64,6 +64,7 @@ const ResetPassClient = ({ image }: { image: any }) => {
     } else if (response?.success) {
       setLoading(false);
       setSuccess(`${response.success}`);
+      toast.success(`${response.success}`);
     }
     setLoading(false);
   }

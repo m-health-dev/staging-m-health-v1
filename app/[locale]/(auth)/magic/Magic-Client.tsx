@@ -91,13 +91,13 @@ const MagicLinkClient = ({ image }: { image: any }) => {
         src="https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
         width={180}
         height={60}
-        className="object-contain mt-5 flex justify-center items-center mx-auto"
+        className="object-contain my-8 flex justify-center items-center mx-auto"
         alt="M-Health Logo"
       />
 
       <ContainerWrap size="xl">
-        <div className="flex items-center justify-center lg:min-h-screen py-10 mt-5 mb-10 p-5 bg-white rounded-4xl">
-          <div className="w-full md:max-w-sm">
+        <div className="flex items-center justify-center lg:min-h-screen 3xl:min-h-[calc(100vh-80px)] bg-white py-10 mt-5 mb-10 p-5 rounded-4xl">
+          <div className="md:max-w-sm w-full col-span-1">
             <header className="mb-10">
               <h3 className="font-bold text-primary mb-2">
                 Magic Link Request
@@ -159,6 +159,16 @@ const MagicLinkClient = ({ image }: { image: any }) => {
               </span>{" "}
               now.
             </p>
+          </div>
+          <div className="col-span-2">
+            <Image
+              src={image}
+              width={640}
+              height={640}
+              unoptimized
+              alt={image}
+              className="ml-20 rounded-4xl shadow aspect-square min-w-2xl max-w-2xl h-full object-cover object-center lg:flex hidden"
+            />
           </div>
         </div>
       </ContainerWrap>

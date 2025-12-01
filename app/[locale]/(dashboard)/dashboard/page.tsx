@@ -5,37 +5,39 @@ import { createClient } from "@/utils/supabase/server";
 import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
 import { getUserRole } from "../../(auth)/actions/auth.actions";
+import { getUserInfo } from "@/lib/auth/getUserInfo";
 
 const DashboardPage = async () => {
   const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  const { data: userData } = await supabase.auth.getUser();
-  const { data: claims } = await supabase.auth.getClaims();
-  const { data: session } = await supabase.auth.getSession();
+  if (!session) {
+    return (
+      <div className="p-6 text-red-600 font-medium">
+        Failed to get user session
+      </div>
+    );
+  }
 
+  const userData = await getUserInfo(session?.access_token);
   const role = await getUserRole();
 
   return (
-    <Wrapper>
-      <ContainerWrap>
-        <div className="flex justify-between my-20">
-          <h3 className="font-bold text-primary">Dashboard</h3>
-          <Link href={"/sign-out"}>
-            <Button variant={"destructive"}>Sign Out</Button>
-          </Link>
-        </div>
+    <>
+      <div className="flex justify-between my-20">
+        <h3 className="font-bold text-primary">Dashboard</h3>
+        <Link href={"/sign-out"}>
+          <Button variant={"destructive"}>Sign Out</Button>
+        </Link>
+      </div>
 
-        <pre>{JSON.stringify(userData, null, 2)}</pre>
-
-        <pre className="text-wrap wrap-anywhere">
-          Claims: {JSON.stringify(claims, null, 2)}
-        </pre>
-
-        <pre className="text-wrap wrap-anywhere">
-          Decoded Token: {JSON.stringify(role, null, 2)}
-        </pre>
-      </ContainerWrap>
-    </Wrapper>
+      <pre className="text-wrap wrap-anywhere">
+        {JSON.stringify(userData, null, 2)}
+      </pre>
+      <pre className="text-wrap wrap-anywhere">Role: {role}</pre>
+    </>
   );
 };
 

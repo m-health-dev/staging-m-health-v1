@@ -31,7 +31,6 @@ export const AuthSignUpSchema = z.object({
 
 export const ForgotPassSchema = z.object({
   email: z.email("Email is Required."),
-  // callbackUrl: z.string(),
 });
 
 export const resetPasswordSchema = z.object({
@@ -67,4 +66,16 @@ export const RequestOTPSchema = z.object({
 export const VerifyOTPSchema = z.object({
   email: z.email(),
   otp: z.string().min(6),
+});
+
+export const VendorSchema = z.object({
+  name: z.string().min(3),
+  en_description: z.string().min(3),
+  id_description: z.string().min(3),
+  category: z.string().min(3),
+  specialist: z.array(z.string()),
+  logo: z.string(),
+  highlight_image: z.string(),
+  reference_image: z.array(z.string()),
+  location_map: z.string(),
 });

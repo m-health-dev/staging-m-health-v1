@@ -15,7 +15,7 @@ import { AuthSignInSchema, ForgotPassSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye, ChevronsRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z, { set } from "zod";
@@ -43,11 +43,28 @@ const SignInClient = ({ image }: { image: any }) => {
   const locale = useLocale();
   const params = useSearchParams();
   const redirectData = params.get("redirect") || `/${locale}/dashboard`;
+  const emailData = params.get("email");
+  const resetData = params.get("reset");
+  const recordResetData = params.get("record");
+
+  useEffect(() => {
+    const newRequestCount = 3 - Number(recordResetData);
+    if (resetData === "success") {
+      toast.success("Berhasil Memulihkan Akun", {
+        description: `Kata sandi telah diperbarui, selalu ingat kata sandi yang baru ya! ${
+          newRequestCount === 0
+            ? `Karena, sisa kuota untuk memulihkan akunmu telah habis.`
+            : `Karena, sisa kuota untuk memulihkan akunmu hanya tersisa ${newRequestCount} kali.`
+        } `,
+        duration: 30000,
+      });
+    }
+  }, [recordResetData]);
 
   const form = useForm<z.infer<typeof AuthSignInSchema>>({
     resolver: zodResolver(AuthSignInSchema),
     defaultValues: {
-      email: "",
+      email: emailData || "",
       password: "",
       redirect: redirectData?.toString(),
     },
@@ -236,11 +253,11 @@ const SignInClient = ({ image }: { image: any }) => {
           </div>
           <div className="col-span-2">
             <Image
-              src={image.full}
-              width={320}
-              height={320}
+              src={image}
+              width={640}
+              height={640}
               unoptimized
-              alt={image.alt}
+              alt={image}
               className="ml-20 rounded-4xl shadow aspect-square min-w-2xl max-w-2xl h-full object-cover object-center lg:flex hidden"
             />
           </div>

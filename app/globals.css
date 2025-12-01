@@ -182,19 +182,19 @@ h6 {
 } */
 
 .prose > p {
-  @apply md:text-[20px] text-[18px] -mb-2 text-wrap break-words;
+  @apply md:text-[20px] text-[18px] -mb-2 text-wrap wrap-break-word;
 }
 
 .prose > blockquote {
-  @apply md:text-[20px] text-[18px] -mb-2 text-wrap break-words font-sans;
+  @apply md:text-[20px] text-[18px] -mb-2 text-wrap wrap-break-word font-sans;
 }
 
 .prose > ul {
-  @apply font-sans md:text-[20px] text-[18px] text-wrap break-words;
+  @apply font-sans md:text-[20px] text-[18px] text-wrap wrap-break-word;
 }
 
 .prose > ol {
-  @apply font-sans md:text-[20px] text-[18px] text-wrap break-words;
+  @apply font-sans md:text-[20px] text-[18px] text-wrap wrap-break-word;
 }
 
 .prose > img {

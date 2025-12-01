@@ -1,4 +1,7 @@
-const apiBaseUrl = process.env.NEXT_PUBLIC_PROD_BACKEND_URL;
+const apiBaseUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
+    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
 export async function getAllPackages() {
   const res = await fetch(`${apiBaseUrl}/api/v1/packages`, {

@@ -70,7 +70,7 @@ const ForgotPassClient = ({ image }: { image: any }) => {
         }
         width={180}
         height={60}
-        className="object-contain mt-5 flex justify-center items-center mx-auto"
+        className="object-contain my-8 flex justify-center items-center mx-auto"
         alt="M-Health Logo"
       />
       <ContainerWrap size="xl">

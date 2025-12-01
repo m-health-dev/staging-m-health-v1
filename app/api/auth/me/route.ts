@@ -1,6 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_PROD_BACKEND_URL;
+const apiBaseUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
+    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
 export async function GET(request: NextRequest) {
   try {

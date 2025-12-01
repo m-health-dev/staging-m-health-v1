@@ -32,7 +32,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const [isHandleReply, setIsHandleReply] = React.useState(false);
   const [replyMessage, setReplyMessage] = React.useState<string | null>(null);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageStartRef = useRef<HTMLDivElement>(null);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -49,7 +49,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   }, [inputValue]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messageStartRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = () => {
@@ -80,15 +80,16 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         {/* <div className="h-16 w-full bg-linear-to-b from-background fixed top-22 z-10"></div> */}
         <div className="container mx-auto lg:max-w-4xl w-full lg:px-6">
           {/* Messages Container */}
-          <div className="flex-1 min-h-[calc(100vh-10vh)] max-h-[calc(100vh-10vh)] lg:px-10 lg:pt-[10vh] pt-[16vh]">
+          <div className="flex-1 min-h-[calc(100vh-10vh)] max-h-[calc(100vh-10vh)] lg:px-10">
             <div>
-              <p className="lg:text-sm! text-xs! text-muted-foreground/50 text-center mb-10">
-                Kami menyimpan percakapan ini secara lokal di penyimpanan Anda.
-                Anda dapat menggunakan <i>Health AI Assistant </i>
+              <p className="lg:text-sm! text-xs! text-muted-foreground/50 text-center mb-10 mt-2">
+                Kami menggunakan cookies agar tetap terhubung. Anda dapat
+                menggunakan <i>Health AI Assistant </i>
                 ini untuk mencari tahu tentang permasalahan kesehatan anda
                 secara gratis.
               </p>
             </div>
+            <div ref={messageStartRef} />
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full">
                 <p className="text-muted-foreground">
@@ -118,9 +119,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     </div>
                   </div>
                 )}
-                <div ref={messagesEndRef} className={"pb-[40vh]"} />
               </div>
             )}
+            <div className="pb-[10vh]" />
           </div>
         </div>
         {/* <div className="h-16 w-full bg-linear-to-t from-background fixed bottom-30 z-10"></div> */}
@@ -189,12 +190,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               </div>
             </div>
             <div>
-              <p className="text-xs! text-muted-foreground mt-4 text-center">
+              <p className="text-xs! text-muted-foreground my-2 text-center">
                 M-Health AI dapat membuat kesalahan. Periksa info penting.
               </p>
-              <p className="text-xs! text-primary font-semibold mt-0 text-center">
+              {/* <p className="text-xs! text-primary font-semibold mt-0 text-center">
                 Gemini 2.5 Flash
-              </p>
+              </p> */}
             </div>
           </div>
         </div>

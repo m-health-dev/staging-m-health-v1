@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["192.168.18.252", "*.m-health.id"],
   images: {
     remotePatterns: [
       {
@@ -18,11 +19,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "picsum.photos",
+        hostname: "lh3.googleusercontent.com",
       },
       {
         protocol: "https",
-        hostname: "i.ytimg.com",
+        hostname: "hoocfkzapbmnldwmedrq.supabase.co",
       },
       {
         protocol: "https",

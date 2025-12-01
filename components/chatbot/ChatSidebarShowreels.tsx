@@ -18,43 +18,32 @@ import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { Medical } from "@/types/medical.types";
 import { Wellness } from "@/types/wellness.types";
+import { ChatHistory } from "@/types/chat.types";
+import { usePathname, useRouter } from "next/navigation";
+import { Skeleton } from "../ui/skeleton";
 
 const ChatSidebarShowreels = ({
-  onSelectChat,
   setOpenSheet,
+  chatHistory,
   packages,
   medical,
   wellness,
+  isLoading,
 }: {
-  onSelectChat: (id: string) => void;
   setOpenSheet?: (value: boolean) => void;
   packages: Package[];
   medical: Medical[];
   wellness: Wellness[];
+  chatHistory: any[];
+  isLoading: boolean;
 }) => {
-  const [imageWellness, setImageWellness] = useState<any[]>([]);
-  const [imageMedical, setImageMedical] = useState<any[]>([]);
-  const [imageEvents, setImageEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [sessions, setSessions] = useState<any[]>([]);
+  const pathname = usePathname(); // Ambil path saat ini
+  const router = useRouter();
 
   const locale = useLocale();
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const stored = localStorage.getItem("mhealth_chat_sessions");
-      if (stored) {
-        setSessions(JSON.parse(stored));
-      }
-    }, 1000); // cek setiap 1 detik
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const startNewChat = () => {
-    const newId = nanoid();
-    localStorage.setItem("mhealth_active_chat_id", newId);
-  };
+  console.log(chatHistory);
 
   return loading ? (
     <div className="flex w-full max-h-[calc(100vh-13.5vh)] min-h-[calc(100vh-13.5vh)] justify-center items-center">
@@ -65,7 +54,7 @@ const ChatSidebarShowreels = ({
       <div className="lg:bg-white shadow-sm bg-background p-4 rounded-2xl border border-primary sticky top-0">
         <button
           onClick={() => {
-            startNewChat(), window.location.reload();
+            router.push("/");
           }}
           className="flex w-full items-center gap-2 text-primary cursor-pointer"
         >
@@ -73,51 +62,62 @@ const ChatSidebarShowreels = ({
         </button>
       </div>
 
-      {sessions.length > 0 && (
-        <div className="bg-white p-4 rounded-2xl border">
-          <h4 className="font-extrabold text-primary">Riwayat Obrolan</h4>
-          <div className="space-y-5 pt-3">
-            <div className="space-y-2">
-              {sessions.length > 0 ? (
-                sessions.map((s) => (
-                  <button
-                    key={s.id}
+      {/* <pre className="max-h-32 overflow-auto w-full text-wrap wrap-anywhere bg-white p-4 rounded-2xl">
+        Chat History : {JSON.stringify(chatHistory, null, 2)}
+      </pre> */}
+
+      <div className="bg-white p-4 rounded-2xl border">
+        <h4 className="font-extrabold text-primary">Riwayat Obrolan</h4>
+        <div className="space-y-5 pt-3">
+          <div className="space-y-2">
+            {isLoading ? (
+              <>
+                <Skeleton className="w-full h-16" />
+                <Skeleton className="w-full h-16" />
+                <Skeleton className="w-full h-16" />
+              </>
+            ) : (
+              <>
+                {chatHistory.length > 0 ? (
+                  chatHistory.map((s) => (
+                    <Suspense key={s.id} fallback={<Spinner />}>
+                      <button
+                        key={s.id}
+                        onClick={() => {
+                          router.push(`/c/${s.id}`);
+                          if (setOpenSheet) setOpenSheet(false);
+                        }}
+                        className="w-full text-left border border-border p-2 rounded-xl hover:bg-muted cursor-pointer"
+                      >
+                        <p className="font-semibold text-primary text-base! line-clamp-2 wrap-break-word">
+                          {s.title}
+                        </p>
+                        <p className="text-xs! uppercase text-muted-foreground">
+                          {s.id.slice(0, 8)}
+                        </p>
+                      </button>
+                    </Suspense>
+                  ))
+                ) : (
+                  <FailedGetDataNotice size="sm" />
+                )}
+                {chatHistory.length >= 1 && (
+                  <div
                     onClick={() => {
-                      onSelectChat(s.id);
+                      localStorage.removeItem("mhealth_chat_sessions");
                       if (setOpenSheet) setOpenSheet(false);
+                      window.location.reload();
                     }}
-                    className="w-full text-left border border-border p-2 rounded-xl hover:bg-muted cursor-pointer"
+                    className="text-xs text-red-500 hover:text-red-700 inline-flex gap-1 items-center mt-2 transition cursor-pointer"
                   >
-                    <p className="font-medium text-primary text-base! line-clamp-2 wrap-break-word">
-                      {s.title}
-                    </p>
-                    <p className="text-xs! uppercase text-muted-foreground">
-                      {s.id.slice(0, 7)}
-                    </p>
-                    <div className="text-xs text-muted-foreground truncate">
-                      {s.messages?.[s.messages.length - 1]?.content}
-                    </div>
-                  </button>
-                ))
-              ) : (
-                <FailedGetDataNotice size="sm" />
-              )}
-              {sessions.length >= 1 && (
-                <div
-                  onClick={() => {
-                    localStorage.removeItem("mhealth_chat_sessions");
-                    if (setOpenSheet) setOpenSheet(false);
-                    window.location.reload();
-                  }}
-                  className="text-xs text-red-500 hover:text-red-700 inline-flex gap-1 items-center mt-2 transition cursor-pointer"
-                >
-                  <Trash2 className="size-3" /> Hapus riwayat percakapan
-                </div>
-              )}
-            </div>
+                    <Trash2 className="size-3" /> Hapus riwayat percakapan
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
       <div className="bg-white p-4 rounded-2xl border">
         <h4 className="font-extrabold text-primary mb-3">Packages</h4>

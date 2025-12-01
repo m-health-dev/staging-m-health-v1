@@ -41,7 +41,10 @@ const SignUpClient = ({ image }: { image: any }) => {
   const params = useSearchParams();
   const redirectData = params.get("redirect") || `/${locale}/dashboard`;
 
-  const apiBaseUrl = process.env.NEXT_PUBLIC_PROD_BACKEND_URL;
+  const apiBaseUrl =
+    process.env.NODE_ENV === "production"
+      ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
+      : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
   const form = useForm<z.infer<typeof AuthSignUpSchema>>({
     resolver: zodResolver(AuthSignUpSchema),
@@ -104,7 +107,7 @@ const SignUpClient = ({ image }: { image: any }) => {
         }
         width={180}
         height={60}
-        className="object-contain mt-5 flex justify-center items-center mx-auto"
+        className="object-contain my-8 flex justify-center items-center mx-auto"
         alt="M-Health Logo"
       />
       <ContainerWrap size="xl">
@@ -250,11 +253,11 @@ const SignUpClient = ({ image }: { image: any }) => {
           </div>
           <div className="col-span-2">
             <Image
-              src={image.full}
+              src={image}
               width={320}
               height={320}
               unoptimized
-              alt={image.alt}
+              alt={image}
               className="ml-20 rounded-4xl shadow aspect-square min-w-2xl max-w-2xl h-full object-cover object-center lg:flex hidden"
             />
           </div>

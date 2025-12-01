@@ -8,6 +8,8 @@ import ChatWindow from "./ChatWindow";
 import { chatGemini } from "@/lib/geminiAPI";
 import { nanoid } from "nanoid";
 import QuickAction, { quickLinks } from "../home/QuickAction";
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/navigation";
 
 export interface Message {
   id: string;
@@ -15,28 +17,39 @@ export interface Message {
   sender: "user" | "bot";
   timestamp: string;
   replyTo?: string | null;
+  session_id?: string;
 }
 
-const ChatStart = ({ chat }: { chat: Message[] }) => {
+const ChatStart = ({
+  chat,
+  session,
+  publicID,
+  sessionID,
+}: {
+  chat: Message[];
+  session?: any[];
+  sessionID?: string;
+  publicID: string;
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const router = useRouter(); // Init router
   const [messages, setMessages] = useState<Message[]>(chat);
   const [isLoading, setIsLoading] = useState(false);
   const [hasChat, setHasChat] = useState(false);
   const [text, setText] = useState("");
-  const [isExpanded, setIsExpanded] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const [activeChatId, setActiveChatId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Jika chat lama dimuat, gunakan id-nya
-    const storedId = localStorage.getItem("mhealth_active_chat_id");
-    if (storedId) setActiveChatId(storedId);
-    else if (chat.length > 0) {
-      const firstChatId = chat[0]?.id || nanoid();
-      setActiveChatId(firstChatId);
-      localStorage.setItem("mhealth_active_chat_id", firstChatId);
+    if (session && chat.length > 0) {
+      setMessages(chat);
+      setHasChat(true);
+    } else if (!session) {
+      // Jika balik ke root/chat baru
+      setMessages([]);
+      setHasChat(false);
     }
-  }, [chat]);
+  }, [chat, session]);
 
   useEffect(() => {
     if (chat.length > 0) {
@@ -44,13 +57,6 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
       setHasChat(true);
     }
   }, [chat]);
-
-  // 🟡 Opsional: reset chat jika ingin mulai percakapan baru
-  const clearChatHistory = () => {
-    localStorage.removeItem("mhealth_chat_history");
-    setMessages([]);
-    setHasChat(false);
-  };
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -84,27 +90,44 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
 
     try {
       // Siapkan format chat untuk API
-      const chatHistory = [
-        // {
-        //   role: "system",
-        //   content:
-        //     "You are M-Health AI, also known as Mei — a gentle, empathetic, and informative virtual health assistant. Respond naturally, politely, and with compassion. When possible, answer as a professional doctor would. If the user’s symptoms suggest an emergency, immediately advise them to call 08159880048 for urgent help. If the user’s concern requires medical expertise, doctor’s advice, or professional evaluation, return JSON message `need_consultation : true` at the end of your message. This keyword allows the system to display a button for users to connect directly with a doctor. Encourage the user to click that button when further consultation is necessary. Speak with a warm, feminine, and reassuring tone, as if you are a caring female health assistant.",
-        // },
-        ...messages.map((m) => ({
-          sender: m.sender === "user" ? "user" : "assistant",
-          message: m.message,
-        })),
-        { sender: "user", message: userMessage },
-      ];
 
       const formattedMessages = [...messages, userMsg].map((m) => ({
         sender: m.sender === "bot" ? "assistant" : "user",
         message: m.message,
       }));
-      const data = await chatGemini({
-        messages: formattedMessages,
-        prompt: userMessage,
-      });
+
+      let data;
+
+      // LOGIC PENTING: Cek apakah ini chat baru atau lanjutan
+      if (!session) {
+        // --- CHAT BARU ---
+        data = await chatGemini({
+          messages: formattedMessages,
+          prompt: userMessage,
+          public_id: publicID!,
+          // Jangan kirim session_id, biarkan backend generate
+        });
+
+        // JIKA SUKSES & DAPAT SESSION ID BARU
+        if (data.session_id) {
+          // Redirect ke URL baru
+          // Menggunakan replace agar user tidak bisa 'back' ke halaman kosong
+          // Atau push jika ingin history browser terjaga
+          router.push(`/c/${data.session_id}`, { scroll: false });
+
+          // Kita tidak perlu update state manual di sini secara kompleks,
+          // karena router.push akan memicu re-render ChatContent -> fetch data
+          // Namun agar transisi smooth (sebelum fetch selesai), kita biarkan state messages saat ini
+        }
+      } else {
+        // --- CHAT LANJUTAN ---
+        data = await chatGemini({
+          messages: formattedMessages,
+          prompt: userMessage,
+          public_id: publicID!,
+          session_id: sessionID, // Gunakan ID dari URL/Props
+        });
+      }
 
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -118,49 +141,6 @@ const ChatStart = ({ chat }: { chat: Message[] }) => {
       };
 
       setMessages((prev) => [...prev, botResponse]);
-
-      const newMessages = [...messages, userMsg, botResponse];
-
-      // Ambil semua chat yang sudah ada di localStorage
-      const existingChats =
-        JSON.parse(localStorage.getItem("mhealth_chat_sessions") || "[]") || [];
-
-      // 🔹 Jika belum ada activeChatId, buat ID baru (chat baru)
-      let chatId = activeChatId;
-      if (!chatId) {
-        chatId = nanoid();
-        setActiveChatId(chatId);
-        localStorage.setItem("mhealth_active_chat_id", chatId);
-      }
-
-      // Buat data sesi chat baru
-      const chatData = {
-        id: chatId,
-        title:
-          newMessages[0]?.message ||
-          "Percakapan Baru " + new Date().toLocaleString(),
-        messages: newMessages,
-        updatedAt: new Date().toISOString(),
-      };
-
-      // 🔹 Cari apakah sesi ini sudah ada di daftar (update), kalau tidak, tambahkan
-      const existingIndex = existingChats.findIndex(
-        (c: any) => c.id === chatId
-      );
-
-      console.log(existingIndex);
-
-      if (existingIndex !== -1) {
-        existingChats[existingIndex] = chatData;
-      } else {
-        existingChats.push(chatData);
-      }
-
-      // Simpan ulang daftar sesi ke localStorage
-      localStorage.setItem(
-        "mhealth_chat_sessions",
-        JSON.stringify(existingChats)
-      );
     } catch (error) {
       console.error("Error sending message:", error);
       const errorMsg: Message = {

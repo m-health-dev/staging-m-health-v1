@@ -133,6 +133,15 @@ export async function getUserRole() {
   return claims.user_role ?? "404";
 }
 
+export async function getUser() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return user;
+}
+
 export const signUpAction = async (data: {
   fullname: string;
   email: string;
@@ -537,6 +546,7 @@ export const forgotPasswordAction = async (data: { email: string }) => {
     .update({
       email: validatedData.data.email,
       request: newRequestCount,
+      updated_at: new Date().toISOString(),
     })
     .eq("email", validatedData.data.email);
 
@@ -677,14 +687,28 @@ export const resetPasswordAction = async (data: {
     password: validatedData.data.confirmPassword,
   });
 
+  const { data: user } = await supabase.auth.getUser();
+
+  const { data: checkRequested, error: reqErr } = await supabase
+    .from("recover_account")
+    .select("*")
+    .eq("email", user.user?.email)
+    .maybeSingle();
+
   if (error) {
+    if (error.code === "same_password") {
+      return { warning: "Silahkan gunakan kombinasi password yang lain." };
+    }
     console.error(error.code + " " + error.message);
     return { error: "Password tidak berhasil diperbarui." };
   }
 
   await supabase.auth.signOut();
   return (
-    redirect(`/${locale}/sign-in`), { success: "Password berhasil diperbarui." }
+    redirect(
+      `/${locale}/sign-in?reset=success&email=${user.user?.email}&record=${checkRequested.request}`
+    ),
+    { success: "Password berhasil diperbarui." }
   );
 };
 

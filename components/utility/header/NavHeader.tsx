@@ -32,7 +32,8 @@ const NavHeader = () => {
   const locale = useLocale();
   const path = usePathname();
   const pathCheck =
-    path.startsWith(`/${locale}`) && path.endsWith(`/${locale}`);
+    (path.startsWith(`/${locale}`) && path.endsWith(`/${locale}`)) ||
+    path.startsWith(`/${locale}/c`);
   return pathCheck ? (
     <nav className="sticky top-0 px-5 bg-background z-99 lg:border-b-0 border-b border-primary/10">
       <header className="py-5 flex items-center w-full justify-between">

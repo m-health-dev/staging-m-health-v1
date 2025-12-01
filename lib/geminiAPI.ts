@@ -1,23 +1,33 @@
 import { Message } from "@/components/chatbot/ChatStart";
 
-export async function chatGemini(payload: { messages: any[]; prompt: string }) {
+const apiBaseUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
+    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
+
+export async function chatGemini(payload: {
+  messages: any[];
+  prompt: string;
+  public_id: string;
+  session_id?: string;
+}) {
   try {
     console.log("Sending messages to Gemini API:", payload);
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PROD_BACKEND_URL}/api/v1/gemini/generate`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      }
-    );
+    const res = await fetch(`${apiBaseUrl}/api/v1/gemini/generate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
     const data = await res.json();
 
+    console.log(data.session_id);
+
     return {
       message: data.raw.candidates[0].content.parts[0].text,
+      session_id: data.session_id,
     };
   } catch (error) {
     console.error("Gemini API Error:", error);

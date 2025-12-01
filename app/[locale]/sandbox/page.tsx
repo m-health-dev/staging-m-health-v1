@@ -57,15 +57,44 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 type Announcement = "info" | "warning" | "danger";
 
+const apiBaseUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
+    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
+
 const SandBoxComponents = () => {
   const [files, setFiles] = useState<File[] | undefined>();
   const [switched, setSwitched] = useState(false);
   const [showPass, setShowPass] = useState(false);
 
-  const handleDrop = (files: File[]) => {
-    console.log(files);
-    setFiles(files);
-  };
+  async function handleImageUpload(files: File[]) {
+    const formData = new FormData();
+    formData.append("file", files[0]); // upload 1 dulu, nanti jika mau multiple bisa looping
+    formData.append("model", "sandbox");
+    formData.append("field", "referenceImage");
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+      console.log("Uploaded:", data);
+
+      if (data.url) {
+        toast.success("Image uploaded!");
+      }
+
+      return data.url; // <= kembalikan public url
+    } catch (error) {
+      console.error(error);
+      toast.error("Upload failed");
+    }
+  }
 
   const FormSchema = z.object({
     pin: z.string().min(6, {
@@ -636,8 +665,16 @@ const SandBoxComponents = () => {
                             maxSize={1024 * 1024 * 2}
                             maxFiles={5}
                             src={field.value}
-                            onDrop={(acceptedFiles) => {
+                            onDrop={async (acceptedFiles) => {
                               field.onChange(acceptedFiles);
+
+                              const url = await handleImageUpload(
+                                acceptedFiles
+                              );
+
+                              if (url) {
+                                form.setValue("referenceImage", [url]); // simpan URL bukan File
+                              }
                             }}
                             onError={console.error}
                             className="hover:bg-muted bg-white rounded-2xl"

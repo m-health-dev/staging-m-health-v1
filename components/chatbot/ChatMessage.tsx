@@ -112,7 +112,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     >
       <div>
         <div
-          className={`relative p-3 rounded-2xl transition-all ${
+          className={`relative p-3 rounded-2xl transition-all text-wrap wrap-anywhere ${
             isUser
               ? "bg-primary text-primary-foreground rounded-br-none max-w-xs lg:max-w-md"
               : "bg-white text-foreground rounded-bl-none max-w-full"
