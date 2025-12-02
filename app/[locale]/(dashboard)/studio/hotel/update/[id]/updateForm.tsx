@@ -33,45 +33,61 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { Switch } from "@radix-ui/react-switch";
 import { EyeClosed, Eye, Trash } from "lucide-react";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Label } from "recharts";
 import { toast } from "sonner";
 import z from "zod";
-import { ComboBoxVendor } from "../ComboBox";
+import { ComboBoxVendor } from "../../ComboBox";
 import { Button } from "@/components/ui/button";
 import { DynamicInputField } from "@/components/Form/DynamicInputField";
-import { addVendor } from "@/lib/vendors/post-patch-vendor";
+import { addVendor, updateVendor } from "@/lib/vendors/post-patch-vendor";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchParams } from "next/navigation";
+import { getVendorByID } from "@/lib/vendors/get-vendor";
+import { VendorType } from "@/types/vendor.types";
 
-const AddVendor = () => {
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [highlightPreview, setHighlightPreview] = useState<string | null>(null);
-  const [referencePreview, setReferencePreview] = useState<string[]>([]);
+const UpdateVendorForm = ({
+  id,
+  vendorData,
+}: {
+  id: string;
+  vendorData: VendorType;
+}) => {
+  const [logoPreview, setLogoPreview] = useState<string | null>(
+    vendorData.logo
+  );
+  const [highlightPreview, setHighlightPreview] = useState<string | null>(
+    vendorData.highlight_image
+  );
+  const [referencePreview, setReferencePreview] = useState<string[]>(
+    vendorData.reference_image
+  );
 
   const [loading, setLoading] = useState(false);
   const [uploadLoadingLogo, setUploadLoadingLogo] = useState(false);
   const [uploadLoadingHLImage, setUploadLoadingHLImage] = useState(false);
   const [uploadLoadingRFImage, setUploadLoadingRFImage] = useState(false);
+  const [deletedImages, setDeletedImages] = useState<string[]>([]);
 
   const [name, setName] = useState("");
 
   const form = useForm<z.infer<typeof VendorSchema>>({
     resolver: zodResolver(VendorSchema),
     defaultValues: {
-      name: "",
-      en_description: "",
-      id_description: "",
-      category: "",
-      specialist: [],
-      logo: "",
-      highlight_image: "",
-      reference_image: [],
-      location_map: "",
+      name: vendorData?.name || "",
+      en_description: vendorData?.en_description || "",
+      id_description: vendorData?.id_description || "",
+      category: vendorData?.category || "",
+      specialist: vendorData?.specialist || [],
+      logo: vendorData?.logo || "",
+      highlight_image: vendorData?.highlight_image || "",
+      reference_image: vendorData?.reference_image || [],
+      location_map: vendorData?.location_map || "",
     },
   });
 
@@ -133,19 +149,40 @@ const AddVendor = () => {
     }
   }
 
-  async function handleDelete(path: string) {
+  async function handleDelete(
+    url: string,
+    field: "logo" | "highlight" | "reference",
+    index?: number
+  ) {
+    const deletedPath = url; // url relative yg dikirim ke API
+
+    setDeletedImages((prev) => [...prev, deletedPath]); // ⬅ tambahkan ini
+
     const res = await fetch("/api/image/delete", {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ path }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: url }),
     });
 
     const data = await res.json();
 
     if (data.message) {
       toast.success("Image deleted");
+
+      // HAPUS DARI STATE PREVIEW
+      if (field === "logo") {
+        setLogoPreview(null);
+        form.setValue("logo", "");
+      } else if (field === "highlight") {
+        setHighlightPreview(null);
+        form.setValue("highlight_image", "");
+      } else if (field === "reference") {
+        setReferencePreview((prev) => {
+          const newArr = prev.filter((_, i) => i !== index);
+          form.setValue("reference_image", newArr);
+          return newArr;
+        });
+      }
     } else {
       toast.error(data.error || "Failed to delete");
     }
@@ -153,11 +190,11 @@ const AddVendor = () => {
 
   async function onSubmit(data: z.infer<typeof VendorSchema>) {
     setLoading(true);
-    const res = await addVendor(data);
+    const res = await updateVendor(data, id);
 
     if (res.success) {
       setLoading(false);
-      toast.success(`Berhasil Menambah Vendor`);
+      toast.success(`Vendor Update Success!`);
     } else if (res.error) {
       setLoading(false);
       toast.error(res.error);
@@ -166,8 +203,9 @@ const AddVendor = () => {
 
   return (
     <>
-      <div className="my-10 sticky top-5 bg-primary p-4 rounded-2xl z-10 w-full">
-        <h3 className="text-white font-semibold">Add Vendor</h3>
+      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background p-4 rounded-2xl z-10 w-full">
+        <h3 className="text-primary font-semibold">Update Vendor</h3>
+        <p className="text-primary mt-2 uppercase">{id.slice(0, 8)}</p>
       </div>
       <ContainerWrap size="xl">
         <div className="flex flex-col w-full justify-center items-center">
@@ -199,7 +237,9 @@ const AddVendor = () => {
                   />
                 )
               )}
-              <h5 className="text-primary font-bold">{name}</h5>
+              <h5 className="text-primary font-bold">
+                {vendorData?.name || name}
+              </h5>
             </div>
           </div>
           <Form {...form}>
@@ -463,9 +503,11 @@ const AddVendor = () => {
                                   onClick={() =>
                                     handleDelete(
                                       url.replace(
-                                        "https://hoocfkzapbmnldwmedrq.supabase.co//storage/v1/object/public/m-health-public/",
+                                        "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/",
                                         ""
-                                      )
+                                      ),
+                                      "reference",
+                                      i
                                     )
                                   }
                                   className="absolute w-10 h-10 top-5 right-2 rounded-full"
@@ -497,4 +539,4 @@ const AddVendor = () => {
   );
 };
 
-export default AddVendor;
+export default UpdateVendorForm;

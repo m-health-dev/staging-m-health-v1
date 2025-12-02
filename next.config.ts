@@ -2,6 +2,15 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/std",
+        destination: "/studio",
+        permanent: true,
+      },
+    ];
+  },
   allowedDevOrigins: ["192.168.18.252", "*.m-health.id"],
   images: {
     remotePatterns: [

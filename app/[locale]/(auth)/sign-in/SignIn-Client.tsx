@@ -32,6 +32,7 @@ import {
   signInAction,
   signWithGoogle,
 } from "../actions/auth.actions";
+import { routing } from "@/i18n/routing";
 
 const SignInClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -43,6 +44,7 @@ const SignInClient = ({ image }: { image: any }) => {
   const locale = useLocale();
   const params = useSearchParams();
   const redirectData = params.get("redirect") || `/${locale}/dashboard`;
+  const continueData = params.get("continue");
   const emailData = params.get("email");
   const resetData = params.get("reset");
   const recordResetData = params.get("record");
@@ -127,6 +129,15 @@ const SignInClient = ({ image }: { image: any }) => {
             <h3 className="font-bold text-primary mb-10">
               Log In to Your Account
             </h3>
+            {continueData === "chat" && (
+              <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
+                <p className="text-sm!">
+                  {locale === routing.defaultLocale
+                    ? "Anda harus masuk untuk melanjutkan percakapan. Terima kasih!"
+                    : "You must be logged in to continue your conversation. Thank you!"}
+                </p>
+              </div>
+            )}
             {error && (
               <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">Autentifikasi Gagal</p>

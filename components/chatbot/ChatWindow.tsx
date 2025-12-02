@@ -8,6 +8,10 @@ import ContainerWrap from "../utility/ContainerWrap";
 import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Spinner } from "../ui/spinner";
+import { useLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
+import { Account } from "@/types/account.types";
+import { usePathname, useRouter } from "next/navigation";
 
 export interface Message {
   id: string;
@@ -19,23 +23,35 @@ export interface Message {
 
 interface ChatWindowProps {
   messages: Message[];
+  accounts?: Account;
   onSendMessage: (message: string, replyTo?: string | null) => void; // ✅ izinkan 2 argumen
   isLoading?: boolean;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
   messages,
+  accounts,
   onSendMessage,
   isLoading = false,
 }) => {
+  const locale = useLocale();
   const [inputValue, setInputValue] = React.useState("");
   const [isHandleReply, setIsHandleReply] = React.useState(false);
   const [replyMessage, setReplyMessage] = React.useState<string | null>(null);
 
   const messageStartRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const [scrollToMessageId, setScrollToMessageId] = useState<string | null>(
+    null
+  );
+
+  const router = useRouter();
+  const path = usePathname();
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -49,11 +65,20 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   }, [inputValue]);
 
   useEffect(() => {
-    messageStartRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (!accounts && messages.length > 3) {
+      router.replace(
+        `/${locale}/sign-in?redirect=${encodeURIComponent(path)}&continue=chat`
+      );
+    }
+  });
+
+  // useEffect(() => {
+  //   messageStartRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [messages]);
 
   const handleSend = () => {
     if (inputValue.trim()) {
+      setShouldScrollToBottom(true); // ⬅️ scroll ke bawah
       onSendMessage(inputValue, replyMessage ?? null);
       setInputValue("");
       setReplyMessage(null);
@@ -74,6 +99,36 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
 
+  useEffect(() => {
+    // Skenario 1: Scroll ke pesan tertentu (misal saat reply)
+    if (scrollToMessageId) {
+      const el = document.getElementById(scrollToMessageId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      return;
+    }
+
+    // Skenario 2: Scroll ke paling bawah (pesan baru)
+    if (shouldScrollToBottom) {
+      // Ubah target ke messagesEndRef
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, scrollToMessageId, shouldScrollToBottom]); // Tambahkan dependencies yang benar
+
+  useEffect(() => {
+    const lastMsg = messages[messages.length - 1];
+    if (!lastMsg) return;
+
+    if (lastMsg.sender === "bot" && lastMsg.replyTo) {
+      setShouldScrollToBottom(false);
+      setScrollToMessageId(lastMsg.replyTo);
+    } else {
+      setShouldScrollToBottom(true);
+      setScrollToMessageId(null);
+    }
+  }, [messages]);
+
   return (
     <div className="overflow-y-auto flex flex-col items-center hide-scroll">
       <div className="flex flex-col min-h-[calc(100vh-15vh)] max-h-[calc(100vh-15vh)] w-full">
@@ -81,19 +136,20 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         <div className="container mx-auto lg:max-w-4xl w-full lg:px-6">
           {/* Messages Container */}
           <div className="flex-1 min-h-[calc(100vh-10vh)] max-h-[calc(100vh-10vh)] lg:px-10">
-            <div>
+            {/* <div>
               <p className="lg:text-sm! text-xs! text-muted-foreground/50 text-center mb-10 mt-2">
-                Kami menggunakan cookies agar tetap terhubung. Anda dapat
-                menggunakan <i>Health AI Assistant </i>
-                ini untuk mencari tahu tentang permasalahan kesehatan anda
-                secara gratis.
+                {locale === routing.defaultLocale
+                  ? "Kami menggunakan cookies agar tetap terhubung. Anda dapat menggunakan Health AI Assistant ini untuk mencari tahu tentang permasalahan kesehatan anda secara gratis."
+                  : "We use cookies to stay connected. You can use this Health AI Assistant to find out about your health issues for free."}
               </p>
-            </div>
-            <div ref={messageStartRef} />
+            </div> */}
+            {/* <div ref={messageStartRef} /> */}
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full">
                 <p className="text-muted-foreground">
-                  Mulai percakapan baru...
+                  {locale === routing.defaultLocale
+                    ? "Mulai Percakapan Baru"
+                    : "Start New Chat"}
                 </p>
               </div>
             ) : (
@@ -101,6 +157,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                 {messages.map((msg) => (
                   <ChatMessage
                     key={msg.id}
+                    id={msg.id}
                     message={msg.message}
                     sender={msg.sender}
                     timestamp={msg.timestamp}
@@ -119,6 +176,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     </div>
                   </div>
                 )}
+                <div ref={messagesEndRef} />
               </div>
             )}
             <div className="pb-[10vh]" />
@@ -138,7 +196,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               <div className="bg-white/80 p-4 rounded-2xl mb-1 flex justify-between items-start shadow-sm border border-border">
                 <div className="max-w-[85%]">
                   <p className="text-sm! font-bold text-primary mb-1 flex items-center gap-2">
-                    <Undo2 className="size-4" /> Membalas pesan:
+                    <Undo2 className="size-4" />{" "}
+                    {locale === routing.defaultLocale
+                      ? "Membalas Pesan:"
+                      : "Replying To:"}
                   </p>
                   <p className="text-muted-foreground line-clamp-2">
                     {replyMessage}
@@ -191,11 +252,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             </div>
             <div>
               <p className="text-xs! text-muted-foreground my-2 text-center">
-                M-Health AI dapat membuat kesalahan. Periksa info penting.
+                {locale === routing.defaultLocale
+                  ? "M-Health AI can make mistakes. Check important information."
+                  : "M-Health AI dapat membuat kesalahan. Periksa info penting."}
               </p>
-              {/* <p className="text-xs! text-primary font-semibold mt-0 text-center">
-                Gemini 2.5 Flash
-              </p> */}
             </div>
           </div>
         </div>

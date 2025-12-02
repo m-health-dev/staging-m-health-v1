@@ -14,18 +14,52 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
-
-export const quickLinks = [
-  { id: 1, href: "/", label: "Chat w/ AI", icon: <MessageCircleHeart /> },
-  { id: 2, href: "/medical", label: "Paket Medis", icon: <Activity /> },
-  { id: 3, href: "/wellness", label: "Paket Kesehatan", icon: <HeartPlus /> },
-  { id: 4, href: "/events", label: "Acara Terbaru", icon: <CalendarHeart /> },
-  { id: 5, href: "/article", label: "Artikel Terbaru", icon: <Newspaper /> },
-];
+import { routing } from "@/i18n/routing";
 
 const QuickAction = ({ includeSearchBar }: { includeSearchBar?: boolean }) => {
   const pathname = usePathname();
   const locale = useLocale();
+
+  const quickLinks = [
+    {
+      id: 1,
+      href: `/${locale}`,
+      label: `${
+        locale === routing.defaultLocale ? "Ngobrol dengan AI" : "Chat with AI"
+      }`,
+      icon: <MessageCircleHeart />,
+    },
+    {
+      id: 2,
+      href: `/${locale}/medical`,
+      label: `${locale === routing.defaultLocale ? "Paket Medis" : "Medical"}`,
+      icon: <Activity />,
+    },
+    {
+      id: 3,
+      href: `/${locale}/wellness`,
+      label: `${
+        locale === routing.defaultLocale ? "Paket Kesehatan" : "Wellness"
+      }`,
+      icon: <HeartPlus />,
+    },
+    {
+      id: 4,
+      href: `/${locale}/events`,
+      label: `${
+        locale === routing.defaultLocale ? "Acara Terbaru" : "Our Events"
+      }`,
+      icon: <CalendarHeart />,
+    },
+    {
+      id: 5,
+      href: `/${locale}/article`,
+      label: `${
+        locale === routing.defaultLocale ? "Artikel Terbaru" : "News & Article"
+      }`,
+      icon: <Newspaper />,
+    },
+  ];
 
   const check = pathname === `/${locale}` || pathname === `/${locale}/`;
 

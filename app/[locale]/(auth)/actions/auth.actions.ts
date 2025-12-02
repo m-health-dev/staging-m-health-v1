@@ -267,15 +267,19 @@ export const signInAction = async (data: {
     return { error: "Email and password are required" };
   }
 
-  const redirectTo =
-    (validatedData.data?.redirect as string) || `/${locale}/dashboard`;
-
   const { data: user, error } = await supabase.auth.signInWithPassword({
     email: validatedData.data?.email,
     password: validatedData.data?.password,
   });
 
-  console.log(user);
+  // console.log(user);
+
+  const userRole = await getUserRole();
+
+  const redirectTo =
+    (validatedData.data?.redirect as string) || userRole === "admin"
+      ? `/${locale}/studio`
+      : `/${locale}/dashboard`;
 
   if (error) {
     console.error(error.code + " " + error.message);

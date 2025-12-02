@@ -39,13 +39,10 @@ export function NavUser({ user }: { user: Account }) {
 
   return (
     <SidebarMenu>
-      <SidebarMenuItem>
+      <SidebarMenuItem className="px-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground outline-0 border-0 ring-0 focus-visible:outline-0 focus-visible:border-0 focus-visible:ring-0 hover:outline-0 hover:border-0 hover:ring-0 p-4!"
-            >
+            <button className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible::bg-sidebar-accent focus-visible::text-sidebar-accent-foreground rounded-2xl! focus:outline focus-visible:outline hover:outline px-2 py-2 flex gap-3 items-center">
               {user.google_avatar || user.avatar_url ? (
                 <Image
                   src={user.google_avatar || user.avatar_url}
@@ -76,10 +73,10 @@ export function NavUser({ user }: { user: Account }) {
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
-            </SidebarMenuButton>
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-2xl z-999"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -110,26 +107,30 @@ export function NavUser({ user }: { user: Account }) {
                   />
                 )}
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.fullname}</span>
-                  <span className="text-muted-foreground truncate text-xs">
+                  <p className="truncate font-medium text-sm!">
+                    {user.fullname}
+                  </p>
+                  <p className="text-muted-foreground truncate text-xs!">
                     {user.email}
-                  </span>
+                  </p>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <IconUserCircle />
-                Pengaturan Akun
+                <p className="text-sm! text-muted-foreground">
+                  Pengaturan Akun
+                </p>
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+
             <DropdownMenuItem
               onClick={() => router.push(`/${locale}/sign-out`)}
             >
               <IconLogout />
-              Log out
+              <p className="text-sm! text-muted-foreground">Log out</p>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

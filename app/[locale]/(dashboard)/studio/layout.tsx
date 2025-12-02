@@ -32,7 +32,7 @@ export default async function Page({ children, params }: Props) {
       <StudioSidebar variant="inset" />
       <SidebarInset>
         <SiteHeaderStudio />
-        <ContainerWrap size="xxl">{children}</ContainerWrap>
+        <div className="container mx-auto max-w-screen px-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

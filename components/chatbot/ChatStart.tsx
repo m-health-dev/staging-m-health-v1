@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, ArrowUp } from "lucide-react";
-import Link from "next/link";
+import { ArrowUp } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import ChatWindow from "./ChatWindow";
-import { chatGemini } from "@/lib/geminiAPI";
-import { nanoid } from "nanoid";
-import QuickAction, { quickLinks } from "../home/QuickAction";
-import { v4 as uuidv4 } from "uuid";
+import { chatGemini } from "@/lib/chatbot/geminiAPI";
+import QuickAction from "../home/QuickAction";
 import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
+import { Account } from "@/types/account.types";
 
 export interface Message {
   id: string;
@@ -25,11 +25,13 @@ const ChatStart = ({
   session,
   publicID,
   sessionID,
+  accounts,
 }: {
   chat: Message[];
   session?: any[];
   sessionID?: string;
   publicID: string;
+  accounts?: Account;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -39,6 +41,10 @@ const ChatStart = ({
   const [isLoading, setIsLoading] = useState(false);
   const [hasChat, setHasChat] = useState(false);
   const [text, setText] = useState("");
+
+  const locale = useLocale();
+
+  const chatRef = useRef(messages);
 
   useEffect(() => {
     if (session && chat.length > 0) {
@@ -69,6 +75,10 @@ const ChatStart = ({
     setIsExpanded(text.length > 50);
   }, [text]);
 
+  useEffect(() => {
+    chatRef.current = messages;
+  }, [messages]);
+
   const handleSendMessage = async (
     userMessage: string,
     replyTo?: string | null
@@ -94,6 +104,7 @@ const ChatStart = ({
       const formattedMessages = [...messages, userMsg].map((m) => ({
         sender: m.sender === "bot" ? "assistant" : "user",
         message: m.message,
+        replyTo: m.replyTo,
       }));
 
       let data;
@@ -105,6 +116,7 @@ const ChatStart = ({
           messages: formattedMessages,
           prompt: userMessage,
           public_id: publicID!,
+          user_id: accounts?.id,
           // Jangan kirim session_id, biarkan backend generate
         });
 
@@ -113,7 +125,7 @@ const ChatStart = ({
           // Redirect ke URL baru
           // Menggunakan replace agar user tidak bisa 'back' ke halaman kosong
           // Atau push jika ingin history browser terjaga
-          router.push(`/c/${data.session_id}`, { scroll: false });
+          router.replace(`/c/${data.session_id}`, { scroll: false });
 
           // Kita tidak perlu update state manual di sini secara kompleks,
           // karena router.push akan memicu re-render ChatContent -> fetch data
@@ -125,6 +137,7 @@ const ChatStart = ({
           messages: formattedMessages,
           prompt: userMessage,
           public_id: publicID!,
+          user_id: accounts?.id,
           session_id: sessionID, // Gunakan ID dari URL/Props
         });
       }
@@ -168,6 +181,7 @@ const ChatStart = ({
         messages={messages}
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
+        accounts={accounts}
       />
     );
   }
@@ -177,9 +191,15 @@ const ChatStart = ({
       <div className="flex flex-col lg:items-center max-w-full">
         <div className="start_conversation mb-10 lg:text-center text-start">
           <h2 className="text-primary font-extrabold mb-2">
-            Sedang nggak enak badan?
+            {locale === routing.defaultLocale
+              ? "Sedang nggak enak badan?"
+              : "Are you feeling unwell?"}
           </h2>
-          <h3 className="text-primary">Tenang, aku di sini buat bantu</h3>
+          <h3 className="text-primary">
+            {locale === routing.defaultLocale
+              ? "Tenang aku disini buat bantu kamu"
+              : "Don't worry, I'm here to help you."}
+          </h3>
         </div>
 
         <div className="mb-2">
@@ -197,7 +217,11 @@ const ChatStart = ({
             >
               <Textarea
                 ref={textareaRef}
-                placeholder="Ketik pertanyaanmu di sini..."
+                placeholder={
+                  locale === routing.defaultLocale
+                    ? "Sampaikan keluhanmu disini..."
+                    : "Submit your health complaints here..."
+                }
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}

@@ -8,6 +8,8 @@ const apiBaseUrl =
 export async function chatGemini(payload: {
   messages: any[];
   prompt: string;
+  replyTo?: string;
+  user_id?: string;
   public_id: string;
   session_id?: string;
 }) {

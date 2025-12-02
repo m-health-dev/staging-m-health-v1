@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/shadcn-io/dropzone";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { VendorSchema } from "@/lib/zodSchema";
+import { HotelSchema, VendorSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { Switch } from "@radix-ui/react-switch";
@@ -47,6 +47,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
+import { addHotel } from "@/lib/hotel/post-patch-hotel";
 
 const AddVendor = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -66,8 +67,6 @@ const AddVendor = () => {
       name: "",
       en_description: "",
       id_description: "",
-      category: "",
-      specialist: [],
       logo: "",
       highlight_image: "",
       reference_image: [],
@@ -78,7 +77,7 @@ const AddVendor = () => {
   async function handleImageUpload(files: File[]) {
     const formData = new FormData();
     formData.append("file", files[0]); // upload 1 dulu, nanti jika mau multiple bisa looping
-    formData.append("model", "vendors");
+    formData.append("model", "hotels");
     // formData.append("field", "referenceImage");
 
     try {
@@ -107,7 +106,7 @@ const AddVendor = () => {
   async function handleBatchImageUpload(files: File[]) {
     const formData = new FormData();
     files.forEach((file) => formData.append("file", file));
-    formData.append("folder", "vendors");
+    formData.append("folder", "hotels");
 
     try {
       const res = await fetch(
@@ -151,13 +150,13 @@ const AddVendor = () => {
     }
   }
 
-  async function onSubmit(data: z.infer<typeof VendorSchema>) {
+  async function onSubmit(data: z.infer<typeof HotelSchema>) {
     setLoading(true);
-    const res = await addVendor(data);
+    const res = await addHotel(data);
 
     if (res.success) {
       setLoading(false);
-      toast.success(`Berhasil Menambah Vendor`);
+      toast.success(`Berhasil Menambahkan Hotel`);
     } else if (res.error) {
       setLoading(false);
       toast.error(res.error);
@@ -167,7 +166,7 @@ const AddVendor = () => {
   return (
     <>
       <div className="my-10 sticky top-5 bg-primary p-4 rounded-2xl z-10 w-full">
-        <h3 className="text-white font-semibold">Add Vendor</h3>
+        <h3 className="text-white font-semibold">Add Hotel</h3>
       </div>
       <ContainerWrap size="xl">
         <div className="flex flex-col w-full justify-center items-center">
@@ -215,7 +214,7 @@ const AddVendor = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        Vendor Name
+                        Hotel Name
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -232,31 +231,22 @@ const AddVendor = () => {
                     </FormItem>
                   )}
                 />
-                <div className="lg:grid flex flex-col grid-cols-2 gap-5 items-start">
-                  <div className="space-y-5">
-                    <FormField
-                      control={form.control}
-                      name="location_map"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary font-semibold!">
-                            Maps Location URL
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} type="url" className="h-12" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <ComboBoxVendor />
-                  </div>
-                  <DynamicInputField
-                    form={form}
-                    name="specialist"
-                    label="Vendor Specialist"
-                  />
-                </div>
+
+                <FormField
+                  control={form.control}
+                  name="location_map"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Maps Location URL
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} type="url" className="h-12" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <div className="lg:col-span-2 col-span-1">
                   <FormField

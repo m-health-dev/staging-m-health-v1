@@ -50,7 +50,7 @@ export async function getChatSession(session_id: string) {
     const json = await res.json();
 
     if (!json.chat_activity_data || !json.chat_activity_data.messages) {
-      return { warning: "Chat sudah dihapus atau diarsipkan." };
+      return { error: "Chat sudah dihapus atau diarsipkan." };
     }
 
     console.log(`Success Get Chat Session for `, session_id);

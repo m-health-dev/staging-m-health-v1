@@ -27,6 +27,10 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { NavigationLinks } from "@/constants/NavigationLinks";
+import { cn } from "@/lib/utils";
+import { routing } from "@/i18n/routing";
 
 const NavHeader = () => {
   const locale = useLocale();
@@ -37,6 +41,7 @@ const NavHeader = () => {
   return pathCheck ? (
     <nav className="sticky top-0 px-5 bg-background z-99 lg:border-b-0 border-b border-primary/10">
       <header className="py-5 flex items-center w-full justify-between">
+        <SidebarTrigger className="-ml-1" />
         <Link href={`/${locale}/home`}>
           <Image
             src={
@@ -72,84 +77,52 @@ const NavHeader = () => {
               >
                 <SheetTitle />
                 <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer">
-                  <h5 className="text-primary font-extrabold">Tutup</h5>
+                  <h5 className="text-primary font-bold">
+                    {" "}
+                    {locale === routing.defaultLocale ? "Tutup" : "Close"}
+                  </h5>
                   <div className="text-primary bg-background p-2 rounded-full">
                     <X />
                   </div>
                 </SheetClose>
-                <div className="flex flex-col space-y-4 mt-5">
+                <div className="flex flex-col space-y-3 mt-5">
                   <Link
                     href={`/${locale}/sign-in`}
                     className="group flex w-full"
                     data-cursor-clickable
                   >
-                    <Button className="flex w-full rounded-full">
-                      <h5 className="font-extrabold">Masuk</h5>
+                    <Button
+                      className="flex w-full rounded-full cursor-pointer"
+                      size={"lg"}
+                    >
+                      <h6 className="font-bold">
+                        {locale === routing.defaultLocale ? "Masuk" : "Sign In"}
+                      </h6>
                     </Button>
                   </Link>
-                  <Link
-                    href={`/${locale}/home`}
-                    className="group mt-5  hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                    data-cursor-clickable
-                  >
-                    <h5 className="font-extrabold text-primary">Beranda</h5>
-                  </Link>
-                  <Link
-                    href={`/${locale}/about`}
-                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                    data-cursor-clickable
-                  >
-                    <h5 className="font-extrabold text-primary">
-                      Tentang Kami
-                    </h5>
-                  </Link>
-                  <Link
-                    href={`/${locale}/wellness`}
-                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                    data-cursor-clickable
-                  >
-                    <h5 className="font-extrabold text-primary">Kesehatan</h5>
-                  </Link>
-                  <Link
-                    href={`/${locale}/medical`}
-                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                    data-cursor-clickable
-                  >
-                    <h5 className="font-extrabold text-primary">Medis</h5>
-                  </Link>
-                  <Link
-                    href={`/${locale}/medical-equipment`}
-                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                    data-cursor-clickable
-                  >
-                    <h5 className="font-extrabold text-primary">
-                      Alat Kesehatan
-                    </h5>
-                  </Link>
-                  <Link
-                    href={`/${locale}/article`}
-                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                    data-cursor-clickable
-                  >
-                    <h5 className="font-extrabold text-primary">Artikel</h5>
-                  </Link>
-                  <Link
-                    href={`/${locale}/events`}
-                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                    data-cursor-clickable
-                  >
-                    <h5 className="font-extrabold text-primary">Acara</h5>
-                  </Link>
-                  <Link
-                    href={`/${locale}/events`}
-                    className="group  hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                    data-cursor-clickable
-                  >
-                    <h5 className="font-extrabold text-primary">Kontak</h5>
-                  </Link>
+                  {NavigationLinks.map((link, i) => (
+                    <Link
+                      key={link.path}
+                      href={`/${locale}/${link.path}`}
+                      className={cn(
+                        "group hover:underline decoration-health underline-offset-2 transition-all duration-300",
+                        i === 0 && "mt-5"
+                      )}
+                      data-cursor-clickable
+                    >
+                      <h5 className="font-bold text-primary">
+                        {locale === routing.defaultLocale
+                          ? link.label.id
+                          : link.label.en}
+                      </h5>
+                    </Link>
+                  ))}
+
                   <div className="bg-gray-50 rounded-2xl border border-primary/10 mt-5 p-4">
-                    <h5 className="text-primary font-extrabold mb-2">
-                      Preferensi
+                    <h5 className="text-primary font-bold mb-2">
+                      {locale === routing.defaultLocale
+                        ? "Preferensi"
+                        : "Preferences"}
                     </h5>
                     <div className="z-9999">
                       <LanguageSwitcher />
@@ -201,7 +174,10 @@ const NavHeader = () => {
                 >
                   <SheetTitle />
                   <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer">
-                    <h5 className="text-primary font-extrabold">Tutup</h5>
+                    <h5 className="text-primary font-bold">
+                      {" "}
+                      {locale === routing.defaultLocale ? "Tutup" : "Close"}
+                    </h5>
                     <div className="text-primary bg-background p-2 rounded-full">
                       <X />
                     </div>
@@ -212,66 +188,38 @@ const NavHeader = () => {
                       className="group flex w-full"
                       data-cursor-clickable
                     >
-                      <Button className="flex w-full rounded-full">
-                        <h5 className="font-extrabold">Masuk</h5>
+                      <Button className="flex w-full rounded-full" size={"lg"}>
+                        <h6 className="font-bold">
+                          {locale === routing.defaultLocale
+                            ? "Masuk"
+                            : "Sign In"}
+                        </h6>
                       </Button>
                     </Link>
-                    <Link
-                      href={`/${locale}/about`}
-                      className="group mt-5 hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                      data-cursor-clickable
-                    >
-                      <h5 className="font-extrabold text-primary">
-                        Tentang Kami
-                      </h5>
-                    </Link>
-                    <Link
-                      href={`/${locale}/wellness`}
-                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                      data-cursor-clickable
-                    >
-                      <h5 className="font-extrabold text-primary">Kesehatan</h5>
-                    </Link>
-                    <Link
-                      href={`/${locale}/medical`}
-                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                      data-cursor-clickable
-                    >
-                      <h5 className="font-extrabold text-primary">Medis</h5>
-                    </Link>
-                    <Link
-                      href={`/${locale}/medical-equipment`}
-                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                      data-cursor-clickable
-                    >
-                      <h5 className="font-extrabold text-primary">
-                        Alat Kesehatan
-                      </h5>
-                    </Link>
-                    <Link
-                      href={`/${locale}/article`}
-                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                      data-cursor-clickable
-                    >
-                      <h5 className="font-extrabold text-primary">Artikel</h5>
-                    </Link>
-                    <Link
-                      href={`/${locale}/events`}
-                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                      data-cursor-clickable
-                    >
-                      <h5 className="font-extrabold text-primary">Acara</h5>
-                    </Link>
-                    <Link
-                      href={`/${locale}/events`}
-                      className="group hover:underline decoration-health underline-offset-2 transition-all duration-300"
-                      data-cursor-clickable
-                    >
-                      <h5 className="font-extrabold text-primary">Kontak</h5>
-                    </Link>
+
+                    {NavigationLinks.map((link, i) => (
+                      <Link
+                        key={link.path}
+                        href={`/${locale}/${link.path}`}
+                        className={cn(
+                          "group hover:underline decoration-health underline-offset-2 transition-all duration-300",
+                          i === 0 && "mt-5"
+                        )}
+                        data-cursor-clickable
+                      >
+                        <h5 className="font-bold text-primary">
+                          {locale === routing.defaultLocale
+                            ? link.label.id
+                            : link.label.en}
+                        </h5>
+                      </Link>
+                    ))}
+
                     <div className="bg-gray-50 rounded-2xl border border-primary/10 p-4 mt-5">
-                      <h5 className="text-primary font-extrabold mb-2">
-                        Preferensi
+                      <h5 className="text-primary font-bold mb-2">
+                        {locale === routing.defaultLocale
+                          ? "Preferensi"
+                          : "Preferences"}
                       </h5>
                       <div className="z-9999">
                         <LanguageSwitcher />
@@ -288,18 +236,40 @@ const NavHeader = () => {
                 className="group"
                 data-cursor-clickable
               >
-                <p className="text-primary">Tentang Kami</p>
+                <p className="text-primary">
+                  {locale === routing.defaultLocale
+                    ? "Tentang Kami"
+                    : "About Us"}
+                </p>
               </Link>
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
                     <NavigationMenuTrigger>
-                      <p className="text-primary">Kesehatan & Medis</p>
+                      <p className="text-primary">
+                        {" "}
+                        {locale === routing.defaultLocale
+                          ? "Kesehatan & Medis"
+                          : "Wellness & Medical"}
+                      </p>
                     </NavigationMenuTrigger>
                     <NavigationMenuContent className="w-sm!">
+                      <NavigationMenuLink href={`/${locale}/packages`}>
+                        <p className="text-primary font-bold">
+                          {locale === routing.defaultLocale
+                            ? "Paket Kesehatan & Medis"
+                            : "Wellness & Medical Packages"}
+                        </p>
+                        <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
+                          Lorem ipsum, dolor sit amet consectetur adipisicing
+                          elit. Eaque ratione mollitia repudiandae odio.
+                        </p>
+                      </NavigationMenuLink>
                       <NavigationMenuLink href={`/${locale}/wellness`}>
                         <p className="text-primary font-bold">
-                          Paket Kesehatan
+                          {locale === routing.defaultLocale
+                            ? "Paket Kesehatan"
+                            : "Wellness Package"}
                         </p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
                           Lorem, ipsum dolor sit amet consectetur adipisicing
@@ -307,7 +277,11 @@ const NavHeader = () => {
                         </p>
                       </NavigationMenuLink>
                       <NavigationMenuLink href={`/${locale}/medical`}>
-                        <p className="text-primary font-bold">Paket Medis</p>
+                        <p className="text-primary font-bold">
+                          {locale === routing.defaultLocale
+                            ? "Paket Medis"
+                            : "Medical Packages"}
+                        </p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
                           Lorem ipsum dolor sit amet, consectetur adipisicing
                           elit. Officiis atque unde sint!
@@ -319,32 +293,46 @@ const NavHeader = () => {
               </NavigationMenu>
 
               <Link
-                href={`/${locale}/medical-equipment`}
+                href={`/${locale}/equipment`}
                 className="group"
                 data-cursor-clickable
               >
-                <p className="text-primary">Alat Kesehatan</p>
+                <p className="text-primary">
+                  {" "}
+                  {locale === routing.defaultLocale
+                    ? "Alat Kesehatan"
+                    : "Medical Equipment"}
+                </p>
               </Link>
               <Link
                 href={`/${locale}/article`}
                 className="group"
                 data-cursor-clickable
               >
-                <p className="text-primary">Artikel</p>
+                <p className="text-primary">
+                  {" "}
+                  {locale === routing.defaultLocale ? "Artikel" : "News"}
+                </p>
               </Link>
               <Link
                 href={`/${locale}/events`}
                 className="group"
                 data-cursor-clickable
               >
-                <p className="text-primary">Acara</p>
+                <p className="text-primary">
+                  {" "}
+                  {locale === routing.defaultLocale ? "Acara" : "Events"}
+                </p>
               </Link>
               <Link
                 href={`/${locale}/contact`}
                 className="group"
                 data-cursor-clickable
               >
-                <p className="text-primary">Kontak</p>
+                <p className="text-primary">
+                  {" "}
+                  {locale === routing.defaultLocale ? "Kontak" : "Contact"}
+                </p>
               </Link>
 
               <Link href={`/sign-in`} className="group" data-cursor-clickable>
@@ -352,7 +340,10 @@ const NavHeader = () => {
                   size={"lg"}
                   className="rounded-full inline-flex items-center font-normal h-10 px-5! pointer-events-auto cursor-pointer"
                 >
-                  <p>Masuk</p>
+                  <p>
+                    {" "}
+                    {locale === routing.defaultLocale ? "Masuk" : "Sign In"}
+                  </p>
                   <LogIn />
                 </Button>
               </Link>

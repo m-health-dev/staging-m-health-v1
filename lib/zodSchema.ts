@@ -79,3 +79,13 @@ export const VendorSchema = z.object({
   reference_image: z.array(z.string()),
   location_map: z.string(),
 });
+
+export const HotelSchema = z.object({
+  name: z.string().min(3),
+  en_description: z.string().min(3),
+  id_description: z.string().min(3),
+  logo: z.string(),
+  highlight_image: z.string(),
+  reference_image: z.array(z.string()),
+  location_map: z.string(),
+});

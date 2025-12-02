@@ -10,9 +10,12 @@ import LocalDateTime from "../utility/lang/LocaleDateTime";
 import { Check, ClipboardPlus, Copy, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { useLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
 
 interface ChatMessageProps {
   message: string;
+  id: string;
   sender: "user" | "bot";
   timestamp?: string;
   onReply?: (message: string) => void;
@@ -32,6 +35,7 @@ function flattenListChildren(children: ReactNode): ReactNode {
 }
 const ChatMessage: React.FC<ChatMessageProps> = ({
   message,
+  id,
   sender,
   timestamp,
   onReply,
@@ -39,17 +43,26 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 }) => {
   const isUser = sender === "user";
   const [copied, setCopied] = useState(false);
+  const locale = useLocale();
 
   const phoneNumber = "08159880048";
 
   const hasConsultation =
     message.includes("consultation") || message.includes("Konsultasi");
+
   let cleanMessage = message
     .replaceAll("```json\nneed_consultation : true\n```", ``)
     .trim();
+
   const hasPhone = message.includes(phoneNumber);
 
   const whatsappLink = `https://wa.me/${phoneNumber.replace("0", "62")}`;
+
+  cleanMessage = cleanMessage.replace(
+    /(^|\s)(consultation|konsultasi)(\s|$)/gi,
+    " "
+  );
+  cleanMessage = cleanMessage.replace(/\s+/g, " ").trim();
 
   cleanMessage = cleanMessage.replaceAll(
     phoneNumber,
@@ -104,11 +117,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+    <div
+      // initial={{ opacity: 0, y: 10 }}
+      // animate={{ opacity: 1, y: 0 }}
+      // transition={{ duration: 0.3 }}
       className={`flex ${isUser ? "justify-end" : "justify-start"} mb-8 group`}
+      id={id}
     >
       <div>
         <div
@@ -127,7 +141,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               }`}
             >
               <p className="text-xs! font-bold mb-1 opacity-70 flex items-center gap-1">
-                <Undo2 className="size-3" /> Membalas:
+                <Undo2 className="size-3" />{" "}
+                {locale === routing.defaultLocale ? "Membalas" : "Reply To"}
               </p>
               <p className="text-sm line-clamp-2">{replyTo}</p>
             </div>
@@ -238,7 +253,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                   size={"lg"}
                   className="rounded-full bg-health hover:bg-health/80 lg:w-fit w-full cursor-pointer pointer-events-auto"
                 >
-                  <ClipboardPlus /> Konsultasi dengan Dokter
+                  <ClipboardPlus />{" "}
+                  {locale === routing.defaultLocale
+                    ? "Konsultasi dengan Dokter"
+                    : "Start Consultation with Doctor"}
                 </Button>
               </Link>
             </div>
@@ -290,7 +308,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

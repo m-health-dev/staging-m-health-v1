@@ -1,43 +1,80 @@
 import ChatContent from "@/components/chatbot/ChatContent";
+import { Button } from "@/components/ui/button";
 import NavHeader from "@/components/utility/header/NavHeader";
+import { routing } from "@/i18n/routing";
+import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { getChatHistory, getChatSession } from "@/lib/chatbot/getChatActivity";
 import { getLatest3Medical } from "@/lib/medical/getMedical";
 import { getLatest3Packages } from "@/lib/packages/getPackages";
 import { getLatest3Wellness } from "@/lib/wellness/getWellness";
-import { CircleAlert, TriangleAlert } from "lucide-react";
+import { createClient } from "@/utils/supabase/server";
+import { CircleAlert, MessageCircle, TriangleAlert } from "lucide-react";
+import { getLocale } from "next-intl/server";
 import { cookies } from "next/headers";
+import Link from "next/link";
 
 type paramsType = Promise<{ slug: string }>;
 
 export default async function SessionPage(props: { params: paramsType }) {
   const { slug } = await props.params;
-  // Anda juga bisa melakukan fetch chat data di Server Side di sini (opsional tapi disarankan untuk SEO/Speed)
-  // Tapi untuk sekarang kita pakai logic Client Side yang sudah ada di ChatContent
+
   const { data: packages } = await getLatest3Packages();
   const { data: medical } = await getLatest3Medical();
   const { data: wellness } = await getLatest3Wellness();
   const cookie = await cookies();
   const getPublicID = cookie.get("mhealth_public_id");
   const publicID = getPublicID?.value as string;
+  const locale = await getLocale();
 
   const historyData = await getChatHistory(publicID);
 
   const sessionID = slug as string;
 
-  const session = await getChatSession(sessionID);
+  const sessionChat = await getChatSession(sessionID);
+
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const accessToken = session?.access_token!;
+
+  let userData;
+
+  if (accessToken) {
+    userData = await getUserInfo(accessToken);
+  }
 
   return (
     <>
-      <NavHeader />
-      {session.warning ? (
-        <div className="flex justify-center items-center w-full min-h-[calc(100vh-12vh)]">
-          <div className="bg-yellow-50 text-yellow-600 border border-yellow-600 p-4 rounded-2xl flex flex-col gap-2">
-            <div className="bg-white rounded-full border border-yellow-600 h-8 w-8 flex justify-center items-center mt-1">
+      {/* <NavHeader /> */}
+      {sessionChat.error ? (
+        <div className="flex justify-center items-center w-full min-h-screen">
+          <div className="bg-white border border-primary p-4 rounded-2xl flex flex-col gap-2">
+            {/* <div className="bg-white rounded-full border border-yellow-600 h-8 w-8 flex justify-center items-center mt-1">
               <CircleAlert className="size-5" />
-            </div>
+            </div> */}
             <div>
-              <h5 className="font-bold">Gagal Memuat Data</h5>
-              <p>{session.warning}</p>
+              <h2 className="text-health font-bold mb-2">404</h2>
+              <h5 className="font-bold text-primary">
+                {locale === routing.defaultLocale
+                  ? "Gagal Memuat Sesi Percakapan"
+                  : "Failed to get chat session data"}
+              </h5>
+              <p className="text-muted-foreground">
+                {" "}
+                {locale === routing.defaultLocale
+                  ? "Sesi percakapan ini telah dihapus atau diarsipkan."
+                  : "This chat session has been deleted or archived."}
+              </p>
+              <Link href="/">
+                <Button className="flex items-center lg:w-fit w-full rounded-full mt-3">
+                  <MessageCircle />
+                  {locale === routing.defaultLocale
+                    ? "Mulai Percakapan Baru"
+                    : "Start New Chat"}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -48,8 +85,9 @@ export default async function SessionPage(props: { params: paramsType }) {
           wellness={wellness}
           history={historyData.data}
           sessionID={sessionID}
-          session={session.data} // Kirim ID dari URL
+          session={sessionChat.data} // Kirim ID dari URL
           publicIDFetch={publicID}
+          user={userData}
         />
       )}
     </>
