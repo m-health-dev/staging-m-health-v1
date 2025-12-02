@@ -21,6 +21,7 @@ import { Spinner } from "@/components/ui/spinner";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
+import { deleteHotel } from "@/lib/hotel/delete-hotel";
 import { deleteVendor } from "@/lib/vendors/delete-vendor";
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
@@ -135,7 +136,7 @@ export const columns: ColumnDef<VendorType>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const id: string = row.getValue("id");
-      const vendorName: string = row.getValue("name");
+      const hotelName: string = row.getValue("name");
 
       const [copied, setCopied] = useState(false);
       const [openConfirm, setOpenConfirm] = useState(false);
@@ -158,7 +159,7 @@ export const columns: ColumnDef<VendorType>[] = [
 
       const handleCopyName = async () => {
         try {
-          await navigator.clipboard.writeText(vendorName);
+          await navigator.clipboard.writeText(hotelName);
           setCopied(true);
           setTimeout(() => setCopied(false), 2000);
         } catch (err) {
@@ -166,12 +167,12 @@ export const columns: ColumnDef<VendorType>[] = [
         }
       };
 
-      const handleDeleteVendor = async () => {
+      const handleDeleteHotel = async () => {
         try {
           setLoading(true);
-          const res = await deleteVendor(id);
+          const res = await deleteHotel(id);
           if (res) {
-            toast.success("Success to Delete Vendor", {
+            toast.success("Success to Delete Hotel", {
               description: `${id}`,
             });
           }
@@ -179,7 +180,7 @@ export const columns: ColumnDef<VendorType>[] = [
           router.refresh();
         } catch (err) {
           setLoading(false);
-          toast.warning("Failed to Delete Vendor", { description: `${err}` });
+          toast.warning("Failed to Delete Hotel", { description: `${err}` });
         }
       };
 
@@ -198,7 +199,7 @@ export const columns: ColumnDef<VendorType>[] = [
                 <p
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
-                    router.push(`/${locale}/studio/vendor/update/${id}`)
+                    router.push(`/${locale}/studio/hotel/update/${id}`)
                   }
                 >
                   <PenSquare />
@@ -246,7 +247,7 @@ export const columns: ColumnDef<VendorType>[] = [
                     className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
                     onClick={handleCopyName}
                   >
-                    {vendorName}{" "}
+                    {hotelName}{" "}
                     {!copied ? (
                       <Copy className="size-4" />
                     ) : (
@@ -290,9 +291,9 @@ export const columns: ColumnDef<VendorType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== vendorName}
+                  disabled={inputName !== hotelName}
                   onClick={async () => {
-                    await handleDeleteVendor();
+                    await handleDeleteHotel();
                     setOpenConfirm(false);
                   }}
                 >

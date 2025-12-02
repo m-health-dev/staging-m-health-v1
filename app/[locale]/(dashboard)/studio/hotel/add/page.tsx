@@ -61,8 +61,8 @@ const AddVendor = () => {
 
   const [name, setName] = useState("");
 
-  const form = useForm<z.infer<typeof VendorSchema>>({
-    resolver: zodResolver(VendorSchema),
+  const form = useForm<z.infer<typeof HotelSchema>>({
+    resolver: zodResolver(HotelSchema),
     defaultValues: {
       name: "",
       en_description: "",

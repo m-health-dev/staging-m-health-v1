@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/shadcn-io/dropzone";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { VendorSchema } from "@/lib/zodSchema";
+import { HotelSchema, VendorSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { Switch } from "@radix-ui/react-switch";
@@ -50,22 +50,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
 import { getVendorByID } from "@/lib/vendors/get-vendor";
 import { VendorType } from "@/types/vendor.types";
+import { HotelType } from "@/types/hotel.types";
+import { updateHotel } from "@/lib/hotel/post-patch-hotel";
 
-const UpdateVendorForm = ({
+const UpdateHotelForm = ({
   id,
-  vendorData,
+  hotelData,
 }: {
   id: string;
-  vendorData: VendorType;
+  hotelData: HotelType;
 }) => {
-  const [logoPreview, setLogoPreview] = useState<string | null>(
-    vendorData.logo
-  );
+  const [logoPreview, setLogoPreview] = useState<string | null>(hotelData.logo);
   const [highlightPreview, setHighlightPreview] = useState<string | null>(
-    vendorData.highlight_image
+    hotelData.highlight_image
   );
   const [referencePreview, setReferencePreview] = useState<string[]>(
-    vendorData.reference_image
+    hotelData.reference_image
   );
 
   const [loading, setLoading] = useState(false);
@@ -76,25 +76,23 @@ const UpdateVendorForm = ({
 
   const [name, setName] = useState("");
 
-  const form = useForm<z.infer<typeof VendorSchema>>({
-    resolver: zodResolver(VendorSchema),
+  const form = useForm<z.infer<typeof HotelSchema>>({
+    resolver: zodResolver(HotelSchema),
     defaultValues: {
-      name: vendorData?.name || "",
-      en_description: vendorData?.en_description || "",
-      id_description: vendorData?.id_description || "",
-      category: vendorData?.category || "",
-      specialist: vendorData?.specialist || [],
-      logo: vendorData?.logo || "",
-      highlight_image: vendorData?.highlight_image || "",
-      reference_image: vendorData?.reference_image || [],
-      location_map: vendorData?.location_map || "",
+      name: hotelData?.name || "",
+      en_description: hotelData?.en_description || "",
+      id_description: hotelData?.id_description || "",
+      logo: hotelData?.logo || "",
+      highlight_image: hotelData?.highlight_image || "",
+      reference_image: hotelData?.reference_image || [],
+      location_map: hotelData?.location_map || "",
     },
   });
 
   async function handleImageUpload(files: File[]) {
     const formData = new FormData();
     formData.append("file", files[0]); // upload 1 dulu, nanti jika mau multiple bisa looping
-    formData.append("model", "vendors");
+    formData.append("model", "hotels");
     // formData.append("field", "referenceImage");
 
     try {
@@ -123,7 +121,7 @@ const UpdateVendorForm = ({
   async function handleBatchImageUpload(files: File[]) {
     const formData = new FormData();
     files.forEach((file) => formData.append("file", file));
-    formData.append("folder", "vendors");
+    formData.append("folder", "hotels");
 
     try {
       const res = await fetch(
@@ -188,13 +186,13 @@ const UpdateVendorForm = ({
     }
   }
 
-  async function onSubmit(data: z.infer<typeof VendorSchema>) {
+  async function onSubmit(data: z.infer<typeof HotelSchema>) {
     setLoading(true);
-    const res = await updateVendor(data, id);
+    const res = await updateHotel(data, id);
 
     if (res.success) {
       setLoading(false);
-      toast.success(`Vendor Update Success!`);
+      toast.success(`Hotel Update Success!`);
     } else if (res.error) {
       setLoading(false);
       toast.error(res.error);
@@ -204,7 +202,7 @@ const UpdateVendorForm = ({
   return (
     <>
       <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background p-4 rounded-2xl z-10 w-full">
-        <h3 className="text-primary font-semibold">Update Vendor</h3>
+        <h3 className="text-primary font-semibold">Update Hotel</h3>
         <p className="text-primary mt-2 uppercase">{id.slice(0, 8)}</p>
       </div>
       <ContainerWrap size="xl">
@@ -238,7 +236,7 @@ const UpdateVendorForm = ({
                 )
               )}
               <h5 className="text-primary font-bold">
-                {vendorData?.name || name}
+                {hotelData?.name || name}
               </h5>
             </div>
           </div>
@@ -255,7 +253,7 @@ const UpdateVendorForm = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        Vendor Name
+                        Hotel Name
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -272,31 +270,22 @@ const UpdateVendorForm = ({
                     </FormItem>
                   )}
                 />
-                <div className="lg:grid flex flex-col grid-cols-2 gap-5 items-start">
-                  <div className="space-y-5">
-                    <FormField
-                      control={form.control}
-                      name="location_map"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary font-semibold!">
-                            Maps Location URL
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} type="url" className="h-12" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <ComboBoxVendor />
-                  </div>
-                  <DynamicInputField
-                    form={form}
-                    name="specialist"
-                    label="Vendor Specialist"
-                  />
-                </div>
+
+                <FormField
+                  control={form.control}
+                  name="location_map"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Maps Location URL
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} type="url" className="h-12" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <div className="lg:col-span-2 col-span-1">
                   <FormField
@@ -539,4 +528,4 @@ const UpdateVendorForm = ({
   );
 };
 
-export default UpdateVendorForm;
+export default UpdateHotelForm;

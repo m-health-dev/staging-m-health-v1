@@ -2,21 +2,23 @@ import React from "react";
 import UpdateVendorForm from "./updateForm";
 import { getVendorByID } from "@/lib/vendors/get-vendor";
 import { toast } from "sonner";
+import { getHotelByID } from "@/lib/hotel/get-hotel";
+import UpdateHotelForm from "./updateForm";
 
-const UpdateVendorPage = async ({
+const UpdateHotelPage = async ({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) => {
   const { id } = await params;
-  const res = (await getVendorByID(id)).data;
+  const res = (await getHotelByID(id)).data;
 
   if (!res || res.error) {
-    toast.error("Failed to Get Vendor Data", {
+    toast.error("Failed to Get Hotel Data", {
       description: `${res.error}`,
     });
   }
-  return <UpdateVendorForm id={id} vendorData={res.data} />;
+  return <UpdateHotelForm id={id} hotelData={res.data} />;
 };
 
-export default UpdateVendorPage;
+export default UpdateHotelPage;
