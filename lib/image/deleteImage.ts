@@ -1,10 +1,12 @@
+const intApiBaseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
+
 export async function deleteSingleFile(path: string) {
   try {
     const clearPath = path.replaceAll(
       process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
       ""
     );
-    const res = await fetch("/api/image/delete", {
+    const res = await fetch(`${intApiBaseUrl}/api/image/delete`, {
       method: "DELETE",
       body: JSON.stringify({ path: clearPath }),
     });
@@ -22,7 +24,7 @@ export async function deleteMultipleFiles(paths: string[]) {
       p.replaceAll(process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL!, "")
     );
 
-    const res = await fetch("/api/image/delete/batch", {
+    const res = await fetch(`${intApiBaseUrl}/api/image/delete/batch`, {
       method: "DELETE",
       body: JSON.stringify({ paths: clearPaths }),
     });
