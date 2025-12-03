@@ -10,6 +10,8 @@ import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import ContainerWrap from "@/components/utility/ContainerWrap";
+import { createClient } from "@/utils/supabase/server";
+import { getUserInfo } from "@/lib/auth/getUserInfo";
 type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
@@ -20,6 +22,22 @@ export default async function Page({ children, params }: Props) {
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
+  const supabase = await createClient();
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    return (
+      <div className="p-6 text-red-600 font-medium">
+        Failed to get user session
+      </div>
+    );
+  }
+
+  const userData = await getUserInfo(session?.access_token);
   return (
     <SidebarProvider
       style={
@@ -29,10 +47,10 @@ export default async function Page({ children, params }: Props) {
         } as React.CSSProperties
       }
     >
-      <StudioSidebar variant="inset" />
+      <StudioSidebar variant="inset" accounts={userData} />
       <SidebarInset>
-        <SiteHeaderStudio />
-        <div className="container mx-auto max-w-screen px-4">{children}</div>
+        <SiteHeaderStudio accounts={userData} />
+        {children}
       </SidebarInset>
     </SidebarProvider>
   );

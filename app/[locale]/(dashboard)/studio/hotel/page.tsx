@@ -1,7 +1,6 @@
 import { getAllVendor } from "@/lib/vendors/get-vendor";
 import { Account } from "@/types/account.types";
 import React from "react";
-import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { VendorType } from "@/types/vendor.types";
 import Link from "next/link";
@@ -11,8 +10,11 @@ import { getLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { createClient } from "@/utils/supabase/server";
 import { getAllHotel } from "@/lib/hotel/get-hotel";
+import ContainerWrap from "@/components/utility/ContainerWrap";
+import { VendorHotelDataTable } from "@/components/vendor-hotel/vendor-hotel-data-table";
+import { deleteHotel } from "@/lib/hotel/delete-hotel";
 
-const VendorData = async ({
+const Hotel = async ({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -32,7 +34,7 @@ const VendorData = async ({
     .select("*", { count: "exact" });
 
   return (
-    <div className="pb-[20vh]">
+    <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
           <h4 className="text-primary font-semibold">Hotel Data</h4>
@@ -62,9 +64,16 @@ const VendorData = async ({
           </p>
         </div>
       </div>
-      <DataTable columns={columns} data={data} meta={meta} links={links} />
-    </div>
+      <VendorHotelDataTable
+        columns={columns}
+        data={data}
+        meta={meta}
+        links={links}
+        resourceType="hotel"
+        deleteAction={deleteHotel}
+      />
+    </ContainerWrap>
   );
 };
 
-export default VendorData;
+export default Hotel;

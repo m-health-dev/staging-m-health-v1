@@ -46,43 +46,7 @@ export const columns: ColumnDef<VendorType>[] = [
   //       return row.index + 1;
   //     },
   //   },
-  //   {
-  //     accessorKey: "logo",
-  //     header: ({ column }) => (
-  //       <DataTableColumnHeader column={column} title="Logo" />
-  //     ),
 
-  //     cell: ({ row }) => {
-  //       const logo: string = row.getValue("logo");
-  //       const name: string = row.getValue("name");
-
-  //       const [error, setError] = useState(false);
-
-  //       // Jika tidak ada logo atau sudah error → tampilkan avatar
-  //       if (!logo || error) {
-  //         return (
-  //           <Avatar
-  //             name={name}
-  //             className="w-10! h-10! border rounded-full"
-  //             colors={["#3e77ab", "#22b26e", "#f2f26f", "#fff7bd", "#95cfb7"]}
-  //             variant="beam"
-  //             size={20}
-  //           />
-  //         );
-  //       }
-
-  //       return (
-  //         <Image
-  //           src={logo}
-  //           alt={name || "Vendor Logo"}
-  //           width={40}
-  //           height={40}
-  //           className="object-cover w-10 h-10 rounded-full border"
-  //           onError={() => setError(true)}
-  //         />
-  //       );
-  //     },
-  //   },
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -94,36 +58,42 @@ export const columns: ColumnDef<VendorType>[] = [
     },
   },
   {
-    accessorKey: "created_at",
+    accessorKey: "logo",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created at" />
+      <DataTableColumnHeader column={column} title="Logo" />
     ),
-    cell: ({ row }) => {
-      const created_at: string = row.getValue("created_at");
-      return (
-        <LocalDateTime
-          date={created_at}
-          specificFormat="DD MMM YYYY - hh:mm:ss"
-        />
-      );
-    },
-  },
-  {
-    accessorKey: "updated_at",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated at" />
-    ),
-    cell: ({ row }) => {
-      const updated_at: string = row.getValue("updated_at");
-      return (
-        <LocalDateTime
-          date={updated_at}
-          specificFormat="DD MMM YYYY - hh:mm:ss"
-        />
-      );
-    },
-  },
 
+    cell: ({ row }) => {
+      const logo: string = row.getValue("logo");
+      const name: string = row.getValue("name");
+
+      const [error, setError] = useState(false);
+
+      // Jika tidak ada logo atau sudah error → tampilkan avatar
+      if (!logo || error) {
+        return (
+          <Avatar
+            name={name}
+            className="w-10! h-10! border rounded-full"
+            colors={["#3e77ab", "#22b26e", "#f2f26f", "#fff7bd", "#95cfb7"]}
+            variant="beam"
+            size={20}
+          />
+        );
+      }
+
+      return (
+        <Image
+          src={logo}
+          alt={name || "Vendor Logo"}
+          width={40}
+          height={40}
+          className="object-cover w-10 h-10 rounded-full border"
+          onError={() => setError(true)}
+        />
+      );
+    },
+  },
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -136,6 +106,27 @@ export const columns: ColumnDef<VendorType>[] = [
       <DataTableColumnHeader column={column} title="Category" />
     ),
   },
+  {
+    accessorKey: "created_at",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created at" />
+    ),
+    cell: ({ row }) => {
+      const created_at: string = row.getValue("created_at");
+      return <LocalDateTime date={created_at} />;
+    },
+  },
+  {
+    accessorKey: "updated_at",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated at" />
+    ),
+    cell: ({ row }) => {
+      const updated_at: string = row.getValue("updated_at");
+      return <LocalDateTime date={updated_at} />;
+    },
+  },
+
   {
     id: "actions",
     enableHiding: false,
@@ -176,9 +167,13 @@ export const columns: ColumnDef<VendorType>[] = [
         try {
           setLoading(true);
           const res = await deleteVendor(id);
-          if (res) {
+          if (!res.error) {
             toast.success("Success to Delete Vendor", {
-              description: `${id}`,
+              description: `${id.slice(0, 8).toUpperCase()} - ${vendorName}`,
+            });
+          } else if (res.error) {
+            toast.error("Failed to Delete Vendor", {
+              description: `${res.error}`,
             });
           }
           setLoading(false);
@@ -193,7 +188,7 @@ export const columns: ColumnDef<VendorType>[] = [
         <>
           {/* Dropdown Menu */}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild className="">
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
                 <MoreHorizontal />
@@ -232,6 +227,41 @@ export const columns: ColumnDef<VendorType>[] = [
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* <span className="lg:hidden flex flex-col w-full items-center space-y-3">
+            <Button
+              variant={"default"}
+              className="flex w-full"
+              onClick={() =>
+                router.push(`/${locale}/studio/hotel/update/${id}`)
+              }
+            >
+              <PenSquare />
+              Update Data
+            </Button>
+
+            <Button
+              variant={"destructive_outline"}
+              className="flex w-full"
+              onClick={() => setOpenConfirm(true)}
+            >
+              <Trash2 />
+              Delete Data
+            </Button>
+
+            <Button
+              className="flex w-full"
+              variant={"outline"}
+              onClick={handleCopyLink}
+            >
+              {!copied ? (
+                <Copy className="size-4" />
+              ) : (
+                <Check className="size-4" />
+              )}
+              Copy ID
+            </Button>
+          </span> */}
 
           {/* Modal Konfirmasi */}
           <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>

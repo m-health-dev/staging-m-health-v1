@@ -21,19 +21,22 @@ export async function getAllVendor(page: number = 1, per_page: number = 10) {
 
     const json = await res.json();
 
-    if (!json) {
-      return { success: false, error: "Failed to receive vendor data." };
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to receive vendor/read data. Cause : ${json.message}`,
+      };
     }
 
-    console.log(json.links);
+    // console.log(json.links);
     return {
-      data: json.data, // data vendor
-      links: json.links, // navigasi URL
+      data: json.data,
+      links: json.links,
       meta: json.meta,
       success: true,
     };
   } catch (error) {
-    console.error("Receive Vendor Error:", error);
+    console.error("Receive vendor/read Error:", error);
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",
@@ -52,10 +55,10 @@ export async function getVendorByID(id: string) {
 
     const data = await res.json();
 
-    if (!data) {
+    if (res.status !== 200) {
       return {
         success: false,
-        error: `Failed to receive vendor/id:${id} data.`,
+        error: `Failed to receive vendor/read by ID ${id}. Cause : ${res.status} - ${data.message}`,
       };
     }
 

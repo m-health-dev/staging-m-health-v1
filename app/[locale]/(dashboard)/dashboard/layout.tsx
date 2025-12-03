@@ -39,7 +39,7 @@ export default async function Page({ children }: Props) {
     >
       <DashboardSidebar variant="inset" accounts={userData} />
       <SidebarInset>
-        <SiteHeaderDashboard />
+        <SiteHeaderDashboard accounts={userData} />
         <ContainerWrap size="xxl">{children}</ContainerWrap>
       </SidebarInset>
     </SidebarProvider>

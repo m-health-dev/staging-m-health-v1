@@ -21,14 +21,14 @@ export async function getAllHotel(page: number = 1, per_page: number = 10) {
 
     const json = await res.json();
 
-    if (!json) {
+    if (res.status !== 200) {
       return {
         success: false,
-        error: "Failed to receive hotel/read all data.",
+        error: `Failed to receive hotel/read data. Cause : ${json.message}`,
       };
     }
 
-    console.log(json.links);
+    // console.log(json.links);
     return {
       data: json.data,
       links: json.links,
@@ -55,10 +55,10 @@ export async function getHotelByID(id: string) {
 
     const data = await res.json();
 
-    if (!data) {
+    if (res.status !== 200) {
       return {
         success: false,
-        error: `Failed to receive hotel/id:${id} data.`,
+        error: `Failed to receive hotel/read by ID ${id}. Cause : ${res.status} - ${data.message}`,
       };
     }
 

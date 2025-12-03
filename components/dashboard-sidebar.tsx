@@ -67,31 +67,27 @@ export function DashboardSidebar({
   ...props
 }: DashboardSidebarProps) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="offcanvas" className="p-0" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5! hover:bg-transparent"
-            >
-              <Link href={`/studio`}>
-                <Image
-                  src="https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-                  width={120}
-                  height={40}
-                  className="object-contain"
-                  alt="M-Health Logo"
-                />
-              </Link>
-            </SidebarMenuButton>
+            <Image
+              src={
+                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/icon_mhealth_logo.PNG"
+              }
+              width={100}
+              height={100}
+              unoptimized
+              alt="icon-m-health"
+              className="object-contain w-8 h-8 mx-2 my-3"
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
       <SidebarContent className="hide-scroll mt-5">
         <p className="text-xs! px-4">Accounts</p>
-        <NavUser user={accounts} />
+        <NavUser user={accounts} type="side" />
 
         <NavMenu title="Transaksi" items={data.navMain} />
         <NavMenu title="Chat Bot" items={data.chatbot} />

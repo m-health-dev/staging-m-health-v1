@@ -34,6 +34,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import "../../app/css/rich-editor.css";
+import { DialogUploadImage } from "./RichEditorImageUpload";
+import { DialogRichLink } from "./RichEditorLink";
 
 interface RichEditorProps {
   value?: string;
@@ -44,6 +46,11 @@ interface RichEditorProps {
 
 export const RichEditor = React.forwardRef<HTMLDivElement, RichEditorProps>(
   ({ value = "", onChange, className }, ref) => {
+    const [openDialogImage, setOpenDialogImage] = React.useState(false);
+    const [openDialogLink, setOpenDialogLink] = React.useState(false);
+
+    const [url, setUrl] = React.useState("");
+
     const editor = useEditor({
       extensions: [
         StarterKit.configure({
@@ -82,22 +89,24 @@ export const RichEditor = React.forwardRef<HTMLDivElement, RichEditorProps>(
     });
 
     const addLink = () => {
-      const url = prompt("Enter URL:");
-      if (url) {
-        editor
-          ?.chain()
-          .focus()
-          .extendMarkRange("link")
-          .setLink({ href: url })
-          .run();
-      }
+      setOpenDialogLink(true);
+    };
+
+    const handleUploadedLink = (url: string) => {
+      editor
+        ?.chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url })
+        .run();
     };
 
     const addImage = () => {
-      const url = prompt("Enter image URL:");
-      if (url) {
-        editor?.chain().focus().setImage({ src: url }).run();
-      }
+      setOpenDialogImage(true);
+    };
+
+    const handleUploadedImage = (url: string) => {
+      editor?.chain().focus().setImage({ src: url }).run();
     };
 
     if (!editor) {
@@ -405,6 +414,20 @@ export const RichEditor = React.forwardRef<HTMLDivElement, RichEditorProps>(
         <EditorContent
           editor={editor}
           className="rich-editor-content flex-1 overflow-auto bg-white"
+        />
+
+        <DialogRichLink
+          open={openDialogLink}
+          onClose={() => setOpenDialogLink(false)}
+          onSubmit={handleUploadedLink}
+          url={url}
+          setUrl={setUrl}
+        />
+
+        <DialogUploadImage
+          open={openDialogImage}
+          onClose={() => setOpenDialogImage(false)}
+          onUploaded={handleUploadedImage}
         />
       </div>
     );

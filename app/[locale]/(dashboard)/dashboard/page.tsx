@@ -26,11 +26,22 @@ const DashboardPage = async () => {
 
   return (
     <>
-      <div className="flex justify-between my-20">
+      <div className="flex flex-wrap justify-between my-20 gap-5">
         <h3 className="font-bold text-primary">Dashboard</h3>
-        <Link href={"/sign-out"}>
-          <Button variant={"destructive"}>Sign Out</Button>
-        </Link>
+        <div className="flex items-center gap-5">
+          {role === "admin" && (
+            <Link href={"/std"}>
+              <Button variant={"outline"} className="rounded-2xl">
+                Studio
+              </Button>
+            </Link>
+          )}
+          <Link href={"/sign-out"}>
+            <Button variant={"destructive"} className="rounded-2xl">
+              Sign Out
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <pre className="text-wrap wrap-anywhere">

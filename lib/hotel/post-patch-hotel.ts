@@ -28,8 +28,11 @@ export async function addHotel(payload: {
 
     const data = await res.json();
 
-    if (!data) {
-      return { success: false, error: "Failed to sent hotel/create data." };
+    if (res.status !== 200 && res.status !== 201 && res.status !== 204) {
+      return {
+        success: false,
+        error: `Failed to sent hotel/create data. Cause: ${res.status} - ${data.message}`,
+      };
     }
 
     return {
@@ -59,6 +62,7 @@ export async function updateHotel(
 ) {
   try {
     console.log("Sending hotel/update to BE:", payload);
+
     const res = await fetch(`${apiBaseUrl}/api/v1/hotels/${id}`, {
       method: "PATCH",
       headers: {
@@ -69,8 +73,11 @@ export async function updateHotel(
 
     const data = await res.json();
 
-    if (!data) {
-      return { success: false, error: "Failed to sent hotel/update data." };
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to sent hotel/update data. Cause: ${res.status} - ${data.message}`,
+      };
     }
 
     return {

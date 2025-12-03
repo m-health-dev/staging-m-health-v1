@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/client";
 import React from "react";
 import { getUser } from "../../(auth)/actions/auth.actions";
 import { User } from "@supabase/supabase-js";
+import ContainerWrap from "@/components/utility/ContainerWrap";
 
 function getThreeWords(text: string | null): string {
   if (!text) return "";
@@ -19,14 +20,16 @@ const StudioDashboard = async () => {
     .eq("id", user?.id)
     .maybeSingle();
   return (
-    <div className="my-10">
-      <h4 className="font-semibold text-primary">
-        Halo {getThreeWords(accounts?.fullname)}!
-      </h4>
-      <p className="mt-1 text-muted-foreground">
-        Selamat datang di M Health Studio.
-      </p>
-    </div>
+    <ContainerWrap>
+      <div className="my-10">
+        <h4 className="font-semibold text-primary">
+          Halo {getThreeWords(accounts?.fullname)}!
+        </h4>
+        <p className="mt-1 text-muted-foreground">
+          Selamat datang di M Health Studio.
+        </p>
+      </div>
+    </ContainerWrap>
   );
 };
 

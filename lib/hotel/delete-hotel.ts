@@ -1,8 +1,11 @@
+"use server";
+
 import { Message } from "@/components/chatbot/ChatStart";
 import { error } from "console";
 import { success } from "zod";
 import { getHotelByID } from "./get-hotel";
 import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
+import { createClient } from "@/utils/supabase/client";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -39,7 +42,7 @@ export async function deleteHotel(id: string) {
           error:
             "Error hotel/read in hotel/delete ID" +
             id +
-            "when delete single images:" +
+            " when delete single images:" +
             filesToDelete,
         };
       }
@@ -50,27 +53,45 @@ export async function deleteHotel(id: string) {
           error:
             "Error hotel/read in hotel/delete ID" +
             id +
-            "when delete multiple images:" +
+            " when delete multiple images:" +
             filesToDelete,
         };
       }
     }
 
-    const res = await fetch(`${apiBaseUrl}/api/v1/hotels/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const supabase = await createClient();
 
-    const data = await res.json();
+    const {
+      data: deleteHotel,
+      count,
+      error: errorDeleteHotel,
+    } = await supabase.from("hotel").delete({ count: "exact" }).eq("id", id);
 
-    if (!data) {
-      return { success: false, error: "Failed to sent hotel/delete data." };
+    // const res = await fetch(`${apiBaseUrl}/api/v1/hotels/${id}`, {
+    //   method: "DELETE",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
+
+    // const data = await res.json();
+
+    // if (res.status !== 200) {
+    //   return {
+    //     success: false,
+    //     error: `Failed to sent hotel/delete data. Cause : ${res.status} - ${data.message}`,
+    //   };
+    // }
+
+    if (errorDeleteHotel) {
+      return {
+        error: errorDeleteHotel.message,
+      };
     }
 
     return {
-      data,
+      deleteHotel,
+      count,
       success: true,
     };
   } catch (error) {

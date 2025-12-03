@@ -30,8 +30,11 @@ export async function addVendor(payload: {
 
     const data = await res.json();
 
-    if (!data) {
-      return { success: false, error: "Failed to sent vendor/create data." };
+    if (res.status !== 200 && res.status !== 201 && res.status !== 204) {
+      return {
+        success: false,
+        error: `Failed to sent vendor/create data. Cause: ${res.status} - ${data.message}`,
+      };
     }
 
     return {
@@ -63,6 +66,7 @@ export async function updateVendor(
 ) {
   try {
     console.log("Sending vendor/update to BE:", payload);
+
     const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
       method: "PATCH",
       headers: {
@@ -73,8 +77,11 @@ export async function updateVendor(
 
     const data = await res.json();
 
-    if (!data) {
-      return { success: false, error: "Failed to sent vendor/update data." };
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to sent vendor/update data. Cause: ${res.status} - ${data.message}`,
+      };
     }
 
     return {

@@ -31,7 +31,13 @@ import { Account } from "@/types/account.types";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
-export function NavUser({ user }: { user: Account }) {
+export function NavUser({
+  user,
+  type,
+}: {
+  user: Account;
+  type?: "header" | "side";
+}) {
   const { isMobile } = useSidebar();
 
   const router = useRouter();
@@ -66,18 +72,24 @@ export function NavUser({ user }: { user: Account }) {
                   size={20}
                 />
               )}
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.fullname}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
-                </span>
-              </div>
-              <IconDotsVertical className="ml-auto size-4" />
+              {type === "side" && (
+                <>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">
+                      {user.fullname}
+                    </span>
+                    <span className="text-muted-foreground truncate text-xs">
+                      {user.email}
+                    </span>
+                  </div>
+                  <IconDotsVertical className="ml-auto size-4" />
+                </>
+              )}
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-2xl z-999"
-            side={isMobile ? "bottom" : "right"}
+            side={"bottom"}
             align="end"
             sideOffset={4}
           >

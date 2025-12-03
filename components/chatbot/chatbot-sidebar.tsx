@@ -340,7 +340,7 @@ export function ChatbotSidebar({
 
         <div className="sticky bottom-0 py-2 bg-linear-to-t from-white via-white px-1">
           {accounts ? (
-            <NavUser user={accounts} />
+            <NavUser user={accounts} type="side" />
           ) : (
             <div className="flex items-center gap-3 px-4">
               <Avatar

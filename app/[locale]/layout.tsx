@@ -60,7 +60,7 @@ export default async function RootLayout({ children, params }: Props) {
                 classNames: {
                   title: "font-sans text-base font-semibold!",
                   description: "font-content",
-                  toast: "lg:min-w-lg rounded-2xl! min-h-16",
+                  toast: "rounded-2xl! min-h-16",
                 },
               }}
             />

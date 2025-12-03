@@ -54,6 +54,7 @@ import {
   UserPen,
   Users,
 } from "lucide-react";
+import { Account } from "@/types/account.types";
 
 const data = {
   user: {
@@ -84,7 +85,7 @@ const data = {
     },
     {
       title: "Medical Equipment",
-      url: "/studio/medical-equipment",
+      url: "/studio/equipment",
       icon: BriefcaseMedical,
     },
   ],
@@ -239,30 +240,26 @@ const data = {
   ],
 };
 
-export function StudioSidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+interface StudioSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  accounts?: Account;
+}
+
+export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="offcanvas" className="p-0" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5! hover:bg-transparent"
-            >
-              <Link href={`/studio`}>
-                <Image
-                  src={
-                    "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-                  }
-                  width={120}
-                  height={40}
-                  className="object-contain"
-                  alt="M-Health Logo"
-                />
-              </Link>
-            </SidebarMenuButton>
+            <Image
+              src={
+                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/icon_mhealth_logo.PNG"
+              }
+              width={100}
+              height={100}
+              unoptimized
+              alt="icon-m-health"
+              className="object-contain w-8 h-8 mx-2 my-3"
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -276,6 +273,9 @@ export function StudioSidebar({
         <NavMenu title="User Management" items={data.user_management} />
         <NavMenu title="Website Config" items={data.website_config} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <div className="sticky bottom-0 py-2 bg-linear-to-t from-white via-white px-1">
+          {accounts && <NavUser user={accounts} type="side" />}
+        </div>
       </SidebarContent>
       {/* <SidebarFooter>
         <NavUser user={data.user} />

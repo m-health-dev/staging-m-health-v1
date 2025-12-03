@@ -6,17 +6,17 @@ import { getLocale } from "next-intl/server";
 import Link from "next/link";
 import React from "react";
 
-const PackageStudio = async () => {
+const WellnessStudio = async () => {
   const locale = await getLocale();
   return (
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
-          <h4 className="text-primary font-semibold">Packages Data</h4>
+          <h4 className="text-primary font-semibold">Wellness Data</h4>
         </div>
-        <Link href={`/${locale}/studio/packages/add`}>
+        <Link href={`/${locale}/studio/wellness/add`}>
           <Button className="rounded-2xl flex lg:w-fit w-full">
-            <Plus /> <p className="lg:block hidden">Add New Package</p>
+            <Plus /> <p className="lg:block hidden">Add New Wellness</p>
           </Button>
         </Link>
       </div>
@@ -38,4 +38,4 @@ const PackageStudio = async () => {
   );
 };
 
-export default PackageStudio;
+export default WellnessStudio;

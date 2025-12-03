@@ -54,12 +54,14 @@ export default function BreadcrumbAuto() {
           <BreadcrumbLink asChild>
             <Link
               href={
-                pathname.endsWith(`/${locale}/studio`)
+                pathname.startsWith(`/${locale}/studio`)
                   ? `/${locale}/studio`
                   : `/${locale}/dashboard`
               }
             >
-              {pathname.endsWith(`/${locale}/studio`) ? `Studio` : `Dashboard`}
+              {pathname.startsWith(`/${locale}/studio`)
+                ? `Studio`
+                : `Dashboard`}
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>

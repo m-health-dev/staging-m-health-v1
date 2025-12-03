@@ -22,7 +22,7 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    await client.send(
+    const res = await client.send(
       new DeleteObjectCommand({
         Bucket: process.env.SUPABASE_S3_BUCKET!,
         Key: path,
@@ -32,6 +32,9 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ message: "Deleted successfully" });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: `Delete failed. ${err}` },
+      { status: 500 }
+    );
   }
 }

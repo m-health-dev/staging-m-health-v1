@@ -1,8 +1,11 @@
+"use server";
+
 import { Message } from "@/components/chatbot/ChatStart";
 import { error } from "console";
 import { success } from "zod";
 import { getVendorByID } from "./get-vendor";
 import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
+import { createClient } from "@/utils/supabase/client";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -39,7 +42,7 @@ export async function deleteVendor(id: string) {
           error:
             "Error vendor/read in vendor/delete ID" +
             id +
-            "when delete single images:" +
+            " when delete single images:" +
             filesToDelete,
         };
       }
@@ -50,27 +53,45 @@ export async function deleteVendor(id: string) {
           error:
             "Error vendor/read in vendor/delete ID" +
             id +
-            "when delete multiple images:" +
+            " when delete multiple images:" +
             filesToDelete,
         };
       }
     }
 
-    const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const supabase = await createClient();
 
-    const data = await res.json();
+    const {
+      data: deleteVendor,
+      count,
+      error: errorDeleteVendor,
+    } = await supabase.from("vendor").delete({ count: "exact" }).eq("id", id);
 
-    if (!data) {
-      return { success: false, error: "Failed to sent vendor/delete data." };
+    // const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
+    //   method: "DELETE",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
+
+    // const data = await res.json();
+
+    // if (res.status !== 200) {
+    //   return {
+    //     success: false,
+    //     error: `Failed to sent vendor/delete data. Cause : ${res.status} - ${data.message}`,
+    //   };
+    // }
+
+    if (errorDeleteVendor) {
+      return {
+        error: errorDeleteVendor.message,
+      };
     }
 
     return {
-      data,
+      deleteVendor,
+      count,
       success: true,
     };
   } catch (error) {

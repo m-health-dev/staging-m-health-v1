@@ -10,7 +10,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 
 interface Props {
   form: any;
@@ -53,7 +53,7 @@ export function DynamicInputField({ form, name, label }: Props) {
 
           <div className="space-y-3">
             {values.map((val: string, idx: number) => (
-              <div key={idx} className="flex gap-2">
+              <div key={idx} className="flex items-center gap-2">
                 <FormControl>
                   <Input
                     value={val}
@@ -67,23 +67,22 @@ export function DynamicInputField({ form, name, label }: Props) {
                   <Button
                     type="button"
                     variant="destructive"
-                    className="px-3 h-12 rounded-2xl"
+                    className="w-12 h-12 rounded-2xl"
                     onClick={() => removeField(idx)}
                   >
-                    <Trash2 size={18} />
+                    <Trash2 />
                   </Button>
                 )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-2xl w-12 h-12"
+                  onClick={addField}
+                >
+                  <Plus />
+                </Button>
               </div>
             ))}
-
-            <Button
-              type="button"
-              variant="outline"
-              className="rounded-full"
-              onClick={addField}
-            >
-              + Add
-            </Button>
           </div>
 
           <FormMessage />

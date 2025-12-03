@@ -4,6 +4,7 @@ import { getVendorByID } from "@/lib/vendors/get-vendor";
 import { toast } from "sonner";
 import { getHotelByID } from "@/lib/hotel/get-hotel";
 import UpdateHotelForm from "./updateForm";
+import { notFound } from "next/navigation";
 
 const UpdateHotelPage = async ({
   params,
@@ -11,14 +12,13 @@ const UpdateHotelPage = async ({
   params: Promise<{ id: string }>;
 }) => {
   const { id } = await params;
-  const res = (await getHotelByID(id)).data;
+  const res = await getHotelByID(id);
 
-  if (!res || res.error) {
-    toast.error("Failed to Get Hotel Data", {
-      description: `${res.error}`,
-    });
+  if (res.error) {
+    notFound();
   }
-  return <UpdateHotelForm id={id} hotelData={res.data} />;
+
+  return <UpdateHotelForm id={id} hotelData={res.data.data} />;
 };
 
 export default UpdateHotelPage;

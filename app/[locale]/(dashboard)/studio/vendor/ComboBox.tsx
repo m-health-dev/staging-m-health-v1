@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 const options = [
   { value: "hospital", label: "Hospital" },
   { value: "coach", label: "Coach" },
+  { value: "product", label: "Product" },
 ];
 
 export function ComboBoxVendor() {
