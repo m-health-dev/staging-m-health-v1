@@ -128,14 +128,14 @@ export default function CalendarSchedule({
           )}
         </div>
 
-        <Button
+        {/* <Button
           disabled={!selectedDate || !selectedTime}
           className="w-full md:ml-auto md:w-auto bg-transparent"
           variant="outline"
           type="button"
         >
           Continue
-        </Button>
+        </Button> */}
       </CardFooter>
     </Card>
   );

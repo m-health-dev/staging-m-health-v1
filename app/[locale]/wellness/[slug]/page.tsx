@@ -1,7 +1,8 @@
+import UnderConstruction from "@/components/utility/under-construction";
 import React from "react";
 
 const WellnessContent = () => {
-  return <div>WellnessContent</div>;
+  return <UnderConstruction />;
 };
 
 export default WellnessContent;

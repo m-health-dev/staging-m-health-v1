@@ -34,6 +34,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { HotelType } from "@/types/hotel.types";
 import { updateHotel } from "@/lib/hotel/post-patch-hotel";
 import { useLocale } from "next-intl";
+import { deleteHotel } from "@/lib/hotel/delete-hotel";
+import { baseUrl } from "@/helper/baseUrl";
+import { DeleteCopyFunction } from "@/components/vendor-hotel/delete-copy-function";
 
 const UpdateHotelForm = ({
   id,
@@ -189,16 +192,27 @@ const UpdateHotelForm = ({
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
-        {name && (
-          <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
-            Update Hotel
-          </p>
-        )}
-        <h4 className="text-primary font-semibold ">
-          {name ? name : "Update Hotel"}
-        </h4>
-        <p className="text-sm! text-muted-foreground">{hotelData.slug}</p>
+      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5 flex justify-between items-center">
+        <div>
+          {name && (
+            <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
+              Update Hotel
+            </p>
+          )}
+          <h4 className="text-primary font-semibold ">
+            {name ? name : "Update Hotel"}
+          </h4>
+          <p className="text-sm! text-muted-foreground">{hotelData.slug}</p>
+        </div>
+        <DeleteCopyFunction
+          id={id}
+          deleteAction={deleteHotel}
+          name={hotelData.name}
+          locale={locale}
+          resourceType="hotel"
+          router={router}
+          slug={`${baseUrl}/${locale}/hotel/${hotelData.slug}`}
+        />
       </div>
 
       <div className="flex flex-col w-full justify-center items-center">

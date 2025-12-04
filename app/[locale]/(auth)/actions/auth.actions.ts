@@ -243,6 +243,7 @@ export const signUpAction = async (data: {
     return {
       success:
         "Terima kasih telah mendaftar! Silakan periksa email Anda untuk link verifikasi.",
+      user_id: signUpData.user?.id,
     };
   }
 };

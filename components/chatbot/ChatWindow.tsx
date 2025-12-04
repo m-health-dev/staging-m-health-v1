@@ -3,10 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
 import { ArrowUp, Plus, Undo2 } from "lucide-react";
-import { Input } from "../ui/input";
-import ContainerWrap from "../utility/ContainerWrap";
 import { Textarea } from "../ui/textarea";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Spinner } from "../ui/spinner";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -26,12 +23,14 @@ interface ChatWindowProps {
   accounts?: Account;
   onSendMessage: (message: string, replyTo?: string | null) => void; // ✅ izinkan 2 argumen
   isLoading?: boolean;
+  sessionId?: string;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
   messages,
   accounts,
   onSendMessage,
+  sessionId,
   isLoading = false,
 }) => {
   const locale = useLocale();
@@ -163,6 +162,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     timestamp={msg.timestamp}
                     onReply={handleReply}
                     replyTo={msg.replyTo}
+                    sessionId={sessionId}
                   />
                 ))}
                 {isLoading && (

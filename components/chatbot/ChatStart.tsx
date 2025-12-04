@@ -182,6 +182,7 @@ const ChatStart = ({
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
         accounts={accounts}
+        sessionId={sessionID}
       />
     );
   }

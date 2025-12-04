@@ -1,40 +1,18 @@
 "use client";
 
-import {
-  ChevronDown,
-  ChevronRight,
-  PanelLeftOpen,
-  PanelRightClose,
-  PanelRightOpen,
-  Plus,
-  X,
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Suspense, useEffect, useState } from "react";
 import ChatStart from "./ChatStart";
-import { usePathname, useRouter } from "next/navigation";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import ContainerWrap from "../utility/ContainerWrap";
 
 import { useResponsiveSidebar } from "@/hooks/ChatSidebar";
-import ChatSidebarShowreels from "./ChatSidebarShowreels";
+
 import { Message } from "./ChatWindow";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet";
-import { nanoid } from "nanoid";
+
 import { Package } from "@/types/packages.types";
 import { Medical } from "@/types/medical.types";
 import { Wellness } from "@/types/wellness.types";
 import { getChatHistory } from "@/lib/chatbot/getChatActivity";
 
-import { v4 as uuidv4 } from "uuid";
-import { ChatHistory } from "@/types/chat.types";
 import NavHeader from "../utility/header/NavHeader";
 import { SidebarInset, SidebarProvider } from "../ui/sidebar";
 import { ChatbotSidebar } from "./chatbot-sidebar";

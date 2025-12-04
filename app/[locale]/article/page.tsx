@@ -1,7 +1,8 @@
+import UnderConstruction from "@/components/utility/under-construction";
 import React from "react";
 
 const ArticlePage = () => {
-  return <div>ArticlePage</div>;
+  return <UnderConstruction />;
 };
 
 export default ArticlePage;

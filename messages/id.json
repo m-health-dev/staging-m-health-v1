@@ -8,5 +8,9 @@
     "title": "Gagal Memperoleh Data",
     "desc": "Belum ada data diterima atau terdapat kesalahan dalam menerima data.",
     "action": "Kami telah mencatat kegagalan ini. Silakan coba, beberapa saat lagi."
+  },
+  "consult": {
+    "title": "Mulai Konsultasi Dengan Dokter",
+    "desc": "Sebelum memulai konsultasi silahkan isi beberapa data berikut agar dokter nantinya dapat melakukan diagnosa awal."
   }
 }

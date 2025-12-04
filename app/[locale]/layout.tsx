@@ -14,6 +14,8 @@ import { LanguageProvider } from "@/components/utility/lang/LanguageContext";
 import Image from "next/image";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -64,6 +66,8 @@ export default async function RootLayout({ children, params }: Props) {
                 },
               }}
             />
+            <Analytics />
+            <SpeedInsights />
             {children}
           </NextIntlClientProvider>
         </LanguageProvider>

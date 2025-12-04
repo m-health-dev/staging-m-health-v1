@@ -1,7 +1,8 @@
+import UnderConstruction from "@/components/utility/under-construction";
 import React from "react";
 
 const MedicalPage = () => {
-  return <div>MedicalPage</div>;
+  return <UnderConstruction />;
 };
 
 export default MedicalPage;

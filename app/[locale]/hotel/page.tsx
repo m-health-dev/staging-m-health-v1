@@ -1,8 +1,8 @@
 import UnderConstruction from "@/components/utility/under-construction";
 import React from "react";
 
-const WellnessPage = () => {
+const HotelPublicPage = () => {
   return <UnderConstruction />;
 };
 
-export default WellnessPage;
+export default HotelPublicPage;

@@ -36,6 +36,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { VendorType } from "@/types/vendor.types";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import { DeleteCopyFunction } from "@/components/vendor-hotel/delete-copy-function";
+import { deleteVendor } from "@/lib/vendors/delete-vendor";
+import { baseUrl } from "@/helper/baseUrl";
 
 const UpdateVendorForm = ({
   id,
@@ -60,7 +63,7 @@ const UpdateVendorForm = ({
   const [uploadLoadingRFImage, setUploadLoadingRFImage] = useState(false);
   const [deletedImages, setDeletedImages] = useState<string[]>([]);
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState(vendorData.name || "");
   const router = useRouter();
   const locale = useLocale();
 
@@ -195,16 +198,27 @@ const UpdateVendorForm = ({
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
-        {name && (
-          <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
-            Update Vendor
-          </p>
-        )}
-        <h4 className="text-primary font-semibold ">
-          {name ? name : "Update Vendor"}
-        </h4>
-        <p className="text-sm! text-muted-foreground">{vendorData.slug}</p>
+      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5 flex justify-between items-center">
+        <div>
+          {name && (
+            <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
+              Update Vendor
+            </p>
+          )}
+          <h4 className="text-primary font-semibold ">
+            {name ? name : "Update Vendor"}
+          </h4>
+          <p className="text-sm! text-muted-foreground">{vendorData.slug}</p>
+        </div>
+        <DeleteCopyFunction
+          id={id}
+          deleteAction={deleteVendor}
+          name={vendorData.name}
+          locale={locale}
+          resourceType="vendor"
+          router={router}
+          slug={`${baseUrl}/${locale}/vendor/${vendorData.slug}`}
+        />
       </div>
 
       <div className="flex flex-col w-full justify-center items-center">
@@ -563,7 +577,7 @@ const UpdateVendorForm = ({
                   size={"lg"}
                   className="rounded-full flex lg:w-fit w-full"
                 >
-                  {loading ? <Spinner /> : "Submit"}
+                  {loading ? <Spinner /> : "Update"}
                 </Button>
               </div>
             </div>

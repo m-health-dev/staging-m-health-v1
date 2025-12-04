@@ -48,7 +48,7 @@ export function NavUser({
       <SidebarMenuItem className="px-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible::bg-sidebar-accent focus-visible::text-sidebar-accent-foreground rounded-2xl! focus:outline focus-visible:outline hover:outline px-2 py-2 flex gap-3 items-center">
+            <button className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible::bg-sidebar-accent focus-visible::text-sidebar-accent-foreground rounded-2xl! focus:outline focus-visible:outline hover:outline px-2 py-2 flex gap-3 items-center w-full">
               {user.google_avatar || user.avatar_url ? (
                 <Image
                   src={user.google_avatar || user.avatar_url}

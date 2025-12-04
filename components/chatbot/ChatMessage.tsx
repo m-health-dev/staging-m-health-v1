@@ -20,6 +20,7 @@ interface ChatMessageProps {
   timestamp?: string;
   onReply?: (message: string) => void;
   replyTo?: string | null;
+  sessionId?: string;
 }
 
 function flattenListChildren(children: ReactNode): ReactNode {
@@ -40,6 +41,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   timestamp,
   onReply,
   replyTo,
+  sessionId,
 }) => {
   const isUser = sender === "user";
   const [copied, setCopied] = useState(false);
@@ -62,6 +64,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     /(^|\s)(consultation|konsultasi)(\s|$)/gi,
     " "
   );
+
+  cleanMessage = cleanMessage.replace("**consultation**", "");
   cleanMessage = cleanMessage.replace(/\s+/g, " ").trim();
 
   cleanMessage = cleanMessage.replaceAll(
@@ -245,7 +249,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           {!isUser && hasConsultation && (
             <div className="mt-3 mb-5 bg-background py-10 px-3 rounded-2xl">
               <Link
-                href={`/connect?status=emergency`}
+                href={`/${locale}/connect?session=${sessionId}`}
                 className="flex items-center justify-center w-full"
               >
                 <Button

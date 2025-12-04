@@ -107,7 +107,7 @@ export const columns: ColumnDef<VendorType>[] = [
       // console.log({ createdAt, now, isSameDay });
 
       return (
-        <span>
+        <span className="text-wrap">
           {isSameDay && (
             <span className="bg-health px-2 py-1 rounded-lg text-white text-xs! mr-2">
               New

@@ -99,6 +99,10 @@ export const columns: ColumnDef<VendorType>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
+    cell: ({ row }) => {
+      const name: string = row.getValue("name");
+      return <span className="text-wrap">{name}</span>;
+    },
   },
   {
     accessorKey: "category",
