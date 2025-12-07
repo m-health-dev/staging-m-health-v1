@@ -1,6 +1,6 @@
 import { Gender, StatusContent } from "./enum.types";
 
-export type Wellness = {
+export type WellnessType = {
   id: string;
   created_at: string;
   updated_at: string;
@@ -10,14 +10,15 @@ export type Wellness = {
   en_tagline: string;
   id_tagline: string;
   highlight_image: string;
-  reference_image: JSON;
+  reference_image: string[];
   duration_by_day: number;
   duration_by_night: number;
   spesific_gender: Gender;
   en_wellness_package_content: string;
   id_wellness_package_content: string;
-  included: JSON;
+  included: string[];
   vendor_id: string;
+  hotel_id: string;
   real_price: number;
   discount_price: number;
   status: StatusContent;

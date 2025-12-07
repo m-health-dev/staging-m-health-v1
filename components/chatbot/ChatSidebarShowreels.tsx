@@ -16,11 +16,11 @@ import { getImagePicsum } from "@/lib/picsumPhotos";
 import { Package } from "@/types/packages.types";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
-import { Medical } from "@/types/medical.types";
-import { Wellness } from "@/types/wellness.types";
 import { ChatHistory } from "@/types/chat.types";
 import { usePathname, useRouter } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
+import { WellnessType } from "@/types/wellness.types";
+import { MedicalType } from "@/types/medical.types";
 
 const ChatSidebarShowreels = ({
   setOpenSheet,
@@ -32,8 +32,8 @@ const ChatSidebarShowreels = ({
 }: {
   setOpenSheet?: (value: boolean) => void;
   packages: Package[];
-  medical: Medical[];
-  wellness: Wellness[];
+  medical: MedicalType[];
+  wellness: WellnessType[];
   chatHistory: any[];
   isLoading: boolean;
 }) => {

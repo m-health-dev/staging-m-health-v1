@@ -7,6 +7,38 @@ const apiBaseUrl =
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
+export async function getAllHotelWithoutPagination() {
+  try {
+    const res = await fetch(`${apiBaseUrl}/api/v1/hotels?per_page=all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const json = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to receive ALL hotel/read data. Cause : ${json.message}`,
+      };
+    }
+
+    // console.log(json.links);
+    return {
+      data: json.data,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive ALL hotel/read all Error:", error);
+    return {
+      success: false,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
+
 export async function getAllHotel(page: number = 1, per_page: number = 10) {
   try {
     const res = await fetch(

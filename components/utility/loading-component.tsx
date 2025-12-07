@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const LoadingComponent = () => {
+const LoadingComponent = ({ className }: { className?: string }) => {
   const [dot, setDot] = useState("");
   const [phase, setPhase] = useState(0); // 0 = LOADING, 1 = FETCH, 2 = WAIT
 
@@ -30,7 +30,12 @@ const LoadingComponent = () => {
     phase === 0 ? "Loading" : phase === 1 ? "Fetch Data" : "Please Wait";
 
   return (
-    <ContainerWrap className="flex justify-center items-center min-h-[calc(100vh-10vh)]">
+    <ContainerWrap
+      className={cn(
+        "flex justify-center items-center min-h-[calc(100vh-10vh)]",
+        className
+      )}
+    >
       <motion.div
         layout
         transition={{ duration: 0.3 }}

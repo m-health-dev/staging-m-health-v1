@@ -9,14 +9,14 @@ import { useResponsiveSidebar } from "@/hooks/ChatSidebar";
 import { Message } from "./ChatWindow";
 
 import { Package } from "@/types/packages.types";
-import { Medical } from "@/types/medical.types";
-import { Wellness } from "@/types/wellness.types";
 import { getChatHistory } from "@/lib/chatbot/getChatActivity";
 
 import NavHeader from "../utility/header/NavHeader";
 import { SidebarInset, SidebarProvider } from "../ui/sidebar";
 import { ChatbotSidebar } from "./chatbot-sidebar";
 import { Account } from "@/types/account.types";
+import { MedicalType } from "@/types/medical.types";
+import { WellnessType } from "@/types/wellness.types";
 
 const ChatContent = ({
   packages,
@@ -29,8 +29,8 @@ const ChatContent = ({
   user,
 }: {
   packages: Package[];
-  medical: Medical[];
-  wellness: Wellness[];
+  medical: MedicalType[];
+  wellness: WellnessType[];
   session?: any[];
   history: any[];
   sessionID?: string;
@@ -135,7 +135,7 @@ const ChatContent = ({
           history={chatHistory}
           session={session}
           sessionID={sessionID}
-          publicIDFetch={publicIDFetch}
+          publicIDFetch={publicID!}
           isLoading={isLoading}
         />
         <SidebarInset className="p-0! m-0! ">
@@ -145,7 +145,7 @@ const ChatContent = ({
               chat={selectedChat}
               session={session}
               sessionID={sessionID}
-              publicID={publicIDFetch}
+              publicID={publicID!}
               accounts={user}
             />
           </ContainerWrap>

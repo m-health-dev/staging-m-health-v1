@@ -12,6 +12,7 @@ import { CircleAlert, MessageCircle, TriangleAlert } from "lucide-react";
 import { getLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 type paramsType = Promise<{ slug: string }>;
 
@@ -31,6 +32,10 @@ export default async function SessionPage(props: { params: paramsType }) {
   const sessionID = slug as string;
 
   const sessionChat = await getChatSession(sessionID);
+
+  if (publicID !== sessionChat.publicID) {
+    notFound();
+  }
 
   const supabase = await createClient();
   const {

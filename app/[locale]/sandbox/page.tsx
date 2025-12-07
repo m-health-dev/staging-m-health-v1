@@ -52,7 +52,7 @@ import {
 import { CalendarRangeField } from "@/components/Form/CalendarRangeField";
 import CalendarSchedule from "@/components/Form/CalendarSchedule";
 import { RichEditor } from "@/components/Form/RichEditor";
-import { createRupiahSchema, RupiahInput } from "@/components/Form/PriceInput";
+import { RupiahInput } from "@/components/Form/PriceInput";
 import { Checkbox } from "@/components/ui/checkbox";
 
 type Announcement = "info" | "warning" | "danger";
@@ -116,7 +116,7 @@ const SandBoxComponents = () => {
     phone_number: z.string().min(3),
     email: emailSchema,
     password: z.string().min(8),
-    price: createRupiahSchema({ min: 1000, max: 1000000000, label: "Price" }),
+    // price: createRupiahSchema({ min: 1000, max: 1000000000, label: "Price" }),
     dateRange: z
       .object({
         from: z.date(),
@@ -140,7 +140,7 @@ const SandBoxComponents = () => {
       category: "",
       message: "",
       phone_number: "",
-      price: "",
+      // price: "",
       email: "",
       password: "",
       dateRange: undefined,
@@ -713,12 +713,12 @@ const SandBoxComponents = () => {
                     )}
                   />
 
-                  {/* Price */}
+                  {/* Price
                   <RupiahInput
                     control={form.control}
                     name="price"
                     label="Price"
-                  />
+                  /> */}
                 </div>
 
                 <div className="lg:col-span-2 col-span-1">

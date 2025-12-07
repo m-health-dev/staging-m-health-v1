@@ -1,6 +1,7 @@
 import ChatContent from "@/components/chatbot/ChatContent";
 import Footer from "@/components/utility/footer/Footer";
 import NavHeader from "@/components/utility/header/NavHeader";
+import { baseUrl } from "@/helper/baseUrl";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { getChatHistory } from "@/lib/chatbot/getChatActivity";
 import { getAllMedical, getLatest3Medical } from "@/lib/medical/getMedical";
@@ -17,6 +18,8 @@ export default async function Home() {
   const { data: wellness } = await getLatest3Wellness();
 
   const cookie = await cookies();
+
+  await fetch(`${baseUrl}/api/public-id`);
 
   const getPublicID = cookie.get("mhealth_public_id");
   const publicID = getPublicID?.value as string;

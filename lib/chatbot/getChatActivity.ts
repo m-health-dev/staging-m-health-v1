@@ -56,10 +56,12 @@ export async function getChatSession(session_id: string) {
     console.log(`Success Get Chat Session for `, session_id);
 
     const data = json.chat_activity_data.messages;
+    const session = json.session_id;
+    const publicID = json.publicID;
 
-    console.log(data);
+    // console.log(data);
 
-    return { data };
+    return { data, session, publicID };
   } catch (error) {
     console.error("Get Chat Session Error:", error);
     return { message: "Terjadi kesalahan saat terhubung ke server." };

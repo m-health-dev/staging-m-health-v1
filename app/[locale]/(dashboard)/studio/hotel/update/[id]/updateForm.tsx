@@ -36,7 +36,7 @@ import { updateHotel } from "@/lib/hotel/post-patch-hotel";
 import { useLocale } from "next-intl";
 import { deleteHotel } from "@/lib/hotel/delete-hotel";
 import { baseUrl } from "@/helper/baseUrl";
-import { DeleteCopyFunction } from "@/components/vendor-hotel/delete-copy-function";
+import { VendorHotelDeleteCopyFunction } from "@/components/vendor-hotel/vendor-hotel-delete-copy-function";
 
 const UpdateHotelForm = ({
   id,
@@ -204,7 +204,7 @@ const UpdateHotelForm = ({
           </h4>
           <p className="text-sm! text-muted-foreground">{hotelData.slug}</p>
         </div>
-        <DeleteCopyFunction
+        <VendorHotelDeleteCopyFunction
           id={id}
           deleteAction={deleteHotel}
           name={hotelData.name}

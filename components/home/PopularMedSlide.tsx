@@ -17,15 +17,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import "swiper/css";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { RumahSakit } from "@/lib/dummyRS";
-import { Medical } from "@/types/medical.types";
 import { routing } from "@/i18n/routing";
+import { MedicalType } from "@/types/medical.types";
 
 export default function PopularMedSlide({
   data,
   locale,
   hospital,
 }: {
-  data: Medical[];
+  data: MedicalType[];
   locale: string;
   hospital: RumahSakit[];
 }) {

@@ -23,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTablePagination } from "@/components/utility/table/data-table-pagination";
+
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -33,49 +33,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  LayoutGrid,
-  ListFilter,
-  PenSquare,
-  Table2,
-  Trash2,
-} from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import Image from "next/image";
-import Avatar from "boring-avatars";
+import { LayoutGrid, ListFilter } from "lucide-react";
+
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuTrigger,
-} from "../ui/context-menu";
+
 import { useLocale } from "next-intl";
-import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
-import { routing } from "@/i18n/routing";
-import { Spinner } from "../ui/spinner";
-import { deleteVendor } from "@/lib/vendors/delete-vendor";
-import LoadingComponent from "../utility/loading-component";
-import LoadingTable from "../utility/loading/loading-table-card";
 import { useSidebar } from "../ui/sidebar";
 import { cn } from "@/lib/utils";
 import LoadingTableCard from "../utility/loading/loading-table-card";
@@ -88,9 +50,6 @@ interface DataTableProps<TData, TValue> {
   links: any;
   // DELETE function general
   deleteAction?: (id: string) => Promise<{ error?: string }>;
-
-  // resource type
-  resourceType: "vendor" | "hotel";
 }
 
 // function RowContextMenu<TData>({
@@ -281,13 +240,12 @@ interface DataTableProps<TData, TValue> {
 //   );
 // }
 
-export function VendorHotelDataTable<TData, TValue>({
+export function WellnessMedicalDataTable<TData, TValue>({
   columns,
   data,
   meta,
   links,
   deleteAction,
-  resourceType,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
   const params = useSearchParams();
@@ -374,10 +332,10 @@ export function VendorHotelDataTable<TData, TValue>({
             <Input
               placeholder="Filter by Name"
               value={
-                (table.getColumn("name")?.getFilterValue() as string) ?? ""
+                (table.getColumn("id_title")?.getFilterValue() as string) ?? ""
               }
               onChange={(event) =>
-                table.getColumn("name")?.setFilterValue(event.target.value)
+                table.getColumn("id_title")?.setFilterValue(event.target.value)
               }
               className="lg:max-w-sm w-full h-12"
             />
@@ -509,31 +467,6 @@ export function VendorHotelDataTable<TData, TValue>({
                             )}
                           </div>
                         )}
-                        <div className="">
-                          {row.getValue("name") && row.getValue("logo") ? (
-                            <Image
-                              src={row.getValue("logo")}
-                              alt={row.getValue("name") || "Vendor Logo"}
-                              width={40}
-                              height={40}
-                              className="object-cover w-20 h-20 rounded-full border"
-                            />
-                          ) : (
-                            <Avatar
-                              name={row.getValue("name")}
-                              className="w-20! h-20! border rounded-full"
-                              colors={[
-                                "#3e77ab",
-                                "#22b26e",
-                                "#f2f26f",
-                                "#fff7bd",
-                                "#95cfb7",
-                              ]}
-                              variant="beam"
-                              size={20}
-                            />
-                          )}
-                        </div>
                         <div>
                           <div className="mb-2">
                             {new Date(
@@ -549,12 +482,15 @@ export function VendorHotelDataTable<TData, TValue>({
                                 </p>
                               )}
                           </div>
-                          <p className="text-sm! text-muted-foreground uppercase">
+                          <p className="text-sm! text-muted-foreground uppercase mb-5">
                             {String(row.getValue("id")).slice(0, 8)}
                           </p>
-                          <h5 className="font-semibold text-lg">
-                            {row.getValue("name")}
+                          <h5 className="font-semibold text-primary text-lg">
+                            {row.getValue("id_title")}
                           </h5>
+                          <p className="text-muted-foreground text-sm!">
+                            {row.getValue("en_title")}
+                          </p>
                         </div>
                       </div>
                       <div className="space-y-2 mt-3">
@@ -647,59 +583,6 @@ export function VendorHotelDataTable<TData, TValue>({
           )}
         </>
       )}
-      {/* <div className="mt-3 flex w-full justify-center">
-        <div className="flex lg:flex-row flex-col gap-3 items-center mt-6">
-          <Select
-            value={`${perPage}`}
-            onValueChange={(value) => {
-              setPerPage(Number(value));
-              goToPage(
-                meta.current_page > meta.last_page
-                  ? meta.last_page
-                  : meta.current_page,
-                Number(value)
-              );
-              table.setPageSize(Number(value));
-            }}
-          >
-            <SelectTrigger className="w-[100px] bg-white rounded-2xl h-12! font-sans">
-              <SelectValue placeholder={perPage} />
-            </SelectTrigger>
-            <SelectContent side="top">
-              {[10, 25, 50].map((pageSize) => (
-                <SelectItem
-                  key={pageSize}
-                  value={`${pageSize}`}
-                  className="font-sans"
-                >
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <div className="flex gap-3 items-center">
-            <button
-              disabled={!links.prev}
-              onClick={() => goToPage(meta.current_page - 1, perPage)}
-              className="text-primary outline outline-primary rounded-2xl w-10 h-10 flex items-center bg-white justify-center hover:bg-primary hover:text-white transition-all duration-150 disabled:opacity-50"
-            >
-              <ChevronLeft />
-            </button>
-
-            <p>
-              {meta.current_page} / {meta.last_page}
-            </p>
-
-            <button
-              disabled={!links.next}
-              onClick={() => goToPage(meta.current_page + 1, perPage)}
-              className="text-primary outline outline-primary rounded-2xl w-10 h-10 flex items-center bg-white justify-center hover:bg-primary hover:text-white transition-all duration-150 disabled:opacity-50"
-            >
-              <ChevronRight />
-            </button>
-          </div>
-        </div>
-      </div> */}
       <SimplePagination
         meta={meta}
         links={links}

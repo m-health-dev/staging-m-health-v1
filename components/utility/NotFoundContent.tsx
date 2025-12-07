@@ -12,6 +12,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { nanoid } from "nanoid";
 
 const NotFoundContent = () => {
   const pathname = usePathname();
@@ -57,8 +58,10 @@ const NotFoundContent = () => {
       const errorCodeNote = "404 : Not Found";
       const errorMessage = "Page Not Found";
 
-      const newRayId = geoData ? geoData.geo.cfray : "N/A";
-      const ipAddress = geoData ? geoData.geo.cfip : "N/A";
+      const genNanoID = nanoid();
+
+      const newRayId = geoData.geo.cfray ? geoData.geo.cfray : genNanoID;
+      const ipAddress = geoData.geo.cfip ? geoData.geo.cfip : "N/A";
       const browserInfo = getBrowserInfo();
 
       const response = await fetch("/api/log-errors", {

@@ -36,7 +36,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { VendorType } from "@/types/vendor.types";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { DeleteCopyFunction } from "@/components/vendor-hotel/delete-copy-function";
+import { VendorHotelDeleteCopyFunction } from "@/components/vendor-hotel/vendor-hotel-delete-copy-function";
 import { deleteVendor } from "@/lib/vendors/delete-vendor";
 import { baseUrl } from "@/helper/baseUrl";
 
@@ -210,7 +210,7 @@ const UpdateVendorForm = ({
           </h4>
           <p className="text-sm! text-muted-foreground">{vendorData.slug}</p>
         </div>
-        <DeleteCopyFunction
+        <VendorHotelDeleteCopyFunction
           id={id}
           deleteAction={deleteVendor}
           name={vendorData.name}

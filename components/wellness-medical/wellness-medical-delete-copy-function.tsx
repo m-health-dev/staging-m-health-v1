@@ -14,29 +14,27 @@ import { routing } from "@/i18n/routing";
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 
-export function DeleteCopyFunction({
+export function WellnessMedicalDeleteCopyFunction({
   id,
   name,
   locale,
-  resourceType,
   deleteAction,
   router,
   slug,
+  resourceLabel,
 }: {
   id: string;
   name: string;
   locale?: string;
-  resourceType: string;
   deleteAction: (id: string) => Promise<{ error?: string }>;
   router: ReturnType<typeof useRouter>;
   slug: string;
+  resourceLabel: string;
 }) {
   const [copied, setCopied] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [inputName, setInputName] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const resourceLabel = resourceType === "vendor" ? "Vendor" : "Hotel";
 
   const handleCopyLink = async () => {
     try {
@@ -77,7 +75,7 @@ export function DeleteCopyFunction({
         });
         setOpenConfirm(false);
         setInputName("");
-        router.refresh();
+        router.back();
       } else {
         toast.error(`Failed to delete ${resourceLabel}`, {
           description: res.error,

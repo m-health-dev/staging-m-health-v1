@@ -89,3 +89,42 @@ export const HotelSchema = z.object({
   reference_image: z.array(z.string().min(1)),
   location_map: z.url().min(1),
 });
+
+export const WellnessSchema = z.object({
+  en_title: z.string().min(3),
+  id_title: z.string().min(3),
+  en_tagline: z.string().min(3),
+  id_tagline: z.string().min(3),
+  highlight_image: z.string().min(1),
+  reference_image: z.array(z.string().min(1)),
+  duration_by_day: z.number(),
+  duration_by_night: z.number().optional(),
+  spesific_gender: z.string(),
+  en_wellness_package_content: z.string(),
+  id_wellness_package_content: z.string(),
+  included: z.array(z.string()),
+  vendor_id: z.string(),
+  hotel_id: z.string(),
+  real_price: z.number(),
+  discount_price: z.number(),
+  status: z.string(),
+});
+
+export const MedicalSchema = z.object({
+  en_title: z.string().min(3),
+  id_title: z.string().min(3),
+  en_tagline: z.string().min(3),
+  id_tagline: z.string().min(3),
+  highlight_image: z.string().min(1),
+  reference_image: z.array(z.string().min(1)),
+  duration_by_day: z.number(),
+  duration_by_night: z.number().optional(),
+  spesific_gender: z.string(),
+  en_medical_package_content: z.string(),
+  id_medical_package_content: z.string(),
+  included: z.array(z.string()),
+  vendor_id: z.string(),
+  real_price: z.number(),
+  discount_price: z.number(),
+  status: z.string(),
+});

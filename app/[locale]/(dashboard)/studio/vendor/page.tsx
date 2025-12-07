@@ -13,6 +13,7 @@ import { VendorHotelDataTable } from "@/components/vendor-hotel/vendor-hotel-dat
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { deleteVendor } from "@/lib/vendors/delete-vendor";
 import Loading from "./loading";
+import SearchOnAll from "./serach-on-all";
 
 const VendorData = async ({
   searchParams,
@@ -77,6 +78,7 @@ const VendorData = async ({
             </p>
           </div>
         </div>
+        {/* <SearchOnAll /> */}
         <VendorHotelDataTable
           columns={columns}
           data={data}
