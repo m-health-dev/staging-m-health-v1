@@ -341,7 +341,7 @@ export function ChatbotSidebar({
         <div className="sticky bottom-0 py-2 bg-linear-to-t from-white via-white px-1">
           {accounts ? (
             <NavUser user={accounts} type="side" />
-          ) : (
+          ) : publicIDFetch ? (
             <div className="flex items-center gap-3 px-4">
               <Avatar
                 name={publicIDFetch}
@@ -361,6 +361,10 @@ export function ChatbotSidebar({
                   {publicIDFetch.slice(0, 8)}
                 </span>
               </p>
+            </div>
+          ) : (
+            <div>
+              <Skeleton className="w-full h-12" />
             </div>
           )}
         </div>
