@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import ContainerWrap from "@/components/utility/ContainerWrap";
+import UnderConstruction from "@/components/utility/under-construction";
 import { routing } from "@/i18n/routing";
 import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
 import { getLocale } from "next-intl/server";
@@ -34,6 +35,7 @@ const PackageStudio = async () => {
           <ChevronDown className="size-4 lg:hidden flex" />
         </p>
       </div>
+      <UnderConstruction />
     </ContainerWrap>
   );
 };
