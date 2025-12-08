@@ -21,7 +21,6 @@ import { Spinner } from "@/components/ui/spinner";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
-import { deleteVendor } from "@/lib/vendors/delete-vendor";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
@@ -244,14 +243,14 @@ export const columns: ColumnDef<VendorType>[] = [
                 <DialogTitle asChild>
                   <h6 className="text-red-500">
                     {locale === routing.defaultLocale
-                      ? "Konfirmasi Penghapusan Vendor"
-                      : "Delete Vendor Confirmation"}
+                      ? "Konfirmasi Penghapusan Medical"
+                      : "Delete Medical Confirmation"}
                   </h6>
                 </DialogTitle>
                 <p className="text-muted-foreground">
                   {locale === routing.defaultLocale
-                    ? "Untuk menghapus vendor ini, silahkan ketik nama vendor:"
-                    : "To delete this vendor, please type the vendor name:"}{" "}
+                    ? "Untuk menghapus Medical ini, silahkan ketik nama Medical:"
+                    : "To delete this Medical, please type the Medical name:"}{" "}
                   <span
                     className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
                     onClick={handleCopyName}
@@ -274,8 +273,8 @@ export const columns: ColumnDef<VendorType>[] = [
                 className="w-full border px-3 py-2 h-12 rounded-2xl"
                 placeholder={
                   locale === routing.defaultLocale
-                    ? "Tulis nama vendor di sini"
-                    : "Write vendor name here"
+                    ? "Tulis nama Medical di sini"
+                    : "Write Medical name here"
                 }
               />
               <p className="text-xs! text-red-500">
