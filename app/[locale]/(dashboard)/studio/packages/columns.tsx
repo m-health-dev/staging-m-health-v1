@@ -19,10 +19,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
+import StatusBadge from "@/components/utility/status-badge";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
-import { deleteHotel } from "@/lib/hotel/delete-hotel";
-import { deleteVendor } from "@/lib/vendors/delete-vendor";
+import { deleteMedical } from "@/lib/medical/delete-medical";
+import { deletePackage } from "@/lib/packages/delete-packages";
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Avatar from "boring-avatars";
@@ -41,6 +42,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export const columns: ColumnDef<VendorType>[] = [
+  //   {
+  //     id: "number",
+  //     cell: ({ row }) => {
+  //       return row.index + 1;
+  //     },
+  //   },
+
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -52,50 +60,13 @@ export const columns: ColumnDef<VendorType>[] = [
     },
   },
   {
-    accessorKey: "logo",
+    accessorKey: "id_title",
+    enableHiding: false,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Logo" />
-    ),
-
-    cell: ({ row }) => {
-      const logo: string = row.getValue("logo");
-      const name: string = row.getValue("name");
-
-      const [error, setError] = useState(false);
-
-      // Jika tidak ada logo atau sudah error → tampilkan avatar
-      if (!logo || error) {
-        return (
-          <Avatar
-            name={name}
-            className="w-10! h-10! border rounded-full"
-            colors={["#3e77ab", "#22b26e", "#f2f26f", "#fff7bd", "#95cfb7"]}
-            variant="beam"
-            size={20}
-          />
-        );
-      }
-
-      return (
-        <Image
-          src={logo}
-          alt={name || "Vendor Logo"}
-          width={40}
-          height={40}
-          className="object-cover w-10 h-10 rounded-full border"
-          onError={() => setError(true)}
-        />
-      );
-    },
-  },
-
-  {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="ID Title" />
     ),
     cell: ({ row }) => {
-      const name: string = row.getValue("name");
+      const id_title: string = row.getValue("id_title");
       const createdAt: Date = new Date(row.getValue("created_at"));
       const now = new Date();
 
@@ -113,9 +84,20 @@ export const columns: ColumnDef<VendorType>[] = [
               New
             </span>
           )}
-          {name}
+          {id_title}
         </span>
       );
+    },
+  },
+  {
+    accessorKey: "en_title",
+
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="EN Title" />
+    ),
+    cell: ({ row }) => {
+      const en_title: string = row.getValue("en_title");
+      return <span className="text-wrap">{en_title}</span>;
     },
   },
   {
@@ -138,12 +120,24 @@ export const columns: ColumnDef<VendorType>[] = [
       return <LocalDateTime date={updated_at} />;
     },
   },
+
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const status: string = row.getValue("status");
+      return <StatusBadge status={status} />;
+    },
+  },
+
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       const id: string = row.getValue("id");
-      const hotelName: string = row.getValue("name");
+      const id_title: string = row.getValue("id_title");
 
       const [copied, setCopied] = useState(false);
       const [openConfirm, setOpenConfirm] = useState(false);
@@ -166,7 +160,7 @@ export const columns: ColumnDef<VendorType>[] = [
 
       const handleCopyName = async () => {
         try {
-          await navigator.clipboard.writeText(hotelName);
+          await navigator.clipboard.writeText(id_title);
           setCopied(true);
           setTimeout(() => setCopied(false), 2000);
         } catch (err) {
@@ -174,16 +168,16 @@ export const columns: ColumnDef<VendorType>[] = [
         }
       };
 
-      const handleDeleteHotel = async () => {
+      const handleDeletePackage = async () => {
         try {
           setLoading(true);
-          const res = await deleteHotel(id);
+          const res = await deletePackage(id);
           if (!res.error) {
-            toast.success("Success to Delete Hotel", {
-              description: `${id.slice(0, 8).toUpperCase()} - ${hotelName}`,
+            toast.success("Success to Delete Package", {
+              description: `${id.slice(0, 8).toUpperCase()} - ${id_title}`,
             });
           } else if (res.error) {
-            toast.error("Failed to Delete Hotel", {
+            toast.error("Failed to Delete Package", {
               description: `${res.error}`,
             });
           }
@@ -191,7 +185,7 @@ export const columns: ColumnDef<VendorType>[] = [
           router.refresh();
         } catch (err) {
           setLoading(false);
-          toast.warning("Failed to Delete Hotel", { description: `${err}` });
+          toast.warning("Failed to Package", { description: `${err}` });
         }
       };
 
@@ -210,7 +204,7 @@ export const columns: ColumnDef<VendorType>[] = [
                 <p
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
-                    router.push(`/${locale}/studio/hotel/update/${id}`)
+                    router.push(`/${locale}/studio/packages/update/${id}`)
                   }
                 >
                   <PenSquare />
@@ -281,19 +275,19 @@ export const columns: ColumnDef<VendorType>[] = [
                 <DialogTitle asChild>
                   <h6 className="text-red-500">
                     {locale === routing.defaultLocale
-                      ? "Konfirmasi Penghapusan Hotel"
-                      : "Delete Hotel Confirmation"}
+                      ? "Konfirmasi Penghapusan Package"
+                      : "Delete Package Confirmation"}
                   </h6>
                 </DialogTitle>
                 <p className="text-muted-foreground">
                   {locale === routing.defaultLocale
-                    ? "Untuk menghapus hotel ini, silahkan ketik nama hotel:"
-                    : "To delete this hotel, please type the hotel name:"}{" "}
+                    ? "Untuk menghapus Package ini, silahkan ketik nama Package:"
+                    : "To delete this Package, please type the Package name:"}{" "}
                   <span
                     className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
                     onClick={handleCopyName}
                   >
-                    {hotelName}{" "}
+                    {id_title}{" "}
                     {!copied ? (
                       <Copy className="size-4" />
                     ) : (
@@ -311,8 +305,8 @@ export const columns: ColumnDef<VendorType>[] = [
                 className="w-full border px-3 py-2 h-12 rounded-2xl"
                 placeholder={
                   locale === routing.defaultLocale
-                    ? "Tulis nama hotel di sini"
-                    : "Write hotel name here"
+                    ? "Tulis nama Package di sini"
+                    : "Write Package name here"
                 }
               />
               <p className="text-xs! text-red-500">
@@ -337,9 +331,9 @@ export const columns: ColumnDef<VendorType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== hotelName}
+                  disabled={inputName !== id_title}
                   onClick={async () => {
-                    await handleDeleteHotel();
+                    await handleDeletePackage();
                     setOpenConfirm(false);
                   }}
                 >

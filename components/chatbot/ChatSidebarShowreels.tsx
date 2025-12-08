@@ -13,7 +13,6 @@ import { Plus, Trash2 } from "lucide-react";
 import { nanoid } from "nanoid";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { getImagePicsum } from "@/lib/picsumPhotos";
-import { Package } from "@/types/packages.types";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { ChatHistory } from "@/types/chat.types";
@@ -21,6 +20,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
 import { WellnessType } from "@/types/wellness.types";
 import { MedicalType } from "@/types/medical.types";
+import { PackageType } from "@/types/packages.types";
 
 const ChatSidebarShowreels = ({
   setOpenSheet,
@@ -31,7 +31,7 @@ const ChatSidebarShowreels = ({
   isLoading,
 }: {
   setOpenSheet?: (value: boolean) => void;
-  packages: Package[];
+  packages: PackageType[];
   medical: MedicalType[];
   wellness: WellnessType[];
   chatHistory: any[];

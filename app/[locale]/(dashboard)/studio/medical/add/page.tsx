@@ -20,8 +20,8 @@ import {
 
 import { MedicalSchema, VendorSchema, WellnessSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye, Trash } from "lucide-react";
-import React, { useState } from "react";
+import { EyeClosed, Eye, Trash, Percent } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { toast } from "sonner";
@@ -74,11 +74,30 @@ const AddMedical = () => {
       id_medical_package_content: "",
       included: [],
       vendor_id: "",
+      hotel_id: "",
       real_price: 0,
       discount_price: 0,
       status: "",
     },
   });
+
+  const [percentage, setPercentage] = useState(0);
+
+  useEffect(() => {
+    const real = Number(form.getValues("real_price"));
+    const disc = Number(form.getValues("discount_price"));
+
+    const handler = setTimeout(() => {
+      if (real > 0 && disc > 0) {
+        const result = Math.round((disc / real) * 100);
+        setPercentage(100 - result);
+      } else {
+        setPercentage(0);
+      }
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [form.watch("real_price"), form.watch("discount_price")]);
 
   async function handleImageUpload(files: File[]) {
     const formData = new FormData();
@@ -358,6 +377,7 @@ const AddMedical = () => {
               </div>
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
                 <ComboBoxVendorListOption />
+                <ComboBoxHotelListOption />
               </div>
               <hr />
 
@@ -604,6 +624,12 @@ const AddMedical = () => {
                 />
               </div>
 
+              <div className="font-semibold text-health bg-white px-3 py-1 rounded-full inline-flex w-fit">
+                <p className="inline-flex gap-1 items-center">
+                  <Percent className="size-5 text-white bg-health rounded-full p-1" />
+                  {percentage > 0 ? `${percentage}%` : "0%"}
+                </p>
+              </div>
               <hr />
               <ComboBoxStatus />
 

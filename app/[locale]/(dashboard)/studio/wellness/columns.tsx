@@ -19,8 +19,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
+import StatusBadge from "@/components/utility/status-badge";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
+import { cn } from "@/lib/utils";
 import { deleteVendor } from "@/lib/vendors/delete-vendor";
 import { deleteWellness } from "@/lib/wellness/delete-wellness";
 import { VendorType } from "@/types/vendor.types";
@@ -66,7 +68,26 @@ export const columns: ColumnDef<VendorType>[] = [
     ),
     cell: ({ row }) => {
       const id_title: string = row.getValue("id_title");
-      return <span className="text-wrap">{id_title}</span>;
+      const createdAt: Date = new Date(row.getValue("created_at"));
+      const now = new Date();
+
+      const isSameDay =
+        createdAt.getFullYear() === now.getFullYear() &&
+        createdAt.getMonth() === now.getMonth() &&
+        createdAt.getDate() === now.getDate();
+
+      // console.log({ createdAt, now, isSameDay });
+
+      return (
+        <span className="text-wrap">
+          {isSameDay && (
+            <span className="bg-health px-2 py-1 rounded-full text-white text-xs! mr-2">
+              New
+            </span>
+          )}
+          {id_title}
+        </span>
+      );
     },
   },
   {
@@ -98,6 +119,17 @@ export const columns: ColumnDef<VendorType>[] = [
     cell: ({ row }) => {
       const updated_at: string = row.getValue("updated_at");
       return <LocalDateTime date={updated_at} />;
+    },
+  },
+
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const status: string = row.getValue("status");
+      return <StatusBadge status={status} />;
     },
   },
 

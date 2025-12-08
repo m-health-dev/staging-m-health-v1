@@ -101,7 +101,26 @@ export const columns: ColumnDef<VendorType>[] = [
     ),
     cell: ({ row }) => {
       const name: string = row.getValue("name");
-      return <span className="text-wrap">{name}</span>;
+      const createdAt: Date = new Date(row.getValue("created_at"));
+      const now = new Date();
+
+      const isSameDay =
+        createdAt.getFullYear() === now.getFullYear() &&
+        createdAt.getMonth() === now.getMonth() &&
+        createdAt.getDate() === now.getDate();
+
+      // console.log({ createdAt, now, isSameDay });
+
+      return (
+        <span className="text-wrap">
+          {isSameDay && (
+            <span className="bg-health px-2 py-1 rounded-full text-white text-xs! mr-2">
+              New
+            </span>
+          )}
+          {name}
+        </span>
+      );
     },
   },
   {

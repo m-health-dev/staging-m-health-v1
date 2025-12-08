@@ -18,7 +18,12 @@ import {
   DropzoneContent,
 } from "@/components/ui/shadcn-io/dropzone";
 
-import { VendorSchema, WellnessSchema } from "@/lib/zodSchema";
+import {
+  MedicalSchema,
+  PackageSchema,
+  VendorSchema,
+  WellnessSchema,
+} from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye, Trash, Percent } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -35,67 +40,53 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import {
-  addWellness,
-  updateWellness,
-} from "@/lib/wellness/post-patch-wellness";
-
+import { addWellness } from "@/lib/wellness/post-patch-wellness";
+import { ComboBoxVendorListOption } from "../ComboBoxVendorListOption";
+import { ComboBoxHotelListOption } from "../ComboBoxHotelListOption";
+import { ComboBoxGender } from "../ComboBoxGender";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RupiahInput } from "@/components/Form/PriceInput";
-import { WellnessType } from "@/types/wellness.types";
-import { ComboBoxGender } from "../../ComboBoxGender";
-import { ComboBoxVendorListOption } from "../../ComboBoxVendorListOption";
-import { ComboBoxHotelListOption } from "../../ComboBoxHotelListOption";
-import { ComboBoxStatus } from "../../ComboBoxStatus";
-import { PackagesWellnessMedicalDeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
-import { deleteWellness } from "@/lib/wellness/delete-wellness";
-import { baseUrl } from "@/helper/baseUrl";
+import { ComboBoxStatus } from "../ComboBoxStatus";
+import { addMedical } from "@/lib/medical/post-patch-medical";
+import { addPackage } from "@/lib/packages/post-patch-packages";
 
-const UpdateWellnessForm = ({
-  wellnessData,
-  id,
-}: {
-  wellnessData: WellnessType;
-  id: string;
-}) => {
-  const [highlightPreview, setHighlightPreview] = useState<string | null>(
-    wellnessData.highlight_image
-  );
-  const [referencePreview, setReferencePreview] = useState<string[]>(
-    wellnessData.reference_image
-  );
+const AddPackage = () => {
+  const [highlightPreview, setHighlightPreview] = useState<string | null>(null);
+  const [referencePreview, setReferencePreview] = useState<string[]>([]);
 
   const [loading, setLoading] = useState(false);
   const [uploadLoadingHLImage, setUploadLoadingHLImage] = useState(false);
   const [uploadLoadingRFImage, setUploadLoadingRFImage] = useState(false);
   const [deletedImages, setDeletedImages] = useState<string[]>([]);
 
-  const [name, setName] = useState(wellnessData.id_title || "");
+  const [name, setName] = useState("");
   const router = useRouter();
   const locale = useLocale();
 
-  const form = useForm<z.infer<typeof WellnessSchema>>({
-    resolver: zodResolver(WellnessSchema),
+  const form = useForm<z.infer<typeof PackageSchema>>({
+    resolver: zodResolver(PackageSchema),
     defaultValues: {
-      en_title: wellnessData?.en_title || "",
-      id_title: wellnessData?.id_title || "",
-      en_tagline: wellnessData?.en_tagline || "",
-      id_tagline: wellnessData?.id_tagline || "",
-      highlight_image: wellnessData?.highlight_image || "",
-      reference_image: wellnessData?.reference_image || [],
-      duration_by_day: wellnessData?.duration_by_day || 0,
-      duration_by_night: wellnessData?.duration_by_night || 0,
-      spesific_gender: wellnessData?.spesific_gender || "",
-      en_wellness_package_content:
-        wellnessData?.en_wellness_package_content || "",
-      id_wellness_package_content:
-        wellnessData?.id_wellness_package_content || "",
-      included: wellnessData?.included || [],
-      vendor_id: wellnessData?.vendor_id || "",
-      hotel_id: wellnessData?.hotel_id || "",
-      real_price: Number(wellnessData?.real_price) || 0,
-      discount_price: Number(wellnessData?.discount_price) || 0,
-      status: wellnessData?.status || "",
+      en_title: "",
+      id_title: "",
+      en_tagline: "",
+      id_tagline: "",
+      highlight_image: "",
+      reference_image: [],
+      duration_by_day: 0,
+      duration_by_night: 0,
+      spesific_gender: "",
+      en_wellness_package_content: "",
+      id_wellness_package_content: "",
+      en_medical_package_content: "",
+      id_medical_package_content: "",
+      en_detail: "",
+      id_detail: "",
+      included: [],
+      vendor_id: "",
+      hotel_id: "",
+      real_price: 0,
+      discount_price: 0,
+      status: "",
     },
   });
 
@@ -120,7 +111,7 @@ const UpdateWellnessForm = ({
   async function handleImageUpload(files: File[]) {
     const formData = new FormData();
     formData.append("file", files[0]); // upload 1 dulu, nanti jika mau multiple bisa looping
-    formData.append("model", "wellness");
+    formData.append("model", "packages");
     // formData.append("field", "referenceImage");
 
     try {
@@ -151,7 +142,7 @@ const UpdateWellnessForm = ({
   async function handleBatchImageUpload(files: File[]) {
     const formData = new FormData();
     files.forEach((file) => formData.append("file", file));
-    formData.append("folder", "wellness/contents");
+    formData.append("folder", "packages/contents");
 
     try {
       const res = await fetch(
@@ -216,14 +207,14 @@ const UpdateWellnessForm = ({
     }
   }
 
-  async function onSubmit(data: z.infer<typeof WellnessSchema>) {
+  async function onSubmit(data: z.infer<typeof PackageSchema>) {
     setLoading(true);
-    const res = await updateWellness(data, id);
+    const res = await addPackage(data);
 
     if (res.success) {
       setLoading(false);
-      toast.success(`${data.id_title} updated successfully!`);
-      router.push(`/${locale}/studio/wellness`);
+      toast.success(`${data.id_title} added successfully!`);
+      router.push(`/${locale}/studio/packages`);
     } else if (res.error) {
       setLoading(false);
       toast.error(res.error);
@@ -232,27 +223,15 @@ const UpdateWellnessForm = ({
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5 flex justify-between items-center">
-        <div>
-          {name && (
-            <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
-              Update Wellness
-            </p>
-          )}
-          <h4 className="text-primary font-semibold">
-            {name ? name : "Update Wellness"}
-          </h4>
-          <p className="text-sm! text-muted-foreground">{wellnessData.slug}</p>
-        </div>
-        <PackagesWellnessMedicalDeleteCopyFunction
-          id={id}
-          deleteAction={deleteWellness}
-          name={wellnessData.id_title}
-          locale={locale}
-          resourceLabel="Wellness"
-          router={router}
-          slug={`${baseUrl}/${locale}/wellness/${wellnessData.slug}`}
-        />
+      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
+        {name && (
+          <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
+            Add Package
+          </p>
+        )}
+        <h4 className="text-primary font-semibold">
+          {name ? name : "Add Package"}
+        </h4>
       </div>
 
       <div className="flex flex-col w-full justify-center items-center">
@@ -367,11 +346,11 @@ const UpdateWellnessForm = ({
                         <FormControl>
                           <Input
                             {...field}
-                            type="number"
+                            inputMode="numeric"
                             className="h-12"
-                            onChange={(e) => {
-                              field.onChange(e); // sync ke react-hook-form
-                            }}
+                            onChange={(e) =>
+                              field.onChange(Number(e.target.value || 0))
+                            }
                           />
                         </FormControl>
                         <FormMessage />
@@ -389,11 +368,11 @@ const UpdateWellnessForm = ({
                         <FormControl>
                           <Input
                             {...field}
-                            type="number"
+                            inputMode="numeric"
                             className="h-12"
-                            onChange={(e) => {
-                              field.onChange(e); // sync ke react-hook-form
-                            }}
+                            onChange={(e) =>
+                              field.onChange(Number(e.target.value || 0))
+                            }
                           />
                         </FormControl>
                         <FormMessage />
@@ -406,10 +385,8 @@ const UpdateWellnessForm = ({
                 </div>
               </div>
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <ComboBoxVendorListOption
-                  readVendorID={wellnessData.vendor_id}
-                />
-                <ComboBoxHotelListOption readHotelID={wellnessData.hotel_id} />
+                <ComboBoxVendorListOption />
+                <ComboBoxHotelListOption />
               </div>
               <hr />
 
@@ -605,14 +582,31 @@ const UpdateWellnessForm = ({
 
               <DynamicInputField form={form} name="included" label="Included" />
 
-              <div className="">
+              <hr />
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
                 <FormField
                   control={form.control}
-                  name="id_wellness_package_content"
+                  name="id_medical_package_content"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        Indonesian Description
+                        Indonesian Medical Content
+                      </FormLabel>
+                      <FormControl>
+                        <RichEditor {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="en_medical_package_content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        English Medical Content
                       </FormLabel>
                       <FormControl>
                         <RichEditor {...field} />
@@ -622,14 +616,69 @@ const UpdateWellnessForm = ({
                   )}
                 />
               </div>
-              <div className="">
+
+              <hr />
+
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+                <FormField
+                  control={form.control}
+                  name="id_wellness_package_content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Indonesian Wellness Content
+                      </FormLabel>
+                      <FormControl>
+                        <RichEditor {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="en_wellness_package_content"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        English Description
+                        English Wellness Content
+                      </FormLabel>
+                      <FormControl>
+                        <RichEditor {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <hr />
+
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+                <FormField
+                  control={form.control}
+                  name="id_detail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Indonesian Detail Information
+                      </FormLabel>
+                      <FormControl>
+                        <RichEditor {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="en_detail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        English Detail Information
                       </FormLabel>
                       <FormControl>
                         <RichEditor {...field} />
@@ -672,7 +721,7 @@ const UpdateWellnessForm = ({
                   size={"lg"}
                   className="rounded-full flex lg:w-fit w-full"
                 >
-                  {loading ? <Spinner /> : "Update"}
+                  {loading ? <Spinner /> : "Submit"}
                 </Button>
               </div>
             </div>
@@ -683,4 +732,4 @@ const UpdateWellnessForm = ({
   );
 };
 
-export default UpdateWellnessForm;
+export default AddPackage;

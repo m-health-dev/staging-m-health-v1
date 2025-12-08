@@ -20,8 +20,8 @@ import {
 
 import { MedicalSchema, VendorSchema, WellnessSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye, Trash } from "lucide-react";
-import React, { useState } from "react";
+import { EyeClosed, Eye, Trash, Percent } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { toast } from "sonner";
@@ -51,7 +51,7 @@ import { deleteWellness } from "@/lib/wellness/delete-wellness";
 import { baseUrl } from "@/helper/baseUrl";
 import { MedicalType } from "@/types/medical.types";
 import { updateMedical } from "@/lib/medical/post-patch-medical";
-import { WellnessMedicalDeleteCopyFunction } from "@/components/wellness-medical/wellness-medical-delete-copy-function";
+import { PackagesWellnessMedicalDeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 
 const UpdateMedicalForm = ({
@@ -93,11 +93,30 @@ const UpdateMedicalForm = ({
       id_medical_package_content: medicalData?.id_medical_package_content || "",
       included: medicalData?.included || [],
       vendor_id: medicalData?.vendor_id || "",
+      hotel_id: medicalData?.hotel_id || "",
       real_price: Number(medicalData?.real_price) || 0,
       discount_price: Number(medicalData?.discount_price) || 0,
       status: medicalData?.status || "",
     },
   });
+
+  const [percentage, setPercentage] = useState(0);
+
+  useEffect(() => {
+    const real = Number(form.getValues("real_price"));
+    const disc = Number(form.getValues("discount_price"));
+
+    const handler = setTimeout(() => {
+      if (real > 0 && disc > 0) {
+        const result = Math.round((disc / real) * 100);
+        setPercentage(100 - result);
+      } else {
+        setPercentage(0);
+      }
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [form.watch("real_price"), form.watch("discount_price")]);
 
   async function handleImageUpload(files: File[]) {
     const formData = new FormData();
@@ -226,7 +245,7 @@ const UpdateMedicalForm = ({
           </h4>
           <p className="text-sm! text-muted-foreground">{medicalData.slug}</p>
         </div>
-        <WellnessMedicalDeleteCopyFunction
+        <PackagesWellnessMedicalDeleteCopyFunction
           id={id}
           deleteAction={deleteMedical}
           name={medicalData.id_title}
@@ -391,6 +410,7 @@ const UpdateMedicalForm = ({
                 <ComboBoxVendorListOption
                   readVendorID={medicalData.vendor_id}
                 />
+                <ComboBoxHotelListOption readHotelID={medicalData.hotel_id} />
               </div>
               <hr />
 
@@ -635,6 +655,12 @@ const UpdateMedicalForm = ({
                   name="discount_price"
                   label="Discount Price"
                 />
+              </div>
+              <div className="font-semibold text-health bg-white px-3 py-1 rounded-full inline-flex w-fit">
+                <p className="inline-flex gap-1 items-center">
+                  <Percent className="size-5 text-white bg-health rounded-full p-1" />
+                  {percentage > 0 ? `${percentage}%` : "0%"}
+                </p>
               </div>
 
               <hr />

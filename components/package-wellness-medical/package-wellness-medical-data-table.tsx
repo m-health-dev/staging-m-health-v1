@@ -42,6 +42,7 @@ import { useSidebar } from "../ui/sidebar";
 import { cn } from "@/lib/utils";
 import LoadingTableCard from "../utility/loading/loading-table-card";
 import SimplePagination from "../utility/simple-pagination";
+import StatusBadge from "../utility/status-badge";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -240,7 +241,7 @@ interface DataTableProps<TData, TValue> {
 //   );
 // }
 
-export function WellnessMedicalDataTable<TData, TValue>({
+export function PackagesWellnessMedicalDataTable<TData, TValue>({
   columns,
   data,
   meta,
@@ -509,6 +510,9 @@ export function WellnessMedicalDataTable<TData, TValue>({
                           <p className="text-sm!">
                             <LocalDateTime date={row.getValue("updated_at")} />
                           </p>
+                        </div>
+                        <div className="flex justify-end mt-2">
+                          <StatusBadge status={row.getValue("status")} />
                         </div>
                       </div>
                     </div>

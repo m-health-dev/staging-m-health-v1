@@ -6,10 +6,7 @@ import {
   Instrument_Sans,
   Manrope,
 } from "next/font/google";
-import "../globals.css";
-import Image from "next/image";
-import ContainerWrap from "@/components/utility/ContainerWrap";
-import { Toaster } from "sonner";
+import "./globals.css";
 import NotFoundContent from "@/components/utility/NotFoundContent";
 
 const manrope = Manrope({

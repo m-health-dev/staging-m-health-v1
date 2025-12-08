@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
+import StatusBadge from "@/components/utility/status-badge";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
 import { deleteMedical } from "@/lib/medical/delete-medical";
@@ -101,6 +102,17 @@ export const columns: ColumnDef<VendorType>[] = [
   },
 
   {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const status: string = row.getValue("status");
+      return <StatusBadge status={status} />;
+    },
+  },
+
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -153,7 +165,7 @@ export const columns: ColumnDef<VendorType>[] = [
           router.refresh();
         } catch (err) {
           setLoading(false);
-          toast.warning("Failed to Medical Vendor", { description: `${err}` });
+          toast.warning("Failed to Medical", { description: `${err}` });
         }
       };
 

@@ -16,13 +16,13 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import "swiper/css";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
-import { Package } from "@/types/packages.types";
+import { PackageType } from "@/types/packages.types";
 
 export default function PopularPackSlide({
   packages,
   locale,
 }: {
-  packages: Package[];
+  packages: PackageType[];
   locale: string;
 }) {
   const swiperRef = useRef<any>(null);

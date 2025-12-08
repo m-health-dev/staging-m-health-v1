@@ -3,11 +3,18 @@ import ContainerWrap from "./ContainerWrap";
 import { Coffee, Construction } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-const UnderConstruction = () => {
+const UnderConstruction = ({ element }: { element?: boolean }) => {
   return (
-    <ContainerWrap>
-      <div className="w-full min-h-screen flex justify-center items-center">
+    <ContainerWrap size={element ? "xxl" : "lg"} className="px-0!">
+      <div
+        className={cn(
+          element
+            ? "w-full min-h-[50vh] flex justify-center items-center bg-white rounded-2xl pt-5 border px-4"
+            : "w-full min-h-screen flex justify-center items-center pt-10"
+        )}
+      >
         <div className="flex flex-col lg:items-center items-start">
           <div className="flex mb-7">
             <Construction className="size-12 text-amber-400 -translate-y-5 -rotate-5" />
@@ -21,11 +28,13 @@ const UnderConstruction = () => {
             isn’t ready yet, but when it is, it’ll be worth the wait. Stay tuned
             for the reveal.
           </p>
-          <div className="mt-10">
-            <Link href={"/"}>
-              <Button className="rounded-full">Back to Home</Button>
-            </Link>
-          </div>
+          {!element && (
+            <div className="mt-10">
+              <Link href={"/"}>
+                <Button className="rounded-full">Back to Home</Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </ContainerWrap>

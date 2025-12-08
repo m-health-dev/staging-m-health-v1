@@ -18,6 +18,7 @@ export type MedicalType = {
   id_medical_package_content: string;
   included: string[];
   vendor_id: string;
+  hotel_id: string;
   real_price: number;
   discount_price: number;
   status: StatusContent;

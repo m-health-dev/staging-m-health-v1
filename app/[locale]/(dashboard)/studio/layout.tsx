@@ -5,7 +5,6 @@ import { SectionCards } from "@/components/section-cards";
 import { SiteHeaderStudio } from "@/components/site-header-studio";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-import data from "./data.json";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";

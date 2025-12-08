@@ -31,7 +31,6 @@ import {
 import { IconHelp, IconSettings } from "@tabler/icons-react";
 import { Account } from "@/types/account.types";
 import { Button } from "../ui/button";
-import { Package } from "@/types/packages.types";
 
 import { Skeleton } from "../ui/skeleton";
 import { Spinner } from "../ui/spinner";
@@ -42,10 +41,11 @@ import { routing } from "@/i18n/routing";
 import Avatar from "boring-avatars";
 import { MedicalType } from "@/types/medical.types";
 import { WellnessType } from "@/types/wellness.types";
+import { PackageType } from "@/types/packages.types";
 
 interface ChatbotSidebarProps extends React.ComponentProps<typeof Sidebar> {
   accounts?: Account;
-  packages: Package[];
+  packages: PackageType[];
   medical: MedicalType[];
   wellness: WellnessType[];
   session?: any[];
