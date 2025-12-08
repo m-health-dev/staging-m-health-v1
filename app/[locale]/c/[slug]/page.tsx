@@ -33,7 +33,11 @@ export default async function SessionPage(props: { params: paramsType }) {
 
   const sessionChat = await getChatSession(sessionID);
 
-  if (publicID !== sessionChat.publicID) {
+  const checkSession = publicID !== sessionChat.publicID;
+
+  console.log(checkSession);
+
+  if (!checkSession || sessionChat.error) {
     notFound();
   }
 

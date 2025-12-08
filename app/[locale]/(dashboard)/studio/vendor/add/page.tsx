@@ -331,7 +331,7 @@ const AddVendor = () => {
                       <FormLabel className="text-primary font-semibold!">
                         Highlight Image
                       </FormLabel>
-                      {!highlightPreview ? (
+                      {highlightPreview === null ? (
                         <FormControl>
                           <Dropzone
                             accept={{ "image/*": [] }}
@@ -438,7 +438,7 @@ const AddVendor = () => {
                     <FormLabel className="text-primary font-semibold!">
                       Reference Images
                     </FormLabel>
-                    {!referencePreview ? (
+                    {referencePreview.length === 0 ? (
                       <FormControl>
                         <Dropzone
                           accept={{ "image/*": [] }}

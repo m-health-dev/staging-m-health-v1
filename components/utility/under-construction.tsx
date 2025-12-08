@@ -2,6 +2,7 @@ import React from "react";
 import ContainerWrap from "./ContainerWrap";
 import { Coffee, Construction } from "lucide-react";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 const UnderConstruction = () => {
   return (
@@ -20,8 +21,10 @@ const UnderConstruction = () => {
             isn’t ready yet, but when it is, it’ll be worth the wait. Stay tuned
             for the reveal.
           </p>
-          <div className=" mt-10">
-            <Button className="rounded-full">Back to Home</Button>
+          <div className="mt-10">
+            <Link href={"/"}>
+              <Button className="rounded-full">Back to Home</Button>
+            </Link>
           </div>
         </div>
       </div>

@@ -22,7 +22,7 @@ import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
 import { deleteVendor } from "@/lib/vendors/delete-vendor";
-import { deleteWellness } from "@/lib/wellness/delete-wellness";
+import { deleteMedical } from "@/lib/medical/delete-medical";
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Avatar from "boring-avatars";
@@ -137,16 +137,16 @@ export const columns: ColumnDef<VendorType>[] = [
         }
       };
 
-      const handleDeleteWellness = async () => {
+      const handleDeleteMedical = async () => {
         try {
           setLoading(true);
-          const res = await deleteWellness(id);
+          const res = await deleteMedical(id);
           if (!res.error) {
-            toast.success("Success to Delete Wellness", {
+            toast.success("Success to Delete Medical", {
               description: `${id.slice(0, 8).toUpperCase()} - ${id_title}`,
             });
           } else if (res.error) {
-            toast.error("Failed to Delete Wellness", {
+            toast.error("Failed to Delete Medical", {
               description: `${res.error}`,
             });
           }
@@ -154,7 +154,7 @@ export const columns: ColumnDef<VendorType>[] = [
           router.refresh();
         } catch (err) {
           setLoading(false);
-          toast.warning("Failed to Wellness Vendor", { description: `${err}` });
+          toast.warning("Failed to Medical Vendor", { description: `${err}` });
         }
       };
 
@@ -173,7 +173,7 @@ export const columns: ColumnDef<VendorType>[] = [
                 <p
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
-                    router.push(`/${locale}/studio/wellness/update/${id}`)
+                    router.push(`/${locale}/studio/medical/update/${id}`)
                   }
                 >
                   <PenSquare />
@@ -302,7 +302,7 @@ export const columns: ColumnDef<VendorType>[] = [
                   type="submit"
                   disabled={inputName !== id_title}
                   onClick={async () => {
-                    await handleDeleteWellness();
+                    await handleDeleteMedical();
                     setOpenConfirm(false);
                   }}
                 >

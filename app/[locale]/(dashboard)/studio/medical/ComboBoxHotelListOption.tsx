@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, Suspense } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   FormField,
@@ -74,8 +74,9 @@ export function ComboBoxHotelListOption({
     return hotelData.filter((v) => v.name.toLowerCase().includes(q));
   }, [hotelData, query]);
 
-  const selectedHotel = hotelData.find((v) => v.id === form.watch("hotel_id"));
+  const hotelId = useWatch({ name: "hotel_id", control: form.control });
 
+  const selectedHotel = hotelData.find((v) => v.id === hotelId);
   return (
     <FormField
       control={form.control}

@@ -414,7 +414,7 @@ M HEALTH Development Team`,
                         <FormLabel className="text-primary font-semibold!">
                           Gambar Pendukung
                         </FormLabel>
-                        {!referencePreview ? (
+                        {referencePreview.length === 0 ? (
                           <FormControl>
                             <Dropzone
                               accept={{ "image/*": [] }}

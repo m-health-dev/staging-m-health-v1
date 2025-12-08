@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   FormField,
@@ -71,9 +71,8 @@ export function ComboBoxVendorListOption({
     return vendorData.filter((v) => v.name.toLowerCase().includes(q));
   }, [vendorData, query]);
 
-  const selectedVendor = vendorData.find(
-    (v) => v.id === form.watch("vendor_id")
-  );
+  const vendorId = useWatch({ name: "vendor_id", control: form.control });
+  const selectedVendor = vendorData.find((v) => v.id === vendorId);
 
   return (
     <FormField
