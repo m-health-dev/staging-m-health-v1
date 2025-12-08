@@ -112,7 +112,7 @@ export function ChatbotSidebar({
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className="hide-scroll mt-5">
+      <SidebarContent className="hide-scroll mt-5 bg-white!">
         <div className="px-4">
           <p className="text-muted-foreground text-sm! px-2">
             {locale === routing.defaultLocale
@@ -193,7 +193,7 @@ export function ChatbotSidebar({
             {packages.map((img, i) => (
               <Link
                 key={img.id}
-                href={`/wellness/package-${i + 1}`}
+                href={`/package/${img.slug}`}
                 className="group/pack"
               >
                 <div
@@ -204,8 +204,8 @@ export function ChatbotSidebar({
                   <div className="px-2 col-span-1">
                     <React.Suspense fallback={<Spinner />}>
                       <Image
-                        src={"https://placehold.co/720x720.png"}
-                        alt={"https://placehold.co/720x720.png"}
+                        src={img.highlight_image}
+                        alt={img.slug}
                         width={720}
                         height={720}
                         className="aspect-square object-cover object-center rounded-xl"
@@ -231,7 +231,7 @@ export function ChatbotSidebar({
                 </div>
               </Link>
             ))}
-            {packages.length <= 0 && <FailedGetDataNotice size="sm" />}
+            {packages.length === 0 && <FailedGetDataNotice size="sm" />}
           </div>
         </div>
 
@@ -245,7 +245,7 @@ export function ChatbotSidebar({
             {wellness.map((img, i) => (
               <Link
                 key={img.id}
-                href={`/wellness/package-${i + 1}`}
+                href={`/wellness/${img.slug}`}
                 className="group/pack"
               >
                 <div
@@ -256,8 +256,8 @@ export function ChatbotSidebar({
                   <div className="px-2 col-span-1">
                     <React.Suspense fallback={<Spinner />}>
                       <Image
-                        src={"https://placehold.co/720x720.png"}
-                        alt={"https://placehold.co/720x720.png"}
+                        src={img.highlight_image}
+                        alt={img.slug}
                         width={720}
                         height={720}
                         className="aspect-square object-cover object-center rounded-xl"
@@ -283,7 +283,7 @@ export function ChatbotSidebar({
                 </div>
               </Link>
             ))}
-            {packages.length <= 0 && <FailedGetDataNotice size="sm" />}
+            {wellness.length === 0 && <FailedGetDataNotice size="sm" />}
           </div>
         </div>
 
@@ -297,7 +297,7 @@ export function ChatbotSidebar({
             {medical.map((img, i) => (
               <Link
                 key={img.id}
-                href={`/medical/package-${i + 1}`}
+                href={`/medical/${img.slug}`}
                 className="group/pack"
               >
                 <div
@@ -308,8 +308,8 @@ export function ChatbotSidebar({
                   <div className="px-2 col-span-1">
                     <React.Suspense fallback={<Spinner />}>
                       <Image
-                        src={"https://placehold.co/720x720.png"}
-                        alt={"https://placehold.co/720x720.png"}
+                        src={img.highlight_image}
+                        alt={img.slug}
                         width={720}
                         height={720}
                         className="aspect-square object-cover object-center rounded-xl"
@@ -335,10 +335,11 @@ export function ChatbotSidebar({
                 </div>
               </Link>
             ))}
-            {packages.length <= 0 && <FailedGetDataNotice size="sm" />}
+            {medical.length === 0 && <FailedGetDataNotice size="sm" />}
           </div>
         </div>
-
+      </SidebarContent>
+      <SidebarFooter className="bg-white">
         <div className="sticky bottom-0 py-2 bg-linear-to-t from-white via-white px-1">
           {accounts ? (
             <NavUser user={accounts} type="side" />
@@ -369,7 +370,7 @@ export function ChatbotSidebar({
             </div>
           )}
         </div>
-      </SidebarContent>
+      </SidebarFooter>
     </Sidebar>
   );
 }

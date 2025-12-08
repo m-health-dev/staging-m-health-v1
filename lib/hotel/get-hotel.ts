@@ -106,3 +106,34 @@ export async function getHotelByID(id: string) {
     };
   }
 }
+
+export async function getHotelBySlug(slug: string) {
+  try {
+    const res = await fetch(`${apiBaseUrl}/api/v1/hotels/${slug}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to receive hotel/read by slug ${slug}. Cause : ${res.status} - ${data.message}`,
+      };
+    }
+
+    return {
+      data,
+      success: true,
+    };
+  } catch (error) {
+    console.error(`Receive hotel/slug:${slug} Error:`, error);
+    return {
+      success: false,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}

@@ -5,14 +5,20 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Avatar from "boring-avatars";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
+import { WellnessType } from "@/types/wellness.types";
+import { useLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
+import AvatarVendorHotel from "../utility/AvatarVendorHotel";
 
-const PopularProgramGrid = ({ data }: { data: any[] }) => {
+const PopularProgramGrid = ({ data }: { data: WellnessType[] }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   if (data.length <= 0) {
     return <FailedGetDataNotice />;
   }
-  const onlyGet8: any[] = data.slice(0, 8);
-  const onlyGet4: any[] = data.slice(0, 4);
+
+  const locale = useLocale();
+  const onlyGet8: WellnessType[] = data.slice(0, 8);
+  const onlyGet4: WellnessType[] = data.slice(0, 4);
   return (
     <>
       <div className="lg:grid-cols-4 md:grid-cols-2 grid-cols-2 gap-5 lg:grid hidden">
@@ -24,10 +30,10 @@ const PopularProgramGrid = ({ data }: { data: any[] }) => {
             onMouseLeave={() => setHoveredIndex(null)}
           >
             <Image
-              src={d.full}
+              src={d.highlight_image}
               width={500}
               height={500}
-              alt={d.alt}
+              alt={d.slug}
               className="object-center w-full h-full aspect-square object-cover rounded-2xl group-hover:outline-2 group-hover:outline-health transition-all duration-100"
             />
             <motion.div
@@ -50,9 +56,11 @@ const PopularProgramGrid = ({ data }: { data: any[] }) => {
                         ease: "easeInOut",
                       }}
                     >
-                      <h6 className="text-white font-bold capitalize lg:line-clamp-3 line-clamp-2">
-                        {d.alt}
-                      </h6>
+                      <p className="text-white text-lg! font-bold capitalize lg:line-clamp-3 line-clamp-2">
+                        {locale === routing.defaultLocale
+                          ? d.id_title
+                          : d.en_title}
+                      </p>
                     </motion.div>
                   ) : (
                     <motion.div
@@ -66,9 +74,11 @@ const PopularProgramGrid = ({ data }: { data: any[] }) => {
                         ease: "easeInOut",
                       }}
                     >
-                      <h6 className="text-white font-bold capitalize line-clamp-2">
-                        {d.alt}
-                      </h6>
+                      <p className="text-white text-lg! font-bold capitalize line-clamp-2">
+                        {locale === routing.defaultLocale
+                          ? d.id_title
+                          : d.en_title}
+                      </p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -93,27 +103,15 @@ const PopularProgramGrid = ({ data }: { data: any[] }) => {
                       }}
                     >
                       <p className="text-white/50 lg:line-clamp-3 lg:text-base! text-sm! line-clamp-2">
-                        {`${d.description}_Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Numquam dolore ab quo magni tempora nostrum accusantium,
-              quia reiciendis, quasi totam ipsa id facilis. Beatae assumenda
-              itaque perspiciatis asperiores nulla quos ea dolorum, placeat
-              tempora incidunt commodi, consequatur ipsa molestiae nisi quaerat
-              animi maiores aliquid. Velit, ad? Beatae deserunt ullam quo?`}
+                        {locale === routing.defaultLocale
+                          ? d.id_tagline
+                          : d.en_tagline}
                       </p>
-                      <div className="lg:inline-flex gap-2 items-center mt-5 hidden">
-                        <Avatar
-                          name={d.author.name}
-                          colors={[
-                            "#3e77ab",
-                            "#22b26e",
-                            "#f2f26f",
-                            "#fff7bd",
-                            "#95cfb7",
-                          ]}
-                          variant="beam"
-                          size={20}
+                      <div className="flex w-full! mt-5">
+                        <AvatarVendorHotel
+                          type="vendor"
+                          vendor_id={d.vendor_id}
                         />
-                        <p className="text-sm! text-health">{d.author.name}</p>
                       </div>
                     </motion.div>
                   ) : (
@@ -129,12 +127,9 @@ const PopularProgramGrid = ({ data }: { data: any[] }) => {
                       }}
                     >
                       <p className="text-white/50 lg:text-base! text-sm! line-clamp-1">
-                        {`${d.description}_Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Numquam dolore ab quo magni tempora nostrum accusantium,
-              quia reiciendis, quasi totam ipsa id facilis. Beatae assumenda
-              itaque perspiciatis asperiores nulla quos ea dolorum, placeat
-              tempora incidunt commodi, consequatur ipsa molestiae nisi quaerat
-              animi maiores aliquid. Velit, ad? Beatae deserunt ullam quo?`}
+                        {locale === routing.defaultLocale
+                          ? d.id_tagline
+                          : d.en_tagline}
                       </p>
                     </motion.div>
                   )}
@@ -154,17 +149,17 @@ const PopularProgramGrid = ({ data }: { data: any[] }) => {
             onMouseLeave={() => setHoveredIndex(null)}
           >
             <Image
-              src={d.full}
+              src={d.highlight_image}
               width={500}
               height={500}
-              alt={d.alt}
+              alt={d.slug}
               className="object-center w-full h-full aspect-square object-cover rounded-2xl group-hover:outline-2 group-hover:outline-health transition-all duration-100"
             />
             <div className="absolute bottom-0 z-10 lg:p-5 p-3 transition-all duration-300 h-auto">
               <div className="overflow-hidden">
                 <div>
                   <h5 className="text-white font-bold capitalize lg:line-clamp-3 line-clamp-2">
-                    {d.alt}
+                    {locale === routing.defaultLocale ? d.id_title : d.en_title}
                   </h5>
                 </div>
               </div>
@@ -186,27 +181,12 @@ const PopularProgramGrid = ({ data }: { data: any[] }) => {
                   }}
                 >
                   <p className="text-white/50 lg:line-clamp-3 lg:text-base! text-sm! line-clamp-2">
-                    {`${d.description}_Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Numquam dolore ab quo magni tempora nostrum accusantium,
-              quia reiciendis, quasi totam ipsa id facilis. Beatae assumenda
-              itaque perspiciatis asperiores nulla quos ea dolorum, placeat
-              tempora incidunt commodi, consequatur ipsa molestiae nisi quaerat
-              animi maiores aliquid. Velit, ad? Beatae deserunt ullam quo?`}
+                    {locale === routing.defaultLocale
+                      ? d.id_tagline
+                      : d.en_tagline}
                   </p>
-                  <div className="inline-flex gap-2 items-center mt-5 ">
-                    <Avatar
-                      name={d.author.name}
-                      colors={[
-                        "#3e77ab",
-                        "#22b26e",
-                        "#f2f26f",
-                        "#fff7bd",
-                        "#95cfb7",
-                      ]}
-                      variant="beam"
-                      size={20}
-                    />
-                    <p className="text-sm! text-health">{d.author.name}</p>
+                  <div className="mt-5">
+                    <AvatarVendorHotel type="vendor" vendor_id={d.vendor_id} />
                   </div>
                 </motion.div>
               </div>

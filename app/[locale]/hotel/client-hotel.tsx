@@ -3,20 +3,20 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import SimplePagination from "@/components/utility/simple-pagination";
 import { cn } from "@/lib/utils";
-import { VendorType } from "@/types/vendor.types";
+import { HotelType } from "@/types/hotel.types";
 import Avatar from "boring-avatars";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
-const ClientVendorPublic = ({
-  vendor,
+const ClientHotelPublic = ({
+  hotel,
   locale,
   meta,
   links,
   perPage,
 }: {
-  vendor: VendorType[];
+  hotel: HotelType[];
   locale: string;
   meta: any;
   links: any;
@@ -33,41 +33,29 @@ const ClientVendorPublic = ({
                 className="w-full h-auto aspect-video rounded-2xl"
               />
             ))
-          : vendor.map((v, i) => {
+          : hotel.map((v, i) => {
               return (
                 <div
                   key={i}
-                  className="relative lg:aspect-video aspect-3/4 h-auto w-full group/vendor-card hover:outline-3 hover:outline-health rounded-2xl transition-all duration-200"
+                  className="relative lg:aspect-video aspect-3/4 h-auto w-full group/hotel-card hover:outline-3 hover:outline-health rounded-2xl transition-all duration-200"
                 >
-                  <Link href={`/${locale}/vendor/${v.slug}`}>
-                    <div className="absolute top-0 p-4 z-10">
-                      <div
-                        className={cn(
-                          "px-3 py-1 bg-white rounded-xl capitalize truncate inline-flex w-fit",
-                          v.category === "hospital" && "bg-health text-white",
-                          v.category === "coach" && "bg-amber-500 text-white",
-                          v.category === "product" && "bg-primary text-white"
-                        )}
-                      >
-                        <p className="lg:text-sm! text-xs!">{v.category}</p>
-                      </div>
-                    </div>
+                  <Link href={`/${locale}/hotel/${v.slug}`}>
                     <div className="overflow-hidden rounded-2xl">
                       {v.name && v.highlight_image ? (
                         <Image
                           src={v.highlight_image}
-                          alt={v.name || "Vendor highlight_image"}
+                          alt={v.name || "hotel highlight_image"}
                           width={720}
                           height={720}
-                          className="object-cover w-full h-auto lg:aspect-video aspect-3/4 rounded-2xl border group-hover/vendor-card:scale-105 transition-all duration-200"
+                          className="object-cover w-full h-auto lg:aspect-video aspect-3/4 rounded-2xl border group-hover/hotel-card:scale-105 transition-all duration-200"
                         />
                       ) : (
                         <Image
                           src={"https://placehold.co/720x405.png"}
-                          alt={v.name || "Vendor highlight_image"}
+                          alt={v.name || "hotel highlight_image"}
                           width={720}
                           height={720}
-                          className="object-cover w-full h-auto lg:aspect-video aspect-3/4 rounded-2xl border group-hover/vendor-card:scale-105 transition-all duration-200"
+                          className="object-cover w-full h-auto lg:aspect-video aspect-3/4 rounded-2xl border group-hover/hotel-card:scale-105 transition-all duration-200"
                         />
                       )}
                     </div>
@@ -76,7 +64,7 @@ const ClientVendorPublic = ({
                         {v.name && v.logo ? (
                           <Image
                             src={v.logo}
-                            alt={v.name || "Vendor Logo"}
+                            alt={v.name || "hotel Logo"}
                             width={100}
                             height={100}
                             className="object-cover w-16! h-16!  rounded-full border"
@@ -98,26 +86,9 @@ const ClientVendorPublic = ({
                         )}
                       </div>
                       <div>
-                        <h5 className="font-semibold text-white line-clamp-1 mb-1">
+                        <h6 className="font-semibold text-white line-clamp-2 mb-1">
                           {v.name}
-                        </h5>
-                        <div className="flex justify-start items-center flex-wrap gap-2">
-                          {v.specialist?.slice(0, 2).map((s, i) => (
-                            <div
-                              key={i}
-                              className={cn(
-                                "px-3 py-1 bg-transparent border border-white text-white rounded-xl capitalize truncate inline-flex w-fit"
-                              )}
-                            >
-                              <p className="text-xs!">{s}</p>
-                            </div>
-                          ))}
-                          {v.specialist.length > 2 && (
-                            <p className="text-white text-xs!">
-                              + {v.specialist.length - 2}
-                            </p>
-                          )}
-                        </div>
+                        </h6>
                       </div>
                     </div>
                     <div className="absolute bottom-0 bg-linear-to-t from-black rounded-2xl w-full h-1/2" />
@@ -140,4 +111,4 @@ const ClientVendorPublic = ({
   );
 };
 
-export default ClientVendorPublic;
+export default ClientHotelPublic;

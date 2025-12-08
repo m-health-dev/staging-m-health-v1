@@ -2,8 +2,10 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import UnderConstruction from "@/components/utility/under-construction";
 import Wrapper from "@/components/utility/Wrapper";
 import { routing } from "@/i18n/routing";
+import { getHotelBySlug } from "@/lib/hotel/get-hotel";
 import { cn } from "@/lib/utils";
 import { getVendorByID, getVendorBySlug } from "@/lib/vendors/get-vendor";
+import { HotelType } from "@/types/hotel.types";
 import { VendorType } from "@/types/vendor.types";
 import { createClient } from "@/utils/supabase/client";
 import { MapPin } from "lucide-react";
@@ -12,7 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const VendorPublicDetailPage = async ({
+const HotelPublicDetailPage = async ({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -23,13 +25,7 @@ const VendorPublicDetailPage = async ({
 
   const locale = await getLocale();
 
-  const { data, error } = await supabase
-    .from("vendor")
-    .select("id")
-    .eq("slug", slug)
-    .maybeSingle();
-
-  const v: VendorType = (await getVendorBySlug(slug)).data.data;
+  const v: HotelType = (await getHotelBySlug(slug)).data.data;
   return (
     <Wrapper>
       <ContainerWrap className="mt-10">
@@ -38,6 +34,7 @@ const VendorPublicDetailPage = async ({
           width={720}
           height={405}
           alt={v.slug}
+          unoptimized
           className="lg:aspect-13/4 aspect-video w-full rounded-2xl object-center object-cover"
         />
       </ContainerWrap>
@@ -61,19 +58,6 @@ const VendorPublicDetailPage = async ({
               </div>
             </Link>
           </div>
-        </div>
-        <p className="text-sm! text-muted-foreground mt-10 mb-2">Specialist</p>
-        <div className="flex flex-wrap gap-2 mb-5">
-          {v.specialist?.map((s, i) => (
-            <div
-              key={i}
-              className={cn(
-                "px-3 py-1 bg-transparent border border-health text-health rounded-full capitalize truncate inline-flex w-fit"
-              )}
-            >
-              <p className="text-sm!">{s}</p>
-            </div>
-          ))}
         </div>
 
         <p className="text-sm! text-muted-foreground mt-10 mb-2">About</p>
@@ -108,4 +92,4 @@ const VendorPublicDetailPage = async ({
   );
 };
 
-export default VendorPublicDetailPage;
+export default HotelPublicDetailPage;

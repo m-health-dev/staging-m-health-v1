@@ -19,6 +19,7 @@ import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { RumahSakit } from "@/lib/dummyRS";
 import { routing } from "@/i18n/routing";
 import { MedicalType } from "@/types/medical.types";
+import AvatarVendorHotel from "../utility/AvatarVendorHotel";
 
 export default function PopularMedSlide({
   data,
@@ -32,7 +33,7 @@ export default function PopularMedSlide({
   const swiperRef = useRef<any>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  if (data.length <= 0) {
+  if (data.length === 0) {
     return (
       <ContainerWrap>
         <FailedGetDataNotice />
@@ -41,7 +42,7 @@ export default function PopularMedSlide({
   }
 
   return (
-    <ContainerWrap type="carousel">
+    <ContainerWrap type={data.length >= 5 ? "carousel" : "default"}>
       <div className="overflow-hidden">
         {data.length >= 5 ? (
           <div className="w-full flex-col items-center relative group/slide">
@@ -188,69 +189,54 @@ export default function PopularMedSlide({
             </div>
           </div>
         ) : (
-          <ContainerWrap>
-            <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 lg:pb-0">
-              {data.map((slide, key) => (
-                <div
-                  key={key}
-                  className="flex flex-col justify-between rounded-2xl mb-2 lg:max-w-full w-full group cursor-pointer"
-                  onMouseEnter={() => setHoveredIndex(key)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                >
-                  <Image
-                    src={"https://placehold.co/500x500.png"}
-                    width={720}
-                    height={405}
-                    alt={
-                      locale === routing.defaultLocale
-                        ? slide.id_title
-                        : slide.en_title
-                    }
-                    className="w-full aspect-square! object-cover object-center rounded-t-2xl"
+          <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 lg:pb-0 px-2">
+            {data.map((slide, key) => (
+              <div
+                key={key}
+                className="flex flex-col rounded-2xl mb-2 w-full group cursor-pointer"
+                onMouseEnter={() => setHoveredIndex(key)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <Image
+                  src={slide.highlight_image}
+                  width={720}
+                  height={405}
+                  alt={
+                    locale === routing.defaultLocale
+                      ? slide.id_title
+                      : slide.en_title
+                  }
+                  className="w-full aspect-square! object-cover object-center rounded-t-2xl"
+                />
+
+                <div className="flex flex-col justify-center  3xl:min-h-[15vh] min-h-[22vh] max-w-full bg-white border rounded-2xl -mt-5 p-4 h-full shadow transition-all duration-100 group-hover:outline-2 group-hover:outline-primary z-50">
+                  <AvatarVendorHotel
+                    type="vendor"
+                    vendor_id={slide.vendor_id}
                   />
 
-                  <div className="flex flex-col justify-center  3xl:min-h-[15vh] min-h-[22vh] max-w-full bg-white border rounded-2xl -mt-5 p-4 h-full shadow transition-all duration-100 group-hover:outline-2 group-hover:outline-primary z-50">
-                    <div className="inline-flex gap-2 items-center">
-                      <Avatar
-                        name={hospital[key + 2].nama}
-                        colors={[
-                          "#3e77ab",
-                          "#22b26e",
-                          "#f2f26f",
-                          "#fff7bd",
-                          "#95cfb7",
-                        ]}
-                        variant="beam"
-                        size={20}
-                      />
-                      <p className="text-xs! text-health normal-case line-clamp-1">
-                        {hospital[key + 2].nama}
+                  <div className="overflow-hidden mt-2">
+                    <div>
+                      <p className="capitalize font-bold text-primary text-lg!  lg:line-clamp-2 line-clamp-1">
+                        {locale === routing.defaultLocale
+                          ? slide.id_title
+                          : slide.en_title}
                       </p>
                     </div>
-
-                    <div className="overflow-hidden mt-2">
-                      <div>
-                        <h6 className="capitalize font-bold text-primary  lg:line-clamp-2 line-clamp-1">
-                          {locale === routing.defaultLocale
-                            ? slide.id_title
-                            : slide.en_title}
-                        </h6>
-                      </div>
-                    </div>
-                    <div className="mt-2 overflow-hidden">
-                      <div>
-                        <p className="text-muted-foreground text-sm! line-clamp-2">
-                          {locale === routing.defaultLocale
-                            ? slide.id_tagline
-                            : slide.en_tagline}
-                        </p>
-                      </div>
+                  </div>
+                  <div className="mt-2 overflow-hidden">
+                    <div>
+                      <p className="text-muted-foreground text-sm! line-clamp-2">
+                        {locale === routing.defaultLocale
+                          ? slide.id_tagline
+                          : slide.en_tagline}
+                      </p>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </ContainerWrap>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </ContainerWrap>
