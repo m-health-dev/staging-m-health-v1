@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import "swiper/css";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { PackageType } from "@/types/packages.types";
+import AvatarVendorHotel from "../utility/AvatarVendorHotel";
 
 export default function PopularPackSlide({
   packages,
@@ -37,7 +38,7 @@ export default function PopularPackSlide({
   }
 
   return (
-    <ContainerWrap type="carousel">
+    <ContainerWrap type={packages.length >= 5 ? "carousel" : "default"}>
       <div className="lg:my-10 my-8 overflow-hidden">
         {packages.length >= 10 ? (
           <div className="w-full flex-col items-center relative group/slide">
@@ -190,69 +191,59 @@ export default function PopularPackSlide({
             </div>
           </div>
         ) : (
-          <ContainerWrap>
-            <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 lg:pb-0">
-              {packages.map((slide, key) => (
-                <div
-                  key={key}
-                  className="flex flex-col justify-between rounded-2xl lg:max-w-full w-full group cursor-pointer"
-                  onMouseEnter={() => setHoveredIndex(key)}
-                  onMouseLeave={() => setHoveredIndex(null)}
+          <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 lg:pb-0 px-2">
+            {packages.map((slide, key) => (
+              <div
+                key={key}
+                className="flex flex-col rounded-2xl w-full group cursor-pointer"
+                onMouseEnter={() => setHoveredIndex(key)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <Link
+                  href={`/${locale}/package/${slide.slug}`}
+                  className="flex flex-col w-full h-full"
                 >
-                  <Link
-                    href={`/package/${slide.id}`}
-                    className="flex flex-col w-full h-full"
-                  >
-                    <Image
-                      src={"https://placehold.co/720x720.png"} // TODO: Ganti dengan slide.full ketika sudah ada gambarnya
-                      width={720}
-                      height={405}
-                      alt={locale === "id" ? slide.id_title : slide.en_title}
-                      className="w-full aspect-square! object-cover object-center rounded-t-2xl"
-                    />
+                  <Image
+                    src={slide.highlight_image} // TODO: Ganti dengan slide.full ketika sudah ada gambarnya
+                    width={720}
+                    height={405}
+                    alt={locale === "id" ? slide.id_title : slide.en_title}
+                    className="w-full aspect-square! object-cover object-center rounded-t-2xl"
+                  />
 
-                    <div className="flex flex-col justify-center grow 3xl:min-h-[15vh] min-h-[26vh] max-w-full bg-white border rounded-2xl -translate-y-5 p-4 h-full shadow transition-all duration-100 group-hover:outline-2 group-hover:outline-health z-50">
-                      <p className="text-muted-foreground text-sm! mb-1">
-                        {key} Day {key === 0 ? key + 1 : key - 1} Night
-                      </p>
+                  <div className="flex flex-col justify-center grow  max-w-full bg-white border rounded-2xl -translate-y-5 p-4 h-full shadow transition-all duration-100 group-hover:outline-2 group-hover:outline-health z-50">
+                    <p className="text-muted-foreground text-sm! mb-1">
+                      {slide.duration_by_day} Day {slide.duration_by_night}{" "}
+                      Night
+                    </p>
 
-                      <div className="overflow-hidden">
-                        <div>
-                          <h6 className="capitalize font-bold text-primary lg:line-clamp-2 line-clamp-1">
-                            {locale === "id" ? slide.id_title : slide.en_title}
-                          </h6>
-                        </div>
-                      </div>
-                      <div className="mt-2 overflow-hidden">
-                        <div>
-                          <p className="text-muted-foreground text-sm! lg:line-clamp-2 line-clamp-1">
-                            {locale === "id"
-                              ? slide.id_tagline
-                              : slide.en_tagline}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="inline-flex gap-2 items-center mt-5">
-                        <Avatar
-                          name={"M Health"}
-                          colors={[
-                            "#3e77ab",
-                            "#22b26e",
-                            "#f2f26f",
-                            "#fff7bd",
-                            "#95cfb7",
-                          ]}
-                          variant="beam"
-                          size={20}
-                        />
-                        <p className="text-sm! text-health">{"M Health"}</p>
+                    <div className="overflow-hidden">
+                      <div>
+                        <h6 className="capitalize font-bold text-primary lg:line-clamp-2 line-clamp-1">
+                          {locale === "id" ? slide.id_title : slide.en_title}
+                        </h6>
                       </div>
                     </div>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </ContainerWrap>
+                    <div className="mt-2 overflow-hidden">
+                      <div>
+                        <p className="text-muted-foreground text-sm! lg:line-clamp-2 line-clamp-1">
+                          {locale === "id"
+                            ? slide.id_tagline
+                            : slide.en_tagline}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="inline-flex gap-2 items-center mt-5">
+                      <AvatarVendorHotel
+                        type="vendor"
+                        vendor_id={slide.vendor_id}
+                      />
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </ContainerWrap>

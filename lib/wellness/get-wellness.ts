@@ -74,3 +74,34 @@ export async function getWellnessByID(id: string) {
     };
   }
 }
+
+export async function getWellnessBySlug(slug: string) {
+  try {
+    const res = await fetch(`${apiBaseUrl}/api/v1/wellness/${slug}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to receive wellness/read by slug ${slug}. Cause : ${res.status} - ${data.message}`,
+      };
+    }
+
+    return {
+      data,
+      success: true,
+    };
+  } catch (error) {
+    console.error(`Receive wellness/slug:${slug} Error:`, error);
+    return {
+      success: false,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}

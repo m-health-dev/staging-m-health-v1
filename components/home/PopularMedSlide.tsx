@@ -191,7 +191,8 @@ export default function PopularMedSlide({
         ) : (
           <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 lg:pb-0 px-2">
             {data.map((slide, key) => (
-              <div
+              <Link
+                href={`/${locale}/medical/${slide.slug}`}
                 key={key}
                 className="flex flex-col rounded-2xl mb-2 w-full group cursor-pointer"
                 onMouseEnter={() => setHoveredIndex(key)}
@@ -234,7 +235,7 @@ export default function PopularMedSlide({
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

@@ -12,5 +12,18 @@
   "consult": {
     "title": "Start to Consult with Our Doctor",
     "desc": "Before starting the consultation, please fill in the following data so that the doctor can make an initial diagnosis."
+  },
+  "utility": {
+    "days": "Days",
+    "night": "Night",
+    "hospital": "Hospital",
+    "buy": "Buy now",
+    "medical": "Medical",
+    "wellness": "Wellness",
+    "male": "Male",
+    "female": "Female",
+    "unisex": "Unisex",
+    "price_info": "Price",
+    "detail": "Detail or Information"
   }
 }

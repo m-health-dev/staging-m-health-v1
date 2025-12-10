@@ -33,6 +33,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { WellnessType } from "@/types/wellness.types";
 
 function calculateDiscount(real: number, disc: number) {
   const result = Math.round((disc / real) * 100);
@@ -42,11 +43,11 @@ function calculateDiscount(real: number, disc: number) {
   return response;
 }
 
-const PackageDetailClient = ({
-  package: p,
+const WellnessDetailClient = ({
+  wellness: p,
   locale,
 }: {
-  package: PackageType;
+  wellness: WellnessType;
   locale: string;
 }) => {
   const swiperRef = useRef<any>(null);
@@ -259,11 +260,24 @@ const PackageDetailClient = ({
           ))}
         </div>
 
-        <Tabs defaultValue="medical" className="w-full mt-5 border rounded-2xl">
+        <div className="bg-white p-4 mt-5 border rounded-2xl">
+          <p className="text-sm! text-muted-foreground">{t("detail")}</p>
+          <div
+            className="prose max-w-none -mt-3 -mb-5"
+            dangerouslySetInnerHTML={{
+              __html:
+                locale === routing.defaultLocale
+                  ? p.id_wellness_package_content
+                  : p.en_wellness_package_content,
+            }}
+          />
+        </div>
+
+        {/* <Tabs
+          defaultValue="wellness"
+          className="w-full mt-5 border rounded-2xl"
+        >
           <TabsList className="bg-transparent! overflow-hidden">
-            <TabsTrigger value="medical" className="w-fit">
-              <p>{t("medical")}</p>
-            </TabsTrigger>
             <TabsTrigger value="wellness">
               <p>{t("wellness")}</p>
             </TabsTrigger>
@@ -271,17 +285,7 @@ const PackageDetailClient = ({
               <p>{t("detail")}</p>
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="medical">
-            <div
-              className="prose max-w-none"
-              dangerouslySetInnerHTML={{
-                __html:
-                  locale === routing.defaultLocale
-                    ? p.id_medical_package_content
-                    : p.en_medical_package_content,
-              }}
-            />
-          </TabsContent>
+
           <TabsContent value="wellness">
             {" "}
             <div
@@ -304,7 +308,7 @@ const PackageDetailClient = ({
               }}
             />
           </TabsContent>
-        </Tabs>
+        </Tabs> */}
       </div>
       <div className="lg:col-span-2">
         <div className="bg-white rounded-2xl border p-4">
@@ -344,4 +348,4 @@ const PackageDetailClient = ({
   );
 };
 
-export default PackageDetailClient;
+export default WellnessDetailClient;

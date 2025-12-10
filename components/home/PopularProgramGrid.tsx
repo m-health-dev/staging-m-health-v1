@@ -9,6 +9,7 @@ import { WellnessType } from "@/types/wellness.types";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import AvatarVendorHotel from "../utility/AvatarVendorHotel";
+import Link from "next/link";
 
 const PopularProgramGrid = ({ data }: { data: WellnessType[] }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -23,7 +24,8 @@ const PopularProgramGrid = ({ data }: { data: WellnessType[] }) => {
     <>
       <div className="lg:grid-cols-4 md:grid-cols-2 grid-cols-2 gap-5 lg:grid hidden">
         {onlyGet8.map((d, i) => (
-          <div
+          <Link
+            href={`/${locale}/wellness/${d.slug}`}
             key={d.id}
             className="aspect-square relative group cursor-pointer group"
             onMouseEnter={() => setHoveredIndex(i)}
@@ -137,7 +139,7 @@ const PopularProgramGrid = ({ data }: { data: WellnessType[] }) => {
               </div>
             </motion.div>
             <div className="bg-linear-to-t from-black absolute bottom-0 w-full group-hover:h-full transition-all duration-300 delay-300 h-1/2 rounded-2xl"></div>
-          </div>
+          </Link>
         ))}
       </div>
       <div className="flex-col gap-5 lg:hidden flex">

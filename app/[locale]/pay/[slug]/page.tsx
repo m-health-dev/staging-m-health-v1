@@ -1,7 +1,8 @@
+import UnderConstruction from "@/components/utility/under-construction";
 import React from "react";
 
 const PaymentPage = () => {
-  return <div>PaymentPage</div>;
+  return <UnderConstruction />;
 };
 
 export default PaymentPage;

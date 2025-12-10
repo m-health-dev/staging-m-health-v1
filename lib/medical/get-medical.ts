@@ -74,3 +74,34 @@ export async function getMedicalByID(id: string) {
     };
   }
 }
+
+export async function getMedicalBySlug(slug: string) {
+  try {
+    const res = await fetch(`${apiBaseUrl}/api/v1/medical/${slug}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to receive medical/read by slug ${slug}. Cause : ${res.status} - ${data.message}`,
+      };
+    }
+
+    return {
+      data,
+      success: true,
+    };
+  } catch (error) {
+    console.error(`Receive medical/slug:${slug} Error:`, error);
+    return {
+      success: false,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}

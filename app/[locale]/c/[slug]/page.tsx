@@ -4,8 +4,11 @@ import NavHeader from "@/components/utility/header/NavHeader";
 import { routing } from "@/i18n/routing";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { getChatHistory, getChatSession } from "@/lib/chatbot/getChatActivity";
+import { getAllMedical } from "@/lib/medical/get-medical";
 import { getLatest3Medical } from "@/lib/medical/getMedical";
+import { getAllPackages } from "@/lib/packages/get-packages";
 import { getLatest3Packages } from "@/lib/packages/getPackages";
+import { getAllWellness } from "@/lib/wellness/get-wellness";
 import { getLatest3Wellness } from "@/lib/wellness/getWellness";
 import { createClient } from "@/utils/supabase/server";
 import { CircleAlert, MessageCircle, TriangleAlert } from "lucide-react";
@@ -19,9 +22,9 @@ type paramsType = Promise<{ slug: string }>;
 export default async function SessionPage(props: { params: paramsType }) {
   const { slug } = await props.params;
 
-  const { data: packages } = await getLatest3Packages();
-  const { data: medical } = await getLatest3Medical();
-  const { data: wellness } = await getLatest3Wellness();
+  const packages = await (await getAllPackages(1, 3)).data;
+  const medical = (await getAllMedical(1, 3)).data;
+  const wellness = (await getAllWellness(1, 3)).data;
   const cookie = await cookies();
   const getPublicID = cookie.get("mhealth_public_id");
   const publicID = getPublicID?.value as string;
@@ -33,7 +36,7 @@ export default async function SessionPage(props: { params: paramsType }) {
 
   const sessionChat = await getChatSession(sessionID);
 
-  const checkSession = publicID !== sessionChat.publicID;
+  const checkSession = publicID === sessionChat.publicID;
 
   console.log(checkSession);
 

@@ -12,5 +12,18 @@
   "consult": {
     "title": "Mulai Konsultasi Dengan Dokter",
     "desc": "Sebelum memulai konsultasi silahkan isi beberapa data berikut agar dokter nantinya dapat melakukan diagnosa awal."
+  },
+  "utility": {
+    "days": "Hari",
+    "night": "Malam",
+    "hospital": "Rumah Sakit",
+    "buy": "Beli Sekarang",
+    "medical": "Medis",
+    "wellness": "Kesehatan",
+    "male": "Pria",
+    "female": "Perempuan",
+    "unisex": "Uniseks",
+    "price_info": "Informasi Harga",
+    "detail": "Detail/ Informasi"
   }
 }

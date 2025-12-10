@@ -71,7 +71,7 @@ export function ChatbotSidebar({
   const locale = useLocale();
   return (
     <Sidebar className="p-0" collapsible="offcanvas" {...props}>
-      <SidebarHeader className="-mb-5 p-3! bg-linear-to-b from-white via-white">
+      <SidebarHeader className="-mb-5 p-3! bg-white">
         <Image
           src={
             "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/icon_mhealth_logo.PNG"
