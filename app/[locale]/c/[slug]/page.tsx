@@ -40,7 +40,7 @@ export default async function SessionPage(props: { params: paramsType }) {
 
   console.log(checkSession);
 
-  if (!checkSession || sessionChat.error) {
+  if (sessionChat.error) {
     notFound();
   }
 
