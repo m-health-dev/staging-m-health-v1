@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  allowedDevOrigins: ["192.168.18.252", "*.m-health.id"],
+  allowedDevOrigins: ["192.168.18.252", "192.168.18.253", "*.m-health.id"],
   images: {
     remotePatterns: [
       {

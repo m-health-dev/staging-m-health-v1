@@ -26,6 +26,7 @@ import {
   Plus,
   ScanBarcode,
   Search,
+  Trash,
   Trash2,
 } from "lucide-react";
 import { IconHelp, IconSettings } from "@tabler/icons-react";
@@ -42,6 +43,21 @@ import Avatar from "boring-avatars";
 import { MedicalType } from "@/types/medical.types";
 import { WellnessType } from "@/types/wellness.types";
 import { PackageType } from "@/types/packages.types";
+import {
+  DeleteAllChatSession,
+  DeleteChatSession,
+} from "@/lib/chatbot/delete-chat-activity";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 interface ChatbotSidebarProps extends React.ComponentProps<typeof Sidebar> {
   accounts?: Account;
@@ -51,8 +67,10 @@ interface ChatbotSidebarProps extends React.ComponentProps<typeof Sidebar> {
   session?: any[];
   history: any[];
   sessionID?: string;
-  publicIDFetch: string;
+  publicIDFetch: string | null;
   isLoading: boolean;
+  locale: string;
+  onRefreshHistory?: () => void; // Add callback for manual refresh
 }
 
 export function ChatbotSidebar({
@@ -65,10 +83,54 @@ export function ChatbotSidebar({
   sessionID,
   publicIDFetch,
   isLoading,
+  locale,
+  onRefreshHistory,
   ...props
 }: ChatbotSidebarProps) {
   const router = useRouter();
-  const locale = useLocale();
+  const [loadingDelete, setLoadDelete] = React.useState(false);
+
+  const handleDeleteChatSession = async (sessionID: string) => {
+    setLoadDelete(true);
+    try {
+      const res = await DeleteChatSession(sessionID);
+
+      if (res.success) {
+        toast.success("Successfully Deleted Chat Session!", {
+          description: sessionID.slice(0, 8).toUpperCase(),
+        });
+        setLoadDelete(false);
+      } else {
+        toast.error("Failed to Delete Chat Session", {
+          description: res.error,
+        });
+        setLoadDelete(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoadDelete(false);
+    }
+  };
+
+  const handleDeleteAllChatSession = async (userID: string) => {
+    setLoadDelete(true);
+    try {
+      const res = await DeleteAllChatSession(userID);
+
+      if (res.success) {
+        toast.success("Successfully Deleted All Chat Session!");
+        setLoadDelete(false);
+      } else {
+        toast.error("Failed to Delete All Chat Session", {
+          description: res.error,
+        });
+        setLoadDelete(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoadDelete(false);
+    }
+  };
   return (
     <Sidebar className="p-0" collapsible="offcanvas" {...props}>
       <SidebarHeader className="-mb-5 p-3! bg-white">
@@ -78,7 +140,7 @@ export function ChatbotSidebar({
           }
           width={100}
           height={100}
-          unoptimized
+          priority
           alt="icon-m-health"
           className="object-contain w-8 h-8 mx-2 my-3"
         />
@@ -132,19 +194,34 @@ export function ChatbotSidebar({
                   {history.length > 0 ? (
                     history.map((s) => (
                       <React.Suspense key={s.id} fallback={<Spinner />}>
-                        <button
+                        <div
                           key={s.id}
                           className="w-full text-left group/hst cursor-pointer relative p-2 hover:bg-muted hover:shadow-sm rounded-2xl hover:outline"
                         >
-                          <Link href={`/${locale}/c/${s.id}`}>
-                            <p className="text-primary text-base! line-clamp-1 wrap-break-word z-5">
-                              {s.title}
-                            </p>
-                            <p className="text-xs! uppercase text-muted-foreground z-5">
-                              {s.id.slice(0, 8)}
-                            </p>
-                          </Link>
-                        </button>
+                          <div className="flex justify-between items-center">
+                            <Link href={`/${locale}/c/${s.id}`}>
+                              <div>
+                                <p className="text-primary text-base! line-clamp-1 wrap-break-word z-5">
+                                  {s.title === "" ? "M HEALTH Chat" : s.title}
+                                </p>
+                                <p className="text-xs! uppercase text-muted-foreground z-5">
+                                  {s.id.slice(0, 8)}
+                                </p>
+                              </div>
+                            </Link>
+                            <Button
+                              variant={"destructive_outline"}
+                              className="w-6 h-6 rounded-full group-hover/hst:translate-x-0 group-hover/hst:opacity-100 translate-x-5 opacity-0 overflow-hidden transition-all duration-300 ease-in-out"
+                              onClick={() => handleDeleteChatSession(s.id)}
+                            >
+                              {loadingDelete ? (
+                                <Spinner />
+                              ) : (
+                                <Trash className="size-3" />
+                              )}
+                            </Button>
+                          </div>
+                        </div>
                       </React.Suspense>
                     ))
                   ) : history.length > 0 ? (
@@ -162,21 +239,50 @@ export function ChatbotSidebar({
                       </p>
                     </div>
                   )}
-                  {history.length >= 1 && (
-                    <button
-                      onClick={() => {
-                        localStorage.removeItem("mhealth_chat_sessions");
-                        window.location.reload();
-                      }}
-                      className="text-xs text-red-500 hover:text-red-600 hover:bg-red-50 hover:outline hover:outline-red-500 flex w-full py-2 gap-1 items-center transition cursor-pointer rounded-2xl px-2"
-                    >
-                      <Trash2 className="size-3" />{" "}
-                      <p className="text-xs!">
-                        {locale === routing.defaultLocale
-                          ? "Hapus Riwayat Percakapan"
-                          : "Clear Chat History"}
-                      </p>
-                    </button>
+                  {history.length >= 1 && accounts?.id && (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button className="text-xs text-red-500 hover:text-red-600 hover:bg-red-50 hover:outline hover:outline-red-500 flex w-full py-2 gap-1 items-center transition cursor-pointer rounded-2xl px-2">
+                          <Trash2 className="size-3" />{" "}
+                          <p className="text-xs!">
+                            {locale === routing.defaultLocale
+                              ? "Hapus Riwayat Percakapan"
+                              : "Clear Chat History"}
+                          </p>
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent className="bg-white z-999">
+                        <DialogHeader>
+                          <DialogTitle asChild>
+                            <h5 className="text-red-600">
+                              Are you sure to Delete All Chat Session?
+                            </h5>
+                          </DialogTitle>
+                          <DialogDescription>
+                            <p>
+                              This action cannot be undone. This will
+                              permanently delete all of your chat and remove
+                              your data from our servers.
+                            </p>
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <DialogClose>
+                            <Button variant={"outline"}>Cancel</Button>
+                          </DialogClose>
+                          <DialogClose>
+                            <Button
+                              variant={"destructive"}
+                              onClick={() => {
+                                handleDeleteAllChatSession(accounts?.id);
+                              }}
+                            >
+                              Yes
+                            </Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   )}
                 </>
               )}
@@ -206,8 +312,9 @@ export function ChatbotSidebar({
                       <Image
                         src={img.highlight_image}
                         alt={img.slug}
-                        width={720}
-                        height={720}
+                        width={200}
+                        height={200}
+                        loading="lazy"
                         className="aspect-square object-cover object-center rounded-xl"
                       />
                     </React.Suspense>
@@ -258,8 +365,9 @@ export function ChatbotSidebar({
                       <Image
                         src={img.highlight_image}
                         alt={img.slug}
-                        width={720}
-                        height={720}
+                        width={200}
+                        height={200}
+                        loading="lazy"
                         className="aspect-square object-cover object-center rounded-xl"
                       />
                     </React.Suspense>
@@ -310,8 +418,9 @@ export function ChatbotSidebar({
                       <Image
                         src={img.highlight_image}
                         alt={img.slug}
-                        width={720}
-                        height={720}
+                        width={200}
+                        height={200}
+                        loading="lazy"
                         className="aspect-square object-cover object-center rounded-xl"
                       />
                     </React.Suspense>

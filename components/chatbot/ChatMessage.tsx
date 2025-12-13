@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useState, ReactNode, ReactElement } from "react";
-import { motion } from "framer-motion";
-import ReactMarkdown from "react-markdown";
+import React, { useState, ReactNode, ReactElement, Suspense } from "react";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeSanitize from "rehype-sanitize";
@@ -12,6 +10,19 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
+import dynamic from "next/dynamic";
+import { Skeleton } from "../ui/skeleton";
+
+const ReactMarkdown = dynamic(() => import("react-markdown"), {
+  loading: () => (
+    <div className="space-y-3">
+      <Skeleton className="h-5 rounded w-full" />
+      <Skeleton className="h-5 rounded w-full" />
+      <Skeleton className="h-5 rounded w-full" />
+    </div>
+  ),
+  ssr: false,
+});
 
 interface ChatMessageProps {
   message: string;
@@ -19,8 +30,12 @@ interface ChatMessageProps {
   sender: "user" | "bot";
   timestamp?: string;
   onReply?: (message: string) => void;
-  replyTo?: string | null;
+  replyTo?: {
+    message?: string | null;
+    sender?: string | null;
+  };
   sessionId?: string;
+  urgent?: boolean;
 }
 
 function flattenListChildren(children: ReactNode): ReactNode {
@@ -42,6 +57,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   onReply,
   replyTo,
   sessionId,
+  urgent,
 }) => {
   const isUser = sender === "user";
   const [copied, setCopied] = useState(false);
@@ -120,6 +136,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     }
   };
 
+  console.log("reply to message:", replyTo);
+
   return (
     <div
       // initial={{ opacity: 0, y: 10 }}
@@ -136,20 +154,32 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               : "bg-white text-foreground rounded-bl-none max-w-full"
           }`}
         >
-          {replyTo && (
-            <div
-              className={`mb-3 p-3 rounded-xl text-sm!${
-                isUser
-                  ? "border-white/70 bg-white/20 text-white/80"
-                  : "border-primary/50 bg-primary/5 text-foreground/80"
-              }`}
+          {!replyTo?.message ? (
+            <p className="hidden sr-only">No Message Replied</p>
+          ) : (
+            <Suspense
+              fallback={
+                <div className="space-y-3">
+                  <Skeleton className="h-5 rounded w-full" />
+                  <Skeleton className="h-5 rounded w-full" />
+                  <Skeleton className="h-5 rounded w-full" />
+                </div>
+              }
             >
-              <p className="text-xs! font-bold mb-1 opacity-70 flex items-center gap-1">
-                <Undo2 className="size-3" />{" "}
-                {locale === routing.defaultLocale ? "Membalas" : "Reply To"}
-              </p>
-              <p className="text-sm line-clamp-2">{replyTo}</p>
-            </div>
+              <div
+                className={`mb-3 p-3 rounded-xl text-sm!${
+                  isUser
+                    ? "border-white/70 bg-white/20 text-white/80"
+                    : "border-primary/50 bg-primary/5 text-foreground/80"
+                }`}
+              >
+                <p className="text-xs! font-bold mb-1 opacity-70 flex items-center gap-1">
+                  <Undo2 className="size-3" />{" "}
+                  {locale === routing.defaultLocale ? "Membalas" : "Reply To"}
+                </p>
+                <p className="text-sm line-clamp-2">{replyTo?.message}</p>
+              </div>
+            </Suspense>
           )}
 
           {/* Markdown Renderer */}
@@ -246,7 +276,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             {cleanMessage}
           </ReactMarkdown>
 
-          {!isUser && hasConsultation && (
+          {!isUser && urgent && (
             <div className="mt-3 mb-5 bg-background py-10 px-3 rounded-2xl">
               <Link
                 href={`/${locale}/connect?session=${sessionId}`}

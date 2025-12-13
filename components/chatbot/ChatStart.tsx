@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import type React from "react";
+
+import { useEffect, useRef, useState, useTransition } from "react";
 import { ArrowUp } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import ChatWindow from "./ChatWindow";
@@ -9,16 +11,8 @@ import QuickAction from "../home/QuickAction";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
-import { Account } from "@/types/account.types";
-
-export interface Message {
-  id: string;
-  message: string;
-  sender: "user" | "bot";
-  timestamp: string;
-  replyTo?: string | null;
-  session_id?: string;
-}
+import type { Account } from "@/types/account.types";
+import type { Message } from "@/types/message.types"; // Assuming Message is declared in message.types
 
 const ChatStart = ({
   chat,
@@ -26,42 +20,30 @@ const ChatStart = ({
   publicID,
   sessionID,
   accounts,
+  onNewMessage, // Add callback to refresh history when new message is sent
 }: {
   chat: Message[];
   session?: any[];
   sessionID?: string;
   publicID: string;
   accounts?: Account;
+  onNewMessage?: () => void;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const router = useRouter();
 
-  const router = useRouter(); // Init router
   const [messages, setMessages] = useState<Message[]>(chat);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasChat, setHasChat] = useState(false);
+  const [hasChat, setHasChat] = useState(chat.length > 0);
   const [text, setText] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   const locale = useLocale();
 
-  const chatRef = useRef(messages);
-
   useEffect(() => {
-    if (session && chat.length > 0) {
-      setMessages(chat);
-      setHasChat(true);
-    } else if (!session) {
-      // Jika balik ke root/chat baru
-      setMessages([]);
-      setHasChat(false);
-    }
-  }, [chat, session]);
-
-  useEffect(() => {
-    if (chat.length > 0) {
-      setMessages(chat);
-      setHasChat(true);
-    }
+    setMessages(chat);
+    setHasChat(chat.length > 0);
   }, [chat]);
 
   useEffect(() => {
@@ -75,22 +57,21 @@ const ChatStart = ({
     setIsExpanded(text.length > 50);
   }, [text]);
 
-  useEffect(() => {
-    chatRef.current = messages;
-  }, [messages]);
-
   const handleSendMessage = async (
     userMessage: string,
     replyTo?: string | null
   ) => {
-    if (!userMessage.trim()) return;
+    if (!userMessage.trim() || isLoading) return;
 
     const userMsg: Message = {
       id: Date.now().toString(),
       message: userMessage,
       sender: "user",
       timestamp: new Date().toISOString(),
-      replyTo: replyTo ?? null,
+      replyTo: {
+        message: replyTo ?? null,
+        sender: "user",
+      },
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -99,48 +80,27 @@ const ChatStart = ({
     setText("");
 
     try {
-      // Siapkan format chat untuk API
-
       const formattedMessages = [...messages, userMsg].map((m) => ({
         sender: m.sender === "bot" ? "assistant" : "user",
         message: m.message,
-        replyTo: m.replyTo,
+        replyTo: {
+          message: m.replyTo,
+          sender: m.sender,
+        },
+        urgent: m.urgent,
       }));
 
-      let data;
-
-      // LOGIC PENTING: Cek apakah ini chat baru atau lanjutan
-      if (!session) {
-        // --- CHAT BARU ---
-        data = await chatGemini({
-          messages: formattedMessages,
-          prompt: userMessage,
-          public_id: publicID!,
-          user_id: accounts?.id,
-          // Jangan kirim session_id, biarkan backend generate
-        });
-
-        // JIKA SUKSES & DAPAT SESSION ID BARU
-        if (data.session_id) {
-          // Redirect ke URL baru
-          // Menggunakan replace agar user tidak bisa 'back' ke halaman kosong
-          // Atau push jika ingin history browser terjaga
-          router.replace(`/c/${data.session_id}`, { scroll: false });
-
-          // Kita tidak perlu update state manual di sini secara kompleks,
-          // karena router.push akan memicu re-render ChatContent -> fetch data
-          // Namun agar transisi smooth (sebelum fetch selesai), kita biarkan state messages saat ini
-        }
-      } else {
-        // --- CHAT LANJUTAN ---
-        data = await chatGemini({
-          messages: formattedMessages,
-          prompt: userMessage,
-          public_id: publicID!,
-          user_id: accounts?.id,
-          session_id: sessionID, // Gunakan ID dari URL/Props
-        });
-      }
+      const data = await chatGemini({
+        messages: formattedMessages,
+        prompt: userMessage,
+        replyTo: {
+          message: replyTo,
+          sender: "user",
+        },
+        public_id: publicID,
+        user_id: accounts?.id,
+        session_id: sessionID,
+      });
 
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -151,9 +111,20 @@ const ChatStart = ({
               "Maaf, saya tidak dapat memproses pertanyaan Anda.",
         sender: "bot",
         timestamp: new Date().toISOString(),
+        urgent: data.urgent,
       };
 
       setMessages((prev) => [...prev, botResponse]);
+
+      if (onNewMessage) {
+        onNewMessage();
+      }
+
+      if (!session && data.session_id) {
+        startTransition(() => {
+          router.replace(`/${locale}/c/${data.session_id}`, { scroll: false });
+        });
+      }
     } catch (error) {
       console.error("Error sending message:", error);
       const errorMsg: Message = {

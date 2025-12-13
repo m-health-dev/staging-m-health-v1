@@ -1,5 +1,3 @@
-import { Message } from "@/components/chatbot/ChatStart";
-
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
@@ -8,7 +6,10 @@ const apiBaseUrl =
 export async function chatGemini(payload: {
   messages: any[];
   prompt: string;
-  replyTo?: string;
+  replyTo?: {
+    message?: string | null;
+    sender?: string | null;
+  };
   user_id?: string;
   public_id: string;
   session_id?: string;
@@ -30,6 +31,7 @@ export async function chatGemini(payload: {
     return {
       message: data.raw.candidates[0].content.parts[0].text,
       session_id: data.session_id,
+      urgent: data.urgent,
     };
   } catch (error) {
     console.error("Gemini API Error:", error);

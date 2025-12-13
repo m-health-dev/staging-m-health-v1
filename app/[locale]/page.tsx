@@ -1,56 +1,53 @@
 import ChatContent from "@/components/chatbot/ChatContent";
-import Footer from "@/components/utility/footer/Footer";
-import NavHeader from "@/components/utility/header/NavHeader";
-import { baseUrl } from "@/helper/baseUrl";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { getChatHistory } from "@/lib/chatbot/getChatActivity";
 import { getAllMedical } from "@/lib/medical/get-medical";
 import { getAllPackages } from "@/lib/packages/get-packages";
 import { getAllWellness } from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/server";
+import { getLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 
-import { v4 as uuidv4 } from "uuid";
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const packages = await (await getAllPackages(1, 3)).data;
-  const medical = (await getAllMedical(1, 3)).data;
-  const wellness = (await getAllWellness(1, 3)).data;
-
-  const cookie = await cookies();
-
-  await fetch(`${baseUrl}/api/public-id`);
-
-  const getPublicID = cookie.get("mhealth_public_id");
-  const publicID = getPublicID?.value as string;
+  const cookieStore = await cookies();
+  const publicID = cookieStore.get("mhealth_public_id")?.value;
 
   const supabase = await createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const locale = await getLocale();
 
-  const accessToken = session?.access_token!;
+  const [
+    {
+      data: { session },
+    },
+    packagesResult,
+    medicalResult,
+    wellnessResult,
+  ] = await Promise.all([
+    supabase.auth.getSession(),
+    getAllPackages(1, 3),
+    getAllMedical(1, 3),
+    getAllWellness(1, 3),
+  ]);
 
-  let userData;
+  const historyData = publicID
+    ? await getChatHistory(publicID)
+    : { data: [], total: 0 };
 
-  if (accessToken) {
-    userData = await getUserInfo(accessToken);
-  }
-
-  const historyData = await getChatHistory(publicID);
-
-  console.log(publicID);
+  const userData = session?.access_token
+    ? await getUserInfo(session.access_token)
+    : undefined;
 
   return (
-    <>
-      <ChatContent
-        packages={packages}
-        medical={medical}
-        wellness={wellness}
-        history={historyData.data}
-        publicIDFetch={publicID}
-        user={userData}
-      />
-    </>
+    <ChatContent
+      packages={packagesResult.data}
+      medical={medicalResult.data}
+      wellness={wellnessResult.data}
+      initialHistory={historyData.data || []}
+      publicIDFetch={publicID}
+      user={userData}
+      locale={locale}
+    />
   );
 }

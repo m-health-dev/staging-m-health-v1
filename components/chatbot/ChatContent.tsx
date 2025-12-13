@@ -1,123 +1,60 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import type React from "react";
+
+import { useEffect, useState, useTransition } from "react";
 import ChatStart from "./ChatStart";
-import ContainerWrap from "../utility/ContainerWrap";
-
-import { useResponsiveSidebar } from "@/hooks/ChatSidebar";
-
-import { Message } from "./ChatWindow";
-
-import { getChatHistory } from "@/lib/chatbot/getChatActivity";
-
-import NavHeader from "../utility/header/NavHeader";
+import type { Message } from "./ChatWindow";
 import { SidebarInset, SidebarProvider } from "../ui/sidebar";
 import { ChatbotSidebar } from "./chatbot-sidebar";
-import { Account } from "@/types/account.types";
-import { MedicalType } from "@/types/medical.types";
-import { WellnessType } from "@/types/wellness.types";
-import { PackageType } from "@/types/packages.types";
+import type { Account } from "@/types/account.types";
+import type { MedicalType } from "@/types/medical.types";
+import type { WellnessType } from "@/types/wellness.types";
+import type { PackageType } from "@/types/packages.types";
+import NavHeader from "../utility/header/NavHeader";
+import { usePublicID } from "@/hooks/use-public-id";
+import { useChatHistory } from "@/hooks/use-chat-bot-hisstory";
 
 const ChatContent = ({
   packages,
   medical,
   wellness,
-  history,
+  initialHistory,
   session,
   sessionID,
   publicIDFetch,
+  locale,
   user,
 }: {
   packages: PackageType[];
   medical: MedicalType[];
   wellness: WellnessType[];
   session?: any[];
-  history: any[];
+  initialHistory: any[];
   sessionID?: string;
-  publicIDFetch: string;
+  publicIDFetch?: string;
+  locale: string;
   user?: Account;
 }) => {
-  const { isSidebarOpen, setIsSidebarOpen } = useResponsiveSidebar();
-  const [showSidebarContent, setShowSidebarContent] = useState(true);
+  const [selectedChat, setSelectedChat] = useState<Message[]>(session || []);
+  const [isPending, startTransition] = useTransition();
 
-  // State chat yang sedang aktif
-  const [selectedChat, setSelectedChat] = useState<Message[]>([]);
-  const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const { publicID, isLoading: publicIDLoading } = usePublicID(publicIDFetch);
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [publicID, setPublicID] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchPublicID() {
-      try {
-        const res = await fetch("/api/public-id");
-        const data = await res.json();
-        setPublicID(data.publicID);
-      } catch (err) {
-        console.error("Failed to fetch Public ID:", err);
-      }
-    }
-
-    fetchPublicID();
-  }, []);
+  const {
+    history,
+    isLoading: historyLoading,
+    refresh,
+  } = useChatHistory(publicID);
 
   useEffect(() => {
-    if (!publicID) return;
-
-    const fetchHistory = async () => {
-      setIsLoading(true);
-      try {
-        const historyData = await getChatHistory(publicID);
-        setChatHistory(historyData.data || []);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchHistory();
-    const interval = setInterval(fetchHistory, 60000);
-    return () => clearInterval(interval);
-  }, [publicID]);
-
-  useEffect(() => {
-    if (session) {
-      setSelectedChat(session);
-    } else if (!session) {
-      setSelectedChat([]);
-    }
+    startTransition(() => {
+      setSelectedChat(session || []);
+    });
   }, [session]);
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-
-    if (!isSidebarOpen) {
-      setShowSidebarContent(false);
-      timer = setTimeout(() => {
-        setIsSidebarOpen(false);
-      }, 400);
-    }
-
-    return () => clearTimeout(timer);
-  }, [isSidebarOpen]);
-
-  // Handler toggle
-  const toggleSidebar = () => {
-    if (isSidebarOpen) {
-      // Saat menutup → jalankan urutan di atas
-      setShowSidebarContent(false);
-      setIsSidebarOpen(false);
-    } else {
-      // Saat membuka → buka lebar dulu baru isi muncul
-      setIsSidebarOpen(true);
-      setShowSidebarContent(true);
-    }
-  };
-
-  return (
-    <>
+  if (publicIDLoading) {
+    return (
       <SidebarProvider
         style={
           {
@@ -132,26 +69,59 @@ const ChatContent = ({
           packages={packages}
           medical={medical}
           wellness={wellness}
-          history={chatHistory}
+          history={initialHistory}
           session={session}
           sessionID={sessionID}
-          publicIDFetch={publicID!}
-          isLoading={isLoading}
+          publicIDFetch={publicID}
+          isLoading={true}
+          locale={locale}
+          onRefreshHistory={refresh}
         />
-        <SidebarInset className="p-0! m-0! ">
+        <SidebarInset className="p-0 m-0 flex flex-col">
           <NavHeader />
-          <ContainerWrap size="xxl">
-            <ChatStart
-              chat={selectedChat}
-              session={session}
-              sessionID={sessionID}
-              publicID={publicID!}
-              accounts={user}
-            />
-          </ContainerWrap>
+          <div className="flex items-center justify-center flex-1">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
         </SidebarInset>
       </SidebarProvider>
-    </>
+    );
+  }
+
+  return (
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 82)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <ChatbotSidebar
+        variant="inset"
+        accounts={user}
+        packages={packages}
+        medical={medical}
+        wellness={wellness}
+        history={history.length > 0 ? history : initialHistory}
+        session={session}
+        sessionID={sessionID}
+        publicIDFetch={publicID}
+        isLoading={historyLoading || isPending}
+        onRefreshHistory={refresh}
+        locale={locale}
+      />
+      <SidebarInset className="p-0 m-0 flex flex-col">
+        <NavHeader />
+        <ChatStart
+          chat={selectedChat}
+          session={session}
+          sessionID={sessionID}
+          publicID={publicID}
+          accounts={user}
+          onNewMessage={refresh}
+        />
+      </SidebarInset>
+    </SidebarProvider>
   );
 };
 

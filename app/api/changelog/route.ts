@@ -18,7 +18,7 @@ export async function GET(req: Request) {
         Accept: "application/vnd.github+json",
         Authorization: `Bearer ${process.env.GITHUB_TOKEN}`, // optional, untuk rate limit besar
       },
-      next: { revalidate: 60 }, // revalidate setiap 1 jam
+      next: { revalidate: 1 }, // revalidate setiap 1 jam
     }
   );
 

@@ -1,6 +1,5 @@
 "use server";
 
-import { Message } from "@/components/chatbot/ChatStart";
 import { error } from "console";
 import { success } from "zod";
 import { getVendorByID } from "./get-vendor";

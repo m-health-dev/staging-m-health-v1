@@ -1,17 +1,18 @@
-import { Message } from "@/components/chatbot/ChatStart";
-
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
 export async function getChatHistory(public_id: string) {
+  if (!public_id) {
+    return { data: [], total: 0 };
+  }
+
   try {
-    console.log("Get Chat History for Public ID:", public_id);
     const res = await fetch(
       `${apiBaseUrl}/api/v1/chat-activities/all/${public_id}`,
       {
-        cache: "no-store",
+        cache: "no-store", // Use standard fetch cache option
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -19,25 +20,73 @@ export async function getChatHistory(public_id: string) {
       }
     );
 
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
     const json = await res.json();
-    console.log(`Success Get ${json.total} Chat History for `, public_id);
 
-    const data = json.data;
-
-    return { data };
+    return {
+      data: json.data || [],
+      total: json.total || 0,
+    };
   } catch (error) {
     console.error("Get Chat Activities Error:", error);
-    return { message: "Terjadi kesalahan saat terhubung ke server." };
+    return {
+      data: [],
+      total: 0,
+      error: "Failed to fetch chat history",
+    };
+  }
+}
+
+export async function getChatHistoryByUserID(user_id: string) {
+  if (!user_id) {
+    return { data: [], total: 0 };
+  }
+
+  try {
+    const res = await fetch(
+      `${apiBaseUrl}/api/v1/chat-activities/all/${user_id}`,
+      {
+        cache: "no-store", // Use standard fetch cache option
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! by User ID status: ${res.status}`);
+    }
+
+    const json = await res.json();
+
+    return {
+      data: json.data || [],
+      total: json.total || 0,
+    };
+  } catch (error) {
+    console.error("Get Chat Activities by User ID Error:", error);
+    return {
+      data: [],
+      total: 0,
+      error: "Failed to fetch chat history by User ID",
+    };
   }
 }
 
 export async function getChatSession(session_id: string) {
+  if (!session_id) {
+    return { error: "Session ID is required" };
+  }
+
   try {
-    console.log("Get Chat Session:", session_id);
     const res = await fetch(
       `${apiBaseUrl}/api/v1/chat-activities/${session_id}`,
       {
-        cache: "no-store",
+        cache: "no-store", // Use standard fetch cache option
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +94,12 @@ export async function getChatSession(session_id: string) {
       }
     );
 
-    console.log(res.url);
+    if (!res.ok) {
+      if (res.status === 404) {
+        return { error: "Chat sudah dihapus atau diarsipkan." };
+      }
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
 
     const json = await res.json();
 
@@ -53,17 +107,16 @@ export async function getChatSession(session_id: string) {
       return { error: "Chat sudah dihapus atau diarsipkan." };
     }
 
-    console.log(`Success Get Chat Session for `, session_id);
-
-    const data = json.chat_activity_data.messages;
-    const session = json.session_id;
-    const publicID = json.publicID;
-
-    // console.log(data);
-
-    return { data, session, publicID };
+    return {
+      data: json.chat_activity_data.messages || [],
+      session: json.session_id,
+      publicID: json.publicID,
+    };
   } catch (error) {
     console.error("Get Chat Session Error:", error);
-    return { message: "Terjadi kesalahan saat terhubung ke server." };
+    return {
+      error: "Terjadi kesalahan saat mengambil sesi chat.",
+      data: [],
+    };
   }
 }

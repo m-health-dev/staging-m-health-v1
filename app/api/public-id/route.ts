@@ -1,4 +1,3 @@
-// app/api/public-id/route.ts
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
@@ -12,6 +11,7 @@ export async function GET() {
     cookieStore.set("mhealth_public_id", publicID, {
       path: "/",
       httpOnly: false,
+      sameSite: "lax",
       expires: new Date("2099-12-31"),
     });
   }
