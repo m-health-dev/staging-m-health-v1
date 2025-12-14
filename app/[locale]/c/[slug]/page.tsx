@@ -46,17 +46,22 @@ export default async function SessionPage(props: { params: paramsType }) {
     ? await getUserInfo(session.access_token)
     : undefined;
 
+  const urgent = sessionChat.urgent;
+
   return (
-    <ChatContent
-      packages={packagesRes.data}
-      medical={medical.data}
-      wellness={wellness.data}
-      initialHistory={historyData.data || []}
-      sessionID={sessionID}
-      session={sessionChat.data}
-      publicIDFetch={publicID}
-      user={userData}
-      locale={locale}
-    />
+    <>
+      <ChatContent
+        packages={packagesRes.data}
+        medical={medical.data}
+        wellness={wellness.data}
+        initialHistory={historyData.data || []}
+        sessionID={sessionID}
+        session={sessionChat.data}
+        publicIDFetch={publicID}
+        user={userData}
+        locale={locale}
+        urgent={urgent}
+      />
+    </>
   );
 }

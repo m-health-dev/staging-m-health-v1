@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import { PackagesWellnessMedicalDataTable } from "@/components/package-wellness-medical/package-wellness-medical-data-table";
+import { Studio1DataTable } from "@/components/package-wellness-medical/package-wellness-medical-data-table";
 import { routing } from "@/i18n/routing";
 import { createClient } from "@/utils/supabase/client";
 import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
@@ -56,7 +56,7 @@ const MedicalStudio = async ({
           </p>
         </div>
       </div>
-      <PackagesWellnessMedicalDataTable
+      <Studio1DataTable
         columns={columns}
         data={data}
         meta={meta}

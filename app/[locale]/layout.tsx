@@ -16,6 +16,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { getMessages } from "next-intl/server";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -48,13 +49,15 @@ export default async function RootLayout({ children, params }: Props) {
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
+  const messages = await getMessages();
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${manrope.variable} ${vietnamPro.variable} ${geistMono.variable} antialiased`}
       >
         <LanguageProvider>
-          <NextIntlClientProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
             <Toaster
               richColors
               position="top-right"

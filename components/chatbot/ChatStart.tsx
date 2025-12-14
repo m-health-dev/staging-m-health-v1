@@ -38,6 +38,7 @@ const ChatStart = ({
   const [hasChat, setHasChat] = useState(chat.length > 0);
   const [text, setText] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [pendingSessionId, setPendingSessionId] = useState<string | null>(null);
 
   const locale = useLocale();
 
@@ -74,6 +75,7 @@ const ChatStart = ({
       },
     };
 
+    // tampilkan pesan user langsung
     setMessages((prev) => [...prev, userMsg]);
     setIsLoading(true);
     setHasChat(true);
@@ -83,10 +85,7 @@ const ChatStart = ({
       const formattedMessages = [...messages, userMsg].map((m) => ({
         sender: m.sender === "bot" ? "assistant" : "user",
         message: m.message,
-        replyTo: {
-          message: m.replyTo,
-          sender: m.sender,
-        },
+        replyTo: m.replyTo,
         urgent: m.urgent,
       }));
 
@@ -102,6 +101,22 @@ const ChatStart = ({
         session_id: sessionID,
       });
 
+      if (!session && data.session_id) {
+        setPendingSessionId(data.session_id);
+        setIsLoading(true);
+
+        startTransition(() => {
+          router.replace(`/${locale}/c/${data.session_id}`, {
+            scroll: false,
+          });
+          setIsLoading(true);
+        });
+        setIsLoading(false);
+
+        return;
+      }
+
+      // 🟢 JIKA SESSION SUDAH ADA
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
         message:
@@ -116,35 +131,75 @@ const ChatStart = ({
 
       setMessages((prev) => [...prev, botResponse]);
 
-      if (onNewMessage) {
-        onNewMessage();
-      }
-
-      if (!session && data.session_id) {
-        startTransition(() => {
-          router.replace(`/${locale}/c/${data.session_id}`, { scroll: false });
-        });
-      }
+      onNewMessage?.();
     } catch (error) {
       console.error("Error sending message:", error);
-      const errorMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        message: "Maaf, terjadi kesalahan. Silakan coba lagi.",
-        sender: "bot",
-        timestamp: new Date().toISOString(),
-      };
-      setMessages((prev) => [...prev, errorMsg]);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          message: "Maaf, terjadi kesalahan. Silakan coba lagi.",
+          sender: "bot",
+          timestamp: new Date().toISOString(),
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage(text);
+    if (e.key === "Enter") {
+      // Begitu Enter ditekan, paksa expanded
+      setIsExpanded(true);
+
+      // Enter tanpa Shift = kirim
+      if (!e.shiftKey) {
+        e.preventDefault();
+        handleSendMessage(text);
+      }
     }
   };
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      const textarea = textareaRef.current;
+      if (!textarea) return;
+
+      const active = document.activeElement;
+      if (
+        active &&
+        (active.tagName === "INPUT" ||
+          active.tagName === "TEXTAREA" ||
+          (active as HTMLElement).isContentEditable)
+      ) {
+        return;
+      }
+
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      if (e.key.length === 1) {
+        textarea.focus();
+
+        const start = textarea.selectionStart ?? textarea.value.length;
+        const end = textarea.selectionEnd ?? textarea.value.length;
+
+        textarea.value =
+          textarea.value.slice(0, start) + e.key + textarea.value.slice(end);
+
+        const pos = start + 1;
+        textarea.setSelectionRange(pos, pos);
+
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  }, []);
 
   if (hasChat) {
     return (
@@ -154,12 +209,13 @@ const ChatStart = ({
         isLoading={isLoading}
         accounts={accounts}
         sessionId={sessionID}
+        pendingSessionId={pendingSessionId}
       />
     );
   }
 
   return (
-    <div className="justify-center items-center lg:max-h-[calc(100vh-15vh)] lg:min-h-[calc(100vh-15vh)] max-h-[calc(100vh-25vh)] min-h-[calc(100vh-25vh)] lg:mt-0 mt-[8vh] flex">
+    <div className="justify-center items-center lg:max-h-[calc(100vh-15vh)] lg:min-h-[calc(100vh-15vh)] max-h-[calc(100vh-25vh)] min-h-[calc(100vh-25vh)] lg:mt-0 mt-[8vh] flex px-4">
       <div className="flex flex-col lg:items-center max-w-full">
         <div className="start_conversation mb-10 lg:text-center text-start">
           <h2 className="text-primary font-extrabold mb-2">

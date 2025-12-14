@@ -4,8 +4,9 @@ import Wrapper from "@/components/utility/Wrapper";
 import { createClient } from "@/utils/supabase/server";
 import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
-import { getUserRole } from "../../(auth)/actions/auth.actions";
+import { getAccessToken, getUserRole } from "../../(auth)/actions/auth.actions";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
+import UnderConstruction from "@/components/utility/under-construction";
 
 const DashboardPage = async () => {
   const supabase = await createClient();
@@ -21,8 +22,8 @@ const DashboardPage = async () => {
     );
   }
 
-  const userData = await getUserInfo(session?.access_token);
   const role = await getUserRole();
+  const accessToken = await getAccessToken();
 
   return (
     <>
@@ -44,10 +45,21 @@ const DashboardPage = async () => {
         </div>
       </div>
 
-      <pre className="text-wrap wrap-anywhere">
+      <div className="bg-white p-4 border rounded-2xl mt-10">
+        <p className="text-sm! text-primary mb-1">Your Access Token</p>
+        <pre className="text-wrap wrap-anywhere text-sm!">
+          {JSON.stringify(accessToken, null, 2)}
+        </pre>
+      </div>
+
+      <div className="my-10">
+        <UnderConstruction element />
+      </div>
+
+      {/* <pre className="text-wrap wrap-anywhere">
         {JSON.stringify(userData, null, 2)}
       </pre>
-      <pre className="text-wrap wrap-anywhere">Role: {role}</pre>
+      <pre className="text-wrap wrap-anywhere">Role: {role}</pre> */}
     </>
   );
 };

@@ -14,13 +14,6 @@ import dynamic from "next/dynamic";
 import { Skeleton } from "../ui/skeleton";
 
 const ReactMarkdown = dynamic(() => import("react-markdown"), {
-  loading: () => (
-    <div className="space-y-3">
-      <Skeleton className="h-5 rounded w-full" />
-      <Skeleton className="h-5 rounded w-full" />
-      <Skeleton className="h-5 rounded w-full" />
-    </div>
-  ),
   ssr: false,
 });
 
@@ -65,14 +58,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
   const phoneNumber = "08159880048";
 
-  const hasConsultation =
-    message.includes("consultation") || message.includes("Konsultasi");
+  let cleanMessage = message.trim();
 
-  let cleanMessage = message
-    .replaceAll("```json\nneed_consultation : true\n```", ``)
-    .trim();
-
-  const hasPhone = message.includes(phoneNumber);
+  // const hasPhone = message.includes(phoneNumber);
 
   const whatsappLink = `https://wa.me/${phoneNumber.replace("0", "62")}`;
 
@@ -81,8 +69,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     " "
   );
 
-  cleanMessage = cleanMessage.replace("**consultation**", "");
-  cleanMessage = cleanMessage.replace(/\s+/g, " ").trim();
+  cleanMessage = cleanMessage.replace(/[ \t]+/g, " ").trim();
 
   cleanMessage = cleanMessage.replaceAll(
     phoneNumber,
@@ -136,7 +123,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     }
   };
 
-  console.log("reply to message:", replyTo);
+  // console.log("reply to message:", replyTo);
 
   return (
     <div
@@ -157,29 +144,19 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           {!replyTo?.message ? (
             <p className="hidden sr-only">No Message Replied</p>
           ) : (
-            <Suspense
-              fallback={
-                <div className="space-y-3">
-                  <Skeleton className="h-5 rounded w-full" />
-                  <Skeleton className="h-5 rounded w-full" />
-                  <Skeleton className="h-5 rounded w-full" />
-                </div>
-              }
+            <div
+              className={`mb-3 p-3 rounded-xl text-sm!${
+                isUser
+                  ? "border-white/70 bg-white/20 text-white/80"
+                  : "border-primary/50 bg-primary/5 text-foreground/80"
+              }`}
             >
-              <div
-                className={`mb-3 p-3 rounded-xl text-sm!${
-                  isUser
-                    ? "border-white/70 bg-white/20 text-white/80"
-                    : "border-primary/50 bg-primary/5 text-foreground/80"
-                }`}
-              >
-                <p className="text-xs! font-bold mb-1 opacity-70 flex items-center gap-1">
-                  <Undo2 className="size-3" />{" "}
-                  {locale === routing.defaultLocale ? "Membalas" : "Reply To"}
-                </p>
-                <p className="text-sm line-clamp-2">{replyTo?.message}</p>
-              </div>
-            </Suspense>
+              <p className="text-xs! font-bold mb-1 opacity-70 flex items-center gap-1">
+                <Undo2 className="size-3" />{" "}
+                {locale === routing.defaultLocale ? "Membalas" : "Reply To"}
+              </p>
+              <p className="text-sm line-clamp-2">{replyTo?.message}</p>
+            </div>
           )}
 
           {/* Markdown Renderer */}

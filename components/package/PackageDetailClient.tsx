@@ -222,6 +222,7 @@ const PackageDetailClient = ({
             <AvatarVendorHotel
               size="md"
               type="vendor"
+              locale={locale}
               vendor_id={p.vendor_id}
             />
           </div>
@@ -229,7 +230,12 @@ const PackageDetailClient = ({
             <p className="text-xs! font-medium text-muted-foreground mb-2">
               Hotel
             </p>
-            <AvatarVendorHotel size="md" type="hotel" hotel_id={p.hotel_id} />
+            <AvatarVendorHotel
+              size="md"
+              type="hotel"
+              hotel_id={p.hotel_id}
+              locale={locale}
+            />
           </div>
         </div>
         <div className="flex flex-wrap lg:gap-5 gap-3 mt-5">

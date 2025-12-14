@@ -20,15 +20,16 @@ import { RumahSakit } from "@/lib/dummyRS";
 import { routing } from "@/i18n/routing";
 import { MedicalType } from "@/types/medical.types";
 import AvatarVendorHotel from "../utility/AvatarVendorHotel";
+import { useTranslations } from "next-intl";
 
 export default function PopularMedSlide({
   data,
   locale,
-  hospital,
+  labels,
 }: {
   data: MedicalType[];
   locale: string;
-  hospital: RumahSakit[];
+  labels: any;
 }) {
   const swiperRef = useRef<any>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -43,8 +44,8 @@ export default function PopularMedSlide({
 
   return (
     <ContainerWrap type={data.length >= 5 ? "carousel" : "default"}>
-      <div className="overflow-hidden">
-        {data.length >= 5 ? (
+      <div className="lg:my-10 my-8 overflow-hidden">
+        {data.length >= 10 ? (
           <div className="w-full flex-col items-center relative group/slide">
             <Swiper
               modules={[Navigation, Autoplay, Pagination]}
@@ -65,72 +66,77 @@ export default function PopularMedSlide({
                 clickable: true,
               }}
               autoplay={{
-                delay: 7500,
+                delay: 5000,
                 disableOnInteraction: true,
               }}
-              className="w-full"
+              className="w-full "
             >
               {data.map((slide, key) => (
                 <SwiperSlide
-                  key={key}
-                  className="flex flex-col justify-between rounded-2xl mb-2 max-w-[280px] group cursor-pointer"
+                  key={slide.id}
+                  className="justify-between rounded-2xl max-w-[300px] pb-2 group cursor-pointer flex grow"
                   onMouseEnter={() => setHoveredIndex(key)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
-                  <Image
-                    src={"https://placehold.co/500x500.png"}
-                    width={720}
-                    height={405}
-                    alt={
-                      locale === routing.defaultLocale
-                        ? slide.id_title
-                        : slide.en_title
-                    }
-                    className="w-full aspect-square! object-cover object-center rounded-t-2xl -z-10"
-                  />
-
-                  <div className="flex flex-col justify-center 3xl:min-h-[15vh] min-h-[22vh] grow max-w-full bg-white border rounded-2xl -translate-y-5 p-4 h-full shadow transition-all duration-100 z-50  group-hover:outline-2 group-hover:outline-primary">
-                    <div className="inline-flex gap-2 items-center">
-                      <Avatar
-                        name={hospital[key + 2].nama}
-                        colors={[
-                          "#3e77ab",
-                          "#22b26e",
-                          "#f2f26f",
-                          "#fff7bd",
-                          "#95cfb7",
-                        ]}
-                        variant="beam"
-                        size={20}
-                      />
-                      <p className="text-xs! text-health normal-case line-clamp-1">
-                        {hospital[key + 2].nama}
-                      </p>
-                    </div>
-                    <div className="overflow-hidden mt-2">
-                      <div>
-                        <h6 className="capitalize font-bold text-primary line-clamp-2">
-                          {locale === routing.defaultLocale
-                            ? slide.id_title
-                            : slide.en_title}
-                        </h6>
-                      </div>
-                    </div>
-                    <div className="mt-2 overflow-hidden">
-                      <div>
-                        <p className="text-muted-foreground text-sm! line-clamp-2">
-                          {locale === routing.defaultLocale
-                            ? slide.id_tagline
-                            : slide.en_tagline}
+                  <div
+                    className="flex flex-col rounded-2xl w-full group cursor-pointer"
+                    onMouseEnter={() => setHoveredIndex(key)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                  >
+                    <Link
+                      href={`/${locale}/package/${slide.slug}`}
+                      className="flex flex-col w-full h-[calc(100%-20px)] relative group-hover:shadow rounded-2xl transition-all duration-300"
+                    >
+                      <div className="relative">
+                        <p className="absolute -bottom-2.5 left-0 text-muted-foreground bg-white px-4 pt-2 pb-5 rounded-t-2xl text-sm! mb-3 z-50 ">
+                          {slide.duration_by_day} {labels.days}{" "}
+                          {slide.duration_by_night} {labels.night}
                         </p>
+                        <Image
+                          src={slide.highlight_image} // TODO: Ganti dengan slide.full ketika sudah ada gambarnya
+                          width={720}
+                          height={405}
+                          alt={
+                            locale === "id" ? slide.id_title : slide.en_title
+                          }
+                          className="w-full aspect-square! object-cover object-center rounded-t-2xl border-0"
+                        />
                       </div>
-                    </div>
+
+                      <div className="flex flex-col justify-center grow  max-w-full bg-white rounded-2xl -mt-5 p-4 h-full transition-all duration-100 z-50">
+                        <div className="overflow-hidden">
+                          <div>
+                            <h5 className="capitalize font-bold text-primary lg:line-clamp-3 line-clamp-1">
+                              {locale === "id"
+                                ? slide.id_title
+                                : slide.en_title}
+                            </h5>
+                          </div>
+                        </div>
+                        <div className="mt-1 overflow-hidden">
+                          <div>
+                            <p className="text-muted-foreground lg:line-clamp-2 line-clamp-1">
+                              {locale === "id"
+                                ? slide.id_tagline
+                                : slide.en_tagline}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="inline-flex gap-2 items-center mt-4">
+                          <AvatarVendorHotel
+                            type="vendor"
+                            vendor_id={slide.vendor_id}
+                            locale={locale}
+                          />
+                        </div>
+                      </div>
+                    </Link>
                   </div>
                 </SwiperSlide>
               ))}
             </Swiper>
-            {/* <div className="absolute right-0 top-0 lg:w-32 w-5 h-full bg-linear-to-l from-health z-10"></div>
-            <div className="absolute left-0 top-0 lg:w-32 w-5 h-full bg-linear-to-r from-health z-10"></div> */}
+            {/* <div className="absolute right-0 top-0 lg:w-32 w-5 h-full bg-linear-to-l from-background z-10"></div>
+            <div className="absolute left-0 top-0 lg:w-32 w-5 h-full bg-linear-to-r from-background z-10"></div> */}
             <div className="lg:px-10 px-3 absolute top-0 left-0 z-20 lg:flex hidden h-full items-center transition-all duration-300 lg:translate-x-20 lg:group-hover/slide:translate-x-0 lg:opacity-0 lg:group-hover/slide:opacity-100">
               <button
                 onClick={(e) => {
@@ -140,7 +146,7 @@ export default function PopularMedSlide({
                     swiperRef.current.slidePrev();
                   }
                 }}
-                className="bg-white h-12 w-12 rounded-full border border-health flex justify-center items-center transition-all duration-500 pointer-events-auto cursor-pointer relative overflow-hidden group"
+                className="bg-white h-12 w-12 rounded-full border border-primary flex justify-center items-center transition-all duration-500 pointer-events-auto cursor-pointer relative overflow-hidden group"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +154,7 @@ export default function PopularMedSlide({
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="size-6 text-health group-hover:text-background z-20 transition-all duration-300"
+                  className="size-6 text-primary group-hover:text-background z-20 transition-all duration-300"
                 >
                   <path
                     strokeLinecap="round"
@@ -156,7 +162,7 @@ export default function PopularMedSlide({
                     d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
                   />
                 </svg>
-                <div className="absolute -left-0.5 h-16 w-16 rounded-full bg-health translate-x-50 group-hover:translate-x-0 transition-transform duration-500  ease-in-out z-19"></div>
+                <div className="absolute -left-0.5 h-16 w-16 rounded-full bg-primary translate-x-50 group-hover:translate-x-0 transition-transform duration-500  ease-in-out z-19"></div>
               </button>
             </div>
             <div className="lg:px-10 px-3 absolute top-0 right-0 z-10 lg:flex hidden h-full items-center transition-all duration-300 lg:-translate-x-20 lg:group-hover/slide:translate-x-0 lg:opacity-0 lg:group-hover/slide:opacity-100">
@@ -168,7 +174,7 @@ export default function PopularMedSlide({
                     swiperRef.current.slideNext();
                   }
                 }}
-                className="bg-white h-12 w-12 rounded-full border border-health flex justify-center items-center transition-all duration-500 pointer-events-auto cursor-pointer relative overflow-hidden group"
+                className="bg-white h-12 w-12 rounded-full border border-primary flex justify-center items-center transition-all duration-500 pointer-events-auto cursor-pointer relative overflow-hidden group"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -176,7 +182,7 @@ export default function PopularMedSlide({
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="size-6 text-health group-hover:text-background z-20 transition-all duration-300"
+                  className="size-6 text-primary group-hover:text-background z-20 transition-all duration-300"
                 >
                   <path
                     strokeLinecap="round"
@@ -184,58 +190,64 @@ export default function PopularMedSlide({
                     d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                   />
                 </svg>
-                <div className="absolute -left-0.5 h-16 w-16 rounded-full bg-health -translate-x-20 group-hover:translate-x-0 transition-transform duration-500  ease-in-out z-19"></div>
+                <div className="absolute -left-0.5 h-16 w-16 rounded-full bg-primary -translate-x-20 group-hover:translate-x-0 transition-transform duration-500  ease-in-out z-19"></div>
               </button>
             </div>
           </div>
         ) : (
           <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 lg:pb-0 px-2">
             {data.map((slide, key) => (
-              <Link
-                href={`/${locale}/medical/${slide.slug}`}
+              <div
                 key={key}
-                className="flex flex-col rounded-2xl mb-2 w-full group cursor-pointer"
+                className="flex flex-col rounded-2xl w-full group cursor-pointer"
                 onMouseEnter={() => setHoveredIndex(key)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                <Image
-                  src={slide.highlight_image}
-                  width={720}
-                  height={405}
-                  alt={
-                    locale === routing.defaultLocale
-                      ? slide.id_title
-                      : slide.en_title
-                  }
-                  className="w-full aspect-square! object-cover object-center rounded-t-2xl"
-                />
+                <Link
+                  href={`/${locale}/package/${slide.slug}`}
+                  className="flex flex-col w-full h-[calc(100%-20px)] relative group-hover:shadow-md rounded-2xl transition-all duration-300"
+                >
+                  <div className="relative">
+                    <p className="absolute -bottom-2.5 left-0 text-muted-foreground bg-white px-4 pt-2 pb-5 rounded-t-2xl text-sm! mb-3 z-50 ">
+                      {slide.duration_by_day} {labels.days}{" "}
+                      {slide.duration_by_night} {labels.night}
+                    </p>
+                    <Image
+                      src={slide.highlight_image} // TODO: Ganti dengan slide.full ketika sudah ada gambarnya
+                      width={720}
+                      height={405}
+                      alt={locale === "id" ? slide.id_title : slide.en_title}
+                      className="w-full aspect-square! object-cover object-center rounded-t-2xl"
+                    />
+                  </div>
 
-                <div className="flex flex-col justify-center  3xl:min-h-[15vh] min-h-[22vh] max-w-full bg-white border rounded-2xl -mt-5 p-4 h-full shadow transition-all duration-100 group-hover:outline-2 group-hover:outline-primary z-50">
-                  <AvatarVendorHotel
-                    type="vendor"
-                    vendor_id={slide.vendor_id}
-                  />
-
-                  <div className="overflow-hidden mt-2">
-                    <div>
-                      <p className="capitalize font-bold text-primary text-lg!  lg:line-clamp-2 line-clamp-1">
-                        {locale === routing.defaultLocale
-                          ? slide.id_title
-                          : slide.en_title}
-                      </p>
+                  <div className="flex flex-col justify-center grow  max-w-full bg-white rounded-2xl -translate-y-5 p-4 h-full transition-all duration-100 z-50">
+                    <div className="overflow-hidden">
+                      <div>
+                        <h5 className="capitalize font-bold text-primary lg:line-clamp-3 line-clamp-1">
+                          {locale === "id" ? slide.id_title : slide.en_title}
+                        </h5>
+                      </div>
+                    </div>
+                    <div className="mt-1 overflow-hidden">
+                      <div>
+                        <p className="text-muted-foreground lg:line-clamp-2 line-clamp-1">
+                          {locale === "id"
+                            ? slide.id_tagline
+                            : slide.en_tagline}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="inline-flex gap-2 items-center mt-4">
+                      <AvatarVendorHotel
+                        type="vendor"
+                        vendor_id={slide.vendor_id}
+                        locale={locale}
+                      />
                     </div>
                   </div>
-                  <div className="mt-2 overflow-hidden">
-                    <div>
-                      <p className="text-muted-foreground text-sm! line-clamp-2">
-                        {locale === routing.defaultLocale
-                          ? slide.id_tagline
-                          : slide.en_tagline}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </Link>
+                </Link>
+              </div>
             ))}
           </div>
         )}

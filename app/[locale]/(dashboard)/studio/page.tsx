@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/client";
 import React from "react";
-import { getUser } from "../../(auth)/actions/auth.actions";
+import { getAccessToken, getUser } from "../../(auth)/actions/auth.actions";
 import { User } from "@supabase/supabase-js";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import UnderConstruction from "@/components/utility/under-construction";
@@ -15,6 +15,8 @@ function getThreeWords(text: string | null): string {
 const StudioDashboard = async () => {
   const supabase = await createClient();
   const user = await getUser();
+  const accessToken = await getAccessToken();
+
   const { data: accounts } = await supabase
     .from("accounts")
     .select("*")
@@ -52,6 +54,7 @@ const StudioDashboard = async () => {
           Selamat datang di M Health Studio.
         </p>
       </div>
+
       <div className="md:grid lg:grid-cols-4 md:grid-cols-2 flex flex-col gap-5">
         <div className="group/stats">
           <div className="bg-white rounded-2xl overflow-hidden relative border">
@@ -123,6 +126,12 @@ const StudioDashboard = async () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="bg-white p-4 border rounded-2xl mt-10">
+        <p className="text-sm! text-primary mb-1">Your Access Token</p>
+        <pre className="text-wrap wrap-anywhere text-sm!">
+          {JSON.stringify(accessToken, null, 2)}
+        </pre>
       </div>
       <div className="my-10">
         <UnderConstruction element />

@@ -24,6 +24,9 @@
     "female": "Female",
     "unisex": "Unisex",
     "price_info": "Price",
-    "detail": "Detail or Information"
+    "detail": "Detail or Information",
+    "yes": "Yes",
+    "delete": "Delete",
+    "cancel": "Cancel"
   }
 }

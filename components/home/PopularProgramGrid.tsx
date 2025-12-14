@@ -11,13 +11,17 @@ import { routing } from "@/i18n/routing";
 import AvatarVendorHotel from "../utility/AvatarVendorHotel";
 import Link from "next/link";
 
-const PopularProgramGrid = ({ data }: { data: WellnessType[] }) => {
+const PopularProgramGrid = ({
+  data,
+  locale,
+}: {
+  data: WellnessType[];
+  locale: string;
+}) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   if (data.length <= 0) {
     return <FailedGetDataNotice />;
   }
-
-  const locale = useLocale();
   const onlyGet8: WellnessType[] = data.slice(0, 8);
   const onlyGet4: WellnessType[] = data.slice(0, 4);
   return (
@@ -113,6 +117,7 @@ const PopularProgramGrid = ({ data }: { data: WellnessType[] }) => {
                         <AvatarVendorHotel
                           type="vendor"
                           vendor_id={d.vendor_id}
+                          locale={locale}
                         />
                       </div>
                     </motion.div>
@@ -188,7 +193,11 @@ const PopularProgramGrid = ({ data }: { data: WellnessType[] }) => {
                       : d.en_tagline}
                   </p>
                   <div className="mt-5">
-                    <AvatarVendorHotel type="vendor" vendor_id={d.vendor_id} />
+                    <AvatarVendorHotel
+                      type="vendor"
+                      vendor_id={d.vendor_id}
+                      locale={locale}
+                    />
                   </div>
                 </motion.div>
               </div>

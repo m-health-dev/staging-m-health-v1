@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
 import { ArrowUp } from "lucide-react";
 import { Textarea } from "../ui/textarea";
@@ -29,6 +29,7 @@ interface ChatWindowProps {
   onSendMessage: (message: string, replyTo?: string | null) => void;
   isLoading?: boolean;
   sessionId?: string;
+  pendingSessionId?: string | null;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
@@ -37,16 +38,27 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   onSendMessage,
   sessionId,
   isLoading = false,
+  pendingSessionId,
 }) => {
   const locale = useLocale();
   const [inputValue, setInputValue] = useState("");
   const [replyMessage, setReplyMessage] = useState<string | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
+  // const [isExpanded, setIsExpanded] = useState(false);
+  // const [isRouting, setIsRouting] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
   const path = usePathname();
+
+  const isRouting = useMemo(() => {
+    if (!pendingSessionId) return false;
+
+    const expectedPath = `/${locale}/c/${pendingSessionId}`;
+    return path !== expectedPath;
+  }, [pendingSessionId, path, locale]);
+
+  const showLoading = isLoading || isRouting;
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -55,9 +67,19 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     el.style.height = el.scrollHeight + "px";
   }, [inputValue]);
 
-  useEffect(() => {
-    setIsExpanded(inputValue.length > 40);
-  }, [inputValue]);
+  const isExpanded = inputValue.length > 40 || inputValue.includes("\n");
+
+  // useEffect(() => {
+  //   if (!sessionId) return;
+
+  //   const expectedPath = `/${locale}/c/${sessionId}`;
+
+  //   if (path !== expectedPath) {
+  //     setIsRouting(true);
+  //   } else {
+  //     setIsRouting(false);
+  //   }
+  // }, [path, sessionId, locale]);
 
   useEffect(() => {
     if (!accounts && messages.length > 3) {
@@ -86,7 +108,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && e.shiftKey) {
+      return; // biarkan newline
+    }
+
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -97,6 +123,45 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     setReplyMessage(message);
     textareaRef.current?.focus();
   };
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      const textarea = textareaRef.current;
+      if (!textarea) return;
+
+      const active = document.activeElement;
+      if (
+        active &&
+        (active.tagName === "INPUT" ||
+          active.tagName === "TEXTAREA" ||
+          (active as HTMLElement).isContentEditable)
+      ) {
+        return;
+      }
+
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      if (e.key.length === 1) {
+        textarea.focus();
+
+        const start = textarea.selectionStart ?? textarea.value.length;
+        const end = textarea.selectionEnd ?? textarea.value.length;
+
+        textarea.value =
+          textarea.value.slice(0, start) + e.key + textarea.value.slice(end);
+
+        const pos = start + 1;
+        textarea.setSelectionRange(pos, pos);
+
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  }, []);
 
   return (
     <div className="relative flex flex-col h-[calc(100vh-var(--header-height))]">
@@ -126,18 +191,18 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     urgent={msg.urgent}
                   />
                 ))}
-                {isLoading && (
+                {showLoading && (
                   <div className="flex justify-start">
                     <div className="bg-white rounded-2xl rounded-bl-none px-4 py-3">
                       <div className="flex gap-1">
                         <div className="w-1 h-1 bg-primary rounded-full animate-bounce" />
-                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:0.1s]" />
-                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:0.2s]" />
+                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:0.3s]" />
+                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:0.6s]" />
                       </div>
                     </div>
                   </div>
                 )}
-                <div ref={messagesEndRef} className="h-4" />
+                <div ref={messagesEndRef} className="h-10" />
               </div>
             )}
           </div>
@@ -185,7 +250,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                   }
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={handleKeyPress}
+                  onKeyDown={handleKeyDown}
                   disabled={isLoading}
                   className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed ${
                     isExpanded
@@ -195,14 +260,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                 />
                 <button
                   onClick={handleSend}
-                  disabled={isLoading || !inputValue.trim()}
+                  disabled={showLoading || !inputValue.trim()}
                   className={`ml-2 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
-                    isLoading || !inputValue.trim()
+                    showLoading || !inputValue.trim()
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-primary text-white hover:bg-primary/90 active:scale-95"
                   } w-11 h-11`}
                 >
-                  {isLoading ? (
+                  {showLoading ? (
                     <Spinner className="size-5" />
                   ) : (
                     <ArrowUp className="size-5" />
@@ -214,7 +279,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             <p className="text-xs! text-muted-foreground mt-2 text-center">
               {locale === routing.defaultLocale
                 ? "M-Health AI dapat membuat kesalahan. Periksa info penting."
-                : "M-Health AI can make mistakes. Check important information."}
+                : "M HEALTH AI can make mistakes. Check important information."}
             </p>
           </div>
         </div>

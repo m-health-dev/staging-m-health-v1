@@ -1,20 +1,39 @@
 import { Button } from "@/components/ui/button";
 import ContainerWrap from "@/components/utility/ContainerWrap";
+import { Studio1DataTable } from "@/components/package-wellness-medical/package-wellness-medical-data-table";
 import { routing } from "@/i18n/routing";
+import { createClient } from "@/utils/supabase/client";
 import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
 import { getLocale } from "next-intl/server";
 import Link from "next/link";
-import React from "react";
+import { columns } from "./columns";
+import { getAllMedical } from "@/lib/medical/get-medical";
+import { deleteMedical } from "@/lib/medical/delete-medical";
+import { getAllPackages } from "@/lib/packages/get-packages";
+import { getAllMedicalEquipment } from "@/lib/medical-equipment/get-medical-equipment";
 
-const EquipmentStudio = async () => {
+const EquipmentStudio = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
+  const params = await searchParams;
+  const page = Number(params.page ?? 1);
+  const per_page = Number(params.per_page ?? 10);
+
+  const { data, meta, links } = await getAllMedicalEquipment(page, per_page); // nanti page bisa dynamic
+
   const locale = await getLocale();
+
+  const supabase = await createClient();
+
   return (
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
-          <h4 className="text-primary font-semibold">Equipments Data</h4>
+          <h4 className="text-primary font-semibold">Medical Equipment</h4>
         </div>
-        <Link href={`/${locale}/studio/qquipment/add`}>
+        <Link href={`/${locale}/studio/equipment/add`}>
           <Button className="rounded-2xl flex lg:w-fit w-full">
             <Plus /> <p className="lg:block hidden">Add New Equipment</p>
           </Button>
@@ -33,7 +52,19 @@ const EquipmentStudio = async () => {
           <ChevronRight className="size-4 lg:flex hidden" />
           <ChevronDown className="size-4 lg:hidden flex" />
         </p>
+        <div className="flex flex-wrap gap-4 items-center">
+          <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
+            {meta.total} Equipment
+          </p>
+        </div>
       </div>
+      <Studio1DataTable
+        columns={columns}
+        data={data}
+        meta={meta}
+        links={links}
+        deleteAction={deleteMedical}
+      />
     </ContainerWrap>
   );
 };

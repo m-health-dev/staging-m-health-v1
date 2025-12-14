@@ -40,14 +40,18 @@ export async function getChatHistory(public_id: string) {
   }
 }
 
-export async function getChatHistoryByUserID(user_id: string) {
+export async function getChatHistoryByUserID(
+  user_id: string,
+  page: number,
+  per_page: number
+) {
   if (!user_id) {
     return { data: [], total: 0 };
   }
 
   try {
     const res = await fetch(
-      `${apiBaseUrl}/api/v1/chat-activities/all/${user_id}`,
+      `${apiBaseUrl}/api/v1/chat-activities/all/${user_id}?page=${page}&per_page=${per_page}`,
       {
         cache: "no-store", // Use standard fetch cache option
         method: "GET",
@@ -64,7 +68,7 @@ export async function getChatHistoryByUserID(user_id: string) {
     const json = await res.json();
 
     return {
-      data: json.data || [],
+      data: json,
       total: json.total || 0,
     };
   } catch (error) {
@@ -109,8 +113,9 @@ export async function getChatSession(session_id: string) {
 
     return {
       data: json.chat_activity_data.messages || [],
-      session: json.session_id,
-      publicID: json.publicID,
+      session: json.chat_activity_data.id,
+      publicID: json.public_id,
+      urgent: json.chat_activity_data.urgent,
     };
   } catch (error) {
     console.error("Get Chat Session Error:", error);

@@ -3,10 +3,6 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-import { NavMenu } from "@/components/nav-menu";
-import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -14,35 +10,30 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 import {
-  BotMessageSquare,
-  ClipboardClock,
   MessagesSquare,
-  PenSquare,
-  Plus,
-  ScanBarcode,
   Search,
   Trash,
   Trash2,
+  X,
+  ChevronDown,
 } from "lucide-react";
-import { IconHelp, IconSettings } from "@tabler/icons-react";
-import { Account } from "@/types/account.types";
+import type { Account } from "@/types/account.types";
 import { Button } from "../ui/button";
 
 import { Skeleton } from "../ui/skeleton";
 import { Spinner } from "../ui/spinner";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
-import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { routing } from "@/i18n/routing";
 import Avatar from "boring-avatars";
-import { MedicalType } from "@/types/medical.types";
-import { WellnessType } from "@/types/wellness.types";
-import { PackageType } from "@/types/packages.types";
+import type { MedicalType } from "@/types/medical.types";
+import type { WellnessType } from "@/types/wellness.types";
+import type { PackageType } from "@/types/packages.types";
 import {
   DeleteAllChatSession,
   DeleteChatSession,
@@ -70,7 +61,11 @@ interface ChatbotSidebarProps extends React.ComponentProps<typeof Sidebar> {
   publicIDFetch: string | null;
   isLoading: boolean;
   locale: string;
-  onRefreshHistory?: () => void; // Add callback for manual refresh
+  onRefreshHistory?: () => void;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
+  displayedCount?: number;
+  total?: number;
 }
 
 export function ChatbotSidebar({
@@ -85,10 +80,17 @@ export function ChatbotSidebar({
   isLoading,
   locale,
   onRefreshHistory,
+  hasMore,
+  onLoadMore,
+  displayedCount,
+  total,
   ...props
 }: ChatbotSidebarProps) {
   const router = useRouter();
   const [loadingDelete, setLoadDelete] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const pathname = usePathname();
+  const t = useTranslations("utility");
 
   const handleDeleteChatSession = async (sessionID: string) => {
     setLoadDelete(true);
@@ -99,6 +101,11 @@ export function ChatbotSidebar({
         toast.success("Successfully Deleted Chat Session!", {
           description: sessionID.slice(0, 8).toUpperCase(),
         });
+        if (pathname.includes(sessionID)) {
+          router.push("/");
+        } else {
+          router.refresh();
+        }
         setLoadDelete(false);
       } else {
         toast.error("Failed to Delete Chat Session", {
@@ -120,19 +127,24 @@ export function ChatbotSidebar({
       if (res.success) {
         toast.success("Successfully Deleted All Chat Session!");
         setLoadDelete(false);
+        setDialogOpen(false);
+        router.replace("/");
+        router.refresh();
       } else {
         toast.error("Failed to Delete All Chat Session", {
           description: res.error,
         });
         setLoadDelete(false);
+        setDialogOpen(true);
       }
     } catch (error) {
       console.error(error);
       setLoadDelete(false);
+      setDialogOpen(false);
     }
   };
   return (
-    <Sidebar className="p-0" collapsible="offcanvas" {...props}>
+    <Sidebar className="p-0!" collapsible="offcanvas" {...props}>
       <SidebarHeader className="-mb-5 p-3! bg-white">
         <Image
           src={
@@ -146,7 +158,7 @@ export function ChatbotSidebar({
         />
         <SidebarMenu className="space-y-0.5">
           <SidebarMenuItem className="px-0 cursor-pointer">
-            <Link href={`/${locale}?new=true`}>
+            <Link href={`/${locale}/search`}>
               <button
                 className="flex gap-3 w-full rounded-full items-center text-primary hover:bg-muted py-2 hover:outline px-3 cursor-pointer"
                 type="button"
@@ -157,7 +169,7 @@ export function ChatbotSidebar({
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem className="px-0 cursor-pointer">
-            <Link href={`/${locale}?new=true`}>
+            <Link href={`/${locale}`}>
               <button
                 className="flex gap-3 w-full rounded-full items-center text-primary hover:bg-muted py-2 hover:outline px-3 cursor-pointer"
                 type="button"
@@ -175,121 +187,165 @@ export function ChatbotSidebar({
       </SidebarHeader>
 
       <SidebarContent className="hide-scroll mt-5 bg-white!">
-        <div className="px-4">
-          <p className="text-muted-foreground text-sm! px-2">
-            {locale === routing.defaultLocale
-              ? "Riwayat Percakapan"
-              : "Chat History"}
-          </p>
-          <div className="space-y-5 pt-3">
-            <div className="space-y-2">
-              {isLoading ? (
-                <>
-                  <Skeleton className="w-full h-16" />
-                  <Skeleton className="w-full h-16" />
-                  <Skeleton className="w-full h-16" />
-                </>
-              ) : (
-                <>
-                  {history.length > 0 ? (
-                    history.map((s) => (
-                      <React.Suspense key={s.id} fallback={<Spinner />}>
-                        <div
-                          key={s.id}
-                          className="w-full text-left group/hst cursor-pointer relative p-2 hover:bg-muted hover:shadow-sm rounded-2xl hover:outline"
-                        >
-                          <div className="flex justify-between items-center">
-                            <Link href={`/${locale}/c/${s.id}`}>
-                              <div>
-                                <p className="text-primary text-base! line-clamp-1 wrap-break-word z-5">
-                                  {s.title === "" ? "M HEALTH Chat" : s.title}
-                                </p>
-                                <p className="text-xs! uppercase text-muted-foreground z-5">
-                                  {s.id.slice(0, 8)}
-                                </p>
-                              </div>
-                            </Link>
-                            <Button
-                              variant={"destructive_outline"}
-                              className="w-6 h-6 rounded-full group-hover/hst:translate-x-0 group-hover/hst:opacity-100 translate-x-5 opacity-0 overflow-hidden transition-all duration-300 ease-in-out"
-                              onClick={() => handleDeleteChatSession(s.id)}
-                            >
-                              {loadingDelete ? (
-                                <Spinner />
-                              ) : (
-                                <Trash className="size-3" />
-                              )}
-                            </Button>
-                          </div>
-                        </div>
-                      </React.Suspense>
-                    ))
-                  ) : history.length > 0 ? (
+        {history.length >= 1 && (
+          <>
+            <div className="px-4">
+              <p className="text-muted-foreground text-sm! px-2">
+                {locale === routing.defaultLocale
+                  ? "Riwayat Percakapan"
+                  : "Chat History"}
+              </p>
+              <div className="space-y-5 pt-3">
+                <div className="space-y-2">
+                  {isLoading ? (
                     <div className="space-y-3">
-                      <Skeleton className="w-full h-12" />
-                      <Skeleton className="w-full h-12" />
-                      <Skeleton className="w-full h-12" />
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <Skeleton key={i} className="w-full h-12" />
+                      ))}
                     </div>
                   ) : (
-                    <div className="px-3 bg-muted py-2 rounded-2xl">
-                      <p className="text-muted-foreground text-sm!">
-                        {locale === routing.defaultLocale
-                          ? "Belum ada riwayat percakapan saat ini."
-                          : "No chat history available yet."}
-                      </p>
-                    </div>
-                  )}
-                  {history.length >= 1 && accounts?.id && (
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <button className="text-xs text-red-500 hover:text-red-600 hover:bg-red-50 hover:outline hover:outline-red-500 flex w-full py-2 gap-1 items-center transition cursor-pointer rounded-2xl px-2">
-                          <Trash2 className="size-3" />{" "}
-                          <p className="text-xs!">
+                    <>
+                      {history ? (
+                        history.map((s) => (
+                          <React.Suspense key={s.id} fallback={<Spinner />}>
+                            <div
+                              key={s.id}
+                              className="w-full text-left group/hst cursor-pointer relative p-2 hover:bg-muted hover:shadow-sm rounded-2xl hover:outline"
+                            >
+                              <Link href={`/${locale}/c/${s.id}`}>
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <p className="text-primary text-base! line-clamp-1 wrap-break-word z-5 capitalize">
+                                      {s.title === ""
+                                        ? "M HEALTH Chat"
+                                        : s.title}
+                                    </p>
+                                  </div>
+                                </div>
+                              </Link>
+                              <Button
+                                variant={"destructive_outline"}
+                                className="w-6 h-6 rounded-full group-hover/hst:translate-x-0 group-hover/hst:opacity-100 translate-x-5 opacity-0 overflow-hidden transition-all duration-300 ease-in-out absolute right-2 top-2"
+                                onClick={() => handleDeleteChatSession(s.id)}
+                              >
+                                {loadingDelete ? (
+                                  <Spinner />
+                                ) : (
+                                  <Trash className="size-3" />
+                                )}
+                              </Button>
+                            </div>
+                          </React.Suspense>
+                        ))
+                      ) : (
+                        <div className="px-3 bg-muted py-4 rounded-2xl">
+                          <p className="text-muted-foreground text-sm!">
                             {locale === routing.defaultLocale
-                              ? "Hapus Riwayat Percakapan"
-                              : "Clear Chat History"}
+                              ? "Belum ada riwayat percakapan saat ini."
+                              : "No chat history available yet."}
+                          </p>
+                        </div>
+                      )}
+
+                      {hasMore && onLoadMore && (
+                        <button
+                          className="w-full rounded-full flex items-center gap-2 bg-transparent px-2"
+                          onClick={onLoadMore}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <Spinner className="size-4" />
+                          ) : (
+                            <ChevronDown className="size-4" />
+                          )}
+                          <p className="text-sm!">
+                            {locale === routing.defaultLocale
+                              ? "Tampilkan Lebih Banyak"
+                              : "Show More"}
                           </p>
                         </button>
-                      </DialogTrigger>
-                      <DialogContent className="bg-white z-999">
-                        <DialogHeader>
-                          <DialogTitle asChild>
-                            <h5 className="text-red-600">
-                              Are you sure to Delete All Chat Session?
-                            </h5>
-                          </DialogTitle>
-                          <DialogDescription>
-                            <p>
-                              This action cannot be undone. This will
-                              permanently delete all of your chat and remove
-                              your data from our servers.
-                            </p>
-                          </DialogDescription>
-                        </DialogHeader>
-                        <DialogFooter>
-                          <DialogClose>
-                            <Button variant={"outline"}>Cancel</Button>
-                          </DialogClose>
-                          <DialogClose>
-                            <Button
-                              variant={"destructive"}
-                              onClick={() => {
-                                handleDeleteAllChatSession(accounts?.id);
-                              }}
-                            >
-                              Yes
-                            </Button>
-                          </DialogClose>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
+                      )}
+
+                      {!hasMore && history && (
+                        <div className="px-3 bg-muted py-2 rounded-2xl text-center">
+                          <p className="text-muted-foreground text-sm!">
+                            {locale === routing.defaultLocale
+                              ? "Anda telah melihat semuanya"
+                              : "You have seen everything"}
+                          </p>
+                        </div>
+                      )}
+
+                      {history.length >= 1 && accounts?.id && (
+                        <Dialog open={dialogOpen}>
+                          <DialogTrigger
+                            asChild
+                            onClick={() => setDialogOpen(true)}
+                          >
+                            <button className="text-xs text-red-500 hover:text-red-600 hover:bg-red-50 hover:outline hover:outline-red-500 flex w-full py-2 gap-1 items-center transition cursor-pointer rounded-2xl px-2">
+                              <Trash2 className="size-3" />{" "}
+                              <p className="text-xs!">
+                                {locale === routing.defaultLocale
+                                  ? "Hapus Riwayat Percakapan"
+                                  : "Clear Chat History"}
+                              </p>
+                            </button>
+                          </DialogTrigger>
+                          <DialogContent className="bg-white z-999 rounded-2xl">
+                            <DialogHeader>
+                              <DialogTitle asChild>
+                                <h6 className="text-red-600">
+                                  {locale === routing.defaultLocale
+                                    ? "Apakah kamu yakin untuk menghapus seluruh sesi percakapan?"
+                                    : "Are you sure to delete all chat session?"}
+                                </h6>
+                              </DialogTitle>
+                              <DialogDescription asChild className="mt-3">
+                                <p>
+                                  {locale === routing.defaultLocale
+                                    ? "Aksi ini tidak dapat dibatalkan. Aksi ini akan menghapus sesi percakapan anda dari basis data kami. Lakukan dengan hati-hati."
+                                    : "This action cannot be undone. This will permanently delete all of your chat and remove your data from our servers. Do it carefully."}
+                                </p>
+                              </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                              <DialogClose
+                                asChild
+                                onClick={() => setDialogOpen(false)}
+                              >
+                                <Button variant={"outline"}>
+                                  <X className="size-4" />
+                                  {t("cancel")}
+                                </Button>
+                              </DialogClose>
+
+                              <Button
+                                variant={"destructive"}
+                                onClick={() => {
+                                  handleDeleteAllChatSession(accounts?.id);
+                                }}
+                              >
+                                {loadingDelete ? (
+                                  <Spinner />
+                                ) : (
+                                  <>
+                                    <Trash className="size-4" />
+                                    {t("delete")}
+                                  </>
+                                )}
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      )}
+                    </>
                   )}
-                </>
-              )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <hr className="my-2 mx-4" />
+            <hr className="my-2 mx-4" />
+          </>
+        )}
 
         <div className="px-4">
           <p className="font-extrabold text-primary mb-3 px-2">
@@ -310,7 +366,7 @@ export function ChatbotSidebar({
                   <div className="px-2 col-span-1">
                     <React.Suspense fallback={<Spinner />}>
                       <Image
-                        src={img.highlight_image}
+                        src={img.highlight_image || "/placeholder.svg"}
                         alt={img.slug}
                         width={200}
                         height={200}
@@ -363,7 +419,7 @@ export function ChatbotSidebar({
                   <div className="px-2 col-span-1">
                     <React.Suspense fallback={<Spinner />}>
                       <Image
-                        src={img.highlight_image}
+                        src={img.highlight_image || "/placeholder.svg"}
                         alt={img.slug}
                         width={200}
                         height={200}
@@ -416,7 +472,7 @@ export function ChatbotSidebar({
                   <div className="px-2 col-span-1">
                     <React.Suspense fallback={<Spinner />}>
                       <Image
-                        src={img.highlight_image}
+                        src={img.highlight_image || "/placeholder.svg"}
                         alt={img.slug}
                         width={200}
                         height={200}

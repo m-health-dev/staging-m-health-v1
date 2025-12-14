@@ -7,6 +7,7 @@ import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 
 const vendorHotelCache: Record<string, any> = {};
 
@@ -15,15 +16,17 @@ const AvatarVendorHotel = ({
   hotel_id,
   vendor_id,
   size = "sm",
+  locale,
 }: {
   type: "vendor" | "hotel";
   hotel_id?: string;
   vendor_id?: string;
   size?: "sm" | "md" | "lg";
+  locale: string;
 }) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const locale = useLocale();
+  const router = useRouter();
   useEffect(() => {
     const loadData = async () => {
       const key = `${type}-${vendor_id || hotel_id}`;
@@ -66,7 +69,10 @@ const AvatarVendorHotel = ({
   if (data?.logo) {
     return (
       <div>
-        <Link href={`/${locale}/${type}/${data.slug}`} target="_blank">
+        <button
+          onClick={() => router.push(`/${locale}/${type}/${data.slug}`)}
+          className="cursor-pointer"
+        >
           <div className="inline-flex gap-2 items-center">
             <Image
               src={data.logo}
@@ -91,7 +97,7 @@ const AvatarVendorHotel = ({
               {data.name}
             </p>
           </div>
-        </Link>
+        </button>
       </div>
     );
   }

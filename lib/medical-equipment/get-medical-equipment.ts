@@ -6,12 +6,14 @@ const apiBaseUrl =
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
-export async function getAllPackages(page: number = 1, per_page: number = 10) {
+export async function getAllMedicalEquipment(
+  page: number = 1,
+  per_page: number = 10
+) {
   try {
     const res = await fetch(
-      `${apiBaseUrl}/api/v1/packages?page=${page}&per_page=${per_page}`,
+      `${apiBaseUrl}/api/v1/medical-equipment?page=${page}&per_page=${per_page}`,
       {
-        next: { revalidate: 3600 },
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -24,7 +26,7 @@ export async function getAllPackages(page: number = 1, per_page: number = 10) {
     if (res.status !== 200) {
       return {
         success: false,
-        error: `Failed to receive packages/read data. Cause : ${json.message}`,
+        error: `Failed to receive equipment/read data. Cause : ${json.message}`,
       };
     }
 
@@ -36,7 +38,7 @@ export async function getAllPackages(page: number = 1, per_page: number = 10) {
       success: true,
     };
   } catch (error) {
-    console.error("Receive packages/read Error:", error);
+    console.error("Receive equipment/read Error:", error);
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",
@@ -44,10 +46,9 @@ export async function getAllPackages(page: number = 1, per_page: number = 10) {
   }
 }
 
-export async function getPackageByID(id: string) {
+export async function getMedicalEquipmentByID(id: string) {
   try {
-    const res = await fetch(`${apiBaseUrl}/api/v1/packages/${id}`, {
-      next: { revalidate: 3600 },
+    const res = await fetch(`${apiBaseUrl}/api/v1/medical-equipment/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +60,7 @@ export async function getPackageByID(id: string) {
     if (res.status !== 200) {
       return {
         success: false,
-        error: `Failed to receive packages/read by ID ${id}. Cause : ${res.status} - ${data.message}`,
+        error: `Failed to receive equipment/read by ID ${id}. Cause : ${res.status} - ${data.message}`,
       };
     }
 
@@ -68,7 +69,7 @@ export async function getPackageByID(id: string) {
       success: true,
     };
   } catch (error) {
-    console.error(`Receive packages/id:${id} Error:`, error);
+    console.error(`Receive equipment/id:${id} Error:`, error);
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",
@@ -76,10 +77,9 @@ export async function getPackageByID(id: string) {
   }
 }
 
-export async function getPackageBySlug(slug: string) {
+export async function getMedicalEquipmentBySlug(slug: string) {
   try {
-    const res = await fetch(`${apiBaseUrl}/api/v1/packages/${slug}`, {
-      next: { revalidate: 3600 },
+    const res = await fetch(`${apiBaseUrl}/api/v1/medical-equipment/${slug}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ export async function getPackageBySlug(slug: string) {
     if (res.status !== 200) {
       return {
         success: false,
-        error: `Failed to receive packages/read by slug ${slug}. Cause : ${res.status} - ${data.message}`,
+        error: `Failed to receive equipment/read by slug ${slug}. Cause : ${res.status} - ${data.message}`,
       };
     }
 
@@ -100,7 +100,7 @@ export async function getPackageBySlug(slug: string) {
       success: true,
     };
   } catch (error) {
-    console.error(`Receive packages/slug:${slug} Error:`, error);
+    console.error(`Receive equipment/slug:${slug} Error:`, error);
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",

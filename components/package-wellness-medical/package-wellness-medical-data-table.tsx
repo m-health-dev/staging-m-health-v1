@@ -241,7 +241,7 @@ interface DataTableProps<TData, TValue> {
 //   );
 // }
 
-export function PackagesWellnessMedicalDataTable<TData, TValue>({
+export function Studio1DataTable<TData, TValue>({
   columns,
   data,
   meta,

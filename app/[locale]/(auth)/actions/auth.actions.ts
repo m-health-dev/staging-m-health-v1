@@ -133,6 +133,15 @@ export async function getUserRole() {
   return claims.user_role ?? "404";
 }
 
+export async function getAccessToken() {
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  return session?.access_token;
+}
+
 export async function getUser() {
   const supabase = await createClient();
   const {
@@ -278,9 +287,9 @@ export const signInAction = async (data: {
   const userRole = await getUserRole();
 
   const redirectTo =
-    (validatedData.data?.redirect as string) || userRole === "admin"
+    (validatedData.data?.redirect as string) && userRole === "admin"
       ? `/${locale}/studio`
-      : `/${locale}/dashboard`;
+      : validatedData.data?.redirect || `/${locale}/dashboard`;
 
   if (error) {
     console.error(error.code + " " + error.message);

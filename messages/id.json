@@ -24,6 +24,9 @@
     "female": "Perempuan",
     "unisex": "Uniseks",
     "price_info": "Informasi Harga",
-    "detail": "Detail/ Informasi"
+    "detail": "Detail/ Informasi",
+    "yes": "Ya",
+    "delete": "Hapus",
+    "cancel": "Batal"
   }
 }

@@ -4,13 +4,11 @@ import OurNews from "@/components/home/OurNews";
 import PopularMedical from "@/components/home/PopularMedical";
 import PopularPackage from "@/components/home/PopularPackage";
 import PopularProgram from "@/components/home/PopularProgram";
-import QuickAction from "@/components/home/QuickAction";
 import CallToAction from "@/components/utility/CallToAction";
-import ContainerWrap from "@/components/utility/ContainerWrap";
 import Wrapper from "@/components/utility/Wrapper";
-import React from "react";
+import { NextIntlClientProvider } from "next-intl";
 
-const HomePage = () => {
+const HomePage = async () => {
   return (
     <Wrapper>
       <Jumbotron />

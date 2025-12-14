@@ -142,7 +142,7 @@ const NotFoundContent = () => {
               <Button
                 variant={"outline"}
                 className="rounded-2xl"
-                onClick={() => router.back}
+                onClick={() => router.back()}
               >
                 <ArrowLeft />
                 Back

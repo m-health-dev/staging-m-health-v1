@@ -1,3 +1,5 @@
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
 import { success } from "zod";
 
@@ -13,6 +15,7 @@ export async function getAllWellness(page: number = 1, per_page: number = 10) {
       {
         method: "GET",
         headers: {
+          "X-API-Key": `Bearer ${apiSecretKey}`,
           "Content-Type": "application/json",
         },
       }
@@ -27,7 +30,7 @@ export async function getAllWellness(page: number = 1, per_page: number = 10) {
       };
     }
 
-    // console.log(json.links);
+    // console.log(json);
     return {
       data: json.data,
       links: json.links,
@@ -48,6 +51,7 @@ export async function getWellnessByID(id: string) {
     const res = await fetch(`${apiBaseUrl}/api/v1/wellness/${id}`, {
       method: "GET",
       headers: {
+        "X-API-Key": `Bearer ${apiSecretKey}`,
         "Content-Type": "application/json",
       },
     });

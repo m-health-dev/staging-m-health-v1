@@ -5,6 +5,7 @@ export const runtime = "edge";
 
 export async function GET(request: Request) {
   const headers = new Headers(request.headers);
+
   if (process.env.NODE_ENV === "development") {
     // Mock data for development
     return NextResponse.json({

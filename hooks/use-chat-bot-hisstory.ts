@@ -1,25 +1,73 @@
 "use client";
 
+import { getChatHistoryByUserID } from "@/lib/chatbot/getChatActivity";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { getChatHistory } from "@/lib/chatbot/getChatActivity";
 
-export function useChatHistory(publicID: string) {
-  const { data, error, isLoading, mutate } = useSWR(
-    publicID ? ["chat-history", publicID] : null,
-    () => getChatHistory(publicID),
+export function useChatHistory(publicID?: string | null) {
+  const PER_PAGE = 10;
+
+  const [page, setPage] = useState(1);
+  const [allHistory, setAllHistory] = useState<any[]>([]);
+
+  const key = publicID ? ["chat-history", publicID, page] : null;
+
+  const { data, error, isLoading } = useSWR(
+    key,
+    () => getChatHistoryByUserID(publicID!, page, PER_PAGE),
     {
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-      refreshInterval: 0,
-      dedupingInterval: 2000,
+      keepPreviousData: true,
+      revalidateOnFocus: false,
     }
   );
 
+  const total = data?.total ?? 0;
+  const pageData = data?.data?.data ?? [];
+
+  useEffect(() => {
+    if (!pageData.length) return;
+
+    setAllHistory((prev) => {
+      // 🔒 dedupe by id
+      const map = new Map<string, any>();
+
+      // data lama dulu (terbaru di atas)
+      prev.forEach((item) => map.set(item.id, item));
+
+      // data baru (lebih lama) → bawah
+      pageData.forEach((item: { id: string }) => {
+        if (!map.has(item.id)) {
+          map.set(item.id, item);
+        }
+      });
+
+      return Array.from(map.values());
+    });
+  }, [pageData]);
+
+  const hasMore = page * PER_PAGE < total;
+
+  const loadMore = () => {
+    if (!isLoading && hasMore) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const refresh = () => {
+    if (!publicID) return;
+    setPage(1);
+    setAllHistory([]);
+  };
+
   return {
-    history: data?.data || [],
-    total: data?.total || 0,
+    history: allHistory,
+    total,
     error,
     isLoading,
-    refresh: mutate,
+    hasMore,
+    loadMore,
+    refresh,
+    currentPage: page,
+    displayedCount: allHistory.length,
   };
 }

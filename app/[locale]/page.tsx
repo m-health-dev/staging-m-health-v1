@@ -15,7 +15,6 @@ export default async function Home() {
   const publicID = cookieStore.get("mhealth_public_id")?.value;
 
   const supabase = await createClient();
-  const locale = await getLocale();
 
   const [
     {
@@ -24,11 +23,13 @@ export default async function Home() {
     packagesResult,
     medicalResult,
     wellnessResult,
+    locale,
   ] = await Promise.all([
     supabase.auth.getSession(),
     getAllPackages(1, 3),
     getAllMedical(1, 3),
     getAllWellness(1, 3),
+    getLocale(),
   ]);
 
   const historyData = publicID

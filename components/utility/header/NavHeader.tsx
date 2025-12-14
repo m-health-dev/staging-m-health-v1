@@ -105,7 +105,7 @@ const NavHeader = () => {
                       key={link.path}
                       href={`/${locale}/${link.path}`}
                       className={cn(
-                        "group hover:underline decoration-health underline-offset-2 transition-all duration-300",
+                        "group transition-all duration-300",
                         i === 0 && "mt-5"
                       )}
                       data-cursor-clickable
@@ -182,7 +182,7 @@ const NavHeader = () => {
                       <X />
                     </div>
                   </SheetClose>
-                  <div className="flex flex-col space-y-4 mt-5">
+                  <div className="flex flex-col space-y-5 mt-5">
                     <Link
                       href={`/${locale}/sign-in`}
                       className="group flex w-full"
@@ -202,7 +202,7 @@ const NavHeader = () => {
                         key={link.path}
                         href={`/${locale}/${link.path}`}
                         className={cn(
-                          "group hover:underline decoration-health underline-offset-2 transition-all duration-300",
+                          "group transition-all duration-300",
                           i === 0 && "mt-5"
                         )}
                         data-cursor-clickable

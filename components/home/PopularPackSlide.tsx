@@ -18,16 +18,20 @@ import "swiper/css";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { PackageType } from "@/types/packages.types";
 import AvatarVendorHotel from "../utility/AvatarVendorHotel";
+import { useTranslations } from "next-intl";
 
 export default function PopularPackSlide({
   packages,
   locale,
+  labels,
 }: {
   packages: PackageType[];
   locale: string;
+  labels: any;
 }) {
   const swiperRef = useRef<any>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const t = useTranslations("utility");
 
   if (packages.length <= 0) {
     return (
@@ -68,66 +72,65 @@ export default function PopularPackSlide({
             >
               {packages.map((slide, key) => (
                 <SwiperSlide
-                  key={key}
-                  className="justify-between rounded-2xl mb-2 max-w-[280px] group cursor-pointer flex grow"
+                  key={slide.id}
+                  className="justify-between rounded-2xl max-w-[300px] pb-2 group cursor-pointer flex grow"
                   onMouseEnter={() => setHoveredIndex(key)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
-                  <Link
-                    href={`/package/${slide.slug}`}
-                    className="flex flex-col w-full h-full"
+                  <div
+                    className="flex flex-col rounded-2xl w-full group cursor-pointer"
+                    onMouseEnter={() => setHoveredIndex(key)}
+                    onMouseLeave={() => setHoveredIndex(null)}
                   >
-                    <Image
-                      src={slide.highlight_image} // TODO: Ganti dengan slide.img ketika sudah ada gambarnya
-                      width={720}
-                      height={405}
-                      alt={locale === "id" ? slide.id_title : slide.en_title}
-                      className="w-full aspect-square! object-cover object-center rounded-t-2xl -z-10"
-                    />
-
-                    <div
-                      style={{ zIndex: 50 }}
-                      className="flex flex-col justify-center grow 3xl:min-h-[15vh] min-h-[26vh] max-w-full bg-white border rounded-2xl -translate-y-5 p-4 shadow transition-all duration-100 z-100 group-hover:outline-2 group-hover:outline-health"
+                    <Link
+                      href={`/${locale}/package/${slide.slug}`}
+                      className="flex flex-col w-full h-[calc(100%-20px)] relative group-hover:shadow rounded-2xl transition-all duration-300"
                     >
-                      <p className="text-muted-foreground text-sm! mb-1">
-                        {slide.duration_by_day} Day {slide.duration_by_night}{" "}
-                        Night
-                      </p>
-
-                      <div className="overflow-hidden">
-                        <div>
-                          <h6 className="capitalize font-bold text-primary line-clamp-2">
-                            {locale === "id" ? slide.id_title : slide.en_title}
-                          </h6>
-                        </div>
-                      </div>
-                      <div className="mt-2 overflow-hidden">
-                        <div>
-                          <p className="text-muted-foreground text-sm! line-clamp-2">
-                            {locale === "id"
-                              ? slide.id_tagline
-                              : slide.en_tagline}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="inline-flex gap-2 items-center mt-5">
-                        <Avatar
-                          name={"M Health"}
-                          colors={[
-                            "#3e77ab",
-                            "#22b26e",
-                            "#f2f26f",
-                            "#fff7bd",
-                            "#95cfb7",
-                          ]}
-                          variant="beam"
-                          size={20}
+                      <div className="relative">
+                        <p className="absolute -bottom-2.5 left-0 text-muted-foreground bg-white px-4 pt-2 pb-5 rounded-t-2xl text-sm! mb-3 z-50 ">
+                          {slide.duration_by_day} {labels.days}{" "}
+                          {slide.duration_by_night} {labels.night}
+                        </p>
+                        <Image
+                          src={slide.highlight_image} // TODO: Ganti dengan slide.full ketika sudah ada gambarnya
+                          width={720}
+                          height={405}
+                          alt={
+                            locale === "id" ? slide.id_title : slide.en_title
+                          }
+                          className="w-full aspect-square! object-cover object-center rounded-t-2xl border-0"
                         />
-                        <p className="text-sm! text-health">{"M Health"}</p>
                       </div>
-                    </div>
-                  </Link>
+
+                      <div className="flex flex-col justify-center grow  max-w-full bg-white rounded-2xl -mt-5 p-4 h-full transition-all duration-100 z-50">
+                        <div className="overflow-hidden">
+                          <div>
+                            <h5 className="capitalize font-bold text-primary lg:line-clamp-3 line-clamp-1">
+                              {locale === "id"
+                                ? slide.id_title
+                                : slide.en_title}
+                            </h5>
+                          </div>
+                        </div>
+                        <div className="mt-1 overflow-hidden">
+                          <div>
+                            <p className="text-muted-foreground lg:line-clamp-2 line-clamp-1">
+                              {locale === "id"
+                                ? slide.id_tagline
+                                : slide.en_tagline}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="inline-flex gap-2 items-center mt-4">
+                          <AvatarVendorHotel
+                            type="vendor"
+                            vendor_id={slide.vendor_id}
+                            locale={locale}
+                          />
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -201,42 +204,44 @@ export default function PopularPackSlide({
               >
                 <Link
                   href={`/${locale}/package/${slide.slug}`}
-                  className="flex flex-col w-full h-full"
+                  className="flex flex-col w-full h-[calc(100%-20px)] relative group-hover:shadow-md rounded-2xl transition-all duration-300"
                 >
-                  <Image
-                    src={slide.highlight_image} // TODO: Ganti dengan slide.full ketika sudah ada gambarnya
-                    width={720}
-                    height={405}
-                    alt={locale === "id" ? slide.id_title : slide.en_title}
-                    className="w-full aspect-square! object-cover object-center rounded-t-2xl"
-                  />
-
-                  <div className="flex flex-col justify-center grow  max-w-full bg-white border rounded-2xl -translate-y-5 p-4 h-full shadow transition-all duration-100 group-hover:outline-2 group-hover:outline-health z-50">
-                    <p className="text-muted-foreground text-sm! mb-1">
-                      {slide.duration_by_day} Day {slide.duration_by_night}{" "}
-                      Night
+                  <div className="relative">
+                    <p className="absolute -bottom-2.5 left-0 text-muted-foreground bg-white px-4 pt-2 pb-5 rounded-t-2xl text-sm! mb-3 z-50 ">
+                      {slide.duration_by_day} {labels.days}{" "}
+                      {slide.duration_by_night} {labels.night}
                     </p>
+                    <Image
+                      src={slide.highlight_image} // TODO: Ganti dengan slide.full ketika sudah ada gambarnya
+                      width={720}
+                      height={405}
+                      alt={locale === "id" ? slide.id_title : slide.en_title}
+                      className="w-full aspect-square! object-cover object-center rounded-t-2xl"
+                    />
+                  </div>
 
+                  <div className="flex flex-col justify-center grow  max-w-full bg-white rounded-2xl -translate-y-5 p-4 h-full transition-all duration-100 z-50">
                     <div className="overflow-hidden">
                       <div>
-                        <h6 className="capitalize font-bold text-primary lg:line-clamp-2 line-clamp-1">
+                        <h5 className="capitalize font-bold text-primary lg:line-clamp-3 line-clamp-1">
                           {locale === "id" ? slide.id_title : slide.en_title}
-                        </h6>
+                        </h5>
                       </div>
                     </div>
-                    <div className="mt-2 overflow-hidden">
+                    <div className="mt-1 overflow-hidden">
                       <div>
-                        <p className="text-muted-foreground text-sm! lg:line-clamp-2 line-clamp-1">
+                        <p className="text-muted-foreground lg:line-clamp-2 line-clamp-1">
                           {locale === "id"
                             ? slide.id_tagline
                             : slide.en_tagline}
                         </p>
                       </div>
                     </div>
-                    <div className="inline-flex gap-2 items-center mt-5">
+                    <div className="inline-flex gap-2 items-center mt-4">
                       <AvatarVendorHotel
                         type="vendor"
                         vendor_id={slide.vendor_id}
+                        locale={locale}
                       />
                     </div>
                   </div>
