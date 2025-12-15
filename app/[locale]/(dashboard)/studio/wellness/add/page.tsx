@@ -41,7 +41,7 @@ import { ComboBoxHotelListOption } from "../ComboBoxHotelListOption";
 import { ComboBoxGender } from "../ComboBoxGender";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RupiahInput } from "@/components/Form/PriceInput";
-import { ComboBoxStatus } from "../ComboBoxStatus";
+import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
 
 const AddMedical = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);

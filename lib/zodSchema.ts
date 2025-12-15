@@ -153,3 +153,19 @@ export const PackageSchema = z.object({
   discount_price: z.number(),
   status: z.string(),
 });
+
+export const EventSchema = z.object({
+  en_title: z.string().min(3),
+  id_title: z.string().min(3),
+  highlight_image: z.string().min(1),
+  reference_image: z.array(z.string().min(1)),
+  en_description: z.string(),
+  id_description: z.string(),
+  organized_image: z.string(),
+  organized_by: z.string(),
+  start_date: z.date(),
+  end_date: z.date(),
+  location_name: z.string(),
+  location_map: z.string(),
+  status: z.string(),
+});

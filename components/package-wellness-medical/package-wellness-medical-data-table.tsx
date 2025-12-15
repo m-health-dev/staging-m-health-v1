@@ -43,209 +43,23 @@ import { cn } from "@/lib/utils";
 import LoadingTableCard from "../utility/loading/loading-table-card";
 import SimplePagination from "../utility/simple-pagination";
 import StatusBadge from "../utility/status-badge";
+import Image from "next/image";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   meta: any;
   links: any;
-  // DELETE function general
+  type?: "vendor" | "hotel" | "packages" | "events" | "default";
   deleteAction?: (id: string) => Promise<{ error?: string }>;
 }
-
-// function RowContextMenu<TData>({
-//   row,
-//   children,
-//   locale,
-//   resourceType,
-//   deleteAction,
-//   router,
-// }: {
-//   row: Row<TData>;
-//   children: React.ReactNode;
-//   locale?: string;
-//   resourceType: string;
-//   deleteAction?: (id: string) => Promise<{ error?: string }>;
-//   router: ReturnType<typeof useRouter>;
-// }) {
-//   const [copied, setCopied] = useState(false);
-//   const [openConfirm, setOpenConfirm] = useState(false);
-//   const [inputName, setInputName] = useState("");
-//   const [loading, setLoading] = useState(false);
-
-//   const id = row.getValue("id") as string;
-//   const vendorName = row.getValue("name") as string;
-//   const resourceLabel = resourceType === "vendor" ? "Vendor" : "Hotel";
-
-//   const handleCopyLink = async () => {
-//     try {
-//       await navigator.clipboard.writeText(id);
-//       setCopied(true);
-//       toast.success("Success to Copy", { description: `${id}` });
-//       setTimeout(() => setCopied(false), 2000);
-//     } catch (err) {
-//       toast.warning("Failed to Copy ID", { description: `${err}` });
-//     }
-//   };
-
-//   const handleCopyName = async () => {
-//     try {
-//       await navigator.clipboard.writeText(vendorName);
-//       setCopied(true);
-//       toast.success("Success to Copy Name", { description: vendorName });
-//       setTimeout(() => setCopied(false), 2000);
-//     } catch (err) {
-//       toast.warning("Failed to Copy Name", { description: `${err}` });
-//     }
-//   };
-
-//   const handleUpdate = () => {
-//     router.push(`/${locale}/studio/vendor/update/${id}`);
-//   };
-
-//   const handleDelete = async () => {
-//     if (!deleteAction) {
-//       toast.error("Delete function not available.");
-//       return;
-//     }
-
-//     setLoading(true);
-
-//     try {
-//       const res = await deleteAction(id);
-
-//       if (!res?.error) {
-//         toast.success(`${resourceLabel} deleted successfully`, {
-//           description: `${id.slice(0, 8)} - ${vendorName}`,
-//         });
-//         setOpenConfirm(false);
-//         setInputName("");
-//         router.refresh();
-//       } else {
-//         toast.error(`Failed to delete ${resourceLabel}`, {
-//           description: res.error,
-//         });
-//       }
-//     } catch (err: any) {
-//       toast.error(`Failed to delete ${resourceLabel}`, {
-//         description: err.message || String(err),
-//       });
-//     }
-
-//     setLoading(false);
-//   };
-
-//   return (
-//     <>
-//       <ContextMenu>
-//         <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-//         <ContextMenuContent className="w-48">
-//           <ContextMenuItem onClick={handleUpdate}>
-//             <PenSquare className="size-4" />
-//             Update Data
-//           </ContextMenuItem>
-//           <ContextMenuItem
-//             variant="destructive"
-//             onClick={() => setOpenConfirm(true)}
-//           >
-//             <Trash2 className="size-4" />
-//             Delete Data
-//           </ContextMenuItem>
-//           <ContextMenuSeparator />
-//           <ContextMenuItem onClick={handleCopyLink}>
-//             {!copied ? (
-//               <Copy className="size-4" />
-//             ) : (
-//               <Check className="size-4" />
-//             )}
-//             Copy ID
-//           </ContextMenuItem>
-//           <ContextMenuItem onClick={handleCopyName}>
-//             <Copy className="size-4" />
-//             Copy Name
-//           </ContextMenuItem>
-//         </ContextMenuContent>
-//       </ContextMenu>
-
-//       <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
-//         <DialogContent className="sm:max-w-md bg-white">
-//           <DialogHeader>
-//             <DialogTitle asChild>
-//               <h6 className="text-red-500">
-//                 {locale === routing.defaultLocale
-//                   ? `Konfirmasi Penghapusan ${resourceLabel}`
-//                   : `Delete ${resourceLabel} Confirmation`}
-//               </h6>
-//             </DialogTitle>
-//             <p className="text-muted-foreground">
-//               {locale === routing.defaultLocale
-//                 ? "Untuk menghapus vendor ini, silahkan ketik nama vendor:"
-//                 : "To delete this vendor, please type the vendor name:"}{" "}
-//               <span
-//                 className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
-//                 onClick={handleCopyName}
-//               >
-//                 {vendorName}{" "}
-//                 {!copied ? (
-//                   <Copy className="size-4" />
-//                 ) : (
-//                   <Check className="size-4" />
-//                 )}
-//               </span>
-//             </p>
-//           </DialogHeader>
-
-//           {/* Input Konfirmasi */}
-//           <Input
-//             type="text"
-//             value={inputName}
-//             onChange={(e) => setInputName(e.target.value)}
-//             className="w-full border px-3 py-2 h-12 rounded-2xl"
-//             placeholder={
-//               locale === routing.defaultLocale
-//                 ? `Tulis nama ${resourceLabel.toLowerCase()} di sini`
-//                 : `Write ${resourceLabel.toLowerCase()} name here`
-//             }
-//           />
-//           <p className="text-xs! text-red-500">
-//             {locale === routing.defaultLocale
-//               ? "Tindakan ini tidak dapat dibatalkan. Mohon lakukan dengan hati-hati."
-//               : "This action cannot be undone. Please proceed with caution."}
-//           </p>
-
-//           <DialogFooter className="flex justify-end gap-2 mt-4">
-//             <Button
-//               variant="outline"
-//               className="rounded-2xl"
-//               onClick={() => {
-//                 setOpenConfirm(false);
-//                 setInputName("");
-//               }}
-//             >
-//               Cancel
-//             </Button>
-
-//             <Button
-//               variant="destructive"
-//               className="rounded-2xl"
-//               type="submit"
-//               disabled={inputName !== vendorName}
-//               onClick={handleDelete}
-//             >
-//               {loading ? <Spinner /> : "Delete"}
-//             </Button>
-//           </DialogFooter>
-//         </DialogContent>
-//       </Dialog>
-//     </>
-//   );
-// }
 
 export function Studio1DataTable<TData, TValue>({
   columns,
   data,
   meta,
   links,
+  type = "default",
   deleteAction,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
@@ -457,7 +271,7 @@ export function Studio1DataTable<TData, TValue>({
                     // >
                     <div
                       key={row.id}
-                      className="rounded-xl border p-4  bg-white"
+                      className="rounded-xl border p-4  bg-white relative"
                     >
                       <div className="flex flex-col gap-3 items-start relative">
                         {actionCell && (
@@ -489,9 +303,25 @@ export function Studio1DataTable<TData, TValue>({
                           <h5 className="font-semibold text-primary text-lg">
                             {row.getValue("id_title")}
                           </h5>
-                          <p className="text-muted-foreground text-sm!">
+                          <p className="text-muted-foreground text-sm! mt-2">
                             {row.getValue("en_title")}
                           </p>
+                          {type === "events" && (
+                            <div className="inline-flex gap-2 items-center mt-3">
+                              <Image
+                                src={row.getValue("organized_image")}
+                                alt={row.getValue("organized_by")}
+                                width={100}
+                                height={100}
+                                className={
+                                  "w-7 h-7 object-center object-cover aspect-square rounded-full"
+                                }
+                              />
+                              <p className="text-sm!">
+                                {row.getValue("organized_by")}
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="space-y-2 mt-3">
@@ -511,7 +341,7 @@ export function Studio1DataTable<TData, TValue>({
                             <LocalDateTime date={row.getValue("updated_at")} />
                           </p>
                         </div>
-                        <div className="flex justify-end mt-2">
+                        <div className="flex justify-end mt-2 absolute bottom-4 right-4">
                           <StatusBadge status={row.getValue("status")} />
                         </div>
                       </div>

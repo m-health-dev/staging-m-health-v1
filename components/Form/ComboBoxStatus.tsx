@@ -49,7 +49,12 @@ export function ComboBoxStatus() {
                 variant="outline"
                 className={cn(
                   "justify-between w-full border border-input bg-white text-muted-foreground text-base! rounded-2xl px-3! h-12 font-normal hover:bg-white hover:text-foreground hover:ring-2 hover:ring-primary focus:ring-2 focus:ring-primary",
-                  field.value && "text-primary font-semibold hover:text-primary"
+                  field.value === "draft" &&
+                    "text-primary font-semibold hover:text-primary bg-blue-50",
+                  field.value === "archived" &&
+                    "text-amber-500 font-semibold hover:text-amber-500 bg-amber-50",
+                  field.value === "published" &&
+                    "text-green-600 font-semibold hover:text-green-600 bg-green-50"
                 )}
               >
                 {field.value

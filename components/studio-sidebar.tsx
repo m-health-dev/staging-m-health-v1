@@ -49,6 +49,7 @@ import {
   ListCheck,
   Newspaper,
   Package,
+  PartyPopper,
   ShieldCheck,
   UserCog,
   UserPen,
@@ -87,6 +88,11 @@ const data = {
       title: "Medical Equipment",
       url: "/studio/equipment",
       icon: BriefcaseMedical,
+    },
+    {
+      title: "Events",
+      url: "/studio/events",
+      icon: PartyPopper,
     },
   ],
   navClouds: [

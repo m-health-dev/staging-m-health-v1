@@ -51,7 +51,6 @@ import { WellnessType } from "@/types/wellness.types";
 import { ComboBoxGender } from "../../ComboBoxGender";
 import { ComboBoxVendorListOption } from "../../ComboBoxVendorListOption";
 import { ComboBoxHotelListOption } from "../../ComboBoxHotelListOption";
-import { ComboBoxStatus } from "../../ComboBoxStatus";
 import { deleteWellness } from "@/lib/wellness/delete-wellness";
 import { baseUrl } from "@/helper/baseUrl";
 import { MedicalType } from "@/types/medical.types";
@@ -61,6 +60,7 @@ import { deleteMedical } from "@/lib/medical/delete-medical";
 import { PackageType } from "@/types/packages.types";
 import { updatePackage } from "@/lib/packages/post-patch-packages";
 import { deletePackage } from "@/lib/packages/delete-packages";
+import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
 
 const UpdatePackageForm = ({
   packageData,

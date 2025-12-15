@@ -26,22 +26,22 @@ import { nanoid } from "nanoid";
 import { cn } from "@/lib/utils";
 
 const options = [
-  { value: "draft", label: "Draft" },
-  { value: "published", label: "Published" },
-  { value: "archived", label: "Archived" },
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+  { value: "both", label: "Both" },
 ];
 
-export function ComboBoxStatus() {
+export function ComboBoxGender() {
   const form = useFormContext();
   const [open, setOpen] = useState(false);
 
   return (
     <FormField
       control={form.control}
-      name="status"
+      name="spesific_gender"
       render={({ field }) => (
         <FormItem className="flex flex-col gap-2">
-          <FormLabel className="text-primary font-semibold!">Status</FormLabel>
+          <FormLabel className="text-primary font-semibold!">Gender</FormLabel>
 
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -54,13 +54,13 @@ export function ComboBoxStatus() {
               >
                 {field.value
                   ? options.find((o) => o.value === field.value)?.label
-                  : "Pilih Status"}
+                  : "Pilih Gender"}
               </Button>
             </PopoverTrigger>
 
             <PopoverContent className="p-0 min-w-md max-w-full">
               <Command>
-                <CommandInput placeholder="Cari Status..." />
+                <CommandInput placeholder="Cari Gender..." />
                 <CommandEmpty>Tidak ditemukan.</CommandEmpty>
 
                 <CommandGroup>
@@ -68,14 +68,9 @@ export function ComboBoxStatus() {
                     <CommandItem
                       key={o.value}
                       value={o.value}
-                      className={cn(
-                        "font-sans mb-2",
-                        o.value === "draft" && "bg-blue-50 text-blue-500",
-                        o.value === "published" && "bg-green-50 text-green-500",
-                        o.value === "archived" && "bg-amber-50 text-amber-500"
-                      )}
+                      className="font-sans"
                       onSelect={() => {
-                        form.setValue("status", o.value);
+                        form.setValue("spesific_gender", o.value);
                         setOpen(false);
                       }}
                     >
