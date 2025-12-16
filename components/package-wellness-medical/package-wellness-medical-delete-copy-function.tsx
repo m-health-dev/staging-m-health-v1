@@ -14,7 +14,7 @@ import { routing } from "@/i18n/routing";
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 
-export function PackagesWellnessMedicalDeleteCopyFunction({
+export function Studio1DeleteCopyFunction({
   id,
   name,
   locale,

@@ -47,7 +47,7 @@ export default async function Page({ children, params }: Props) {
       }
     >
       <StudioSidebar variant="inset" accounts={userData} />
-      <SidebarInset>
+      <SidebarInset className="p-0! m-0! flex flex-col">
         <SiteHeaderStudio accounts={userData} />
         {children}
       </SidebarInset>

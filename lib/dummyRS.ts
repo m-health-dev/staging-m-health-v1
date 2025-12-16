@@ -13,7 +13,7 @@ export async function getDummyRS(): Promise<{ data: RumahSakit[] }> {
   const res = await fetch(
     `https://sirs.kemkes.go.id/fo/home/rekap_rs_all?id=0`,
     {
-      next: { revalidate: 60 },
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${process.env.API_SECRET_KEY}`,
       },

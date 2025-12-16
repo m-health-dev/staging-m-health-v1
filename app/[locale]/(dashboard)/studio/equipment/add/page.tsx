@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/shadcn-io/dropzone";
 
 import {
+  EquipmentSchema,
   MedicalSchema,
   PackageSchema,
   VendorSchema,
@@ -49,6 +50,7 @@ import { RupiahInput } from "@/components/Form/PriceInput";
 import { addMedical } from "@/lib/medical/post-patch-medical";
 import { addPackage } from "@/lib/packages/post-patch-packages";
 import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
+import { addMedicalEquipment } from "@/lib/medical-equipment/post-patch-medical-equipment";
 
 const AddPackage = () => {
   const [highlightPreview, setHighlightPreview] = useState<string | null>(null);
@@ -63,27 +65,17 @@ const AddPackage = () => {
   const router = useRouter();
   const locale = useLocale();
 
-  const form = useForm<z.infer<typeof PackageSchema>>({
-    resolver: zodResolver(PackageSchema),
+  const form = useForm<z.infer<typeof EquipmentSchema>>({
+    resolver: zodResolver(EquipmentSchema),
     defaultValues: {
       en_title: "",
       id_title: "",
-      en_tagline: "",
-      id_tagline: "",
+      spesific_gender: "",
       highlight_image: "",
       reference_image: [],
-      duration_by_day: 0,
-      duration_by_night: 0,
-      spesific_gender: "",
-      en_wellness_package_content: "",
-      id_wellness_package_content: "",
-      en_medical_package_content: "",
-      id_medical_package_content: "",
-      en_detail: "",
-      id_detail: "",
-      included: [],
+      en_description: "",
+      id_description: "",
       vendor_id: "",
-      hotel_id: "",
       real_price: 0,
       discount_price: 0,
       status: "",
@@ -111,7 +103,7 @@ const AddPackage = () => {
   async function handleImageUpload(files: File[]) {
     const formData = new FormData();
     formData.append("file", files[0]); // upload 1 dulu, nanti jika mau multiple bisa looping
-    formData.append("model", "packages");
+    formData.append("model", "equipment");
     // formData.append("field", "referenceImage");
 
     try {
@@ -142,7 +134,7 @@ const AddPackage = () => {
   async function handleBatchImageUpload(files: File[]) {
     const formData = new FormData();
     files.forEach((file) => formData.append("file", file));
-    formData.append("folder", "packages/contents");
+    formData.append("folder", "equipment/contents");
 
     try {
       const res = await fetch(
@@ -207,14 +199,14 @@ const AddPackage = () => {
     }
   }
 
-  async function onSubmit(data: z.infer<typeof PackageSchema>) {
+  async function onSubmit(data: z.infer<typeof EquipmentSchema>) {
     setLoading(true);
-    const res = await addPackage(data);
+    const res = await addMedicalEquipment(data);
 
     if (res.success) {
       setLoading(false);
       toast.success(`${data.id_title} added successfully!`);
-      router.push(`/${locale}/studio/packages`);
+      router.push(`/${locale}/studio/equipment`);
     } else if (res.error) {
       setLoading(false);
       toast.error(res.error);
@@ -226,11 +218,11 @@ const AddPackage = () => {
       <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
         {name && (
           <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
-            Add Package
+            Add Equipment
           </p>
         )}
         <h4 className="text-primary font-semibold">
-          {name ? name : "Add Package"}
+          {name ? name : "Add Equipment"}
         </h4>
       </div>
 
@@ -285,108 +277,11 @@ const AddPackage = () => {
                   )}
                 />
               </div>
-              <hr />
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_tagline"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Tagline
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          className="h-12"
-                          onChange={(e) => {
-                            field.onChange(e); // sync ke react-hook-form
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="en_tagline"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Tagline
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          className="h-12"
-                          onChange={(e) => {
-                            field.onChange(e); // sync ke react-hook-form
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <hr />
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <div className="grid grid-cols-2 gap-5 items-start w-full">
-                  <FormField
-                    control={form.control}
-                    name="duration_by_day"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary font-semibold!">
-                          Duration by Day
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            inputMode="numeric"
-                            className="h-12"
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value || 0))
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="duration_by_night"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary font-semibold!">
-                          Duration by Night
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            inputMode="numeric"
-                            className="h-12"
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value || 0))
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
                 <div>
                   <ComboBoxGender />
                 </div>
-              </div>
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
                 <ComboBoxVendorListOption />
-                <ComboBoxHotelListOption />
               </div>
               <hr />
 
@@ -580,17 +475,14 @@ const AddPackage = () => {
 
               <hr />
 
-              <DynamicInputField form={form} name="included" label="Included" />
-
-              <hr />
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
                 <FormField
                   control={form.control}
-                  name="id_medical_package_content"
+                  name="id_description"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        Indonesian Medical Content
+                        Indonesian Information
                       </FormLabel>
                       <FormControl>
                         <RichEditor {...field} />
@@ -602,83 +494,11 @@ const AddPackage = () => {
 
                 <FormField
                   control={form.control}
-                  name="en_medical_package_content"
+                  name="en_description"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        English Medical Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <hr />
-
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_wellness_package_content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Wellness Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="en_wellness_package_content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Wellness Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <hr />
-
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_detail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Detail Information
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="en_detail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Detail Information
+                        English Information
                       </FormLabel>
                       <FormControl>
                         <RichEditor {...field} />

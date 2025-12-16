@@ -1,6 +1,6 @@
 export async function getImagePicsum() {
   const res = await fetch(`https://picsum.photos/v2/list`, {
-    next: { revalidate: 60 },
+    cache: "no-store",
     headers: {
       "x-client-token": `${process.env.NEXT_PUBLIC_INTERNAL_TOKEN}`,
     },

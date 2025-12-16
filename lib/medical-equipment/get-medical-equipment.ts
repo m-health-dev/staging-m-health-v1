@@ -64,6 +64,8 @@ export async function getMedicalEquipmentByID(id: string) {
       };
     }
 
+    console.log(data);
+
     return {
       data,
       success: true,

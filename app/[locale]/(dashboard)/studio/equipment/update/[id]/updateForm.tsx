@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/shadcn-io/dropzone";
 
 import {
+  EquipmentSchema,
+  EventSchema,
   MedicalSchema,
   PackageSchema,
   VendorSchema,
@@ -55,25 +57,27 @@ import { deleteWellness } from "@/lib/wellness/delete-wellness";
 import { baseUrl } from "@/helper/baseUrl";
 import { MedicalType } from "@/types/medical.types";
 import { updateMedical } from "@/lib/medical/post-patch-medical";
-import { PackagesWellnessMedicalDeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
+import { Studio1DeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { PackageType } from "@/types/packages.types";
 import { updatePackage } from "@/lib/packages/post-patch-packages";
 import { deletePackage } from "@/lib/packages/delete-packages";
 import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
+import { MedicalEquipmentType } from "@/types/medical-equipment.types";
+import { updateMedicalEquipment } from "@/lib/medical-equipment/post-patch-medical-equipment";
+import { deleteMedicalEquipment } from "@/lib/medical-equipment/delete-medical-equipment";
 
-const UpdatePackageForm = ({
-  packageData,
-  id,
-}: {
-  packageData: PackageType;
+type UpdateForm = {
   id: string;
-}) => {
+  data: MedicalEquipmentType;
+};
+
+const UpdateEquipmentForm = ({ id, data }: UpdateForm) => {
   const [highlightPreview, setHighlightPreview] = useState<string | null>(
-    packageData.highlight_image
+    data.highlight_image
   );
   const [referencePreview, setReferencePreview] = useState<string[]>(
-    packageData.reference_image
+    data.reference_image
   );
 
   const [loading, setLoading] = useState(false);
@@ -81,36 +85,24 @@ const UpdatePackageForm = ({
   const [uploadLoadingRFImage, setUploadLoadingRFImage] = useState(false);
   const [deletedImages, setDeletedImages] = useState<string[]>([]);
 
-  const [name, setName] = useState(packageData.id_title || "");
+  const [name, setName] = useState(data.id_title || "");
   const router = useRouter();
   const locale = useLocale();
 
-  const form = useForm<z.infer<typeof PackageSchema>>({
-    resolver: zodResolver(PackageSchema),
+  const form = useForm<z.infer<typeof EquipmentSchema>>({
+    resolver: zodResolver(EquipmentSchema),
     defaultValues: {
-      en_title: packageData?.en_title || "",
-      id_title: packageData?.id_title || "",
-      en_tagline: packageData?.en_tagline || "",
-      id_tagline: packageData?.id_tagline || "",
-      highlight_image: packageData?.highlight_image || "",
-      reference_image: packageData?.reference_image || [],
-      duration_by_day: packageData?.duration_by_day || 0,
-      duration_by_night: packageData?.duration_by_night || 0,
-      spesific_gender: packageData?.spesific_gender || "",
-      en_wellness_package_content:
-        packageData?.en_wellness_package_content || "",
-      id_wellness_package_content:
-        packageData?.id_wellness_package_content || "",
-      en_medical_package_content: packageData?.en_medical_package_content || "",
-      id_medical_package_content: packageData?.id_medical_package_content || "",
-      en_detail: packageData?.en_detail || "",
-      id_detail: packageData?.id_detail || "",
-      included: packageData?.included || [],
-      vendor_id: packageData?.vendor_id || "",
-      hotel_id: packageData?.hotel_id || "",
-      real_price: Number(packageData?.real_price) || 0,
-      discount_price: Number(packageData?.discount_price) || 0,
-      status: packageData?.status || "",
+      en_title: data.en_title || "",
+      id_title: data.id_title || "",
+      spesific_gender: data.spesific_gender || "",
+      highlight_image: data.highlight_image || "",
+      reference_image: data.reference_image || [],
+      en_description: data.en_description || "",
+      id_description: data.id_description || "",
+      vendor_id: data.vendor_id || "",
+      real_price: Number(data.real_price) || 0,
+      discount_price: Number(data.discount_price) || 0,
+      status: data.status || "",
     },
   });
 
@@ -135,7 +127,7 @@ const UpdatePackageForm = ({
   async function handleImageUpload(files: File[]) {
     const formData = new FormData();
     formData.append("file", files[0]); // upload 1 dulu, nanti jika mau multiple bisa looping
-    formData.append("model", "packages");
+    formData.append("model", "equipment");
     // formData.append("field", "referenceImage");
 
     try {
@@ -166,7 +158,7 @@ const UpdatePackageForm = ({
   async function handleBatchImageUpload(files: File[]) {
     const formData = new FormData();
     files.forEach((file) => formData.append("file", file));
-    formData.append("folder", "packages/contents");
+    formData.append("folder", "equipment/contents");
 
     try {
       const res = await fetch(
@@ -231,14 +223,14 @@ const UpdatePackageForm = ({
     }
   }
 
-  async function onSubmit(data: z.infer<typeof PackageSchema>) {
+  async function onSubmit(data: z.infer<typeof EquipmentSchema>) {
     setLoading(true);
-    const res = await updatePackage(data, id);
+    const res = await updateMedicalEquipment(data, id);
 
     if (res.success) {
       setLoading(false);
       toast.success(`${data.id_title} updated successfully!`);
-      router.push(`/${locale}/studio/pacakages`);
+      router.push(`/${locale}/studio/equipment`);
     } else if (res.error) {
       setLoading(false);
       toast.error(res.error);
@@ -251,22 +243,22 @@ const UpdatePackageForm = ({
         <div>
           {name && (
             <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
-              Update Package
+              Update Equipment
             </p>
           )}
           <h4 className="text-primary font-semibold">
-            {name ? name : "Update Package"}
+            {name ? name : "Update Equipment"}
           </h4>
-          <p className="text-sm! text-muted-foreground">{packageData.slug}</p>
+          <p className="text-sm! text-muted-foreground">{data.slug}</p>
         </div>
-        <PackagesWellnessMedicalDeleteCopyFunction
+        <Studio1DeleteCopyFunction
           id={id}
-          deleteAction={deletePackage}
-          name={packageData.id_title}
+          deleteAction={deleteMedicalEquipment}
+          name={data.id_title}
           locale={locale}
-          resourceLabel="Package"
+          resourceLabel="Equipment"
           router={router}
-          slug={`${baseUrl}/${locale}/package/${packageData.slug}`}
+          slug={`${baseUrl}/${locale}/equipment/${data.slug}`}
         />
       </div>
 
@@ -321,108 +313,11 @@ const UpdatePackageForm = ({
                   )}
                 />
               </div>
-              <hr />
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_tagline"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Tagline
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          className="h-12"
-                          onChange={(e) => {
-                            field.onChange(e); // sync ke react-hook-form
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="en_tagline"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Tagline
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          className="h-12"
-                          onChange={(e) => {
-                            field.onChange(e); // sync ke react-hook-form
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <hr />
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <div className="grid grid-cols-2 gap-5 items-start w-full">
-                  <FormField
-                    control={form.control}
-                    name="duration_by_day"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary font-semibold!">
-                          Duration by Day
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            inputMode="numeric"
-                            className="h-12"
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value || 0))
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="duration_by_night"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary font-semibold!">
-                          Duration by Night
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            inputMode="numeric"
-                            className="h-12"
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value || 0))
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
                 <div>
                   <ComboBoxGender />
                 </div>
-              </div>
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
                 <ComboBoxVendorListOption />
-                <ComboBoxHotelListOption />
               </div>
               <hr />
 
@@ -616,17 +511,14 @@ const UpdatePackageForm = ({
 
               <hr />
 
-              <DynamicInputField form={form} name="included" label="Included" />
-
-              <hr />
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
                 <FormField
                   control={form.control}
-                  name="id_medical_package_content"
+                  name="id_description"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        Indonesian Medical Content
+                        Indonesian Information
                       </FormLabel>
                       <FormControl>
                         <RichEditor {...field} />
@@ -638,83 +530,11 @@ const UpdatePackageForm = ({
 
                 <FormField
                   control={form.control}
-                  name="en_medical_package_content"
+                  name="en_description"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        English Medical Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <hr />
-
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_wellness_package_content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Wellness Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="en_wellness_package_content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Wellness Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <hr />
-
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_detail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Detail Information
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="en_detail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Detail Information
+                        English Information
                       </FormLabel>
                       <FormControl>
                         <RichEditor {...field} />
@@ -757,7 +577,7 @@ const UpdatePackageForm = ({
                   size={"lg"}
                   className="rounded-full flex lg:w-fit w-full"
                 >
-                  {loading ? <Spinner /> : "Submit"}
+                  {loading ? <Spinner /> : "Update"}
                 </Button>
               </div>
             </div>
@@ -768,4 +588,4 @@ const UpdatePackageForm = ({
   );
 };
 
-export default UpdatePackageForm;
+export default UpdateEquipmentForm;

@@ -11,7 +11,7 @@ export async function getAllPackages(page: number = 1, per_page: number = 10) {
     const res = await fetch(
       `${apiBaseUrl}/api/v1/packages?page=${page}&per_page=${per_page}`,
       {
-        next: { revalidate: 3600 },
+        cache: "no-store",
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export async function getAllPackages(page: number = 1, per_page: number = 10) {
 export async function getPackageByID(id: string) {
   try {
     const res = await fetch(`${apiBaseUrl}/api/v1/packages/${id}`, {
-      next: { revalidate: 3600 },
+      cache: "no-store",
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export async function getPackageByID(id: string) {
 export async function getPackageBySlug(slug: string) {
   try {
     const res = await fetch(`${apiBaseUrl}/api/v1/packages/${slug}`, {
-      next: { revalidate: 3600 },
+      cache: "no-store",
       method: "GET",
       headers: {
         "Content-Type": "application/json",

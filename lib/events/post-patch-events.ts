@@ -27,7 +27,7 @@ export async function addEvent(payload: {
 }) {
   try {
     console.log("Sending Event/create to BE:", payload);
-    const res = await fetch(`${apiBaseUrl}/api/v1/events`, {
+    const res = await fetch(`${apiBaseUrl}/api/v1/event`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export async function updateEvent(
     console.log("Sending Event/update to BE:", payload);
     const locale = await getLocale();
 
-    const res = await fetch(`${apiBaseUrl}/api/v1/events/${id}`, {
+    const res = await fetch(`${apiBaseUrl}/api/v1/event/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -96,7 +96,7 @@ export async function updateEvent(
       };
     }
 
-    revalidatePath(`/${locale}/events/${data.slug}`);
+    revalidatePath(`/${locale}/event/${data.slug}`);
 
     return {
       data,

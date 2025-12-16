@@ -154,6 +154,20 @@ export const PackageSchema = z.object({
   status: z.string(),
 });
 
+export const EquipmentSchema = z.object({
+  en_title: z.string().min(3),
+  id_title: z.string().min(3),
+  spesific_gender: z.string(),
+  highlight_image: z.string().min(1),
+  reference_image: z.array(z.string().min(1)),
+  en_description: z.string(),
+  id_description: z.string(),
+  vendor_id: z.string(),
+  real_price: z.number(),
+  discount_price: z.number(),
+  status: z.string(),
+});
+
 export const EventSchema = z.object({
   en_title: z.string().min(3),
   id_title: z.string().min(3),

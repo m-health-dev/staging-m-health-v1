@@ -29,17 +29,19 @@ const ChatContent = ({
   locale,
   user,
   urgent,
+  type = "default",
 }: {
-  packages: PackageType[];
-  medical: MedicalType[];
-  wellness: WellnessType[];
+  packages?: PackageType[];
+  medical?: MedicalType[];
+  wellness?: WellnessType[];
   session?: any[];
-  initialHistory: any[];
+  initialHistory?: any[];
   sessionID?: string;
   publicIDFetch?: string;
   locale: string;
   user?: Account;
   urgent?: boolean;
+  type?: "preview" | "default";
 }) => {
   const [selectedChat, setSelectedChat] = useState<Message[]>(session || []);
   const [isPending, startTransition] = useTransition();
@@ -75,7 +77,14 @@ const ChatContent = ({
     });
   }, [session]);
 
-  if (publicIDLoading) {
+  if (
+    publicIDLoading &&
+    packages &&
+    medical &&
+    wellness &&
+    history &&
+    initialHistory
+  ) {
     return (
       <SidebarProvider
         style={
@@ -109,35 +118,9 @@ const ChatContent = ({
     );
   }
 
-  return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 82)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <ChatbotSidebar
-        variant="inset"
-        accounts={user}
-        packages={packages}
-        medical={medical}
-        wellness={wellness}
-        history={history.length > 0 ? history : initialHistory}
-        session={session}
-        sessionID={sessionID}
-        publicIDFetch={publicID}
-        isLoading={historyLoading || isPending}
-        onRefreshHistory={refresh}
-        locale={locale}
-        hasMore={hasMore}
-        onLoadMore={loadMore}
-        displayedCount={displayedCount}
-        total={total}
-      />
-      <SidebarInset className="p-0! m-0! flex flex-col">
-        <NavHeader />
+  if (type === "preview") {
+    return (
+      <>
         {urgent && (
           <div className="w-full max-w-4xl mx-auto px-2 lg:px-6 sticky top-24 z-50">
             <div className="bg-green-50 text-green-600 border border-green-600 rounded-2xl p-4 flex flex-row items-center gap-4">
@@ -154,15 +137,80 @@ const ChatContent = ({
         )}
         <ChatStart
           chat={selectedChat}
+          type="preview"
           session={session}
           sessionID={sessionID}
           publicID={publicID}
           accounts={user}
           onNewMessage={refresh}
         />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+      </>
+    );
+  }
+
+  if (
+    type === "default" &&
+    packages &&
+    medical &&
+    wellness &&
+    history &&
+    initialHistory
+  ) {
+    return (
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 82)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <ChatbotSidebar
+          variant="inset"
+          accounts={user}
+          packages={packages}
+          medical={medical}
+          wellness={wellness}
+          history={history.length > 0 ? history : initialHistory}
+          session={session}
+          sessionID={sessionID}
+          publicIDFetch={publicID}
+          isLoading={historyLoading || isPending}
+          onRefreshHistory={refresh}
+          locale={locale}
+          hasMore={hasMore}
+          onLoadMore={loadMore}
+          displayedCount={displayedCount}
+          total={total}
+        />
+        <SidebarInset className="p-0! m-0! flex flex-col">
+          <NavHeader />
+          {urgent && (
+            <div className="w-full max-w-4xl mx-auto px-2 lg:px-6 sticky top-24 z-50">
+              <div className="bg-green-50 text-green-600 border border-green-600 rounded-2xl p-4 flex flex-row items-center gap-4">
+                <div className="w-6! h-6! bg-white rounded-full border border-green-600 text-green-600 flex justify-center items-center">
+                  <Stethoscope className="size-3 w-6" />
+                </div>
+                <p className="text-sm!">
+                  {locale === routing.defaultLocale
+                    ? "Sebagian informasi, dalam percakapan ini AI menyarankan untuk berkonsultasi dengan dokter agar mendapatkan penanganan yang tepat."
+                    : "For your information, in this conversation, AI recommends consulting a doctor for appropriate treatment."}
+                </p>
+              </div>
+            </div>
+          )}
+          <ChatStart
+            chat={selectedChat}
+            session={session}
+            sessionID={sessionID}
+            publicID={publicID}
+            accounts={user}
+            onNewMessage={refresh}
+          />
+        </SidebarInset>
+      </SidebarProvider>
+    );
+  }
 };
 
 export default ChatContent;

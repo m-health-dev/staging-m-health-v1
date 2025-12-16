@@ -11,19 +11,21 @@ const apiBaseUrl =
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
 export async function addMedicalEquipment(payload: {
-  title: string;
-  description: string;
+  en_title: string;
+  id_title: string;
+  spesific_gender: string;
   highlight_image: string;
   reference_image: string[];
+  en_description: string;
+  id_description: string;
   vendor_id: string;
-  spesific_gender: string;
   real_price: number;
   discount_price: number;
   status: string;
 }) {
   try {
     console.log("Sending equipment/create to BE:", payload);
-    const res = await fetch(`${apiBaseUrl}/api/v1/medical`, {
+    const res = await fetch(`${apiBaseUrl}/api/v1/medical-equipment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,12 +57,14 @@ export async function addMedicalEquipment(payload: {
 
 export async function updateMedicalEquipment(
   payload: {
-    title?: string;
-    description?: string;
+    en_title?: string;
+    id_title?: string;
+    spesific_gender?: string;
     highlight_image?: string;
     reference_image?: string[];
+    en_description?: string;
+    id_description?: string;
     vendor_id?: string;
-    spesific_gender?: string;
     real_price?: number;
     discount_price?: number;
     status?: string;
@@ -71,7 +75,7 @@ export async function updateMedicalEquipment(
     console.log("Sending equipment/update to BE:", payload);
     const locale = await getLocale();
 
-    const res = await fetch(`${apiBaseUrl}/api/v1/medical/${id}`, {
+    const res = await fetch(`${apiBaseUrl}/api/v1/medical-equipment/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
 import { routing } from "@/i18n/routing";
 import { createClient } from "@/utils/supabase/client";
 import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
@@ -10,8 +9,11 @@ import { columns } from "./columns";
 import { getAllMedical } from "@/lib/medical/get-medical";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { getAllPackages } from "@/lib/packages/get-packages";
+import { getAllChatActivity } from "@/lib/chatbot/getChatActivity";
+import { DeleteChatSession } from "@/lib/chatbot/delete-chat-activity";
+import { Studio2DataTable } from "@/components/package-wellness-medical/studio-2-data-table";
 
-const PackageStudio = async ({
+const ChatActivityStudio = async ({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -20,7 +22,7 @@ const PackageStudio = async ({
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 10);
 
-  const { data, meta, links } = await getAllPackages(page, per_page); // nanti page bisa dynamic
+  const { data, total, links } = await getAllChatActivity(page, per_page); // nanti page bisa dynamic
 
   const locale = await getLocale();
 
@@ -30,11 +32,11 @@ const PackageStudio = async ({
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
-          <h4 className="text-primary font-semibold">Packages Data</h4>
+          <h4 className="text-primary font-semibold">Chat Activity Data</h4>
         </div>
-        <Link href={`/${locale}/studio/packages/add`}>
+        <Link href={`/${locale}`}>
           <Button className="rounded-2xl flex lg:w-fit w-full">
-            <Plus /> <p className="lg:block hidden">Add New Packages</p>
+            <Plus /> <p className="lg:block hidden">Add New Chat</p>
           </Button>
         </Link>
       </div>
@@ -53,19 +55,19 @@ const PackageStudio = async ({
         </p>
         <div className="flex flex-wrap gap-4 items-center">
           <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
-            {meta.total} Package
+            {total} Chat Session
           </p>
         </div>
       </div>
-      <Studio1DataTable
+      <Studio2DataTable
         columns={columns}
         data={data}
-        meta={meta}
+        // meta={meta}
         links={links}
-        deleteAction={deleteMedical}
+        deleteAction={DeleteChatSession}
       />
     </ContainerWrap>
   );
 };
 
-export default PackageStudio;
+export default ChatActivityStudio;

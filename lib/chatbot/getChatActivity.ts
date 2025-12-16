@@ -3,6 +3,45 @@ const apiBaseUrl =
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
+export async function getAllChatActivity(
+  page: number = 1,
+  per_page: number = 10
+) {
+  try {
+    const res = await fetch(
+      `${apiBaseUrl}/api/v1/chat-activities?page=${page}&per_page=${per_page}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const json = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to receive chat-activities/read data. Cause : ${json.message}`,
+      };
+    }
+
+    // console.log(json.links);
+    return {
+      data: json.data,
+      links: json.links,
+      total: json.total,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive chat-activities/read Error:", error);
+    return {
+      success: false,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
 export async function getChatHistory(public_id: string) {
   if (!public_id) {
     return { data: [], total: 0 };
@@ -112,6 +151,7 @@ export async function getChatSession(session_id: string) {
     }
 
     return {
+      all: json,
       data: json.chat_activity_data.messages || [],
       session: json.chat_activity_data.id,
       publicID: json.public_id,

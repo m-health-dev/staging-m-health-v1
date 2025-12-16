@@ -11,7 +11,7 @@ export async function getAllEvents(page: number = 1, per_page: number = 10) {
     const res = await fetch(
       `${apiBaseUrl}/api/v1/events?page=${page}&per_page=${per_page}`,
       {
-        next: { revalidate: 3600 },
+        cache: "no-store",
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export async function getAllEvents(page: number = 1, per_page: number = 10) {
 export async function getEventByID(id: string) {
   try {
     const res = await fetch(`${apiBaseUrl}/api/v1/events/${id}`, {
-      next: { revalidate: 3600 },
+      cache: "no-store",
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -78,8 +78,8 @@ export async function getEventByID(id: string) {
 
 export async function getEventBySlug(slug: string) {
   try {
-    const res = await fetch(`${apiBaseUrl}/api/v1/event/${slug}`, {
-      next: { revalidate: 3600 },
+    const res = await fetch(`${apiBaseUrl}/api/v1/events/${slug}`, {
+      cache: "no-store",
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import { Studio1DataTable } from "@/components/package-wellness-medical/package-wellness-medical-data-table";
+import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
 import { routing } from "@/i18n/routing";
 import { getAllWellness } from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/client";

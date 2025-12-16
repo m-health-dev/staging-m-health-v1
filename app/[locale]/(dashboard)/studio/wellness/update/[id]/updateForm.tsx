@@ -46,7 +46,7 @@ import { WellnessType } from "@/types/wellness.types";
 import { ComboBoxGender } from "../../ComboBoxGender";
 import { ComboBoxVendorListOption } from "../../ComboBoxVendorListOption";
 import { ComboBoxHotelListOption } from "../../ComboBoxHotelListOption";
-import { PackagesWellnessMedicalDeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
+import { Studio1DeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
 import { deleteWellness } from "@/lib/wellness/delete-wellness";
 import { baseUrl } from "@/helper/baseUrl";
 import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
@@ -244,7 +244,7 @@ const UpdateWellnessForm = ({
           </h4>
           <p className="text-sm! text-muted-foreground">{wellnessData.slug}</p>
         </div>
-        <PackagesWellnessMedicalDeleteCopyFunction
+        <Studio1DeleteCopyFunction
           id={id}
           deleteAction={deleteWellness}
           name={wellnessData.id_title}

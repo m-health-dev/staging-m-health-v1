@@ -7,7 +7,7 @@ const apiBaseUrl =
 
 export async function getAllWellness() {
   const res = await fetch(`${apiBaseUrl}/api/v1/packages`, {
-    next: { revalidate: 60 },
+    cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch All packages Data");
   return res.json();
@@ -15,7 +15,7 @@ export async function getAllWellness() {
 
 export async function getLatest3Wellness() {
   const res = await fetch(`${apiBaseUrl}/api/v1/packages?per_page=3`, {
-    next: { revalidate: 60 },
+    cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch Latest 3 wellness Data");
   return res.json();

@@ -62,7 +62,7 @@ export async function deleteMedicalEquipment(id: string) {
       count,
       error: errorDeleteMedicalEqp,
     } = await supabase
-      .from("medical-equipment")
+      .from("medical_equipment")
       .delete({ count: "exact" })
       .eq("id", id);
 

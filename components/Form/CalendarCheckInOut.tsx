@@ -83,7 +83,7 @@ export function CalendarCheckInOut({
           <Input
             type="time"
             step="1"
-            className="h-12"
+            className="h-12 text-primary"
             value={timeFrom}
             onChange={(e) => {
               setTimeFrom(e.target.value);
@@ -135,7 +135,7 @@ export function CalendarCheckInOut({
           <Input
             type="time"
             step="1"
-            className="h-12"
+            className="h-12 text-primary"
             value={timeTo}
             onChange={(e) => {
               setTimeTo(e.target.value);

@@ -5,7 +5,7 @@ const apiBaseUrl =
 
 export async function getAllPackages() {
   const res = await fetch(`${apiBaseUrl}/api/v1/packages`, {
-    next: { revalidate: 60 },
+    cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch All Packages Data");
   return res.json();
@@ -13,7 +13,7 @@ export async function getAllPackages() {
 
 export async function getLatest3Packages() {
   const res = await fetch(`${apiBaseUrl}/api/v1/packages?per_page=3`, {
-    next: { revalidate: 60 },
+    cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch Latest 3 Packages Data");
   return res.json();

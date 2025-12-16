@@ -1,5 +1,6 @@
 "use client";
 
+import AvatarUserDetail from "@/components/auth/AvatarUserDetail";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,7 +23,7 @@ import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import StatusBadge from "@/components/utility/status-badge";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
-import { deleteMedicalEquipment } from "@/lib/medical-equipment/delete-medical-equipment";
+import { DeleteChatSession } from "@/lib/chatbot/delete-chat-activity";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { deletePackage } from "@/lib/packages/delete-packages";
 import { VendorType } from "@/types/vendor.types";
@@ -32,6 +33,7 @@ import {
   Check,
   Copy,
   CopyCheck,
+  Eye,
   MoreHorizontal,
   PenSquare,
   Trash2,
@@ -43,13 +45,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export const columns: ColumnDef<VendorType>[] = [
-  //   {
-  //     id: "number",
-  //     cell: ({ row }) => {
-  //       return row.index + 1;
-  //     },
-  //   },
-
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -61,13 +56,13 @@ export const columns: ColumnDef<VendorType>[] = [
     },
   },
   {
-    accessorKey: "id_title",
+    accessorKey: "title",
     enableHiding: false,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID Title" />
+      <DataTableColumnHeader column={column} title="Title" />
     ),
     cell: ({ row }) => {
-      const id_title: string = row.getValue("id_title");
+      const title: string = row.getValue("title");
       const createdAt: Date = new Date(row.getValue("created_at"));
       const now = new Date();
 
@@ -85,20 +80,9 @@ export const columns: ColumnDef<VendorType>[] = [
               New
             </span>
           )}
-          {id_title}
+          {title}
         </span>
       );
-    },
-  },
-  {
-    accessorKey: "en_title",
-
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="EN Title" />
-    ),
-    cell: ({ row }) => {
-      const en_title: string = row.getValue("en_title");
-      return <span className="text-wrap">{en_title}</span>;
     },
   },
   {
@@ -121,15 +105,34 @@ export const columns: ColumnDef<VendorType>[] = [
       return <LocalDateTime date={updated_at} />;
     },
   },
-
   {
-    accessorKey: "status",
+    accessorKey: "public_id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title="Public ID" />
     ),
     cell: ({ row }) => {
-      const status: string = row.getValue("status");
-      return <StatusBadge status={status} />;
+      const public_id: string = row.getValue("public_id");
+      return <span className="uppercase">{public_id.slice(0, 8)}</span>;
+    },
+  },
+  {
+    accessorKey: "user_id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="User ID" />
+    ),
+    cell: ({ row }) => {
+      const public_id: string = row.getValue("public_id");
+      const user_id: string = row.getValue("user_id");
+      if (user_id) {
+        return <AvatarUserDetail id={user_id} />;
+      } else {
+        return (
+          <span className="uppercase inline-flex gap-2 items-center">
+            <span className="bg-red-500 w-2 h-2 rounded-full aspect-square" />
+            {public_id.slice(0, 8)}{" "}
+          </span>
+        );
+      }
     },
   },
 
@@ -138,7 +141,7 @@ export const columns: ColumnDef<VendorType>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const id: string = row.getValue("id");
-      const id_title: string = row.getValue("id_title");
+      const title: string = row.getValue("title");
 
       const [copied, setCopied] = useState(false);
       const [openConfirm, setOpenConfirm] = useState(false);
@@ -161,7 +164,7 @@ export const columns: ColumnDef<VendorType>[] = [
 
       const handleCopyName = async () => {
         try {
-          await navigator.clipboard.writeText(id_title);
+          await navigator.clipboard.writeText(title);
           setCopied(true);
           setTimeout(() => setCopied(false), 2000);
         } catch (err) {
@@ -169,16 +172,16 @@ export const columns: ColumnDef<VendorType>[] = [
         }
       };
 
-      const handleDeleteEquipment = async () => {
+      const handleDeleteChatSession = async () => {
         try {
           setLoading(true);
-          const res = await deleteMedicalEquipment(id);
+          const res = await DeleteChatSession(id);
           if (!res.error) {
-            toast.success("Success to Delete Equipment", {
-              description: `${id.slice(0, 8).toUpperCase()} - ${id_title}`,
+            toast.success("Success to Delete Chat Session", {
+              description: `${id.slice(0, 8).toUpperCase()} - ${title}`,
             });
           } else if (res.error) {
-            toast.error("Failed to Delete Equipment", {
+            toast.error("Failed to Delete Chat Session", {
               description: `${res.error}`,
             });
           }
@@ -186,7 +189,7 @@ export const columns: ColumnDef<VendorType>[] = [
           router.refresh();
         } catch (err) {
           setLoading(false);
-          toast.warning("Failed to Equipment", { description: `${err}` });
+          toast.warning("Failed to Chat Session", { description: `${err}` });
         }
       };
 
@@ -205,11 +208,11 @@ export const columns: ColumnDef<VendorType>[] = [
                 <p
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
-                    router.push(`/${locale}/studio/equipment/update/${id}`)
+                    router.push(`/${locale}/studio/chat-activity/preview/${id}`)
                   }
                 >
-                  <PenSquare />
-                  Update Data
+                  <Eye />
+                  Preview Chat
                 </p>
               </DropdownMenuItem>
 
@@ -276,19 +279,19 @@ export const columns: ColumnDef<VendorType>[] = [
                 <DialogTitle asChild>
                   <h6 className="text-red-500">
                     {locale === routing.defaultLocale
-                      ? "Konfirmasi Penghapusan Equipment"
-                      : "Delete Equipment Confirmation"}
+                      ? "Konfirmasi Penghapusan Sesi Percakapan"
+                      : "Delete Chat Session Confirmation"}
                   </h6>
                 </DialogTitle>
                 <p className="text-muted-foreground">
                   {locale === routing.defaultLocale
-                    ? "Untuk menghapus Equipment ini, silahkan ketik nama Equipment:"
-                    : "To delete this Equipment, please type the Equipment name:"}{" "}
+                    ? "Untuk menghapus Sesi Percakapan ini, silahkan ketik nama Sesi Percakapan:"
+                    : "To delete this Chat Session, please type the Chat Session name:"}{" "}
                   <span
                     className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
                     onClick={handleCopyName}
                   >
-                    {id_title}{" "}
+                    {title}{" "}
                     {!copied ? (
                       <Copy className="size-4" />
                     ) : (
@@ -306,8 +309,8 @@ export const columns: ColumnDef<VendorType>[] = [
                 className="w-full border px-3 py-2 h-12 rounded-2xl"
                 placeholder={
                   locale === routing.defaultLocale
-                    ? "Tulis nama Equipment di sini"
-                    : "Write Equipment name here"
+                    ? "Tulis judul Sesi Percakapan di sini"
+                    : "Write Chat Session name here"
                 }
               />
               <p className="text-xs! text-red-500">
@@ -332,9 +335,9 @@ export const columns: ColumnDef<VendorType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== id_title}
+                  disabled={inputName !== title}
                   onClick={async () => {
-                    await handleDeleteEquipment();
+                    await handleDeleteChatSession();
                     setOpenConfirm(false);
                   }}
                 >

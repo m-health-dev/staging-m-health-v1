@@ -3,13 +3,14 @@
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, ScanEye } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Spinner } from "../ui/spinner";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import type { Account } from "@/types/account.types";
 import { usePathname, useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export interface Message {
   id: string;
@@ -30,6 +31,7 @@ interface ChatWindowProps {
   isLoading?: boolean;
   sessionId?: string;
   pendingSessionId?: string | null;
+  type?: "default" | "preview";
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
@@ -39,6 +41,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   sessionId,
   isLoading = false,
   pendingSessionId,
+  type = "default",
 }) => {
   const locale = useLocale();
   const [inputValue, setInputValue] = useState("");
@@ -82,7 +85,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   // }, [path, sessionId, locale]);
 
   useEffect(() => {
-    if (!accounts && messages.length > 3) {
+    if (!accounts && messages.length > 3 && type !== "preview") {
       router.replace(
         `/${locale}/sign-in?redirect=${encodeURIComponent(path)}&continue=chat`
       );
@@ -165,9 +168,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
   return (
     <div className="relative flex flex-col h-[calc(100vh-var(--header-height))]">
-      <div className="flex-1 overflow-y-auto hide-scroll pb-4">
+      <div className="flex-1 pb-4">
         <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
-          <div className="py-6">
+          <div className={cn(type === "preview" ? "py-0" : "py-6")}>
             {messages.length === 0 ? (
               <div className="flex items-center justify-center min-h-[60vh]">
                 <p className="text-muted-foreground">
@@ -178,6 +181,29 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               </div>
             ) : (
               <div className="space-y-10">
+                {type === "preview" && (
+                  <div className="bg-linear-to-b from-background via-background  sticky top-0 z-20 py-6">
+                    <div className="bg-blue-100 text-blue-500 border border-blue-500 p-4 rounded-2xl flex flex-row items-center gap-3">
+                      <div className="bg-white p-1 rounded-full w-8 h-8 flex justify-center items-center border border-blue-500">
+                        <ScanEye className="size-5 w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="font-semibold">
+                          {" "}
+                          {locale === routing.defaultLocale
+                            ? "Mode Pratinjau"
+                            : "Preview Mode"}
+                        </p>
+                        <p className="text-sm!">
+                          {" "}
+                          {locale === routing.defaultLocale
+                            ? "Anda tidak dapat memodifikasi chat ini."
+                            : "You cannot modify this chat."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {messages.map((msg) => (
                   <ChatMessage
                     key={msg.id}
@@ -209,81 +235,83 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         </div>
       </div>
 
-      <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm z-20">
-        <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
-          <div className="py-3">
-            {replyMessage && (
-              <div className="bg-white/80 p-4 rounded-2xl mb-2 flex justify-between items-start shadow-sm border border-border animate-in slide-in-from-bottom-2">
-                <div className="max-w-[85%]">
-                  <p className="text-sm font-bold text-primary mb-1 flex items-center gap-2">
-                    {locale === routing.defaultLocale
-                      ? "Membalas Pesan:"
-                      : "Replying To:"}
-                  </p>
-                  <p className="text-muted-foreground line-clamp-2">
-                    {replyMessage}
-                  </p>
+      {type !== "preview" && (
+        <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm z-20">
+          <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
+            <div className="py-3">
+              {replyMessage && (
+                <div className="bg-white/80 p-4 rounded-2xl mb-2 flex justify-between items-start shadow-sm border border-border animate-in slide-in-from-bottom-2">
+                  <div className="max-w-[85%]">
+                    <p className="text-sm font-bold text-primary mb-1 flex items-center gap-2">
+                      {locale === routing.defaultLocale
+                        ? "Membalas Pesan:"
+                        : "Replying To:"}
+                    </p>
+                    <p className="text-muted-foreground line-clamp-2">
+                      {replyMessage}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setReplyMessage(null)}
+                    className="text-xs text-muted-foreground hover:text-foreground transition"
+                  >
+                    ✕
+                  </button>
                 </div>
-                <button
-                  onClick={() => setReplyMessage(null)}
-                  className="text-xs text-muted-foreground hover:text-foreground transition"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
+              )}
 
-            <div className="flex w-full">
-              <div
-                className={`flex w-full bg-white border border-border shadow-sm transition-all duration-200 ${
-                  isExpanded
-                    ? "flex-col rounded-2xl px-2 pt-2 pb-2 items-end"
-                    : "flex-row rounded-2xl pl-2 pr-3 py-2 max-h-16 items-center"
-                }`}
-              >
-                <Textarea
-                  ref={textareaRef}
-                  placeholder={
-                    locale === routing.defaultLocale
-                      ? "Ketik pertanyaanmu di sini..."
-                      : "Type your question here..."
-                  }
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  disabled={isLoading}
-                  className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed ${
+              <div className="flex w-full">
+                <div
+                  className={`flex w-full bg-white border border-border shadow-sm transition-all duration-200 ${
                     isExpanded
-                      ? "max-h-52 py-2 text-base"
-                      : "min-h-12 text-base py-3"
+                      ? "flex-col rounded-2xl px-2 pt-2 pb-2 items-end"
+                      : "flex-row rounded-2xl pl-2 pr-3 py-2 max-h-16 items-center"
                   }`}
-                />
-                <button
-                  onClick={handleSend}
-                  disabled={showLoading || !inputValue.trim()}
-                  className={`ml-2 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
-                    showLoading || !inputValue.trim()
-                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : "bg-primary text-white hover:bg-primary/90 active:scale-95"
-                  } w-11 h-11`}
                 >
-                  {showLoading ? (
-                    <Spinner className="size-5" />
-                  ) : (
-                    <ArrowUp className="size-5" />
-                  )}
-                </button>
+                  <Textarea
+                    ref={textareaRef}
+                    placeholder={
+                      locale === routing.defaultLocale
+                        ? "Ketik pertanyaanmu di sini..."
+                        : "Type your question here..."
+                    }
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    disabled={isLoading}
+                    className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed ${
+                      isExpanded
+                        ? "max-h-52 py-2 text-base"
+                        : "min-h-12 text-base py-3"
+                    }`}
+                  />
+                  <button
+                    onClick={handleSend}
+                    disabled={showLoading || !inputValue.trim()}
+                    className={`ml-2 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
+                      showLoading || !inputValue.trim()
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-primary text-white hover:bg-primary/90 active:scale-95"
+                    } w-11 h-11`}
+                  >
+                    {showLoading ? (
+                      <Spinner className="size-5" />
+                    ) : (
+                      <ArrowUp className="size-5" />
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <p className="text-xs! text-muted-foreground mt-2 text-center">
-              {locale === routing.defaultLocale
-                ? "M-Health AI dapat membuat kesalahan. Periksa info penting."
-                : "M HEALTH AI can make mistakes. Check important information."}
-            </p>
+              <p className="text-xs! text-muted-foreground mt-2 text-center">
+                {locale === routing.defaultLocale
+                  ? "M-Health AI dapat membuat kesalahan. Periksa info penting."
+                  : "M HEALTH AI can make mistakes. Check important information."}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

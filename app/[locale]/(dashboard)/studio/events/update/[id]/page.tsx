@@ -1,27 +1,20 @@
 import React from "react";
-import UpdateVendorForm from "./updateForm";
-import { getVendorByID } from "@/lib/vendors/get-vendor";
-import { toast } from "sonner";
 import { notFound } from "next/navigation";
-import { getWellnessByID } from "@/lib/wellness/get-wellness";
-import UpdateWellnessForm from "./updateForm";
-import { getMedicalByID } from "@/lib/medical/get-medical";
-import UpdateMedicalForm from "./updateForm";
-import { getPackageByID } from "@/lib/packages/get-packages";
-import UpdatePackageForm from "./updateForm";
+import { getEventByID } from "@/lib/events/get-events";
+import UpdateEventForm from "./updateForm";
 
-const UpdatePackagePage = async ({
+const UpdateEventPage = async ({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) => {
   const { id } = await params;
-  const res = await getPackageByID(id);
+  const res = await getEventByID(id);
 
   if (res.error) {
     notFound();
   }
-  return <UpdatePackageForm id={id} packageData={res.data.data} />;
+  return <UpdateEventForm id={id} data={res.data.data} />;
 };
 
-export default UpdatePackagePage;
+export default UpdateEventPage;

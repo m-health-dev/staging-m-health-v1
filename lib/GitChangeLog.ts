@@ -1,6 +1,6 @@
 export async function getCommits() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/changelog`, {
-    next: { revalidate: 1 },
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${process.env.API_SECRET_KEY}`,
     },

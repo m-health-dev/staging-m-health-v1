@@ -50,7 +50,7 @@ import { deleteWellness } from "@/lib/wellness/delete-wellness";
 import { baseUrl } from "@/helper/baseUrl";
 import { MedicalType } from "@/types/medical.types";
 import { updateMedical } from "@/lib/medical/post-patch-medical";
-import { PackagesWellnessMedicalDeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
+import { Studio1DeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
 
@@ -245,7 +245,7 @@ const UpdateMedicalForm = ({
           </h4>
           <p className="text-sm! text-muted-foreground">{medicalData.slug}</p>
         </div>
-        <PackagesWellnessMedicalDeleteCopyFunction
+        <Studio1DeleteCopyFunction
           id={id}
           deleteAction={deleteMedical}
           name={medicalData.id_title}

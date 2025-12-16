@@ -20,6 +20,7 @@ const ChatStart = ({
   publicID,
   sessionID,
   accounts,
+  type = "default",
   onNewMessage, // Add callback to refresh history when new message is sent
 }: {
   chat: Message[];
@@ -27,6 +28,7 @@ const ChatStart = ({
   sessionID?: string;
   publicID: string;
   accounts?: Account;
+  type?: "default" | "preview";
   onNewMessage?: () => void;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -205,6 +207,7 @@ const ChatStart = ({
     return (
       <ChatWindow
         messages={messages}
+        type={type}
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
         accounts={accounts}

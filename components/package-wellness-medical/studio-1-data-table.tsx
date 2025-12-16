@@ -48,9 +48,15 @@ import Image from "next/image";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  meta: any;
+  meta?: any;
   links: any;
-  type?: "vendor" | "hotel" | "packages" | "events" | "default";
+  type?:
+    | "chat-activity"
+    | "vendor"
+    | "hotel"
+    | "packages"
+    | "events"
+    | "default";
   deleteAction?: (id: string) => Promise<{ error?: string }>;
 }
 

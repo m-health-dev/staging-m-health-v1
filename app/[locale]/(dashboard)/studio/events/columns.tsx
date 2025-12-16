@@ -22,6 +22,7 @@ import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import StatusBadge from "@/components/utility/status-badge";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
+import { deleteEvent } from "@/lib/events/delete-events";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { deletePackage } from "@/lib/packages/delete-packages";
 import { VendorType } from "@/types/vendor.types";
@@ -198,16 +199,16 @@ export const columns: ColumnDef<VendorType>[] = [
         }
       };
 
-      const handleDeletePackage = async () => {
+      const handleDeleteEvent = async () => {
         try {
           setLoading(true);
-          const res = await deletePackage(id);
+          const res = await deleteEvent(id);
           if (!res.error) {
-            toast.success("Success to Delete Package", {
+            toast.success("Success to Delete Event", {
               description: `${id.slice(0, 8).toUpperCase()} - ${id_title}`,
             });
           } else if (res.error) {
-            toast.error("Failed to Delete Package", {
+            toast.error("Failed to Delete Event", {
               description: `${res.error}`,
             });
           }
@@ -215,7 +216,7 @@ export const columns: ColumnDef<VendorType>[] = [
           router.refresh();
         } catch (err) {
           setLoading(false);
-          toast.warning("Failed to Package", { description: `${err}` });
+          toast.warning("Failed to Event", { description: `${err}` });
         }
       };
 
@@ -234,7 +235,7 @@ export const columns: ColumnDef<VendorType>[] = [
                 <p
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
-                    router.push(`/${locale}/studio/packages/update/${id}`)
+                    router.push(`/${locale}/studio/events/update/${id}`)
                   }
                 >
                   <PenSquare />
@@ -363,7 +364,7 @@ export const columns: ColumnDef<VendorType>[] = [
                   type="submit"
                   disabled={inputName !== id_title}
                   onClick={async () => {
-                    await handleDeletePackage();
+                    await handleDeleteEvent();
                     setOpenConfirm(false);
                   }}
                 >

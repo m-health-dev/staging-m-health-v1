@@ -55,7 +55,7 @@ import { deleteWellness } from "@/lib/wellness/delete-wellness";
 import { baseUrl } from "@/helper/baseUrl";
 import { MedicalType } from "@/types/medical.types";
 import { updateMedical } from "@/lib/medical/post-patch-medical";
-import { PackagesWellnessMedicalDeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
+import { Studio1DeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { PackageType } from "@/types/packages.types";
 import { updatePackage } from "@/lib/packages/post-patch-packages";
@@ -238,7 +238,7 @@ const UpdatePackageForm = ({
     if (res.success) {
       setLoading(false);
       toast.success(`${data.id_title} updated successfully!`);
-      router.push(`/${locale}/studio/pacakages`);
+      router.push(`/${locale}/studio/packages`);
     } else if (res.error) {
       setLoading(false);
       toast.error(res.error);
@@ -259,7 +259,7 @@ const UpdatePackageForm = ({
           </h4>
           <p className="text-sm! text-muted-foreground">{packageData.slug}</p>
         </div>
-        <PackagesWellnessMedicalDeleteCopyFunction
+        <Studio1DeleteCopyFunction
           id={id}
           deleteAction={deletePackage}
           name={packageData.id_title}
