@@ -30,6 +30,7 @@ const ChatContent = ({
   user,
   urgent,
   type = "default",
+  status,
 }: {
   packages?: PackageType[];
   medical?: MedicalType[];
@@ -42,6 +43,7 @@ const ChatContent = ({
   user?: Account;
   urgent?: boolean;
   type?: "preview" | "default";
+  status?: string;
 }) => {
   const [selectedChat, setSelectedChat] = useState<Message[]>(session || []);
   const [isPending, startTransition] = useTransition();
@@ -206,6 +208,7 @@ const ChatContent = ({
             publicID={publicID}
             accounts={user}
             onNewMessage={refresh}
+            status={status}
           />
         </SidebarInset>
       </SidebarProvider>

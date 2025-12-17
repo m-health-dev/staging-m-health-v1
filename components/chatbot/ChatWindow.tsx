@@ -3,7 +3,7 @@
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
-import { ArrowUp, ScanEye } from "lucide-react";
+import { ArrowUp, Eye, EyeClosed, ScanEye } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Spinner } from "../ui/spinner";
 import { useLocale } from "next-intl";
@@ -11,6 +11,9 @@ import { routing } from "@/i18n/routing";
 import type { Account } from "@/types/account.types";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { SetChatStatus } from "@/lib/chatbot/chat-status";
+import { toast } from "sonner";
+import { Toggle } from "../ui/toggle";
 
 export interface Message {
   id: string;
@@ -32,6 +35,7 @@ interface ChatWindowProps {
   sessionId?: string;
   pendingSessionId?: string | null;
   type?: "default" | "preview";
+  status?: string;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
@@ -42,12 +46,15 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   isLoading = false,
   pendingSessionId,
   type = "default",
+  status,
 }) => {
   const locale = useLocale();
   const [inputValue, setInputValue] = useState("");
   const [replyMessage, setReplyMessage] = useState<string | null>(null);
   // const [isExpanded, setIsExpanded] = useState(false);
   // const [isRouting, setIsRouting] = useState(false);
+
+  const [openPublic, setOpenPublic] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -62,6 +69,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   }, [pendingSessionId, path, locale]);
 
   const showLoading = isLoading || isRouting;
+
+  useEffect(() => {
+    if (status === "private") {
+      setOpenPublic(false);
+    } else if (status === "public") {
+      setOpenPublic(true);
+    }
+  }, []);
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -166,6 +181,50 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     };
   }, []);
 
+  const handleSetPublic = async () => {
+    if (!sessionId) return;
+    try {
+      const setPublic = await SetChatStatus("public", sessionId);
+
+      if (setPublic.error) {
+        toast.warning("Failed to change chat session to Open to Public");
+      } else {
+        toast.success(
+          "This chat can now be viewed and modified by the public.",
+          {
+            description:
+              "Please share with caution. You can also set this chat back to private.",
+          }
+        );
+        setOpenPublic(true);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to change chat session to Open to Public", {
+        description: `${error}`,
+      });
+    }
+  };
+
+  const handleSetPrivate = async () => {
+    if (!sessionId) return;
+    try {
+      const setPublic = await SetChatStatus("private", sessionId);
+
+      if (setPublic.error) {
+        toast.warning("Failed to set up private chat session.");
+      } else {
+        toast.success("This chat is now visible only to you.");
+        setOpenPublic(false);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to set up private chat session.", {
+        description: `${error}`,
+      });
+    }
+  };
+
   return (
     <div className="relative flex flex-col h-[calc(100vh-var(--header-height))]">
       <div className="flex-1 pb-4">
@@ -181,6 +240,19 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               </div>
             ) : (
               <div className="space-y-10">
+                <div className="fixed z-50 top-24 right-6">
+                  <Toggle
+                    aria-label="Toggle bookmark"
+                    onClick={() =>
+                      openPublic ? handleSetPrivate() : handleSetPublic()
+                    }
+                    size="sm"
+                    variant="outline"
+                    className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary bg-white rounded-full w-10! h-10! flex justify-center items-center border border-primary"
+                  >
+                    {openPublic ? <Eye /> : <EyeClosed />}
+                  </Toggle>
+                </div>
                 {type === "preview" && (
                   <div className="bg-linear-to-b from-background via-background  sticky top-0 z-20 py-6">
                     <div className="bg-blue-100 text-blue-500 border border-blue-500 p-4 rounded-2xl flex flex-row items-center gap-3">

@@ -1,6 +1,13 @@
 import ChatContent from "@/components/chatbot/ChatContent";
+import PrivateChat from "@/components/chatbot/private-chat";
+import UnderConstruction from "@/components/utility/under-construction";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
-import { getChatHistory, getChatSession } from "@/lib/chatbot/getChatActivity";
+import { GetChatStatus } from "@/lib/chatbot/chat-status";
+import {
+  getChatHistory,
+  getChatHistoryByUserID,
+  getChatSession,
+} from "@/lib/chatbot/getChatActivity";
 import { getAllMedical } from "@/lib/medical/get-medical";
 import { getAllPackages } from "@/lib/packages/get-packages";
 import { getAllWellness } from "@/lib/wellness/get-wellness";
@@ -31,13 +38,18 @@ export default async function SessionPage(props: { params: paramsType }) {
       createClient(),
     ]);
 
+  const { data: user, error } = await supabase.auth.getUser();
+
+  const userID = user.user?.id;
+
   if (sessionChat.error) {
     notFound();
   }
 
-  const historyData = publicID
-    ? await getChatHistory(publicID)
-    : { data: [], total: 0 };
+  const historyData =
+    publicID && userID
+      ? await getChatHistoryByUserID(userID, 1, 10)
+      : { data: [], total: 0 };
 
   const {
     data: { session },
@@ -45,6 +57,12 @@ export default async function SessionPage(props: { params: paramsType }) {
   const userData = session?.access_token
     ? await getUserInfo(session.access_token)
     : undefined;
+
+  const chatStatus = (await GetChatStatus(sessionID)).data;
+
+  if (chatStatus === "private" && userID === sessionChat.data.user_id) {
+    return <PrivateChat />;
+  }
 
   const urgent = sessionChat.urgent;
 
@@ -61,6 +79,7 @@ export default async function SessionPage(props: { params: paramsType }) {
         user={userData}
         locale={locale}
         urgent={urgent}
+        status={chatStatus}
       />
     </>
   );

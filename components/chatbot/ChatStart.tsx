@@ -22,6 +22,7 @@ const ChatStart = ({
   accounts,
   type = "default",
   onNewMessage, // Add callback to refresh history when new message is sent
+  status,
 }: {
   chat: Message[];
   session?: any[];
@@ -30,6 +31,7 @@ const ChatStart = ({
   accounts?: Account;
   type?: "default" | "preview";
   onNewMessage?: () => void;
+  status?: string;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -213,6 +215,7 @@ const ChatStart = ({
         accounts={accounts}
         sessionId={sessionID}
         pendingSessionId={pendingSessionId}
+        status={status}
       />
     );
   }

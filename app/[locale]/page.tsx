@@ -1,6 +1,9 @@
 import ChatContent from "@/components/chatbot/ChatContent";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
-import { getChatHistory } from "@/lib/chatbot/getChatActivity";
+import {
+  getChatHistory,
+  getChatHistoryByUserID,
+} from "@/lib/chatbot/getChatActivity";
 import { getAllMedical } from "@/lib/medical/get-medical";
 import { getAllPackages } from "@/lib/packages/get-packages";
 import { getAllWellness } from "@/lib/wellness/get-wellness";
@@ -32,9 +35,14 @@ export default async function Home() {
     getLocale(),
   ]);
 
-  const historyData = publicID
-    ? await getChatHistory(publicID)
-    : { data: [], total: 0 };
+  const { data: user, error } = await supabase.auth.getUser();
+
+  const userID = user.user?.id;
+
+  const historyData =
+    publicID && userID
+      ? await getChatHistoryByUserID(userID, 1, 10)
+      : { data: [], total: 0 };
 
   const userData = session?.access_token
     ? await getUserInfo(session.access_token)
