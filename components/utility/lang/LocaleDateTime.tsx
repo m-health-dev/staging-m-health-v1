@@ -13,7 +13,7 @@ export default function LocalDateTime({
   date,
   specificFormat,
 }: {
-  date: string;
+  date: string | Date;
   specificFormat?: string;
 }) {
   const locale = useLocale();

@@ -23,6 +23,7 @@ export async function addEvent(payload: {
   end_date: Date;
   location_name: string;
   location_map: string;
+  registration_url?: string;
   status: string;
 }) {
   try {
@@ -71,6 +72,7 @@ export async function updateEvent(
     end_date?: Date;
     location_name?: string;
     location_map?: string;
+    registration_url?: string;
     status?: string;
   },
   id: string

@@ -33,34 +33,29 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import PriceInfo from "../utility/PriceInfo";
 import { MedicalType } from "@/types/medical.types";
-
-function calculateDiscount(real: number, disc: number) {
-  const result = Math.round((disc / real) * 100);
-  const calc = 100 - result;
-  const response = `${calc}%`;
-
-  return response;
-}
 
 const MedicalDetailClient = ({
   medical: p,
   locale,
+  labels,
 }: {
   medical: MedicalType;
   locale: string;
+  labels: any;
 }) => {
   const swiperRef = useRef<any>(null);
   const sliderImage = [p.highlight_image, ...p.reference_image];
 
   const t = useTranslations("utility");
 
-  const [count, setCount] = useState(1);
-  const price = 33000000;
+  // const [count, setCount] = useState(1);
+  // const price = 33000000;
 
   // Hitung harga langsung dari count agar selalu akurat
-  const countedPrice = price * count;
-  const payId = uuidv4();
+  // const countedPrice = price * count;
+  const payID = uuidv4();
 
   function formatRupiah(value: number) {
     return new Intl.NumberFormat("id-ID").format(value);
@@ -195,17 +190,17 @@ const MedicalDetailClient = ({
           {p.spesific_gender === "male" ? (
             <div className="inline-flex items-center gap-2 bg-blue-100 px-3 py-1 rounded-full border border-primary">
               <Mars className="size-4 text-primary" />
-              <p className="text-primary text-sm!">{t("male")}</p>
+              <p className="text-primary text-sm!">{labels.male}</p>
             </div>
           ) : p.spesific_gender === "female" ? (
             <div className="inline-flex items-center gap-2 bg-pink-100 px-3 py-1 rounded-full border border-pink-400">
               <Venus className="size-4 text-pink-500" />
-              <p className="text-pink-500 text-sm!">{t("female")}</p>
+              <p className="text-pink-500 text-sm!">{labels.female}</p>
             </div>
           ) : (
             <div className="inline-flex items-center gap-2 bg-health/10 px-3 py-1 rounded-full border border-health">
               <VenusAndMars className="size-4 text-health" />
-              <p className="text-health text-sm!">{t("unisex")}</p>
+              <p className="text-health text-sm!">{labels.unisex}</p>
             </div>
           )}
         </div>
@@ -215,16 +210,16 @@ const MedicalDetailClient = ({
         <h6 className="package_tagline mt-2">
           {locale === routing.defaultLocale ? p.id_tagline : p.en_tagline}
         </h6>
-        <div className="flex lg:flex-row flex-col gap-8 lg:items-center items-start mt-8">
+        <div className="flex lg:flex-row flex-col lg:gap-8 gap-4 lg:items-center items-start my-5">
           <div>
             <p className="text-xs! font-medium text-muted-foreground mb-2">
-              {t("hospital")}
+              {labels.hospital}
             </p>
             <AvatarVendorHotel
               size="md"
               type="vendor"
-              vendor_id={p.vendor_id}
               locale={locale}
+              vendor_id={p.vendor_id}
             />
           </div>
           <div>
@@ -239,7 +234,16 @@ const MedicalDetailClient = ({
             />
           </div>
         </div>
-        <div className="flex flex-wrap lg:gap-5 gap-3 mt-5">
+        <div className="lg:hidden flex my-5">
+          <PriceInfo
+            labels={labels}
+            payID={payID}
+            real_price={p.real_price}
+            discount_price={p.discount_price}
+          />
+        </div>
+        <hr />
+        <div className="flex flex-wrap lg:gap-5 gap-3 my-5">
           <div className="bg-white p-4 border inline-flex gap-5 rounded-2xl">
             <div className="inline-flex items-center gap-2">
               <Sun className="text-primary size-5" />{" "}
@@ -265,32 +269,13 @@ const MedicalDetailClient = ({
             </div>
           ))}
         </div>
+        <hr />
 
-        <div className="bg-white p-4 mt-5 border rounded-2xl">
-          <p className="text-sm! text-muted-foreground">{t("detail")}</p>
-          <div
-            className="prose max-w-none -mt-3 -mb-5"
-            dangerouslySetInnerHTML={{
-              __html:
-                locale === routing.defaultLocale
-                  ? p.id_medical_package_content
-                  : p.en_medical_package_content,
-            }}
-          />
-        </div>
-
-        {/* <Tabs defaultValue="medical" className="w-full mt-5 border rounded-2xl">
-          <TabsList className="bg-transparent! overflow-hidden">
-            <TabsTrigger value="medical" className="w-fit">
-              <p>{t("medical")}</p>
-            </TabsTrigger>
-            <TabsTrigger value="detail">
-              <p>{t("detail")}</p>
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="medical">
+        <div className="flex flex-col gap-5 mt-5">
+          <div className="bg-white p-4 border rounded-2xl">
+            <p className="text-sm! text-muted-foreground">{labels.detail}</p>
             <div
-              className="prose max-w-none"
+              className="prose max-w-none -my-3"
               dangerouslySetInnerHTML={{
                 __html:
                   locale === routing.defaultLocale
@@ -298,52 +283,16 @@ const MedicalDetailClient = ({
                     : p.en_medical_package_content,
               }}
             />
-          </TabsContent>
-          <TabsContent value="detail">
-            {" "}
-            <div
-              className="prose max-w-none"
-              dangerouslySetInnerHTML={{
-                __html:
-                  locale === routing.defaultLocale ? p.id_detail : p.en_detail,
-              }}
-            />
-          </TabsContent>
-        </Tabs> */}
-      </div>
-      <div className="lg:col-span-2">
-        <div className="bg-white rounded-2xl border p-4">
-          <p className="mb-3 font-medium">{t("price_info")}</p>
-          <div className="price mt-5">
-            <div className="text-end">
-              <div className="inline-flex items-center gap-3">
-                <p className="text-muted-foreground">
-                  <s>Rp{formatRupiah(p.real_price)}</s>
-                </p>
-                <div className="font-semibold text-red-500 bg-red-50 border-red-500 border px-2 py-1 rounded-full inline-flex w-fit">
-                  <p className="inline-flex gap-1 items-center text-xs!">
-                    {/* <Percent className="size-5 text-red-500 bg-white rounded-full p-1" /> */}
-                    {calculateDiscount(p.real_price, p.discount_price)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-end mt-2">
-                <p className="text-sm! text-muted-foreground">Subtotal</p>
-                <h5 className="text-primary font-bold">
-                  Rp{formatRupiah(p.discount_price)}
-                </h5>
-              </div>
-            </div>
-          </div>
-          <div className="mt-5">
-            <Link href={`/pay/${payId}`}>
-              <button className="bg-health text-white w-full py-2 rounded-full">
-                <p>{t("buy")}</p>
-              </button>
-            </Link>
           </div>
         </div>
+      </div>
+      <div className="lg:col-span-2 lg:block hidden">
+        <PriceInfo
+          labels={labels}
+          payID={payID}
+          real_price={p.real_price}
+          discount_price={p.discount_price}
+        />
       </div>
     </ContainerWrap>
   );

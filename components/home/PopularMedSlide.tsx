@@ -84,7 +84,7 @@ export default function PopularMedSlide({
                     onMouseLeave={() => setHoveredIndex(null)}
                   >
                     <Link
-                      href={`/${locale}/package/${slide.slug}`}
+                      href={`/${locale}/medical/${slide.slug}`}
                       className="flex flex-col w-full h-[calc(100%-20px)] relative group-hover:shadow rounded-2xl transition-all duration-300"
                     >
                       <div className="relative">
@@ -204,7 +204,7 @@ export default function PopularMedSlide({
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <Link
-                  href={`/${locale}/package/${slide.slug}`}
+                  href={`/${locale}/medical/${slide.slug}`}
                   className="flex flex-col w-full h-[calc(100%-20px)] relative group-hover:shadow-md rounded-2xl transition-all duration-300"
                 >
                   <div className="relative">

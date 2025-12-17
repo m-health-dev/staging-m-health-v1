@@ -70,6 +70,7 @@ const AddEvent = () => {
       location_map: "",
       start_date: new Date(),
       end_date: new Date(),
+      registration_url: "",
       status: "",
     },
   });
@@ -660,6 +661,32 @@ const AddEvent = () => {
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
                         Location Map
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="url"
+                          className="h-12"
+                          onChange={(e) => {
+                            field.onChange(e); // sync ke react-hook-form
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <hr />
+              <div>
+                <FormField
+                  control={form.control}
+                  name="registration_url"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Registration URL
                       </FormLabel>
                       <FormControl>
                         <Input

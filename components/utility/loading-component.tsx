@@ -31,10 +31,7 @@ const LoadingComponent = ({ className }: { className?: string }) => {
 
   return (
     <ContainerWrap
-      className={cn(
-        "flex justify-center items-center min-h-[calc(100vh-10vh)]",
-        className
-      )}
+      className={cn("flex justify-center items-center min-h-screen", className)}
     >
       <motion.div
         layout

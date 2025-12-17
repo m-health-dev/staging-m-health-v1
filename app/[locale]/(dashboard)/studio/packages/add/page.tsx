@@ -506,7 +506,7 @@ const AddPackage = () => {
                         </div>
                       ) : (
                         referencePreview && (
-                          <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mb-3">
+                          <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mb-3 mt-3 ">
                             {referencePreview.map((url, i) => (
                               <div key={url} className="relative">
                                 <Image
@@ -514,7 +514,7 @@ const AddPackage = () => {
                                   width={320}
                                   height={320}
                                   alt={url}
-                                  className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                                  className="aspect-video w-full rounded-2xl object-cover border"
                                 />
                                 <Button
                                   size="sm"

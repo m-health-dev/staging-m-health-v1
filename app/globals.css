@@ -126,37 +126,37 @@ h6 {
 }
 
 p {
-  @apply font-content 3xl:text-[18px] text-base;
+  @apply font-content text-base;
 }
 
 ul,
 ol,
 li {
-  @apply font-content 3xl:text-[18px] text-base;
+  @apply font-content text-base;
 }
 
 h1 {
-  @apply 3xl:text-7xl lg:text-6xl text-5xl;
+  @apply lg:text-6xl text-5xl;
 }
 
 h2 {
-  @apply 3xl:text-6xl lg:text-5xl text-4xl;
+  @apply lg:text-5xl text-4xl;
 }
 
 h3 {
-  @apply 3xl:text-5xl lg:text-4xl text-3xl;
+  @apply lg:text-4xl text-3xl;
 }
 
 h4 {
-  @apply 3xl:text-4xl lg:text-3xl text-2xl;
+  @apply lg:text-3xl text-2xl;
 }
 
 h5 {
-  @apply 3xl:text-3xl lg:text-2xl text-xl;
+  @apply lg:text-2xl text-xl;
 }
 
 h6 {
-  @apply 3xl:text-2xl lg:text-xl text-base;
+  @apply lg:text-xl text-base;
 }
 
 .hide-scroll::-webkit-scrollbar {

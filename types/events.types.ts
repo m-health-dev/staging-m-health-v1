@@ -17,5 +17,6 @@ export type EventsType = {
   end_date: Date;
   location_name: string;
   location_map: string;
+  registration_url: string;
   status: string;
 };

@@ -181,5 +181,6 @@ export const EventSchema = z.object({
   end_date: z.date(),
   location_name: z.string(),
   location_map: z.string(),
+  registration_url: z.url().optional(),
   status: z.string(),
 });

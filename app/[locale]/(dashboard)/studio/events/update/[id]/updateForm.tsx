@@ -82,6 +82,7 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
       organized_image: data.organized_image || "",
       location_name: data.location_name || "",
       location_map: data.location_map || "",
+      registration_url: data.registration_url || "",
       start_date: data.start_date ? new Date(data.start_date) : new Date(),
       end_date: data.end_date ? new Date(data.end_date) : new Date(),
       status: data.status || "",
@@ -686,6 +687,34 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
                         Location Map
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="url"
+                          className="h-12"
+                          onChange={(e) => {
+                            field.onChange(e); // sync ke react-hook-form
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <hr />
+
+              <div>
+                {" "}
+                <FormField
+                  control={form.control}
+                  name="registration_url"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Registration URL
                       </FormLabel>
                       <FormControl>
                         <Input
