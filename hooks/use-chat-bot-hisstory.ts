@@ -4,17 +4,17 @@ import { getChatHistoryByUserID } from "@/lib/chatbot/getChatActivity";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
-export function useChatHistory(publicID?: string | null) {
+export function useChatHistory(userID?: string | null) {
   const PER_PAGE = 10;
 
   const [page, setPage] = useState(1);
   const [allHistory, setAllHistory] = useState<any[]>([]);
 
-  const key = publicID ? ["chat-history", publicID, page] : null;
+  const key = userID ? ["chat-history", userID, page] : null;
 
   const { data, error, isLoading } = useSWR(
     key,
-    () => getChatHistoryByUserID(publicID!, page, PER_PAGE),
+    () => getChatHistoryByUserID(userID!, page, PER_PAGE),
     {
       keepPreviousData: true,
       revalidateOnFocus: false,
@@ -54,7 +54,7 @@ export function useChatHistory(publicID?: string | null) {
   };
 
   const refresh = () => {
-    if (!publicID) return;
+    if (!userID) return;
     setPage(1);
     setAllHistory([]);
   };

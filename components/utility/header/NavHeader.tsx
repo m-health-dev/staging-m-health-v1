@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ContainerWrap from "../ContainerWrap";
 import {
   Sheet,
@@ -15,7 +15,17 @@ import {
 import { locale } from "dayjs";
 import { LanguageSwitcher } from "../lang/LanguageSwitcher";
 import Link from "next/link";
-import { ArrowRightToLine, LogIn, X } from "lucide-react";
+import {
+  ArrowRightToLine,
+  Check,
+  Copy,
+  Eye,
+  EyeClosed,
+  EyeOff,
+  LogIn,
+  Share2,
+  X,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -31,13 +41,122 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { NavigationLinks } from "@/constants/NavigationLinks";
 import { cn } from "@/lib/utils";
 import { routing } from "@/i18n/routing";
+import { Toggle } from "@/components/ui/toggle";
+import { SetChatStatus } from "@/lib/chatbot/chat-status";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { baseUrl } from "@/helper/baseUrl";
+import { getShareSlug } from "@/lib/chatbot/getChatActivity";
+import { Spinner } from "@/components/ui/spinner";
 
-const NavHeader = () => {
+const NavHeader = ({
+  status,
+  sessionId,
+  shareSlug,
+  type = "default",
+}: {
+  status?: string;
+  sessionId?: string;
+  shareSlug?: string;
+  type?: "preview" | "share" | "default";
+}) => {
   const locale = useLocale();
   const path = usePathname();
+  const [openPublic, setOpenPublic] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [shareLink, setShareLink] = useState(shareSlug);
+
+  const [initialStatus, setInitialStatus] = useState(status);
+
+  useEffect(() => {
+    if (status === "private") {
+      setOpenPublic(false);
+    } else if (status === "public") {
+      setOpenPublic(true);
+    }
+  }, []);
+
   const pathCheck =
     (path.startsWith(`/${locale}`) && path.endsWith(`/${locale}`)) ||
-    path.startsWith(`/${locale}/c`);
+    path.startsWith(`/${locale}/c`) ||
+    path.startsWith(`/${locale}/share`);
+
+  const handleSetPublic = async () => {
+    if (!sessionId) return;
+    setLoading(true);
+    try {
+      const setPublic = await SetChatStatus("public", sessionId);
+      // const { data, error } = await getShareSlug(sessionId);
+
+      if (setPublic.error) {
+        toast.warning("Failed to change chat session to Open to Public", {
+          description: `${setPublic.error}`,
+        });
+        setLoading(false);
+      } else {
+        toast.success(
+          "This chat can now be viewed and modified by the public.",
+          {
+            description:
+              "Please share with caution. You can also set this chat back to private.",
+          }
+        );
+        setLoading(false);
+        setInitialStatus("public");
+        setOpenPublic(true);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to change chat session to Open to Public", {
+        description: `${error}`,
+      });
+      setLoading(false);
+    }
+  };
+
+  const handleSetPrivate = async () => {
+    if (!sessionId) return;
+    setLoading(true);
+    try {
+      const setPublic = await SetChatStatus("private", sessionId);
+
+      if (setPublic.error) {
+        toast.warning("Failed to set up private chat session.");
+        setLoading(false);
+      } else {
+        toast.success("This chat is now visible only to you.");
+        setOpenPublic(false);
+        setInitialStatus("private");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      toast.error("Failed to set up private chat session.", {
+        description: `${error}`,
+      });
+    }
+  };
+
+  const handleCopyName = async () => {
+    try {
+      await navigator.clipboard.writeText(`${baseUrl}/share/${shareLink}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.warning("Failed to Copy Name", { description: `${err}` });
+    }
+  };
+
   return pathCheck ? (
     <nav className="sticky top-0 px-5 bg-background z-99 lg:border-b-0 border-b border-primary/10">
       <header className="py-5 flex items-center w-full justify-between">
@@ -53,7 +172,116 @@ const NavHeader = () => {
             alt="M-Health Logo"
           />
         </Link>
-        <div>
+        <div className="flex items-center gap-5">
+          {type !== "share" && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="hover:bg-primary py-2 px-4 rounded-full hover:text-background flex justify-center items-center w-full gap-3 text-muted-foreground">
+                  <Share2 className="-ml-0.5 size-4" />
+                  <p className="text-sm!">
+                    {locale === routing.defaultLocale ? "Bagikan" : "Share"}
+                  </p>
+                </button>
+              </DialogTrigger>
+              <DialogContent className="bg-white flex flex-col items-start rounded-2xl">
+                <DialogHeader>
+                  <DialogTitle>
+                    <div className="flex w-full items-center gap-3 text-muted-foreground">
+                      <Share2 className="-ml-0.5 size-5" />
+                      <p className="">
+                        {locale === routing.defaultLocale ? "Bagikan" : "Share"}
+                      </p>
+                    </div>
+                  </DialogTitle>
+                  <DialogDescription asChild>
+                    <div>
+                      {initialStatus === "public" && (
+                        <div>
+                          <p className="mb-1 font-medium text-primary">
+                            {locale === routing.defaultLocale
+                              ? "Obrolan ini sekarang dapat dilihat oleh publik."
+                              : "This chat can now be viewed by the public."}
+                          </p>
+                          <p className="text-sm! text-muted-foreground">
+                            {locale === routing.defaultLocale
+                              ? "Harap bagikan dengan hati-hati. Anda juga dapat mengatur obrolan ini kembali menjadi pribadi."
+                              : "Please share with caution. You can also set this chat back to private."}
+                          </p>
+                          <div className="flex items-center gap-2 w-full mt-4">
+                            <div className="p-4 bg-accent rounded-2xl flex w-full">
+                              <p className="text-sm! line-clamp-1 w-full">{`${baseUrl}/share/${shareLink}`}</p>
+                            </div>
+                            <button
+                              onClick={() => handleCopyName()}
+                              className="bg-accent p-4 rounded-2xl"
+                            >
+                              {copied ? <Check /> : <Copy />}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex w-full justify-end">
+                        {initialStatus === "private" ? (
+                          <div className="mt-0">
+                            <p className="mb-2 text-primary">
+                              {locale === routing.defaultLocale
+                                ? "Obrolan ini sekarang hanya dapat dilihat oleh Anda."
+                                : "This chat is now visible only to you."}
+                            </p>
+                            <p className="text-sm! text-muted-foreground mb-4">
+                              {locale === routing.defaultLocale
+                                ? "Untuk mengizinkan publik melihat obrolan ini, silahkan klik tombol dibawah ini untuk merubah obrolan menjadi dapat dilihat oleh publik."
+                                : "To allow the public to view this chat, please click the button below to change the chat visibility."}
+                            </p>
+                            <Button onClick={() => handleSetPublic()}>
+                              {loading ? (
+                                <>
+                                  <Spinner />
+                                  <p>Loading</p>
+                                </>
+                              ) : (
+                                <>
+                                  <Eye />
+                                  <p>
+                                    {locale === routing.defaultLocale
+                                      ? "Bagikan"
+                                      : "Set to Public Chat"}
+                                  </p>
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="mt-5">
+                            <Button
+                              variant={"outline"}
+                              onClick={() => handleSetPrivate()}
+                            >
+                              {loading ? (
+                                <>
+                                  <Spinner />
+                                  <p>Loading</p>
+                                </>
+                              ) : (
+                                <>
+                                  <EyeOff />
+                                  <p>
+                                    {locale === routing.defaultLocale
+                                      ? "Kembalikan ke Obrolan Pribadi"
+                                      : "Set to Private Chat"}
+                                  </p>
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          )}
           <div>
             <Sheet>
               <SheetTrigger className=" bg-white text-primary p-2 rounded-full shadow border">

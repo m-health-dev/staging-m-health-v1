@@ -31,6 +31,8 @@ const ChatContent = ({
   urgent,
   type = "default",
   status,
+  shareSlug,
+  labels,
 }: {
   packages?: PackageType[];
   medical?: MedicalType[];
@@ -42,8 +44,10 @@ const ChatContent = ({
   locale: string;
   user?: Account;
   urgent?: boolean;
-  type?: "preview" | "default";
+  type?: "preview" | "share" | "default";
   status?: string;
+  shareSlug?: string;
+  labels?: any;
 }) => {
   const [selectedChat, setSelectedChat] = useState<Message[]>(session || []);
   const [isPending, startTransition] = useTransition();
@@ -51,7 +55,7 @@ const ChatContent = ({
   const { publicID, isLoading: publicIDLoading } = usePublicID(publicIDFetch);
 
   useEffect(() => {
-    if (publicID) {
+    if (!publicID) {
       refresh();
     }
   }, [publicID]);
@@ -64,14 +68,9 @@ const ChatContent = ({
     hasMore,
     displayedCount,
     total,
-  } = useChatHistory(publicID);
+  } = useChatHistory(user?.id);
 
-  // console.log("[v0] Chat history:", {
-  //   historyLength: history.length,
-  //   total,
-  //   hasMore,
-  //   displayedCount,
-  // });
+  const isShowSidebar = type === "default" || type === "share";
 
   useEffect(() => {
     startTransition(() => {
@@ -109,9 +108,15 @@ const ChatContent = ({
           isLoading={true}
           locale={locale}
           onRefreshHistory={refresh}
+          labels={labels}
         />
         <SidebarInset className="p-0! m-0! flex flex-col">
-          <NavHeader />
+          <NavHeader
+            sessionId={sessionID}
+            status={status}
+            shareSlug={shareSlug}
+            type={type}
+          />
           <div className="flex items-center justify-center flex-1">
             <LoadingComponent />
           </div>
@@ -151,7 +156,7 @@ const ChatContent = ({
   }
 
   if (
-    type === "default" &&
+    isShowSidebar &&
     packages &&
     medical &&
     wellness &&
@@ -184,23 +189,16 @@ const ChatContent = ({
           onLoadMore={loadMore}
           displayedCount={displayedCount}
           total={total}
+          labels={labels}
         />
-        <SidebarInset className="p-0! m-0! flex flex-col">
-          <NavHeader />
-          {urgent && (
-            <div className="w-full max-w-4xl mx-auto px-2 lg:px-6 sticky top-24 z-50">
-              <div className="bg-green-50 text-green-600 border border-green-600 rounded-2xl p-4 flex flex-row items-center gap-4">
-                <div className="w-6! h-6! bg-white rounded-full border border-green-600 text-green-600 flex justify-center items-center">
-                  <Stethoscope className="size-3 w-6" />
-                </div>
-                <p className="text-sm!">
-                  {locale === routing.defaultLocale
-                    ? "Sebagian informasi, dalam percakapan ini AI menyarankan untuk berkonsultasi dengan dokter agar mendapatkan penanganan yang tepat."
-                    : "For your information, in this conversation, AI recommends consulting a doctor for appropriate treatment."}
-                </p>
-              </div>
-            </div>
-          )}
+        <SidebarInset className="p-0! m-0! ">
+          <NavHeader
+            sessionId={sessionID}
+            status={status}
+            shareSlug={shareSlug}
+            type={type}
+          />
+
           <ChatStart
             chat={selectedChat}
             session={session}
@@ -209,6 +207,8 @@ const ChatContent = ({
             accounts={user}
             onNewMessage={refresh}
             status={status}
+            urgent={urgent}
+            type={type}
           />
         </SidebarInset>
       </SidebarProvider>

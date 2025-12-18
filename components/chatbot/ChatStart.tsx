@@ -23,15 +23,17 @@ const ChatStart = ({
   type = "default",
   onNewMessage, // Add callback to refresh history when new message is sent
   status,
+  urgent,
 }: {
   chat: Message[];
   session?: any[];
   sessionID?: string;
   publicID: string;
   accounts?: Account;
-  type?: "default" | "preview";
+  type?: "default" | "preview" | "share";
   onNewMessage?: () => void;
   status?: string;
+  urgent?: boolean;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -216,6 +218,7 @@ const ChatStart = ({
         sessionId={sessionID}
         pendingSessionId={pendingSessionId}
         status={status}
+        urgent={urgent}
       />
     );
   }

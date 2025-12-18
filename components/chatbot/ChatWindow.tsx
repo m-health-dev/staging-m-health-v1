@@ -3,7 +3,7 @@
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
-import { ArrowUp, Eye, EyeClosed, ScanEye } from "lucide-react";
+import { ArrowUp, Eye, EyeClosed, ScanEye, Stethoscope } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Spinner } from "../ui/spinner";
 import { useLocale } from "next-intl";
@@ -34,8 +34,9 @@ interface ChatWindowProps {
   isLoading?: boolean;
   sessionId?: string;
   pendingSessionId?: string | null;
-  type?: "default" | "preview";
+  type?: "default" | "preview" | "share";
   status?: string;
+  urgent?: boolean;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
@@ -47,14 +48,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   pendingSessionId,
   type = "default",
   status,
+  urgent,
 }) => {
   const locale = useLocale();
   const [inputValue, setInputValue] = useState("");
   const [replyMessage, setReplyMessage] = useState<string | null>(null);
   // const [isExpanded, setIsExpanded] = useState(false);
   // const [isRouting, setIsRouting] = useState(false);
-
-  const [openPublic, setOpenPublic] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -71,14 +71,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const showLoading = isLoading || isRouting;
 
   useEffect(() => {
-    if (status === "private") {
-      setOpenPublic(false);
-    } else if (status === "public") {
-      setOpenPublic(true);
-    }
-  }, []);
-
-  useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
     el.style.height = "auto";
@@ -86,6 +78,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   }, [inputValue]);
 
   const isExpanded = inputValue.length > 40 || inputValue.includes("\n");
+  const isNotRedirect = type !== "share";
 
   // useEffect(() => {
   //   if (!sessionId) return;
@@ -100,7 +93,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   // }, [path, sessionId, locale]);
 
   useEffect(() => {
-    if (!accounts && messages.length > 3 && type !== "preview") {
+    if (
+      !accounts &&
+      messages.length > 3 &&
+      type !== "preview" &&
+      isNotRedirect
+    ) {
       router.replace(
         `/${locale}/sign-in?redirect=${encodeURIComponent(path)}&continue=chat`
       );
@@ -127,7 +125,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && e.shiftKey) {
+    if (e.key === "Enter" && e.shiftKey && !isLoading) {
       return; // biarkan newline
     }
 
@@ -181,52 +179,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     };
   }, []);
 
-  const handleSetPublic = async () => {
-    if (!sessionId) return;
-    try {
-      const setPublic = await SetChatStatus("public", sessionId);
-
-      if (setPublic.error) {
-        toast.warning("Failed to change chat session to Open to Public");
-      } else {
-        toast.success(
-          "This chat can now be viewed and modified by the public.",
-          {
-            description:
-              "Please share with caution. You can also set this chat back to private.",
-          }
-        );
-        setOpenPublic(true);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to change chat session to Open to Public", {
-        description: `${error}`,
-      });
-    }
-  };
-
-  const handleSetPrivate = async () => {
-    if (!sessionId) return;
-    try {
-      const setPublic = await SetChatStatus("private", sessionId);
-
-      if (setPublic.error) {
-        toast.warning("Failed to set up private chat session.");
-      } else {
-        toast.success("This chat is now visible only to you.");
-        setOpenPublic(false);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to set up private chat session.", {
-        description: `${error}`,
-      });
-    }
-  };
+  const isShowInput = type === "preview" || type === "share";
 
   return (
-    <div className="relative flex flex-col h-[calc(100vh-var(--header-height))]">
+    <div className="relative flex flex-col min-h-screen">
       <div className="flex-1 pb-4">
         <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
           <div className={cn(type === "preview" ? "py-0" : "py-6")}>
@@ -239,20 +195,21 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                 </p>
               </div>
             ) : (
-              <div className="space-y-10">
-                <div className="fixed z-50 top-24 right-6">
-                  <Toggle
-                    aria-label="Toggle bookmark"
-                    onClick={() =>
-                      openPublic ? handleSetPrivate() : handleSetPublic()
-                    }
-                    size="sm"
-                    variant="outline"
-                    className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary bg-white rounded-full w-10! h-10! flex justify-center items-center border border-primary"
-                  >
-                    {openPublic ? <Eye /> : <EyeClosed />}
-                  </Toggle>
-                </div>
+              <div className="space-y-5">
+                {urgent && (
+                  <div className="w-full max-w-4xl mx-auto sticky top-24 z-50">
+                    <div className="bg-green-50 text-green-600 border border-green-600 rounded-2xl p-4 flex flex-row items-center gap-4">
+                      <div className="w-6! h-6! bg-white rounded-full border border-green-600 text-green-600 flex justify-center items-center">
+                        <Stethoscope className="size-3 w-6" />
+                      </div>
+                      <p className="text-sm!">
+                        {locale === routing.defaultLocale
+                          ? "Sebagian informasi, dalam percakapan ini AI menyarankan untuk berkonsultasi dengan dokter agar mendapatkan penanganan yang tepat."
+                          : "For your information, in this conversation, AI recommends consulting a doctor for appropriate treatment."}
+                      </p>
+                    </div>
+                  </div>
+                )}
                 {type === "preview" && (
                   <div className="bg-linear-to-b from-background via-background  sticky top-0 z-20 py-6">
                     <div className="bg-blue-100 text-blue-500 border border-blue-500 p-4 rounded-2xl flex flex-row items-center gap-3">
@@ -270,6 +227,29 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                           {" "}
                           {locale === routing.defaultLocale
                             ? "Anda tidak dapat memodifikasi chat ini."
+                            : "You cannot modify this chat."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {type === "share" && (
+                  <div className="sticky top-24 z-20">
+                    <div className="bg-amber-100 text-amber-500 border border-amber-500 p-4 rounded-2xl flex flex-row items-center gap-3">
+                      <div className="bg-white p-1 rounded-full w-8 h-8 flex justify-center items-center border border-amber-500">
+                        <ScanEye className="size-5 w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="font-semibold">
+                          {" "}
+                          {locale === routing.defaultLocale
+                            ? "Percakapan yang dibagikan hanya dapat dilihat."
+                            : "Shared conversations can only be viewed."}
+                        </p>
+                        <p className="text-sm!">
+                          {" "}
+                          {locale === routing.defaultLocale
+                            ? "Anda tidak dapat memodifikasi percakapan ini."
                             : "You cannot modify this chat."}
                         </p>
                       </div>
@@ -307,83 +287,84 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         </div>
       </div>
 
-      {type !== "preview" && (
-        <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm z-20">
-          <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
-            <div className="py-3">
-              {replyMessage && (
-                <div className="bg-white/80 p-4 rounded-2xl mb-2 flex justify-between items-start shadow-sm border border-border animate-in slide-in-from-bottom-2">
-                  <div className="max-w-[85%]">
-                    <p className="text-sm font-bold text-primary mb-1 flex items-center gap-2">
-                      {locale === routing.defaultLocale
-                        ? "Membalas Pesan:"
-                        : "Replying To:"}
-                    </p>
-                    <p className="text-muted-foreground line-clamp-2">
-                      {replyMessage}
-                    </p>
+      <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm z-20">
+        <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
+          <div className="py-3">
+            {!isShowInput && (
+              <>
+                {replyMessage && (
+                  <div className="bg-white/80 p-4 rounded-2xl mb-2 flex justify-between items-start shadow-sm border border-border animate-in slide-in-from-bottom-2">
+                    <div className="max-w-[85%]">
+                      <p className="text-sm font-bold text-primary mb-1 flex items-center gap-2">
+                        {locale === routing.defaultLocale
+                          ? "Membalas Pesan:"
+                          : "Replying To:"}
+                      </p>
+                      <p className="text-muted-foreground line-clamp-2">
+                        {replyMessage}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setReplyMessage(null)}
+                      className="text-xs text-muted-foreground hover:text-foreground transition"
+                    >
+                      ✕
+                    </button>
                   </div>
-                  <button
-                    onClick={() => setReplyMessage(null)}
-                    className="text-xs text-muted-foreground hover:text-foreground transition"
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
+                )}
 
-              <div className="flex w-full">
-                <div
-                  className={`flex w-full bg-white border border-border shadow-sm transition-all duration-200 ${
-                    isExpanded
-                      ? "flex-col rounded-2xl px-2 pt-2 pb-2 items-end"
-                      : "flex-row rounded-2xl pl-2 pr-3 py-2 max-h-16 items-center"
-                  }`}
-                >
-                  <Textarea
-                    ref={textareaRef}
-                    placeholder={
-                      locale === routing.defaultLocale
-                        ? "Ketik pertanyaanmu di sini..."
-                        : "Type your question here..."
-                    }
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    disabled={isLoading}
-                    className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed ${
+                <div className="flex w-full">
+                  <div
+                    className={`flex w-full bg-white border border-border shadow-sm transition-all duration-200 ${
                       isExpanded
-                        ? "max-h-52 py-2 text-base"
-                        : "min-h-12 text-base py-3"
+                        ? "flex-col rounded-2xl px-2 pt-2 pb-2 items-end"
+                        : "flex-row rounded-2xl pl-2 pr-3 py-2 max-h-16 items-center"
                     }`}
-                  />
-                  <button
-                    onClick={handleSend}
-                    disabled={showLoading || !inputValue.trim()}
-                    className={`ml-2 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
-                      showLoading || !inputValue.trim()
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : "bg-primary text-white hover:bg-primary/90 active:scale-95"
-                    } w-11 h-11`}
                   >
-                    {showLoading ? (
-                      <Spinner className="size-5" />
-                    ) : (
-                      <ArrowUp className="size-5" />
-                    )}
-                  </button>
+                    <Textarea
+                      ref={textareaRef}
+                      placeholder={
+                        locale === routing.defaultLocale
+                          ? "Ketik pertanyaanmu di sini..."
+                          : "Type your question here..."
+                      }
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      disabled={isLoading}
+                      className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed ${
+                        isExpanded
+                          ? "max-h-52 py-2 text-base"
+                          : "min-h-12 text-base py-3"
+                      }`}
+                    />
+                    <button
+                      onClick={handleSend}
+                      disabled={showLoading || !inputValue.trim()}
+                      className={`ml-2 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
+                        showLoading || !inputValue.trim()
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-primary text-white hover:bg-primary/90 active:scale-95"
+                      } w-11 h-11`}
+                    >
+                      {showLoading ? (
+                        <Spinner className="size-5" />
+                      ) : (
+                        <ArrowUp className="size-5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
-
-              <p className="text-xs! text-muted-foreground mt-2 text-center">
-                {locale === routing.defaultLocale
-                  ? "M-Health AI dapat membuat kesalahan. Periksa info penting."
-                  : "M HEALTH AI can make mistakes. Check important information."}
-              </p>
-            </div>
+              </>
+            )}
+            <p className="text-xs! text-muted-foreground mt-2 text-center">
+              {locale === routing.defaultLocale
+                ? "M-Health AI dapat membuat kesalahan. Periksa info penting."
+                : "M HEALTH AI can make mistakes. Check important information."}
+            </p>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

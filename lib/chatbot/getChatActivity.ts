@@ -1,3 +1,6 @@
+import { createClient } from "@/utils/supabase/client";
+import { success } from "zod";
+
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
@@ -39,6 +42,40 @@ export async function getAllChatActivity(
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
+
+export async function getShareSlug(session_id: string) {
+  const supabase = await createClient();
+
+  try {
+    const { data, error } = await supabase
+      .from("chat_activity")
+      .select("id")
+      .eq("id", session_id)
+      .maybeSingle();
+
+    if (error) {
+      return {
+        success: false,
+        error: "Failed to get Share Slug",
+      };
+    }
+
+    // console.log("Slug Data: ", data);
+
+    return {
+      success: true,
+      data: data?.id,
+      message: `Success to get Share Slug for Chat Session: ${session_id}`,
+    };
+  } catch (error) {
+    console.error("Failed to get Share Slug", error);
+    return {
+      success: false,
+      error: "Failed to get Share Slug",
+      cause: error,
     };
   }
 }
@@ -139,7 +176,11 @@ export async function getChatSession(session_id: string) {
 
     if (!res.ok) {
       if (res.status === 404) {
-        return { error: "Chat sudah dihapus atau diarsipkan." };
+        return {
+          success: false,
+          req: res,
+          error: "Chat sudah dihapus atau diarsipkan.",
+        };
       }
       throw new Error(`HTTP error! status: ${res.status}`);
     }

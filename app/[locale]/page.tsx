@@ -8,7 +8,7 @@ import { getAllMedical } from "@/lib/medical/get-medical";
 import { getAllPackages } from "@/lib/packages/get-packages";
 import { getAllWellness } from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/server";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +18,8 @@ export default async function Home() {
   const publicID = cookieStore.get("mhealth_public_id")?.value;
 
   const supabase = await createClient();
+
+  const t = await getTranslations("utility");
 
   const [
     {
@@ -57,6 +59,10 @@ export default async function Home() {
       publicIDFetch={publicID}
       user={userData}
       locale={locale}
+      labels={{
+        delete: t("delete"),
+        cancel: t("cancel"),
+      }}
     />
   );
 }

@@ -16,43 +16,45 @@ import { createClient } from "@/utils/supabase/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { toast } from "sonner";
 
 export const dynamic = "force-dynamic";
 
 type paramsType = Promise<{ slug: string }>;
 
-export default async function SessionPage(props: { params: paramsType }) {
+export default async function ShareChatPage(props: { params: paramsType }) {
   const { slug } = await props.params;
 
   const [locale, cookieStore] = await Promise.all([getLocale(), cookies()]);
 
   const publicID = cookieStore.get("mhealth_public_id")?.value;
 
+  const supabase = await createClient();
+
+  // const { data: chat } = await supabase
+  //   .from("chat_activity")
+  //   .select("id, share_slug")
+  //   .eq("share_slug", slug)
+  //   .maybeSingle();
+
   const sessionID = slug;
 
-  // console.log(sessionID);
+  const { data: user } = await supabase.auth.getUser();
 
   const t = await getTranslations("utility");
 
-  const [packagesRes, medical, wellness, sessionChat, shareSlug, supabase] =
+  const [packagesRes, medical, wellness, sessionChat, shareSlug] =
     await Promise.all([
       getAllPackages(1, 3),
       getAllMedical(1, 3),
       getAllWellness(1, 3),
       getChatSession(sessionID),
       getShareSlug(sessionID),
-      createClient(),
     ]);
 
-  const { data: user, error } = await supabase.auth.getUser();
-
   const userID = user.user?.id;
-  // const shareSlugData = shareSlug.data;
-  // console.log(shareSlugData);
 
   if (sessionChat.error) {
-    console.error(`${sessionChat.error}`);
+    notFound();
   }
 
   const historyData =
@@ -69,9 +71,7 @@ export default async function SessionPage(props: { params: paramsType }) {
 
   const chatStatus = (await GetChatStatus(sessionID)).data;
 
-  // console.log(chatStatus, userID, sessionChat.data.user_id);
-
-  if (chatStatus === "private" && userID === sessionChat.data.user_id) {
+  if (chatStatus === "private") {
     return <PrivateChat />;
   }
 
@@ -93,7 +93,7 @@ export default async function SessionPage(props: { params: paramsType }) {
         urgent={urgent}
         status={chatStatus}
         shareSlug={shareSlug.data}
-        type="default"
+        type="share"
         labels={{
           delete: t("delete"),
           cancel: t("cancel"),

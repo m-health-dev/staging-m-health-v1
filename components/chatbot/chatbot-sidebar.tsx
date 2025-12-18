@@ -66,6 +66,7 @@ interface ChatbotSidebarProps extends React.ComponentProps<typeof Sidebar> {
   onLoadMore?: () => void;
   displayedCount?: number;
   total?: number;
+  labels?: any;
 }
 
 export function ChatbotSidebar({
@@ -84,6 +85,7 @@ export function ChatbotSidebar({
   onLoadMore,
   displayedCount,
   total,
+  labels,
   ...props
 }: ChatbotSidebarProps) {
   const router = useRouter();
@@ -315,7 +317,7 @@ export function ChatbotSidebar({
                               >
                                 <Button variant={"outline"}>
                                   <X className="size-4" />
-                                  {t("cancel")}
+                                  {labels.cancel}
                                 </Button>
                               </DialogClose>
 
@@ -330,7 +332,7 @@ export function ChatbotSidebar({
                                 ) : (
                                   <>
                                     <Trash className="size-4" />
-                                    {t("delete")}
+                                    {labels.delete}
                                   </>
                                 )}
                               </Button>

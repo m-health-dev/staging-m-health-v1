@@ -25,11 +25,15 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-import Avatar from "boring-avatars";
 import Image from "next/image";
 import { Account } from "@/types/account.types";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import dynamic from "next/dynamic";
+
+const Avatar = dynamic(() => import("boring-avatars"), {
+  ssr: false,
+});
 
 export function NavUser({
   user,
@@ -48,7 +52,7 @@ export function NavUser({
       <SidebarMenuItem className="px-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible::bg-sidebar-accent focus-visible::text-sidebar-accent-foreground rounded-2xl! focus:outline focus-visible:outline hover:outline px-2 py-2 flex gap-3 items-center w-full">
+            <div className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible::bg-sidebar-accent focus-visible::text-sidebar-accent-foreground rounded-2xl! focus:outline focus-visible:outline hover:outline px-2 py-2 flex gap-3 items-center w-full">
               {user.google_avatar || user.avatar_url ? (
                 <Image
                   src={user.google_avatar || user.avatar_url}
@@ -85,7 +89,7 @@ export function NavUser({
                   <IconDotsVertical className="ml-auto size-4" />
                 </>
               )}
-            </button>
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-2xl z-999"
