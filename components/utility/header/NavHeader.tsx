@@ -173,7 +173,7 @@ const NavHeader = ({
           />
         </Link>
         <div className="flex items-center gap-5">
-          {type !== "share" && (
+          {type !== "share" && path.startsWith(`/${locale}/c`) && (
             <Dialog>
               <DialogTrigger asChild>
                 <button className="hover:bg-primary py-2 px-4 rounded-full hover:text-background flex justify-center items-center w-full gap-3 text-muted-foreground">
