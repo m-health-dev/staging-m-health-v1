@@ -18,6 +18,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getMessages } from "next-intl/server";
 import NextTopLoader from "nextjs-toploader";
+import OneTapComponent from "@/components/utility/GoogleOneTap";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -87,6 +88,28 @@ export default async function RootLayout({ children, params }: Props) {
             <Analytics />
             <SpeedInsights />
             {children}
+            {/* <div
+              id="g_id_onload"
+              data-client_id="92675309192-qvkkf9g7f42pbv83su4ubvojvsk4qavi.apps.googleusercontent.com"
+              data-context="signin"
+              data-ux_mode="popup"
+              data-callback="https://hoocfkzapbmnldwmedrq.supabase.co/auth/v1/callback"
+              data-auto_select="true"
+              data-itp_support="true"
+              data-use_fedcm_for_prompt="true"
+            ></div>
+
+            <div
+              className="g_id_signin"
+              data-type="standard"
+              data-shape="rectangular"
+              data-theme="outline"
+              data-text="signin_with"
+              data-size="large"
+              data-locale="id"
+              data-logo_alignment="left"
+            ></div> */}
+            <OneTapComponent />
           </NextIntlClientProvider>
         </LanguageProvider>
       </body>

@@ -14,7 +14,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { AuthSignInSchema, ForgotPassSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye, ChevronsRight } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -25,7 +25,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
-import { sign } from "crypto";
+import { Sign, sign } from "crypto";
 import { useLocale } from "next-intl";
 import {
   forgotPasswordAction,
@@ -33,8 +33,17 @@ import {
   signWithGoogle,
 } from "../actions/auth.actions";
 import { routing } from "@/i18n/routing";
+import { cn } from "@/lib/utils";
 
-const SignInClient = ({ image }: { image: any }) => {
+const SignInClient = ({
+  component = false,
+  SignInToChat,
+  onSignInSuccess,
+}: {
+  component?: boolean;
+  SignInToChat?: boolean;
+  onSignInSuccess?: () => void;
+}) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -43,6 +52,7 @@ const SignInClient = ({ image }: { image: any }) => {
   const router = useRouter();
   const locale = useLocale();
   const params = useSearchParams();
+  const path = usePathname();
   const redirectData = params.get("redirect") || `/${locale}/dashboard`;
   const continueData = params.get("continue");
   const emailData = params.get("email");
@@ -63,12 +73,16 @@ const SignInClient = ({ image }: { image: any }) => {
     }
   }, [recordResetData]);
 
+  console.log("path:", path);
+
   const form = useForm<z.infer<typeof AuthSignInSchema>>({
     resolver: zodResolver(AuthSignInSchema),
     defaultValues: {
       email: emailData || "",
       password: "",
-      redirect: redirectData?.toString(),
+      redirect: path.startsWith(`/${locale}/c`)
+        ? path
+        : redirectData?.toString(),
     },
   });
 
@@ -102,6 +116,7 @@ const SignInClient = ({ image }: { image: any }) => {
       setWarning(res?.warning);
     } else {
       setLoading(false);
+      onSignInSuccess?.();
       return;
     }
     // } else {
@@ -113,8 +128,14 @@ const SignInClient = ({ image }: { image: any }) => {
   }
 
   return (
-    <>
-      <Image
+    <div
+      className={cn(
+        component
+          ? "w-full flex justify-center items-center"
+          : "min-h-screen flex flex-col justify-center bg-white"
+      )}
+    >
+      {/* <Image
         src={
           "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
         }
@@ -122,30 +143,62 @@ const SignInClient = ({ image }: { image: any }) => {
         height={60}
         className="object-contain my-8 flex justify-center items-center mx-auto"
         alt="M-Health Logo"
-      />
-      <ContainerWrap size="xl">
-        <div className="flex items-center justify-center lg:min-h-screen 3xl:min-h-[calc(100vh-80px)] bg-white py-10 mt-5 mb-10 p-5 rounded-4xl">
-          <div className="md:max-w-sm w-full col-span-1">
-            <h3 className="font-bold text-primary mb-10">
-              Log In to Your Account
+      /> */}
+
+      <div
+        className={cn(
+          !component && "lg:grid lg:grid-cols-2 items-center justify-center p-5"
+        )}
+      >
+        {!component && (
+          <div className="lg:hidden block mb-10">
+            <Image
+              src={
+                "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/dummy/lembah_sriti_calm_night.jpg"
+              }
+              width={720}
+              height={720}
+              unoptimized
+              alt={
+                "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/dummy/lembah_sriti_calm_night.jpg"
+              }
+              className="rounded-4xl shadow aspect-video w-full h-full object-cover object-center"
+            />
+          </div>
+        )}
+
+        <div
+          className={cn(
+            "flex w-full items-center justify-center",
+            !component && "-ml-6"
+          )}
+        >
+          <div className={cn("w-full", component ? "" : "max-w-md")}>
+            <h3
+              className={cn(
+                "font-bold text-primary",
+                SignInToChat ? "mb-4" : "mb-10"
+              )}
+            >
+              {locale === routing.defaultLocale
+                ? "Masuk"
+                : "Log In to Your Account"}
             </h3>
-            {continueData === "chat" && (
-              <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
-                <p className="text-sm!">
-                  {locale === routing.defaultLocale
-                    ? "Anda harus masuk untuk melanjutkan percakapan. Terima kasih!"
-                    : "You must be logged in to continue your conversation. Thank you!"}
-                </p>
-              </div>
+            {SignInToChat && (
+              <p className="text-sm! text-muted-foreground">
+                {locale === routing.defaultLocale
+                  ? "Anda harus masuk untuk melanjutkan percakapan."
+                  : "You must be logged in to continue your conversation."}
+              </p>
             )}
             {error && (
-              <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
+              <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2 mt-2">
                 <p className="font-bold mb-1">Autentifikasi Gagal</p>
                 <p className="text-sm!">{error}</p>
               </div>
             )}
             {warning && (
-              <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
+              <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2 mt-2">
                 <p className="font-bold mb-1">Autentifikasi Gagal</p>
                 <p className="text-sm!">{warning}</p>
               </div>
@@ -224,7 +277,11 @@ const SignInClient = ({ image }: { image: any }) => {
                     </p>
                   </button>
                 </div>
-                <Button type="submit" className="w-full h-12 rounded-full">
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-12 rounded-full"
+                >
                   {loading ? <Spinner /> : <p>Sign In</p>}
                 </Button>
               </form>
@@ -240,7 +297,7 @@ const SignInClient = ({ image }: { image: any }) => {
               className="w-full h-12 rounded-full flex items-center gap-2 mb-3"
               onClick={handleGoogleSignIn}
             >
-              <FontAwesomeIcon icon={faGoogle} /> <p>Sign In with Google</p>
+              <FontAwesomeIcon icon={faGoogle} /> <p>Continue with Google</p>
             </Button>
 
             <Button
@@ -249,7 +306,7 @@ const SignInClient = ({ image }: { image: any }) => {
               className="w-full h-12 rounded-full flex items-center gap-2"
               onClick={() => router.push(`/${locale}/magic`)}
             >
-              <ChevronsRight className="size-5" /> <p>Magic Sign In</p>
+              <ChevronsRight className="size-5" /> <p>Magic Link Sign In</p>
             </Button>
             <p className="text-muted-foreground text-center text-sm! mt-5">
               Don't have an account?{" "}
@@ -262,19 +319,36 @@ const SignInClient = ({ image }: { image: any }) => {
               now.
             </p>
           </div>
-          <div className="col-span-2">
+        </div>
+        {!component && (
+          <div className="relative">
+            <div className="absolute top-0 left-0 bg-white py-5 px-7 rounded-br-4xl rounded-tl-4xl">
+              <Image
+                src={
+                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+                }
+                width={120}
+                height={40}
+                className="object-contain flex justify-start items-start"
+                alt="M-Health Logo"
+              />
+            </div>
             <Image
-              src={image}
-              width={640}
-              height={640}
+              src={
+                "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/dummy/lembah_sriti_calm_night.jpg"
+              }
+              width={720}
+              height={720}
               unoptimized
-              alt={image}
-              className="ml-20 rounded-4xl shadow aspect-square min-w-2xl max-w-2xl h-full object-cover object-center lg:flex hidden"
+              alt={
+                "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/dummy/lembah_sriti_calm_night.jpg"
+              }
+              className="rounded-4xl shadow aspect-square w-full h-full object-cover object-center lg:flex hidden"
             />
           </div>
-        </div>
-      </ContainerWrap>
-    </>
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -1,0 +1,24 @@
+{
+  "title": "About Us",
+  "description": "M HEALTH is a digital health platform designed to help you access fast, accurate, and reliable medical information. We understand that finding the right health solutions can often feel overwhelming. That’s why we act as a \"digital front door\" — making it easier for anyone to ask questions, consult with professionals, and plan their medical and wellness journey in a simple, transparent, and affordable way.",
+  "servicesTitle": "Our Services",
+  "services": {
+    "chat": {
+      "title": "Interactive Health Chat",
+      "desc": "Powered by AI technology and supported by medical professionals, we provide a 24/7 health information channel to assist with questions related to symptoms, health conditions, and initial care guidance."
+    },
+    "teleconsult": {
+      "title": "Teleconsultation",
+      "desc": "Get direct access to general practitioners and specialists through chat or video calls at affordable rates. Medical consultations are now as easy and comfortable as having a conversation, without long waiting times."
+    },
+    "quality": {
+      "title": "Health Quality Management",
+      "desc": "We integrate wearable devices such as smartwatches, fitness activities, and health monitoring tools to help users continuously track and manage their health data."
+    },
+    "hospital": {
+      "title": "Hospital Assistance & Referral",
+      "desc": "M HEALTH partners with leading hospitals across major cities in Indonesia. Our assistance service helps you obtain referrals and priority access to healthcare facilities that match your medical needs and location preferences."
+    }
+  },
+  "closing": "M HEALTH is committed to ensuring that everyone has access to more human-centered, measurable, and sustainable healthcare information, services, and experiences — from prevention and treatment to overall wellness."
+}

@@ -53,6 +53,7 @@ export default async function SessionPage(props: { params: paramsType }) {
 
   if (sessionChat.error) {
     console.error(`${sessionChat.error}`);
+    notFound();
   }
 
   const historyData =
@@ -71,9 +72,30 @@ export default async function SessionPage(props: { params: paramsType }) {
 
   // console.log(chatStatus, userID, sessionChat.data.user_id);
 
-  if (chatStatus === "private" && userID === sessionChat.data.user_id) {
+  console.log("Session Chat Data: ", sessionChat);
+
+  console.log(
+    "Is Same User: ",
+    userID === sessionChat.all.user_id,
+    userID,
+    sessionChat.all.user_id
+  );
+  console.log("Is Same Public ID: ", publicID === sessionChat.all.public_id);
+
+  const isPublicMatch =
+    Boolean(publicID) && publicID === sessionChat.all.public_id;
+
+  const isUserMatch = Boolean(userID) && userID === sessionChat.all.user_id;
+
+  if (!isPublicMatch && !isUserMatch) {
     return <PrivateChat />;
   }
+
+  // else if (userID) {
+  //   if (userID !== sessionChat.all.user_id) {
+  //     return <PrivateChat />;
+  //   }
+  // }
 
   const urgent = sessionChat.urgent;
   // console.log("Urgent Status: ", urgent);

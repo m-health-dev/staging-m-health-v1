@@ -14,6 +14,7 @@ import { AuthSignUpSchema, ForgotPassSchema } from "@/lib/zodSchema";
 
 import sha1 from "crypto-js/sha1";
 import { NextResponse } from "next/server";
+import { use } from "react";
 
 const signUpSchema = z.object({
   fullname: z
@@ -266,6 +267,8 @@ export const signInAction = async (data: {
   const validatedData = signInSchema.safeParse(data);
   const locale = await getLocale();
 
+  console.log("vakidatedData:", validatedData);
+
   if (!validatedData.success) {
     return {
       success: false,
@@ -286,10 +289,20 @@ export const signInAction = async (data: {
 
   const userRole = await getUserRole();
 
-  const redirectTo =
-    (validatedData.data?.redirect as string) && userRole === "admin"
-      ? `/${locale}/studio`
-      : validatedData.data?.redirect || `/${locale}/dashboard`;
+  let redirectTo = "";
+
+  if (validatedData.data.redirect.startsWith(`/${locale}/c`)) {
+    redirectTo = validatedData.data.redirect;
+  } else if (userRole === "admin") {
+    redirectTo = `/${locale}/studio`;
+  } else if (userRole === "user") {
+    redirectTo = `/${locale}/dashboard`;
+  }
+
+  // const redirectTo =
+  //   (validatedData.data?.redirect as string) && userRole === "admin"
+  //     ? `/${locale}/studio`
+  //     : validatedData.data?.redirect || `/${locale}/dashboard`;
 
   if (error) {
     console.error(error.code + " " + error.message);

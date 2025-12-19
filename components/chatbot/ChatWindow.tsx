@@ -14,6 +14,19 @@ import { cn } from "@/lib/utils";
 import { SetChatStatus } from "@/lib/chatbot/chat-status";
 import { toast } from "sonner";
 import { Toggle } from "../ui/toggle";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Button } from "../ui/button";
+import SignInClient from "@/app/[locale]/(auth)/sign-in/SignIn-Client";
+import { set } from "zod";
 
 export interface Message {
   id: string;
@@ -53,6 +66,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const locale = useLocale();
   const [inputValue, setInputValue] = useState("");
   const [replyMessage, setReplyMessage] = useState<string | null>(null);
+  const [dialogSignIn, setDialogSignIn] = useState(false);
+  const [hasSignedIn, setHasSignedIn] = useState(false);
+
   // const [isExpanded, setIsExpanded] = useState(false);
   // const [isRouting, setIsRouting] = useState(false);
 
@@ -91,19 +107,19 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   //     setIsRouting(false);
   //   }
   // }, [path, sessionId, locale]);
-
   useEffect(() => {
     if (
       !accounts &&
+      !hasSignedIn &&
       messages.length > 3 &&
       type !== "preview" &&
       isNotRedirect
     ) {
-      router.replace(
-        `/${locale}/sign-in?redirect=${encodeURIComponent(path)}&continue=chat`
-      );
+      setDialogSignIn(true);
+    } else {
+      setDialogSignIn(false);
     }
-  }, [accounts, messages.length, router, locale, path]);
+  }, [accounts, hasSignedIn, messages.length, type, isNotRedirect]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -183,6 +199,35 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
   return (
     <div className="relative flex flex-col min-h-screen">
+      <Dialog open={dialogSignIn}>
+        {/* <DialogTrigger className="flex items-center gap-2 px-2 py-1">
+                <IconLogout className="size-4" />
+                <p className="text-sm! text-muted-foreground">
+                  {locale === routing.defaultLocale ? "Keluar" : "Log out"}
+                </p>
+              </DialogTrigger> */}
+        <DialogContent
+          className="bg-white rounded-2xl max-w-sm! px-5"
+          showCloseButton={false}
+        >
+          <DialogTitle className="hidden" />
+          <div className="flex w-full items-center">
+            <SignInClient
+              component
+              SignInToChat
+              onSignInSuccess={() => {
+                setHasSignedIn(true);
+                setDialogSignIn(false);
+                toast.success(
+                  locale === routing.defaultLocale
+                    ? "Silakan lanjutkan percakapan"
+                    : "You can continue the conversation"
+                );
+              }}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
       <div className="flex-1 pb-4">
         <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
           <div className={cn(type === "preview" ? "py-0" : "py-6")}>
