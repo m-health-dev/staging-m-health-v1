@@ -1,3 +1,4 @@
+import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
 import { success } from "zod";
 
@@ -11,6 +12,7 @@ export async function getAllVendorWithoutPagination() {
     const res = await fetch(`${apiBaseUrl}/api/v1/vendors?per_page=all`, {
       method: "GET",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });
@@ -45,6 +47,7 @@ export async function getAllVendor(page: number = 1, per_page: number = 10) {
       {
         method: "GET",
         headers: {
+          "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
       }
@@ -80,6 +83,7 @@ export async function getVendorByID(id: string) {
     const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
       method: "GET",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });
@@ -111,6 +115,7 @@ export async function getVendorBySlug(slug: string) {
     const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${slug}`, {
       method: "GET",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });

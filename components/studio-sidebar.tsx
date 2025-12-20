@@ -56,6 +56,7 @@ import {
   Users,
 } from "lucide-react";
 import { Account } from "@/types/account.types";
+import { useLocale } from "next-intl";
 
 const data = {
   user: {
@@ -251,6 +252,7 @@ interface StudioSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
+  const locale = useLocale();
   return (
     <Sidebar collapsible="offcanvas" className="p-0" {...props}>
       <SidebarHeader>
@@ -280,7 +282,7 @@ export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
         <NavMenu title="Website Config" items={data.website_config} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
         <div className="sticky bottom-0 py-2 bg-linear-to-t from-white via-white px-1">
-          {accounts && <NavUser user={accounts} type="side" />}
+          {accounts && <NavUser user={accounts} locale={locale} type="side" />}
         </div>
       </SidebarContent>
       {/* <SidebarFooter>

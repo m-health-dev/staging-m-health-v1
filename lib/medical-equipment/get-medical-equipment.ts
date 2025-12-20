@@ -1,3 +1,4 @@
+import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
 import { success } from "zod";
 
@@ -16,6 +17,7 @@ export async function getAllMedicalEquipment(
       {
         method: "GET",
         headers: {
+          "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
       }
@@ -51,6 +53,7 @@ export async function getMedicalEquipmentByID(id: string) {
     const res = await fetch(`${apiBaseUrl}/api/v1/medical-equipment/${id}`, {
       method: "GET",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });
@@ -84,6 +87,7 @@ export async function getMedicalEquipmentBySlug(slug: string) {
     const res = await fetch(`${apiBaseUrl}/api/v1/medical-equipment/${slug}`, {
       method: "GET",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });

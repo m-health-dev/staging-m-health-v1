@@ -13,6 +13,7 @@ import { getAllMedical } from "@/lib/medical/get-medical";
 import { getAllPackages } from "@/lib/packages/get-packages";
 import { getAllWellness } from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/server";
+import { hi } from "date-fns/locale";
 import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
@@ -51,6 +52,8 @@ export default async function SessionPage(props: { params: paramsType }) {
   // const shareSlugData = shareSlug.data;
   // console.log(shareSlugData);
 
+  const shareSlugData = shareSlug.shareSlug;
+
   if (sessionChat.error) {
     console.error(`${sessionChat.error}`);
     notFound();
@@ -60,7 +63,7 @@ export default async function SessionPage(props: { params: paramsType }) {
     publicID && userID
       ? await getChatHistoryByUserID(userID, 1, 10)
       : { data: [], total: 0 };
-
+  // console.log("History: ", historyData);
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -70,32 +73,23 @@ export default async function SessionPage(props: { params: paramsType }) {
 
   const chatStatus = (await GetChatStatus(sessionID)).data;
 
-  // console.log(chatStatus, userID, sessionChat.data.user_id);
+  // console.log("Session Chat Data: ", sessionChat);
 
-  console.log("Session Chat Data: ", sessionChat);
-
+  console.log("Is Same User: ", userID === sessionChat.all.data.user_id);
   console.log(
-    "Is Same User: ",
-    userID === sessionChat.all.user_id,
-    userID,
-    sessionChat.all.user_id
+    "Is Same Public ID: ",
+    publicID === sessionChat.all.data.public_id
   );
-  console.log("Is Same Public ID: ", publicID === sessionChat.all.public_id);
 
   const isPublicMatch =
-    Boolean(publicID) && publicID === sessionChat.all.public_id;
+    Boolean(publicID) && publicID === sessionChat.all.data.public_id;
 
-  const isUserMatch = Boolean(userID) && userID === sessionChat.all.user_id;
+  const isUserMatch =
+    Boolean(userID) && userID === sessionChat.all.data.user_id;
 
   if (!isPublicMatch && !isUserMatch) {
     return <PrivateChat />;
   }
-
-  // else if (userID) {
-  //   if (userID !== sessionChat.all.user_id) {
-  //     return <PrivateChat />;
-  //   }
-  // }
 
   const urgent = sessionChat.urgent;
   // console.log("Urgent Status: ", urgent);
@@ -106,7 +100,7 @@ export default async function SessionPage(props: { params: paramsType }) {
         packages={packagesRes.data}
         medical={medical.data}
         wellness={wellness.data}
-        initialHistory={historyData.data || []}
+        initialHistory={historyData.data.data || []}
         sessionID={sessionID}
         session={sessionChat.data}
         publicIDFetch={publicID}
@@ -114,7 +108,7 @@ export default async function SessionPage(props: { params: paramsType }) {
         locale={locale}
         urgent={urgent}
         status={chatStatus}
-        shareSlug={shareSlug.data}
+        shareSlug={shareSlugData}
         type="default"
         labels={{
           delete: t("delete"),

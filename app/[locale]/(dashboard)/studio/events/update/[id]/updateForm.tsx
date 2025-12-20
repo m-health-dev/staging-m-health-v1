@@ -35,7 +35,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
-import { addEvent } from "@/lib/events/post-patch-events";
+import { addEvent, updateEvent } from "@/lib/events/post-patch-events";
 import { CalendarCheckInOut } from "@/components/Form/CalendarCheckInOut";
 import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
 import { EventsType } from "@/types/events.types";
@@ -212,7 +212,7 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
 
   async function onSubmit(data: z.infer<typeof EventSchema>) {
     setLoading(true);
-    const res = await addEvent(data);
+    const res = await updateEvent(data, id);
 
     if (res.success) {
       setLoading(false);

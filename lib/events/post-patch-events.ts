@@ -1,14 +1,12 @@
 "use server";
 
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { apiBaseUrl } from "@/helper/baseUrl";
+import { createClient } from "@/utils/supabase/server";
 import { error } from "console";
 import { getLocale } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { success } from "zod";
-
-const apiBaseUrl =
-  process.env.NODE_ENV === "production"
-    ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
-    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
 export async function addEvent(payload: {
   en_title: string;
@@ -27,14 +25,18 @@ export async function addEvent(payload: {
   status: string;
 }) {
   try {
-    console.log("Sending Event/create to BE:", payload);
-    const res = await fetch(`${apiBaseUrl}/api/v1/event`, {
+    const accessToken = await getAccessToken();
+
+    const res = await fetch(`${apiBaseUrl}/api/v1/events`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
+
+    console.log("Sending Event/create to BE:", { res, payload, accessToken });
 
     const data = await res.json();
 
@@ -80,10 +82,12 @@ export async function updateEvent(
   try {
     console.log("Sending Event/update to BE:", payload);
     const locale = await getLocale();
+    const accessToken = await getAccessToken();
 
-    const res = await fetch(`${apiBaseUrl}/api/v1/event/${id}`, {
+    const res = await fetch(`${apiBaseUrl}/api/v1/events/${id}`, {
       method: "PATCH",
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),

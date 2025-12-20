@@ -7,6 +7,7 @@ import Link from "next/link";
 import { getAccessToken, getUserRole } from "../../(auth)/actions/auth.actions";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import UnderConstruction from "@/components/utility/under-construction";
+import { get } from "http";
 
 const DashboardPage = async () => {
   const supabase = await createClient();
@@ -24,6 +25,8 @@ const DashboardPage = async () => {
 
   const role = await getUserRole();
   const accessToken = await getAccessToken();
+
+  const userData = await getUserInfo(session.access_token);
 
   return (
     <>
@@ -49,6 +52,13 @@ const DashboardPage = async () => {
         <p className="text-sm! text-primary mb-1">Your Access Token</p>
         <pre className="text-wrap wrap-anywhere text-sm!">
           {JSON.stringify(accessToken, null, 2)}
+        </pre>
+      </div>
+
+      <div className="bg-white p-4 border rounded-2xl mt-10">
+        <p className="text-sm! text-primary mb-1">Your User Data</p>
+        <pre className="text-wrap wrap-anywhere text-sm!">
+          {JSON.stringify(userData, null, 2)}
         </pre>
       </div>
 

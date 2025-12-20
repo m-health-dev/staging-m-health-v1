@@ -1,6 +1,7 @@
 "use server";
 
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { createClient } from "@/utils/supabase/server";
 import { error } from "console";
 import { getLocale } from "next-intl/server";
 import { revalidatePath } from "next/cache";
@@ -32,10 +33,12 @@ export async function addWellness(payload: {
 }) {
   try {
     const accessToken = await getAccessToken();
+
     console.log("Sending wellness/create to BE:", payload);
     const res = await fetch(`${apiBaseUrl}/api/v1/wellness`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
@@ -88,10 +91,12 @@ export async function updateWellness(
   try {
     console.log("Sending wellness/update to BE:", payload);
     const locale = await getLocale();
+    const accessToken = await getAccessToken();
 
     const res = await fetch(`${apiBaseUrl}/api/v1/wellness/${id}`, {
       method: "PATCH",
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),

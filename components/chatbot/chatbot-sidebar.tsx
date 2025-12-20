@@ -92,7 +92,7 @@ export function ChatbotSidebar({
   const [loadingDelete, setLoadDelete] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const pathname = usePathname();
-  const t = useTranslations("utility");
+  // const t = useTranslations("utility");
 
   const handleDeleteChatSession = async (sessionID: string) => {
     setLoadDelete(true);
@@ -189,166 +189,6 @@ export function ChatbotSidebar({
       </SidebarHeader>
 
       <SidebarContent className="hide-scroll mt-5 bg-white!">
-        {history.length >= 1 && (
-          <>
-            <div className="px-4">
-              <p className="text-muted-foreground text-sm! px-2">
-                {locale === routing.defaultLocale
-                  ? "Riwayat Percakapan"
-                  : "Chat History"}
-              </p>
-              <div className="space-y-5 pt-3">
-                <div className="space-y-2">
-                  {isLoading ? (
-                    <div className="space-y-3">
-                      {Array.from({ length: 3 }).map((_, i) => (
-                        <Skeleton key={i} className="w-full h-12" />
-                      ))}
-                    </div>
-                  ) : (
-                    <>
-                      {history ? (
-                        history.map((s) => (
-                          <React.Suspense key={s.id} fallback={<Spinner />}>
-                            <div
-                              key={s.id}
-                              className="w-full text-left group/hst cursor-pointer relative p-2 hover:bg-muted hover:shadow-sm rounded-2xl hover:outline"
-                            >
-                              <Link href={`/${locale}/c/${s.id}`}>
-                                <div className="flex justify-between items-center">
-                                  <div>
-                                    <p className="text-primary text-base! line-clamp-1 wrap-break-word z-5 capitalize">
-                                      {s.title === ""
-                                        ? "M HEALTH Chat"
-                                        : s.title}
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                              <Button
-                                variant={"destructive_outline"}
-                                className="w-6 h-6 rounded-full group-hover/hst:translate-x-0 group-hover/hst:opacity-100 translate-x-5 opacity-0 overflow-hidden transition-all duration-300 ease-in-out absolute right-2 top-2"
-                                onClick={() => handleDeleteChatSession(s.id)}
-                              >
-                                {loadingDelete ? (
-                                  <Spinner />
-                                ) : (
-                                  <Trash className="size-3" />
-                                )}
-                              </Button>
-                            </div>
-                          </React.Suspense>
-                        ))
-                      ) : (
-                        <div className="px-3 bg-muted py-4 rounded-2xl">
-                          <p className="text-muted-foreground text-sm!">
-                            {locale === routing.defaultLocale
-                              ? "Belum ada riwayat percakapan saat ini."
-                              : "No chat history available yet."}
-                          </p>
-                        </div>
-                      )}
-
-                      {hasMore && onLoadMore && (
-                        <button
-                          className="w-full rounded-full flex items-center gap-2 bg-transparent px-2"
-                          onClick={onLoadMore}
-                          disabled={isLoading}
-                        >
-                          {isLoading ? (
-                            <Spinner className="size-4" />
-                          ) : (
-                            <ChevronDown className="size-4" />
-                          )}
-                          <p className="text-sm!">
-                            {locale === routing.defaultLocale
-                              ? "Tampilkan Lebih Banyak"
-                              : "Show More"}
-                          </p>
-                        </button>
-                      )}
-
-                      {!hasMore && history && (
-                        <div className="px-3 bg-muted py-2 rounded-2xl text-center">
-                          <p className="text-muted-foreground text-sm!">
-                            {locale === routing.defaultLocale
-                              ? "Anda telah melihat semuanya"
-                              : "You have seen everything"}
-                          </p>
-                        </div>
-                      )}
-
-                      {history.length >= 1 && accounts?.id && (
-                        <Dialog open={dialogOpen}>
-                          <DialogTrigger
-                            asChild
-                            onClick={() => setDialogOpen(true)}
-                          >
-                            <button className="text-xs text-red-500 hover:text-red-600 hover:bg-red-50 hover:outline hover:outline-red-500 flex w-full py-2 gap-1 items-center transition cursor-pointer rounded-2xl px-2">
-                              <Trash2 className="size-3" />{" "}
-                              <p className="text-xs!">
-                                {locale === routing.defaultLocale
-                                  ? "Hapus Riwayat Percakapan"
-                                  : "Clear Chat History"}
-                              </p>
-                            </button>
-                          </DialogTrigger>
-                          <DialogContent className="bg-white z-999 rounded-2xl">
-                            <DialogHeader>
-                              <DialogTitle asChild>
-                                <h6 className="text-red-600">
-                                  {locale === routing.defaultLocale
-                                    ? "Apakah kamu yakin untuk menghapus seluruh sesi percakapan?"
-                                    : "Are you sure to delete all chat session?"}
-                                </h6>
-                              </DialogTitle>
-                              <DialogDescription asChild className="mt-3">
-                                <p>
-                                  {locale === routing.defaultLocale
-                                    ? "Aksi ini tidak dapat dibatalkan. Aksi ini akan menghapus sesi percakapan anda dari basis data kami. Lakukan dengan hati-hati."
-                                    : "This action cannot be undone. This will permanently delete all of your chat and remove your data from our servers. Do it carefully."}
-                                </p>
-                              </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter>
-                              <DialogClose
-                                asChild
-                                onClick={() => setDialogOpen(false)}
-                              >
-                                <Button variant={"outline"}>
-                                  <X className="size-4" />
-                                  {labels.cancel}
-                                </Button>
-                              </DialogClose>
-
-                              <Button
-                                variant={"destructive"}
-                                onClick={() => {
-                                  handleDeleteAllChatSession(accounts?.id);
-                                }}
-                              >
-                                {loadingDelete ? (
-                                  <Spinner />
-                                ) : (
-                                  <>
-                                    <Trash className="size-4" />
-                                    {labels.delete}
-                                  </>
-                                )}
-                              </Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-            <hr className="my-2 mx-4" />
-          </>
-        )}
-
         <div className="px-4">
           <p className="font-extrabold text-primary mb-3 px-2">
             {locale === routing.defaultLocale ? "Paket" : "Packages"}
@@ -505,11 +345,175 @@ export function ChatbotSidebar({
             {medical.length === 0 && <FailedGetDataNotice size="sm" />}
           </div>
         </div>
+
+        <hr className="my-2 mx-4" />
+
+        {history.length >= 1 && (
+          <>
+            <div className="px-4">
+              <p className="text-muted-foreground text-sm! px-2">
+                {locale === routing.defaultLocale
+                  ? "Riwayat Percakapan"
+                  : "Chat History"}
+              </p>
+              <div className="space-y-5 pt-3">
+                <div className="space-y-2">
+                  {isLoading ? (
+                    <div className="space-y-3">
+                      {Array.from({ length: history.length }).map((_, i) => (
+                        <Skeleton key={i} className="w-full h-12" />
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      {history ? (
+                        history.map((s) => (
+                          <React.Suspense key={s.id} fallback={<Spinner />}>
+                            <div
+                              key={s.id}
+                              className="w-full text-left group/hst cursor-pointer relative p-2 hover:bg-muted hover:shadow-sm rounded-2xl hover:outline"
+                            >
+                              <Link href={`/${locale}/c/${s.id}`}>
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <p className="text-primary text-base! line-clamp-1 wrap-break-word z-5 capitalize">
+                                      {s.title === ""
+                                        ? "M HEALTH Chat"
+                                        : s.title}
+                                    </p>
+                                  </div>
+                                </div>
+                              </Link>
+                              <Button
+                                variant={"destructive_outline"}
+                                className="w-6 h-6 rounded-full group-hover/hst:translate-x-0 group-hover/hst:opacity-100 translate-x-5 opacity-0 overflow-hidden transition-all duration-300 ease-in-out absolute right-2 top-2"
+                                onClick={() => handleDeleteChatSession(s.id)}
+                              >
+                                {loadingDelete ? (
+                                  <Spinner />
+                                ) : (
+                                  <Trash className="size-3" />
+                                )}
+                              </Button>
+                            </div>
+                          </React.Suspense>
+                        ))
+                      ) : (
+                        <div className="px-3 bg-muted py-4 rounded-2xl">
+                          <p className="text-muted-foreground text-sm!">
+                            {locale === routing.defaultLocale
+                              ? "Belum ada riwayat percakapan saat ini."
+                              : "No chat history available yet."}
+                          </p>
+                        </div>
+                      )}
+
+                      {hasMore && onLoadMore && (
+                        <Button
+                          className="w-full rounded-full"
+                          size={"sm"}
+                          variant="outline"
+                          onClick={onLoadMore}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <Spinner className="size-4" />
+                          ) : (
+                            <ChevronDown className="size-4" />
+                          )}
+                          <p className="text-sm!">
+                            {locale === routing.defaultLocale
+                              ? "Tampilkan Lebih Banyak"
+                              : "Show More"}
+                          </p>
+                        </Button>
+                      )}
+
+                      {!hasMore && history && (
+                        <div className="px-3 bg-muted py-2 rounded-2xl text-center">
+                          <p className="text-muted-foreground text-sm!">
+                            {locale === routing.defaultLocale
+                              ? "Anda telah melihat semuanya"
+                              : "You have seen everything"}
+                          </p>
+                        </div>
+                      )}
+
+                      {history.length >= 1 && accounts?.id && (
+                        <Dialog open={dialogOpen}>
+                          <DialogTrigger
+                            asChild
+                            onClick={() => setDialogOpen(true)}
+                          >
+                            <button className="text-xs text-red-500 hover:text-red-600 hover:bg-red-50 hover:outline hover:outline-red-500 inline-flex py-2 gap-1 items-center transition cursor-pointer rounded-2xl px-2.5">
+                              <Trash2 className="size-3" />{" "}
+                              <p className="text-xs!">
+                                {locale === routing.defaultLocale
+                                  ? "Hapus Riwayat Percakapan"
+                                  : "Clear Chat History"}
+                              </p>
+                            </button>
+                          </DialogTrigger>
+                          <DialogContent className="bg-white z-999 rounded-2xl">
+                            <DialogHeader>
+                              <DialogTitle asChild>
+                                <h6 className="text-red-600">
+                                  {locale === routing.defaultLocale
+                                    ? "Apakah kamu yakin untuk menghapus seluruh sesi percakapan?"
+                                    : "Are you sure to delete all chat session?"}
+                                </h6>
+                              </DialogTitle>
+                              <DialogDescription asChild className="mt-3">
+                                <p>
+                                  {locale === routing.defaultLocale
+                                    ? "Aksi ini tidak dapat dibatalkan. Aksi ini akan menghapus sesi percakapan anda dari basis data kami. Lakukan dengan hati-hati."
+                                    : "This action cannot be undone. This will permanently delete all of your chat and remove your data from our servers. Do it carefully."}
+                                </p>
+                              </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                              <DialogClose
+                                asChild
+                                onClick={() => setDialogOpen(false)}
+                              >
+                                <Button variant={"outline"}>
+                                  <X className="size-4" />
+                                  {labels.cancel}
+                                </Button>
+                              </DialogClose>
+
+                              <Button
+                                variant={"destructive"}
+                                onClick={() => {
+                                  handleDeleteAllChatSession(accounts?.id);
+                                }}
+                              >
+                                {loadingDelete ? (
+                                  <Spinner />
+                                ) : (
+                                  <>
+                                    <Trash className="size-4" />
+                                    {labels.delete}
+                                  </>
+                                )}
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            <hr className="my-2 mx-4" />
+          </>
+        )}
       </SidebarContent>
       <SidebarFooter className="bg-white">
         <div className="sticky bottom-0 py-2 bg-linear-to-t from-white via-white px-1">
           {accounts ? (
-            <NavUser user={accounts} type="side" />
+            <NavUser user={accounts} locale={locale} type="side" />
           ) : publicIDFetch ? (
             <div className="flex items-center gap-3 px-4">
               <Avatar

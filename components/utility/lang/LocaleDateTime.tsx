@@ -16,8 +16,6 @@ export default function LocalDateTime({
   date: string | Date;
   specificFormat?: string;
 }) {
-  const locale = useLocale();
-
   let formattedDate: string;
 
   // if (locale === "id") {

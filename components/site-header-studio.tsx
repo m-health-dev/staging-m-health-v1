@@ -6,8 +6,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BreadcrumbAuto from "./utility/BreadcrumbsAuto";
 import { NavUser } from "./nav-user";
 import { Account } from "@/types/account.types";
+import { useLocale } from "next-intl";
 
 export function SiteHeaderStudio({ accounts }: { accounts: Account }) {
+  const locale = useLocale();
   return (
     <header className="flex h-20 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-20">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
@@ -21,7 +23,7 @@ export function SiteHeaderStudio({ accounts }: { accounts: Account }) {
           <BreadcrumbAuto />
         </div> */}
         <div className="max-w-xs ml-auto">
-          <NavUser user={accounts} type="header" />
+          <NavUser user={accounts} locale={locale} type="header" />
         </div>
       </div>
     </header>

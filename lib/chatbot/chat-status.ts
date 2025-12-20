@@ -1,5 +1,67 @@
-import { createClient } from "@/utils/supabase/client";
+"use server";
+
+import { apiSecretKey } from "@/helper/api-secret-key";
+import { createClient } from "@/utils/supabase/server";
 import { success } from "zod";
+
+const apiBaseUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
+    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
+
+export async function ChangeChatStatus(session_id: string, statusSend: string) {
+  if (!session_id) {
+    return { error: "Session ID is required" };
+  }
+
+  try {
+    const supabase = await createClient();
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.getSession();
+    const res = await fetch(
+      `${apiBaseUrl}/api/v1/chat-activities/${session_id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "X-API-Key": apiSecretKey,
+          Authorization: `Bearer ${sessionData.session?.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: statusSend }),
+      }
+    );
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        return {
+          success: false,
+          req: res,
+          error: "Gagal Mengubah status chat. Sesi tidak ditemukan.",
+        };
+      }
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const json = await res.json();
+
+    console.log({ res, json });
+
+    if (!json) {
+      return { success: false, error: "Gagal Mengubah status chat." };
+    }
+
+    return {
+      success: true,
+      data: json.share_slug,
+    };
+  } catch (error) {
+    console.error("Share Chat Session Error:", error);
+    return {
+      error: "Terjadi kesalahan saat mengambil sesi chat.",
+      data: [],
+    };
+  }
+}
 
 export async function SetChatStatus(status: string, sessionID: string) {
   const supabase = await createClient();

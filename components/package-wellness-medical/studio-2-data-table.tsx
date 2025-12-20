@@ -423,13 +423,13 @@ export function Studio2DataTable<TData, TValue>({
           )}
         </>
       )}
-      {/* <SimplePagination
+      <SimplePagination
         meta={meta}
         links={links}
         show={[10, 25, 50]}
         defaultPerPage={10}
         onLoadingChange={setLoading}
-      /> */}
+      />
     </>
   );
 }

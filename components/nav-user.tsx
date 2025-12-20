@@ -53,12 +53,13 @@ const Avatar = dynamic(() => import("boring-avatars"), {
 export function NavUser({
   user,
   type,
+  locale,
 }: {
   user: Account;
   type?: "header" | "side";
+  locale: string;
 }) {
   const router = useRouter();
-  const locale = useLocale();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -188,7 +189,7 @@ export function NavUser({
             </DropdownMenuLabel>
 
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="py-2">
                 <IconUserCircle />
                 <p className="text-sm! text-muted-foreground">
                   Pengaturan Akun
@@ -197,9 +198,9 @@ export function NavUser({
             </DropdownMenuGroup>
 
             <Dialog>
-              <DialogTrigger className="flex items-center gap-2 px-2 py-1">
-                <IconLogout className="size-4" />
-                <p className="text-sm! text-muted-foreground">
+              <DialogTrigger className="flex items-center gap-2 px-2.5 py-2 hover:bg-red-50 hover:ring ring-inset hover:ring-red-400 w-full rounded-lg group/out transition-all duration-200 hover:cursor-pointer">
+                <IconLogout className="size-4 text-muted-foreground group-hover/out:text-red-500" />
+                <p className="text-sm! text-muted-foreground group-hover/out:text-red-500">
                   {locale === routing.defaultLocale ? "Keluar" : "Log out"}
                 </p>
               </DialogTrigger>

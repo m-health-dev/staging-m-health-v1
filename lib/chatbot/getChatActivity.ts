@@ -1,5 +1,10 @@
+"use server";
+
+import { apiSecretKey } from "@/helper/api-secret-key";
 import { createClient } from "@/utils/supabase/client";
+import { link } from "node:fs";
 import { success } from "zod";
+import { meta } from "zod/v4/core";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -16,6 +21,7 @@ export async function getAllChatActivity(
       {
         method: "GET",
         headers: {
+          "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
       }
@@ -34,6 +40,7 @@ export async function getAllChatActivity(
     return {
       data: json.data,
       links: json.links,
+      meta: json.meta,
       total: json.total,
       success: true,
     };
@@ -52,7 +59,7 @@ export async function getShareSlug(session_id: string) {
   try {
     const { data, error } = await supabase
       .from("chat_activity")
-      .select("id")
+      .select("id, share_slug")
       .eq("id", session_id)
       .maybeSingle();
 
@@ -68,6 +75,7 @@ export async function getShareSlug(session_id: string) {
     return {
       success: true,
       data: data?.id,
+      shareSlug: data?.share_slug,
       message: `Success to get Share Slug for Chat Session: ${session_id}`,
     };
   } catch (error) {
@@ -79,6 +87,7 @@ export async function getShareSlug(session_id: string) {
     };
   }
 }
+
 export async function getChatHistory(public_id: string) {
   if (!public_id) {
     return { data: [], total: 0 };
@@ -91,6 +100,7 @@ export async function getChatHistory(public_id: string) {
         cache: "no-store", // Use standard fetch cache option
         method: "GET",
         headers: {
+          "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
       }
@@ -132,6 +142,7 @@ export async function getChatHistoryByUserID(
         cache: "no-store", // Use standard fetch cache option
         method: "GET",
         headers: {
+          "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
       }
@@ -143,8 +154,12 @@ export async function getChatHistoryByUserID(
 
     const json = await res.json();
 
+    // console.log({ json });
+
     return {
       data: json,
+      meta: json.meta,
+      links: json.links,
       total: json.total || 0,
     };
   } catch (error) {
@@ -169,6 +184,7 @@ export async function getChatSession(session_id: string) {
         cache: "no-store", // Use standard fetch cache option
         method: "GET",
         headers: {
+          "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
       }
@@ -187,16 +203,74 @@ export async function getChatSession(session_id: string) {
 
     const json = await res.json();
 
-    if (!json.chat_activity_data || !json.chat_activity_data.messages) {
+    if (
+      !json.data.chat_activity_data ||
+      !json.data.chat_activity_data.messages
+    ) {
       return { error: "Chat sudah dihapus atau diarsipkan." };
     }
 
     return {
       all: json,
-      data: json.chat_activity_data.messages || [],
-      session: json.chat_activity_data.id,
-      publicID: json.public_id,
-      urgent: json.chat_activity_data.urgent,
+      data: json.data.chat_activity_data.messages || [],
+      session: json.data.chat_activity_data.id,
+      publicID: json.data.public_id,
+      urgent: json.data.chat_activity_data.urgent,
+    };
+  } catch (error) {
+    console.error("Get Chat Session Error:", error);
+    return {
+      error: "Terjadi kesalahan saat mengambil sesi chat.",
+      data: [],
+    };
+  }
+}
+
+export async function getChatSessionBySlug(slug: string) {
+  if (!slug) {
+    return { error: "Slug is required" };
+  }
+
+  try {
+    const res = await fetch(`${apiBaseUrl}/api/v1/chat-activities/${slug}`, {
+      cache: "no-store", // Use standard fetch cache option
+      method: "GET",
+      headers: {
+        "X-API-Key": apiSecretKey,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        return {
+          success: false,
+          req: res,
+          error: "Chat (Share) sudah dihapus atau diarsipkan. (404)",
+        };
+      }
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const json = await res.json();
+
+    // console.log(res);
+
+    if (
+      !json.data.chat_activity_data ||
+      !json.data.chat_activity_data.messages
+    ) {
+      return { error: "Chat (Share) sudah dihapus atau diarsipkan. (500)" };
+    }
+
+    return {
+      success: true,
+      status: res.status,
+      all: json,
+      data: json.data.chat_activity_data.messages || [],
+      session: json.data.chat_activity_data.id,
+      publicID: json.data.public_id,
+      urgent: json.data.chat_activity_data.urgent,
     };
   } catch (error) {
     console.error("Get Chat Session Error:", error);

@@ -1,3 +1,4 @@
+import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
 import { success } from "zod";
 
@@ -14,6 +15,7 @@ export async function getAllEvents(page: number = 1, per_page: number = 10) {
         cache: "no-store",
         method: "GET",
         headers: {
+          "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
       }
@@ -50,6 +52,7 @@ export async function getEventByID(id: string) {
       cache: "no-store",
       method: "GET",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });
@@ -82,6 +85,7 @@ export async function getEventBySlug(slug: string) {
       cache: "no-store",
       method: "GET",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });

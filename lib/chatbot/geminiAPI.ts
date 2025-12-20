@@ -1,3 +1,7 @@
+"use server";
+
+import { apiSecretKey } from "@/helper/api-secret-key";
+
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
@@ -15,10 +19,11 @@ export async function chatGemini(payload: {
   session_id?: string;
 }) {
   try {
-    console.log("Sending messages to Gemini API:", payload);
+    // console.log("Sending messages to Gemini API:", payload);
     const res = await fetch(`${apiBaseUrl}/api/v1/gemini/generate`, {
       method: "POST",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),

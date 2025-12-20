@@ -4,11 +4,12 @@ import { getChatHistoryByUserID } from "@/lib/chatbot/getChatActivity";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
-export function useChatHistory(userID?: string | null) {
+export function useChatHistory(userID?: string, initialData: any[] = []) {
   const PER_PAGE = 10;
 
   const [page, setPage] = useState(1);
-  const [allHistory, setAllHistory] = useState<any[]>([]);
+  // const [history, setHistory] = useState(initialData);
+  const [allHistory, setAllHistory] = useState<any[]>(initialData);
 
   const key = userID ? ["chat-history", userID, page] : null;
 
@@ -21,7 +22,7 @@ export function useChatHistory(userID?: string | null) {
     }
   );
 
-  const total = data?.total ?? 0;
+  const total = data?.meta.total ?? 0;
   const pageData = data?.data?.data ?? [];
 
   useEffect(() => {

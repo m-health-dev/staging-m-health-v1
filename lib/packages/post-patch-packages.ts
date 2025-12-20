@@ -1,5 +1,7 @@
 "use server";
 
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { createClient } from "@/utils/supabase/server";
 import { error } from "console";
 import { getLocale } from "next-intl/server";
 import { revalidatePath } from "next/cache";
@@ -34,9 +36,11 @@ export async function addPackage(payload: {
 }) {
   try {
     console.log("Sending package/create to BE:", payload);
+    const accessToken = await getAccessToken();
     const res = await fetch(`${apiBaseUrl}/api/v1/packages`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
@@ -92,10 +96,12 @@ export async function updatePackage(
   try {
     console.log("Sending package/update to BE:", payload);
     const locale = await getLocale();
+    const accessToken = await getAccessToken();
 
     const res = await fetch(`${apiBaseUrl}/api/v1/packages/${id}`, {
       method: "PATCH",
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),

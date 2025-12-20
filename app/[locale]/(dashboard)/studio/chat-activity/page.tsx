@@ -12,6 +12,7 @@ import { getAllPackages } from "@/lib/packages/get-packages";
 import { getAllChatActivity } from "@/lib/chatbot/getChatActivity";
 import { DeleteChatSession } from "@/lib/chatbot/delete-chat-activity";
 import { Studio2DataTable } from "@/components/package-wellness-medical/studio-2-data-table";
+import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
 
 const ChatActivityStudio = async ({
   searchParams,
@@ -22,7 +23,7 @@ const ChatActivityStudio = async ({
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 10);
 
-  const { data, total, links } = await getAllChatActivity(page, per_page); // nanti page bisa dynamic
+  const { data, total, links, meta } = await getAllChatActivity(page, per_page); // nanti page bisa dynamic
 
   const locale = await getLocale();
 
@@ -62,7 +63,7 @@ const ChatActivityStudio = async ({
       <Studio2DataTable
         columns={columns}
         data={data}
-        // meta={meta}
+        meta={meta}
         links={links}
         deleteAction={DeleteChatSession}
       />

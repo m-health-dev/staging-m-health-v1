@@ -42,7 +42,7 @@ import { NavigationLinks } from "@/constants/NavigationLinks";
 import { cn } from "@/lib/utils";
 import { routing } from "@/i18n/routing";
 import { Toggle } from "@/components/ui/toggle";
-import { SetChatStatus } from "@/lib/chatbot/chat-status";
+import { ChangeChatStatus, SetChatStatus } from "@/lib/chatbot/chat-status";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -85,17 +85,20 @@ const NavHeader = ({
     }
   }, []);
 
+  const sessionData = sessionId || "";
+
   const pathCheck =
     (path.startsWith(`/${locale}`) && path.endsWith(`/${locale}`)) ||
     path.startsWith(`/${locale}/c`) ||
     path.startsWith(`/${locale}/share`);
 
   const handleSetPublic = async () => {
-    if (!sessionId) return;
+    if (sessionData === "") return;
     setLoading(true);
     try {
-      const setPublic = await SetChatStatus("public", sessionId);
-      // const { data, error } = await getShareSlug(sessionId);
+      const setPublic = await ChangeChatStatus(sessionData, "public");
+
+      console.log({ setPublic });
 
       if (setPublic.error) {
         toast.warning("Failed to change chat session to Open to Public", {
@@ -113,6 +116,7 @@ const NavHeader = ({
         setLoading(false);
         setInitialStatus("public");
         setOpenPublic(true);
+        setShareLink(setPublic.data);
       }
     } catch (error) {
       console.error(error);
@@ -124,12 +128,14 @@ const NavHeader = ({
   };
 
   const handleSetPrivate = async () => {
-    if (!sessionId) return;
+    if (sessionData === "") return;
     setLoading(true);
     try {
-      const setPublic = await SetChatStatus("private", sessionId);
+      const setPrivate = await ChangeChatStatus(sessionData, "private");
 
-      if (setPublic.error) {
+      console.log({ setPrivate });
+
+      if (setPrivate.error) {
         toast.warning("Failed to set up private chat session.");
         setLoading(false);
       } else {
@@ -137,6 +143,7 @@ const NavHeader = ({
         setOpenPublic(false);
         setInitialStatus("private");
         setLoading(false);
+        setShareLink("");
       }
     } catch (error) {
       console.error(error);

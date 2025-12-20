@@ -1,3 +1,4 @@
+import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
 import { success } from "zod";
 
@@ -11,6 +12,7 @@ export async function getAllHotelWithoutPagination() {
     const res = await fetch(`${apiBaseUrl}/api/v1/hotels?per_page=all`, {
       method: "GET",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });
@@ -45,6 +47,7 @@ export async function getAllHotel(page: number = 1, per_page: number = 10) {
       {
         method: "GET",
         headers: {
+          "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
       }
@@ -80,6 +83,7 @@ export async function getHotelByID(id: string) {
     const res = await fetch(`${apiBaseUrl}/api/v1/hotels/${id}`, {
       method: "GET",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });
@@ -111,6 +115,7 @@ export async function getHotelBySlug(slug: string) {
     const res = await fetch(`${apiBaseUrl}/api/v1/hotels/${slug}`, {
       method: "GET",
       headers: {
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });

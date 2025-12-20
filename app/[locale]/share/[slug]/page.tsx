@@ -4,9 +4,8 @@ import UnderConstruction from "@/components/utility/under-construction";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { GetChatStatus } from "@/lib/chatbot/chat-status";
 import {
-  getChatHistory,
   getChatHistoryByUserID,
-  getChatSession,
+  getChatSessionBySlug,
   getShareSlug,
 } from "@/lib/chatbot/getChatActivity";
 import { getAllMedical } from "@/lib/medical/get-medical";
@@ -30,13 +29,13 @@ export default async function ShareChatPage(props: { params: paramsType }) {
 
   const supabase = await createClient();
 
-  // const { data: chat } = await supabase
-  //   .from("chat_activity")
-  //   .select("id, share_slug")
-  //   .eq("share_slug", slug)
-  //   .maybeSingle();
+  const { data: chat } = await supabase
+    .from("chat_activity")
+    .select("id, share_slug")
+    .eq("share_slug", slug)
+    .maybeSingle();
 
-  const sessionID = slug;
+  const shareSlugData = slug;
 
   const { data: user } = await supabase.auth.getUser();
 
@@ -47,15 +46,17 @@ export default async function ShareChatPage(props: { params: paramsType }) {
       getAllPackages(1, 3),
       getAllMedical(1, 3),
       getAllWellness(1, 3),
-      getChatSession(sessionID),
-      getShareSlug(sessionID),
+      getChatSessionBySlug(shareSlugData),
+      getShareSlug(shareSlugData),
     ]);
 
   const userID = user.user?.id;
 
-  if (sessionChat.error) {
+  if (!sessionChat.success && sessionChat.status === 404) {
     notFound();
   }
+
+  // console.log(sessionChat.error);
 
   const historyData =
     publicID && userID
@@ -69,7 +70,7 @@ export default async function ShareChatPage(props: { params: paramsType }) {
     ? await getUserInfo(session.access_token)
     : undefined;
 
-  const chatStatus = (await GetChatStatus(sessionID)).data;
+  const chatStatus = (await GetChatStatus(chat?.id)).data;
 
   if (chatStatus === "private") {
     return <PrivateChat />;
@@ -84,8 +85,8 @@ export default async function ShareChatPage(props: { params: paramsType }) {
         packages={packagesRes.data}
         medical={medical.data}
         wellness={wellness.data}
-        initialHistory={historyData.data || []}
-        sessionID={sessionID}
+        initialHistory={historyData.data.data || []}
+        sessionID={chat?.id}
         session={sessionChat.data}
         publicIDFetch={publicID}
         user={userData}

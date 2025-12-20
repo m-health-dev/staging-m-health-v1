@@ -68,7 +68,15 @@ const ChatContent = ({
     hasMore,
     displayedCount,
     total,
-  } = useChatHistory(user?.id);
+  } = useChatHistory(user?.id, initialHistory || []);
+
+  console.log({
+    historyLength: history.length,
+    initialHistoryLength: initialHistory?.length,
+    hasMore,
+    total,
+    displayedCount,
+  });
 
   const isShowSidebar = type === "default" || type === "share";
 

@@ -111,7 +111,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     if (
       !accounts &&
       !hasSignedIn &&
-      messages.length > 3 &&
+      messages.length > 5 &&
       type !== "preview" &&
       isNotRedirect
     ) {

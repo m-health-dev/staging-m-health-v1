@@ -1,3 +1,5 @@
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { createClient } from "@/utils/supabase/server";
 import { error } from "console";
 import { success } from "zod";
 
@@ -19,9 +21,12 @@ export async function addVendor(payload: {
 }) {
   try {
     console.log("Sending vendor/create to BE:", payload);
+    const accessToken = await getAccessToken();
+
     const res = await fetch(`${apiBaseUrl}/api/v1/vendors`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
@@ -65,10 +70,12 @@ export async function updateVendor(
 ) {
   try {
     console.log("Sending vendor/update to BE:", payload);
+    const accessToken = await getAccessToken();
 
     const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
       method: "PATCH",
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),

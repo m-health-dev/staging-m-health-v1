@@ -4,12 +4,19 @@ import {
   getChatHistory,
   getChatHistoryByUserID,
 } from "@/lib/chatbot/getChatActivity";
-import { getAllMedical } from "@/lib/medical/get-medical";
-import { getAllPackages } from "@/lib/packages/get-packages";
-import { getAllWellness } from "@/lib/wellness/get-wellness";
+import { getAllMedical, getAllPublicMedical } from "@/lib/medical/get-medical";
+import {
+  getAllPackages,
+  getAllPublicPackages,
+} from "@/lib/packages/get-packages";
+import {
+  getAllPublicWellness,
+  getAllWellness,
+} from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -31,9 +38,9 @@ export default async function Home() {
     locale,
   ] = await Promise.all([
     supabase.auth.getSession(),
-    getAllPackages(1, 3),
-    getAllMedical(1, 3),
-    getAllWellness(1, 3),
+    getAllPublicPackages(1, 3),
+    getAllPublicMedical(1, 3),
+    getAllPublicWellness(1, 3),
     getLocale(),
   ]);
 
@@ -48,14 +55,16 @@ export default async function Home() {
 
   const userData = session?.access_token
     ? await getUserInfo(session.access_token)
-    : undefined;
+    : null;
+
+  console.log({ session });
 
   return (
     <ChatContent
       packages={packagesResult.data}
       medical={medicalResult.data}
       wellness={wellnessResult.data}
-      initialHistory={historyData.data || []}
+      initialHistory={historyData.data.data || []}
       publicIDFetch={publicID}
       user={userData}
       locale={locale}

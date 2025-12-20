@@ -66,6 +66,7 @@ export default async function RootLayout({ children, params }: Props) {
               crawlSpeed={200}
               height={3}
               crawl={true}
+              showSpinner={false}
               easing="ease"
               speed={200}
               shadow="0 0 10px #3e77ab,0 0 5px #3e77ab"
@@ -88,27 +89,6 @@ export default async function RootLayout({ children, params }: Props) {
             <Analytics />
             <SpeedInsights />
             {children}
-            {/* <div
-              id="g_id_onload"
-              data-client_id="92675309192-qvkkf9g7f42pbv83su4ubvojvsk4qavi.apps.googleusercontent.com"
-              data-context="signin"
-              data-ux_mode="popup"
-              data-callback="https://hoocfkzapbmnldwmedrq.supabase.co/auth/v1/callback"
-              data-auto_select="true"
-              data-itp_support="true"
-              data-use_fedcm_for_prompt="true"
-            ></div>
-
-            <div
-              className="g_id_signin"
-              data-type="standard"
-              data-shape="rectangular"
-              data-theme="outline"
-              data-text="signin_with"
-              data-size="large"
-              data-locale="id"
-              data-logo_alignment="left"
-            ></div> */}
             <OneTapComponent />
           </NextIntlClientProvider>
         </LanguageProvider>
