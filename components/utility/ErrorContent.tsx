@@ -173,7 +173,7 @@ const ErrorContent = ({
                 <Button
                   onClick={onRetry}
                   variant={"destructive_outline"}
-                  className="mt-6 rounded-full bg-primary px-6 py-2 text-white hover:opacity-90"
+                  className="rounded-full"
                 >
                   <RefreshCw /> Try again
                 </Button>

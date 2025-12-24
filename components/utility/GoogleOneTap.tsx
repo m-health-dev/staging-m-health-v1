@@ -48,7 +48,7 @@ const OneTapComponent = () => {
           nonce,
         });
 
-        if (!error) router.push("/");
+        if (!error) router.refresh();
       },
     });
 

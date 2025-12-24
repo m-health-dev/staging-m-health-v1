@@ -4,6 +4,7 @@ import UnderConstruction from "@/components/utility/under-construction";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { GetChatStatus } from "@/lib/chatbot/chat-status";
 import {
+  getChatHistory,
   getChatHistoryByUserID,
   getChatSessionBySlug,
   getShareSlug,
@@ -29,11 +30,11 @@ export default async function ShareChatPage(props: { params: paramsType }) {
 
   const supabase = await createClient();
 
-  const { data: chat } = await supabase
-    .from("chat_activity")
-    .select("id, share_slug")
-    .eq("share_slug", slug)
-    .maybeSingle();
+  // const { data: chat } = await supabase
+  //   .from("chat_activity")
+  //   .select("id, share_slug, status")
+  //   .eq("share_slug", slug)
+  //   .maybeSingle();
 
   const shareSlugData = slug;
 
@@ -58,10 +59,11 @@ export default async function ShareChatPage(props: { params: paramsType }) {
 
   // console.log(sessionChat.error);
 
-  const historyData =
-    publicID && userID
-      ? await getChatHistoryByUserID(userID, 1, 10)
-      : { data: [], total: 0 };
+  const historyData = userID
+    ? await getChatHistoryByUserID(userID, 1, 10)
+    : publicID
+    ? await getChatHistory(publicID, 1, 10)
+    : { data: [], total: 0 };
 
   const {
     data: { session },
@@ -70,9 +72,7 @@ export default async function ShareChatPage(props: { params: paramsType }) {
     ? await getUserInfo(session.access_token)
     : undefined;
 
-  const chatStatus = (await GetChatStatus(chat?.id)).data;
-
-  if (chatStatus === "private") {
+  if (sessionChat.publicStatus !== "private") {
     return <PrivateChat />;
   }
 
@@ -86,13 +86,13 @@ export default async function ShareChatPage(props: { params: paramsType }) {
         medical={medical.data}
         wellness={wellness.data}
         initialHistory={historyData.data.data || []}
-        sessionID={chat?.id}
+        sessionID={sessionChat.session}
         session={sessionChat.data}
         publicIDFetch={publicID}
         user={userData}
         locale={locale}
         urgent={urgent}
-        status={chatStatus}
+        status={sessionChat.publicStatus}
         shareSlug={shareSlug.data}
         type="share"
         labels={{

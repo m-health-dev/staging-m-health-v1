@@ -88,14 +88,18 @@ export async function getShareSlug(session_id: string) {
   }
 }
 
-export async function getChatHistory(public_id: string) {
+export async function getChatHistory(
+  public_id: string,
+  page: number,
+  per_page: number
+) {
   if (!public_id) {
     return { data: [], total: 0 };
   }
 
   try {
     const res = await fetch(
-      `${apiBaseUrl}/api/v1/chat-activities/all/${public_id}`,
+      `${apiBaseUrl}/api/v1/chat-activities/all/${public_id}?page=${page}&per_page=${per_page}`,
       {
         cache: "no-store", // Use standard fetch cache option
         method: "GET",
@@ -113,7 +117,9 @@ export async function getChatHistory(public_id: string) {
     const json = await res.json();
 
     return {
-      data: json.data || [],
+      data: json,
+      meta: json.meta,
+      links: json.links,
       total: json.total || 0,
     };
   } catch (error) {
@@ -211,10 +217,13 @@ export async function getChatSession(session_id: string) {
     }
 
     return {
+      success: true,
+      status: res.status,
       all: json,
       data: json.data.chat_activity_data.messages || [],
       session: json.data.chat_activity_data.id,
       publicID: json.data.public_id,
+      publicStatus: json.data.status,
       urgent: json.data.chat_activity_data.urgent,
     };
   } catch (error) {
@@ -270,6 +279,7 @@ export async function getChatSessionBySlug(slug: string) {
       data: json.data.chat_activity_data.messages || [],
       session: json.data.chat_activity_data.id,
       publicID: json.data.public_id,
+      publicStatus: json.data.status,
       urgent: json.data.chat_activity_data.urgent,
     };
   } catch (error) {

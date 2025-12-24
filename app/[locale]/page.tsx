@@ -48,10 +48,11 @@ export default async function Home() {
 
   const userID = user.user?.id;
 
-  const historyData =
-    publicID && userID
-      ? await getChatHistoryByUserID(userID, 1, 10)
-      : { data: [], total: 0 };
+  const historyData = userID
+    ? await getChatHistoryByUserID(userID, 1, 10)
+    : publicID
+    ? await getChatHistory(publicID, 1, 10)
+    : { data: [], total: 0 };
 
   const userData = session?.access_token
     ? await getUserInfo(session.access_token)

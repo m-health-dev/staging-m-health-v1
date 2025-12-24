@@ -136,7 +136,9 @@ const NavHeader = ({
       console.log({ setPrivate });
 
       if (setPrivate.error) {
-        toast.warning("Failed to set up private chat session.");
+        toast.warning("Failed to set up private chat session.", {
+          description: `${setPrivate.error}`,
+        });
         setLoading(false);
       } else {
         toast.success("This chat is now visible only to you.");

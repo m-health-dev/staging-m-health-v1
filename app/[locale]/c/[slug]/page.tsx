@@ -59,10 +59,11 @@ export default async function SessionPage(props: { params: paramsType }) {
     notFound();
   }
 
-  const historyData =
-    publicID && userID
-      ? await getChatHistoryByUserID(userID, 1, 10)
-      : { data: [], total: 0 };
+  const historyData = userID
+    ? await getChatHistoryByUserID(userID, 1, 10)
+    : publicID
+    ? await getChatHistory(publicID, 1, 10)
+    : { data: [], total: 0 };
   // console.log("History: ", historyData);
   const {
     data: { session },
