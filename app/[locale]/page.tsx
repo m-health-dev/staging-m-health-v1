@@ -60,9 +60,15 @@ export default async function Home() {
     ? await getChatHistory(publicID, 1, 10)
     : { data: [], total: 0 };
 
-  const userData = session?.access_token
-    ? await getUserInfo(session.access_token)
-    : null;
+  let userData = null;
+
+  if (session?.access_token) {
+    try {
+      userData = await getUserInfo(session.access_token);
+    } catch (e) {
+      console.error("User info fetch failed:", e);
+    }
+  }
 
   console.log({ checkUser, session, userID, userData, publicID, historyData });
 

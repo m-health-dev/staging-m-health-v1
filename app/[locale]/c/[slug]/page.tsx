@@ -72,9 +72,15 @@ export default async function SessionPage(props: { params: paramsType }) {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  const userData = session?.access_token
-    ? await getUserInfo(session.access_token)
-    : undefined;
+  let userData = null;
+
+  if (session?.access_token) {
+    try {
+      userData = await getUserInfo(session.access_token);
+    } catch (e) {
+      console.error("User info fetch failed:", e);
+    }
+  }
 
   const chatStatus = (await GetChatStatus(sessionID)).data;
 

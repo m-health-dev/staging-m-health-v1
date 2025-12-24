@@ -74,9 +74,16 @@ export default async function ShareChatPage(props: { params: paramsType }) {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  const userData = session?.access_token
-    ? await getUserInfo(session.access_token)
-    : undefined;
+
+  let userData = null;
+
+  if (session?.access_token) {
+    try {
+      userData = await getUserInfo(session.access_token);
+    } catch (e) {
+      console.error("User info fetch failed:", e);
+    }
+  }
 
   if (sessionChat.publicStatus !== "public") {
     return <PrivateChat />;
