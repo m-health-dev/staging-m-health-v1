@@ -28,6 +28,9 @@ export async function getAllEvents(page: number = 1, per_page: number = 10) {
     if (res.status !== 200) {
       return {
         success: false,
+        data: [],
+        links: null,
+        meta: null,
         error: `Failed to receive events/read data. Cause : ${json.message}`,
       };
     }

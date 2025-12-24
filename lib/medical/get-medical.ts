@@ -70,6 +70,9 @@ export async function getAllPublicMedical(
     if (res.status !== 200) {
       return {
         success: false,
+        data: [],
+        links: null,
+        meta: null,
         error: `Failed to receive medical/read data. Cause : ${json.message}`,
       };
     }

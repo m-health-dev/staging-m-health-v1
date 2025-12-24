@@ -43,9 +43,12 @@ const SkeletonComponent = () => {
 };
 
 const Content = async () => {
-  const [wellness, locale] = await Promise.all([
-    (await getAllWellness(1, 10)).data,
+  const [wellnessResult, locale] = await Promise.all([
+    getAllWellness(1, 10),
     getLocale(),
   ]);
+  const wellness = Array.isArray(wellnessResult.data)
+    ? wellnessResult.data
+    : [];
   return <PopularProgramGrid data={wellness} locale={locale} />;
 };

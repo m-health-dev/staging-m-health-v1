@@ -3,6 +3,7 @@
 import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
 import { success } from "zod";
+import { meta } from "zod/v4/core";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -70,6 +71,9 @@ export async function getAllPublicPackages(
     if (res.status !== 200) {
       return {
         success: false,
+        data: [],
+        links: null,
+        meta: null,
         error: `Failed to receive packages/read data. Cause : ${json.message}`,
       };
     }

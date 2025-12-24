@@ -44,6 +44,16 @@ export default async function Home() {
     getLocale(),
   ]);
 
+  const packages = Array.isArray(packagesResult?.data)
+    ? packagesResult.data
+    : [];
+
+  const medical = Array.isArray(medicalResult?.data) ? medicalResult.data : [];
+
+  const wellness = Array.isArray(wellnessResult?.data)
+    ? wellnessResult.data
+    : [];
+
   const { data: user, error } = await supabase.auth.getUser();
 
   const checkUser = user.user;
@@ -74,9 +84,9 @@ export default async function Home() {
 
   return (
     <ChatContent
-      packages={packagesResult.data}
-      medical={medicalResult.data}
-      wellness={wellnessResult.data}
+      packages={packages}
+      medical={medical}
+      wellness={wellness}
       initialHistory={historyData.data.data || []}
       publicIDFetch={publicID}
       user={userData}

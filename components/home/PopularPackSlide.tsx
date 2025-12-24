@@ -35,7 +35,7 @@ export default function PopularPackSlide({
 
   console.log("Popular Pack Slide packages:", packages.length);
 
-  if (packages.length <= 0) {
+  if (!Array.isArray(packages) || packages.length <= 0) {
     return (
       <ContainerWrap>
         <FailedGetDataNotice />

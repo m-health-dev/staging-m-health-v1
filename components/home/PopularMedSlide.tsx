@@ -36,7 +36,7 @@ export default function PopularMedSlide({
 
   console.log("Popular Med Slide data:", data.length);
 
-  if (data.length === 0) {
+  if (!Array.isArray(data) || data.length <= 0) {
     return (
       <ContainerWrap>
         <FailedGetDataNotice />

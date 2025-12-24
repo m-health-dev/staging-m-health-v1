@@ -34,13 +34,13 @@ const SkeletonComponent = () => {
 };
 
 const Content = async () => {
-  const [events, locale] = await Promise.all([
+  const [eventsResult, locale] = await Promise.all([
     await getAllEvents(1, 10),
     getLocale(),
   ]);
 
   const t = await getTranslations("utility");
 
-  const dataEvents = events.data;
-  return <CurrentEventsGrid data={dataEvents} locale={locale} />;
+  const events = Array.isArray(eventsResult.data) ? eventsResult.data : [];
+  return <CurrentEventsGrid data={events} locale={locale} />;
 };

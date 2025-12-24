@@ -10,6 +10,7 @@ import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import AvatarVendorHotel from "../utility/AvatarVendorHotel";
 import Link from "next/link";
+import ContainerWrap from "../utility/ContainerWrap";
 
 const PopularProgramGrid = ({
   data,
@@ -20,9 +21,10 @@ const PopularProgramGrid = ({
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   console.log("Popular Program Grid data:", data.length);
-  if (data.length <= 0) {
+  if (!Array.isArray(data) || data.length <= 0) {
     return <FailedGetDataNotice />;
   }
+
   const onlyGet8: WellnessType[] = data.slice(0, 8);
   const onlyGet4: WellnessType[] = data.slice(0, 4);
   return (

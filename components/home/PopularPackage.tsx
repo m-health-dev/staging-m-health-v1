@@ -40,10 +40,15 @@ const SkeletonComponent = () => {
 };
 
 const Content = async () => {
-  const [packages, locale] = await Promise.all([
-    (await getAllPackages(1, 10)).data,
+  const [packagesResult, locale] = await Promise.all([
+    getAllPackages(1, 10),
     getLocale(),
   ]);
+
+  const packages = Array.isArray(packagesResult.data)
+    ? packagesResult.data
+    : [];
+
   const t = await getTranslations("utility");
   return (
     <PopularPackSlide

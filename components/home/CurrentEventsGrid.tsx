@@ -16,6 +16,8 @@ import { Button } from "../ui/button";
 import { EventsType } from "@/types/events.types";
 import { routing } from "@/i18n/routing";
 import { useRouter } from "next/navigation";
+import ContainerWrap from "../utility/ContainerWrap";
+import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 
 const CurrentEventsGrid = ({
   data,
@@ -26,7 +28,9 @@ const CurrentEventsGrid = ({
 }) => {
   const router = useRouter();
 
-  console.log("Current Events Grid data:", data.length);
+  if (!Array.isArray(data) || data.length <= 0) {
+    return <FailedGetDataNotice />;
+  }
   return (
     <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
       {data.map((e, i) => (

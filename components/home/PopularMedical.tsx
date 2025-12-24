@@ -46,17 +46,17 @@ const SkeletonComponent = () => {
 };
 
 const Content = async () => {
-  const [medical, locale] = await Promise.all([
+  const [medicalResult, locale] = await Promise.all([
     await getAllMedical(1, 10),
     getLocale(),
   ]);
 
   const t = await getTranslations("utility");
 
-  const dataMedical = medical.data;
+  const medical = Array.isArray(medicalResult.data) ? medicalResult.data : [];
   return (
     <PopularMedSlide
-      data={dataMedical}
+      data={medical}
       locale={locale}
       labels={{
         days: t("days"),
