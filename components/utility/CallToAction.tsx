@@ -26,6 +26,8 @@ const CallToAction = () => {
   const t = useTranslations("cta");
   const highlights = t.raw("highlights") as string[];
 
+  console.log("CTA highlights:", highlights.length);
+
   const [index, setIndex] = useState(0);
 
   useEffect(() => {

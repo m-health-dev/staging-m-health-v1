@@ -34,6 +34,8 @@ export default function PopularMedSlide({
   const swiperRef = useRef<any>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
+  console.log("Popular Med Slide data:", data.length);
+
   if (data.length === 0) {
     return (
       <ContainerWrap>

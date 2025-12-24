@@ -5,6 +5,7 @@ import React from "react";
 import LocalDateTime from "../utility/lang/LocaleDateTime";
 
 const OurNewsGrid = ({ data }: { data: any[] }) => {
+  console.log("Our News Grid data:", data.length);
   return (
     <div className="grid 3xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-7 *:lg:last:hidden *:3xl:last:grid">
       {data.map((n) => {

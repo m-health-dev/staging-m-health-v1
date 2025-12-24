@@ -33,6 +33,8 @@ export default function PopularPackSlide({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const t = useTranslations("utility");
 
+  console.log("Popular Pack Slide packages:", packages.length);
+
   if (packages.length <= 0) {
     return (
       <ContainerWrap>

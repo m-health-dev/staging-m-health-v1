@@ -25,6 +25,8 @@ const CurrentEventsGrid = ({
   locale: string;
 }) => {
   const router = useRouter();
+
+  console.log("Current Events Grid data:", data.length);
   return (
     <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
       {data.map((e, i) => (

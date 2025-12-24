@@ -19,6 +19,7 @@ const PopularProgramGrid = ({
   locale: string;
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  console.log("Popular Program Grid data:", data.length);
   if (data.length <= 0) {
     return <FailedGetDataNotice />;
   }
