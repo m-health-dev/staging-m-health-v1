@@ -48,9 +48,13 @@ export default async function SessionPage(props: { params: paramsType }) {
 
   const { data: user, error } = await supabase.auth.getUser();
 
-  const userID = user.user?.id;
-  // const shareSlugData = shareSlug.data;
-  // console.log(shareSlugData);
+  const checkUser = user.user;
+
+  let userID;
+
+  if (checkUser) {
+    userID = user.user?.id;
+  }
 
   const shareSlugData = shareSlug.shareSlug;
 
@@ -59,8 +63,8 @@ export default async function SessionPage(props: { params: paramsType }) {
     notFound();
   }
 
-  const historyData = userID
-    ? await getChatHistoryByUserID(userID, 1, 10)
+  const historyData = checkUser
+    ? await getChatHistoryByUserID(userID!, 1, 10)
     : publicID
     ? await getChatHistory(publicID, 1, 10)
     : { data: [], total: 0 };
@@ -93,7 +97,16 @@ export default async function SessionPage(props: { params: paramsType }) {
   }
 
   const urgent = sessionChat.urgent;
-  // console.log("Urgent Status: ", urgent);
+
+  console.log({
+    checkUser,
+    session,
+    userID,
+    userData,
+    publicID,
+    historyData,
+    urgent,
+  });
 
   return (
     <>

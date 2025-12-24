@@ -44,14 +44,14 @@ const AvatarVendorHotel = ({
         let res = null;
 
         if (type === "vendor" && vendor_id) {
-          res = await getVendorByID(vendor_id);
+          res = (await getVendorByID(vendor_id)).data;
         }
 
         if (type === "hotel" && hotel_id) {
-          res = await getHotelByID(hotel_id);
+          res = (await getHotelByID(hotel_id)).data;
         }
 
-        const result = res?.data?.data ?? null;
+        const result = res ?? null;
 
         vendorHotelCache[key] = result; // simpan cache
         setData(result);
@@ -64,43 +64,6 @@ const AvatarVendorHotel = ({
 
     loadData();
   }, [type, vendor_id, hotel_id]);
-
-  // Jika data ada dan memiliki logo
-  if (data?.logo) {
-    return (
-      <div>
-        <button
-          onClick={() => router.push(`/${locale}/${type}/${data.slug}`)}
-          className="cursor-pointer"
-        >
-          <div className="inline-flex gap-2 items-center">
-            <Image
-              src={data.logo}
-              alt={data.slug || "vendor-hotel-logo"}
-              width={80}
-              height={80}
-              className={cn(
-                "object-cover  rounded-full border",
-                size === "sm" && "w-7 h-7",
-                size === "md" && "w-10 h-10",
-                size === "lg" && "w-14 h-14"
-              )}
-            />
-            <p
-              className={cn(
-                " text-health normal-case line-clamp-1",
-                size === "sm" && "text-xs!",
-                size === "md" && "text-sm!",
-                size === "lg" && "text-base!"
-              )}
-            >
-              {data.name}
-            </p>
-          </div>
-        </button>
-      </div>
-    );
-  }
 
   // fallback avatar ketika loading atau logo tidak tersedia
   return loading ? (
@@ -138,6 +101,39 @@ const AvatarVendorHotel = ({
           )}
         />
       </div>
+    </div>
+  ) : // Jika data ada dan memiliki logo
+  data.logo ? (
+    <div>
+      <button
+        onClick={() => router.push(`/${locale}/${type}/${data.slug}`)}
+        className="cursor-pointer"
+      >
+        <div className="inline-flex gap-2 items-center">
+          <Image
+            src={data.logo}
+            alt={data.slug || "vendor-hotel-logo"}
+            width={80}
+            height={80}
+            className={cn(
+              "object-cover  rounded-full border",
+              size === "sm" && "w-7 h-7",
+              size === "md" && "w-10 h-10",
+              size === "lg" && "w-14 h-14"
+            )}
+          />
+          <p
+            className={cn(
+              " text-health normal-case line-clamp-1",
+              size === "sm" && "text-xs!",
+              size === "md" && "text-sm!",
+              size === "lg" && "text-base!"
+            )}
+          >
+            {data.name}
+          </p>
+        </div>
+      </button>
     </div>
   ) : (
     <Avatar

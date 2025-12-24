@@ -46,10 +46,16 @@ export default async function Home() {
 
   const { data: user, error } = await supabase.auth.getUser();
 
-  const userID = user.user?.id;
+  const checkUser = user.user;
 
-  const historyData = userID
-    ? await getChatHistoryByUserID(userID, 1, 10)
+  let userID;
+
+  if (checkUser) {
+    userID = user.user?.id;
+  }
+
+  const historyData = checkUser
+    ? await getChatHistoryByUserID(userID!, 1, 10)
     : publicID
     ? await getChatHistory(publicID, 1, 10)
     : { data: [], total: 0 };
@@ -58,7 +64,7 @@ export default async function Home() {
     ? await getUserInfo(session.access_token)
     : null;
 
-  console.log({ session });
+  console.log({ checkUser, session, userID, userData, publicID, historyData });
 
   return (
     <ChatContent

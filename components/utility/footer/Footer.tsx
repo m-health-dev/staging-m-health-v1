@@ -148,14 +148,14 @@ const Footer = () => {
             </div>
           </Link>
         </div>
-        <div className="flex justify-center pb-[5vh]">
+        {/* <div className="flex justify-center pb-[5vh]">
           <Link href={"/sandbox"}>
             <p className="bg-health py-1 px-3 text-white rounded-full inline-flex items-center gap-2 hover:scale-105 transition-transform group shadow-lg shadow-health/30">
               <Diamond className="size-4 group-hover:rotate-45 transition-all duration-200" />{" "}
               Sandbox
             </p>
           </Link>
-        </div>
+        </div> */}
       </ContainerWrap>
     </footer>
   );

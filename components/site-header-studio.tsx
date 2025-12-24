@@ -7,6 +7,7 @@ import BreadcrumbAuto from "./utility/BreadcrumbsAuto";
 import { NavUser } from "./nav-user";
 import { Account } from "@/types/account.types";
 import { useLocale } from "next-intl";
+import Link from "next/link";
 
 export function SiteHeaderStudio({ accounts }: { accounts: Account }) {
   const locale = useLocale();
@@ -18,10 +19,9 @@ export function SiteHeaderStudio({ accounts }: { accounts: Account }) {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h4 className="text-base font-bold text-primary">Studio</h4>
-        {/* <div className="ml-auto lg:flex hidden items-center gap-2">
-          <BreadcrumbAuto />
-        </div> */}
+        <Link href={`/${locale}/studio`}>
+          <h4 className="text-base font-bold text-primary">Studio</h4>
+        </Link>
         <div className="max-w-xs ml-auto">
           <NavUser user={accounts} locale={locale} type="header" />
         </div>

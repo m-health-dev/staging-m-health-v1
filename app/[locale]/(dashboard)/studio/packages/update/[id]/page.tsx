@@ -21,7 +21,7 @@ const UpdatePackagePage = async ({
   if (res.error) {
     notFound();
   }
-  return <UpdatePackageForm id={id} packageData={res.data.data} />;
+  return <UpdatePackageForm id={id} packageData={res.data} />;
 };
 
 export default UpdatePackagePage;

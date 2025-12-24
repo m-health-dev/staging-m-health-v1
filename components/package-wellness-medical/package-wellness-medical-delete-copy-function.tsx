@@ -71,7 +71,7 @@ export function Studio1DeleteCopyFunction({
 
       if (!res?.error) {
         toast.success(`${resourceLabel} deleted successfully`, {
-          description: `${id.slice(0, 8)} - ${name}`,
+          description: `${name}`,
         });
         setOpenConfirm(false);
         setInputName("");

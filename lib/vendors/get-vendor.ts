@@ -1,3 +1,5 @@
+"use server";
+
 import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
 import { success } from "zod";
@@ -26,7 +28,7 @@ export async function getAllVendorWithoutPagination() {
       };
     }
 
-    // console.log(json.links);
+    console.log({ json });
     return {
       data: json.data,
       success: true,
@@ -88,17 +90,18 @@ export async function getVendorByID(id: string) {
       },
     });
 
-    const data = await res.json();
+    const json = await res.json();
+    // console.log({ json });
 
     if (res.status !== 200) {
       return {
         success: false,
-        error: `Failed to receive vendor/read by ID ${id}. Cause : ${res.status} - ${data.message}`,
+        error: `Failed to receive vendor/read by ID ${id}. Cause : ${res.status} - ${json.message}`,
       };
     }
 
     return {
-      data,
+      data: json.data,
       success: true,
     };
   } catch (error) {

@@ -1,3 +1,5 @@
+"use server";
+
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 import { createClient } from "@/utils/supabase/server";
 import { error } from "console";

@@ -1,3 +1,5 @@
+"use server";
+
 import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
 import { success } from "zod";
@@ -88,17 +90,17 @@ export async function getHotelByID(id: string) {
       },
     });
 
-    const data = await res.json();
+    const json = await res.json();
 
     if (res.status !== 200) {
       return {
         success: false,
-        error: `Failed to receive hotel/read by ID ${id}. Cause : ${res.status} - ${data.message}`,
+        error: `Failed to receive hotel/read by ID ${id}. Cause : ${res.status} - ${json.message}`,
       };
     }
 
     return {
-      data,
+      data: json.data,
       success: true,
     };
   } catch (error) {

@@ -51,7 +51,13 @@ export default async function ShareChatPage(props: { params: paramsType }) {
       getShareSlug(shareSlugData),
     ]);
 
-  const userID = user.user?.id;
+  const checkUser = user.user;
+
+  let userID;
+
+  if (checkUser) {
+    userID = user.user?.id;
+  }
 
   if (!sessionChat.success && sessionChat.status === 404) {
     notFound();
@@ -59,8 +65,8 @@ export default async function ShareChatPage(props: { params: paramsType }) {
 
   // console.log(sessionChat.error);
 
-  const historyData = userID
-    ? await getChatHistoryByUserID(userID, 1, 10)
+  const historyData = checkUser
+    ? await getChatHistoryByUserID(userID!, 1, 10)
     : publicID
     ? await getChatHistory(publicID, 1, 10)
     : { data: [], total: 0 };
@@ -72,12 +78,22 @@ export default async function ShareChatPage(props: { params: paramsType }) {
     ? await getUserInfo(session.access_token)
     : undefined;
 
-  if (sessionChat.publicStatus !== "private") {
+  if (sessionChat.publicStatus !== "public") {
     return <PrivateChat />;
   }
 
   const urgent = sessionChat.urgent;
   // console.log("Urgent Status: ", urgent);
+
+  console.log({
+    checkUser,
+    session,
+    userID,
+    userData,
+    publicID,
+    historyData,
+    urgent,
+  });
 
   return (
     <>

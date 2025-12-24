@@ -319,8 +319,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     <div className="bg-white rounded-2xl rounded-bl-none px-4 py-3">
                       <div className="flex gap-1">
                         <div className="w-1 h-1 bg-primary rounded-full animate-bounce" />
-                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:0.3s]" />
                         <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:0.6s]" />
+                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:0.9s]" />
                       </div>
                     </div>
                   </div>

@@ -1,3 +1,5 @@
+"use server";
+
 import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
 import { success } from "zod";

@@ -110,7 +110,7 @@ export async function getPackageByID(id: string) {
     }
 
     return {
-      data,
+      data: data.data,
       success: true,
     };
   } catch (error) {

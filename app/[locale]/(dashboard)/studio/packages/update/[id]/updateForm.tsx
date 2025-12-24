@@ -421,8 +421,10 @@ const UpdatePackageForm = ({
                 </div>
               </div>
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <ComboBoxVendorListOption />
-                <ComboBoxHotelListOption />
+                <ComboBoxVendorListOption
+                  readVendorID={packageData.vendor_id}
+                />
+                <ComboBoxHotelListOption readHotelID={packageData.hotel_id} />
               </div>
               <hr />
 

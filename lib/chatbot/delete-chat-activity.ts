@@ -1,5 +1,7 @@
 "use server";
 
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
@@ -9,6 +11,7 @@ export async function DeleteChatSession(session_id: string) {
   if (!session_id) {
     return { error: "Session ID is required" };
   }
+  const accessToken = await getAccessToken();
 
   try {
     const res = await fetch(
@@ -17,6 +20,7 @@ export async function DeleteChatSession(session_id: string) {
         cache: "no-store", // Use standard fetch cache option
         method: "DELETE",
         headers: {
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
       }
@@ -46,6 +50,7 @@ export async function DeleteAllChatSession(user_id: string) {
   if (!user_id) {
     return { error: "User ID is required" };
   }
+  const accessToken = await getAccessToken();
 
   try {
     const res = await fetch(
@@ -54,6 +59,7 @@ export async function DeleteAllChatSession(user_id: string) {
         cache: "no-store", // Use standard fetch cache option
         method: "DELETE",
         headers: {
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
       }
