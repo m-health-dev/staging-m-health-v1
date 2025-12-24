@@ -50,6 +50,9 @@ const StudioDashboard = async () => {
   const { count: Equipment } = await supabase
     .from("medical_equipment")
     .select("*", { count: "exact" });
+  const { count: Article } = await supabase
+    .from("article")
+    .select("*", { count: "exact" });
   return (
     <ContainerWrap>
       <div className="my-10">
@@ -149,6 +152,16 @@ const StudioDashboard = async () => {
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
               <p>Events</p>
+            </div>
+          </div>
+        </div>
+        <div className="group/stats">
+          <div className="bg-white rounded-2xl overflow-hidden relative border">
+            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+              <h3 className="text-primary font-semibold">{Article}</h3>
+            </div>
+            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+              <p>Article</p>
             </div>
           </div>
         </div>

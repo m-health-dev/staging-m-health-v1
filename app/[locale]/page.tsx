@@ -1,4 +1,5 @@
 import ChatContent from "@/components/chatbot/ChatContent";
+import SnowFall from "@/components/snow-fall";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import {
   getChatHistory,
@@ -83,18 +84,20 @@ export default async function Home() {
   console.log({ checkUser, session, userID, userData, publicID, historyData });
 
   return (
-    <ChatContent
-      packages={packages}
-      medical={medical}
-      wellness={wellness}
-      initialHistory={historyData.data.data || []}
-      publicIDFetch={publicID}
-      user={userData}
-      locale={locale}
-      labels={{
-        delete: t("delete"),
-        cancel: t("cancel"),
-      }}
-    />
+    <>
+      <ChatContent
+        packages={packages}
+        medical={medical}
+        wellness={wellness}
+        initialHistory={historyData.data.data || []}
+        publicIDFetch={publicID}
+        user={userData}
+        locale={locale}
+        labels={{
+          delete: t("delete"),
+          cancel: t("cancel"),
+        }}
+      />
+    </>
   );
 }

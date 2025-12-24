@@ -3,16 +3,26 @@ import Avatar from "boring-avatars";
 import Image from "next/image";
 import React from "react";
 import LocalDateTime from "../utility/lang/LocaleDateTime";
+import { ArticleType } from "@/types/articles.types";
+import { routing } from "@/i18n/routing";
 
-const OurNewsGrid = ({ data }: { data: any[] }) => {
+const OurNewsGrid = ({
+  data,
+  locale,
+  labels,
+}: {
+  data: ArticleType[];
+  locale: string;
+  labels: any;
+}) => {
   console.log("Our News Grid data:", data.length);
   return (
     <div className="grid 3xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-7 *:lg:last:hidden *:3xl:last:grid">
       {data.map((n) => {
         // Ambil hanya topic yang disetujui
-        const approvedTopics = Object.entries(n.topic || {})
-          .filter(([_, value]: any) => value.status === "approved")
-          .map(([key]) => key);
+        // const approvedTopics = Object.entries(n.topic || {})
+        //   .filter(([_, value]: any) => value.status === "approved")
+        //   .map(([key]) => key);
 
         return (
           <div
@@ -21,27 +31,18 @@ const OurNewsGrid = ({ data }: { data: any[] }) => {
           >
             <div className="relative aspect-video">
               <Image
-                src={n.full}
+                src={
+                  "https://placehold.co/720x403.png?text=M+HEALTH+DEVELOPMENT"
+                } // Ganti dengan n.image_url saat tersedia
                 width={720}
                 height={403}
-                alt={n.alt}
+                alt={n.en_title}
                 className="w-full aspect-video object-center object-cover rounded-2xl z-10"
               />
               <div className="flex flex-wrap gap-2 absolute bottom-5 left-5">
-                {approvedTopics.length >= 1 ? (
-                  approvedTopics.map((t) => (
-                    <p
-                      key={t}
-                      className="text-xs! bg-background text-primary border border-primary px-3 py-1 rounded-full capitalize"
-                    >
-                      {t.replaceAll("-", " ") || "Article"}
-                    </p>
-                  ))
-                ) : (
-                  <p className="text-xs! bg-background text-primary border border-primary px-3 py-1 rounded-full capitalize">
-                    Article
-                  </p>
-                )}
+                {n.category?.map((cat, i) => (
+                  <span key={i}>{cat}</span>
+                ))}
               </div>
             </div>
             <div className="px-5 pb-5 pt-12 -mt-7 bg-background group-hover:bg-primary transition-all duration-300 rounded-2xl grow">
@@ -52,16 +53,15 @@ const OurNewsGrid = ({ data }: { data: any[] }) => {
                 />
               </p>
               <h5 className="capitalize text-primary group-hover:text-white transition-all duration-300 font-bold line-clamp-2">
-                {n.alt}
+                {locale === routing.defaultLocale ? n.id_title : n.en_title}
               </h5>
               <p className="line-clamp-2 text-muted-foreground group-hover:text-white/50 transition-all duration-300 my-2">
-                {n.description}_Lorem ipsum dolor, sit amet consectetur
-                adipisicing elit. Tempore, reprehenderit?
+                {locale === routing.defaultLocale ? n.id_content : n.en_content}
               </p>
 
               <div className="inline-flex gap-2 items-center mt-2">
                 <Avatar
-                  name={n.author?.name || "Unknown"}
+                  name={n.author[0] || "Unknown"}
                   colors={[
                     "#3e77ab",
                     "#22b26e",
@@ -73,7 +73,7 @@ const OurNewsGrid = ({ data }: { data: any[] }) => {
                   size={20}
                 />
                 <p className="text-sm! group-hover:text-white text-health normal-case line-clamp-1">
-                  {n.author?.name || "Unknown"}
+                  {n.author[0] || "Unknown"}
                 </p>
               </div>
             </div>

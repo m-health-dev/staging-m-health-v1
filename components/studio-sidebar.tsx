@@ -183,7 +183,7 @@ const data = {
   articles: [
     {
       name: "Articles Data",
-      url: "/studio/articles",
+      url: "/studio/article",
       icon: Newspaper,
     },
     {

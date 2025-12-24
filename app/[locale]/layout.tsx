@@ -19,6 +19,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getMessages } from "next-intl/server";
 import NextTopLoader from "nextjs-toploader";
 import OneTapComponent from "@/components/utility/GoogleOneTap";
+import SnowFall from "@/components/snow-fall";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -88,6 +89,7 @@ export default async function RootLayout({ children, params }: Props) {
             />
             <Analytics />
             <SpeedInsights />
+            <SnowFall />
             {children}
             <OneTapComponent />
           </NextIntlClientProvider>

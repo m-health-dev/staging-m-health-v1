@@ -184,3 +184,27 @@ export const EventSchema = z.object({
   registration_url: z.url().optional(),
   status: z.string(),
 });
+
+export const ArticleAuthorSchema = z.object({
+  name: z.string().min(1),
+  jobdesc: z.string().min(3),
+  profile_image: z.string().min(1),
+});
+
+export const ArticleCategorySchema = z.object({
+  id_category: z.string().min(1),
+  en_category: z.string().min(1),
+  id_description: z.string().optional(),
+  en_description: z.string().optional(),
+});
+
+export const ArticleSchema = z.object({
+  en_title: z.string().min(3),
+  id_title: z.string().min(3),
+  highlight_image: z.string().min(1),
+  author: z.array(z.string().min(1)),
+  category: z.array(z.string().min(1)),
+  en_content: z.string(),
+  id_content: z.string(),
+  status: z.string(),
+});
