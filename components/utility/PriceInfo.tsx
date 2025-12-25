@@ -9,7 +9,7 @@ type PriceInfoType = {
   payID: string;
 };
 
-function calculateDiscount(real: number, disc: number) {
+export function calculateDiscount(real: number, disc: number) {
   const result = Math.round((disc / real) * 100);
   const calc = 100 - result;
   const response = `${calc}%`;

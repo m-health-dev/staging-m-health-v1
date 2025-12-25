@@ -40,6 +40,7 @@ import {
 } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -52,7 +53,11 @@ export const columns: ColumnDef<VendorType>[] = [
     ),
     cell: ({ row }) => {
       const id: string = row.getValue("id");
-      return <span className="uppercase">{id.slice(0, 8)}</span>;
+      return (
+        <span className="uppercase line-clamp-1">
+          {id ? id.slice(0, 8) : "N/A"}
+        </span>
+      );
     },
   },
   {
@@ -112,7 +117,11 @@ export const columns: ColumnDef<VendorType>[] = [
     ),
     cell: ({ row }) => {
       const public_id: string = row.getValue("public_id");
-      return <span className="uppercase">{public_id.slice(0, 8)}</span>;
+      return (
+        <span className="uppercase line-clamp-1">
+          {public_id ? public_id.slice(0, 8) : "N/A"}
+        </span>
+      );
     },
   },
   {
@@ -123,13 +132,21 @@ export const columns: ColumnDef<VendorType>[] = [
     cell: ({ row }) => {
       const public_id: string = row.getValue("public_id");
       const user_id: string = row.getValue("user_id");
+      const locale = useLocale();
       if (user_id) {
-        return <AvatarUserDetail id={user_id} />;
+        return (
+          <Link href={`/${locale}/studio/users/preview/${user_id}`}>
+            <span className="uppercase inline-flex gap-2 items-center">
+              <span className="bg-green-500 w-2 h-2 rounded-full aspect-square" />
+              {user_id ? user_id.slice(0, 8) : "N/A"}{" "}
+            </span>
+          </Link>
+        );
       } else {
         return (
           <span className="uppercase inline-flex gap-2 items-center">
             <span className="bg-red-500 w-2 h-2 rounded-full aspect-square" />
-            {public_id.slice(0, 8)}{" "}
+            {public_id ? public_id.slice(0, 8) : "N/A"}{" "}
           </span>
         );
       }
@@ -178,7 +195,7 @@ export const columns: ColumnDef<VendorType>[] = [
           const res = await DeleteChatSession(id);
           if (!res.error) {
             toast.success("Success to Delete Chat Session", {
-              description: `${id.slice(0, 8).toUpperCase()} - ${title}`,
+              description: `${title.toUpperCase()} - ${title}`,
             });
           } else if (res.error) {
             toast.error("Failed to Delete Chat Session", {

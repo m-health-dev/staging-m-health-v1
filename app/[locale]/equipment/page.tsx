@@ -13,11 +13,13 @@ import {
 import { PackageType } from "@/types/packages.types";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Skeleton } from "@/components/ui/skeleton";
-import PackageClientPage from "./package-page-client";
+import PackageClientPage from "./euipment-page-client";
 import Wrapper from "@/components/utility/Wrapper";
 import { routing } from "@/i18n/routing";
+import { getAllPublicMedicalEquipment } from "@/lib/medical-equipment/get-medical-equipment";
+import EquipmentClientPage from "./euipment-page-client";
 
-const PackagePage = async ({
+const EquipmentPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -32,8 +34,8 @@ const PackagePage = async ({
       <ContainerWrap>
         <h1 className="font-bold text-primary my-20 text-center">
           {locale === routing.defaultLocale
-            ? "Paket Kesehatan & Medis Kami"
-            : "Our Wellness and Medical Packages"}
+            ? "Alat Penunjang Kesehatan"
+            : "Health Support Equipment"}
         </h1>{" "}
         <Suspense fallback={<SkeletonComponent per_page={per_page} />}>
           <Content
@@ -48,7 +50,7 @@ const PackagePage = async ({
   );
 };
 
-export default PackagePage;
+export default EquipmentPage;
 
 const SkeletonComponent = ({ per_page }: { per_page: number }) => {
   return (
@@ -73,17 +75,17 @@ const Content = async ({
   per_page: number;
   locale: string;
 }) => {
-  const { data, total, links, meta } = await getAllPublicPackages(
+  const { data, total, links, meta } = await getAllPublicMedicalEquipment(
     page,
     per_page
   ); // nanti page bisa dynamic
 
-  const packages = Array.isArray(data) ? data : [];
+  const equipment = Array.isArray(data) ? data : [];
 
   const t = await getTranslations("utility");
   return (
-    <PackageClientPage
-      packages={packages}
+    <EquipmentClientPage
+      equipment={equipment}
       locale={locale}
       labels={{
         days: t("days"),

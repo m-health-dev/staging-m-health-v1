@@ -304,7 +304,7 @@ export function Studio2DataTable<TData, TValue>({
                               )}
                           </div>
                           <p className="text-sm! text-muted-foreground uppercase mb-5">
-                            {String(row.getValue("id")).slice(0, 8)}
+                            {String(row.getValue("id")).slice(0, 8) || "N/A"}
                           </p>
                           <h5 className="font-semibold text-primary text-lg">
                             {row.getValue("title")}

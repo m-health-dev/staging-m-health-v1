@@ -82,6 +82,7 @@ export async function getAllPublicMedical(
       data: json.data,
       links: json.links,
       meta: json.meta,
+      total: json.total,
       success: true,
     };
   } catch (error) {

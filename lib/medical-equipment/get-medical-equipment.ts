@@ -9,6 +9,48 @@ const apiBaseUrl =
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
+export async function getAllPublicMedicalEquipment(
+  page: number = 1,
+  per_page: number = 10
+) {
+  try {
+    const res = await fetch(
+      `${apiBaseUrl}/api/v1/medical-equipment?status=published&page=${page}&per_page=${per_page}`,
+      {
+        method: "GET",
+        headers: {
+          "X-API-Key": apiSecretKey,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const json = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to receive equipment/read data. Cause : ${json.message}`,
+      };
+    }
+
+    // console.log(json.links);
+    return {
+      data: json.data,
+      links: json.links,
+      meta: json.meta,
+      total: json.total,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive equipment/read Error:", error);
+    return {
+      success: false,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
+
 export async function getAllMedicalEquipment(
   page: number = 1,
   per_page: number = 10

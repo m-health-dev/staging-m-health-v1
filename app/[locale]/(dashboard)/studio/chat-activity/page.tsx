@@ -27,8 +27,6 @@ const ChatActivityStudio = async ({
 
   const locale = await getLocale();
 
-  const supabase = await createClient();
-
   return (
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">

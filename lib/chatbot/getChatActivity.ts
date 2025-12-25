@@ -1,5 +1,6 @@
 "use server";
 
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 import { apiSecretKey } from "@/helper/api-secret-key";
 import { createClient } from "@/utils/supabase/client";
 import { link } from "node:fs";
@@ -15,12 +16,14 @@ export async function getAllChatActivity(
   page: number = 1,
   per_page: number = 10
 ) {
+  const accessToken = await getAccessToken();
   try {
     const res = await fetch(
       `${apiBaseUrl}/api/v1/chat-activities?page=${page}&per_page=${per_page}`,
       {
         method: "GET",
         headers: {
+          Authorization: `Bearer ${accessToken}`,
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
@@ -28,6 +31,10 @@ export async function getAllChatActivity(
     );
 
     const json = await res.json();
+
+    const data = json.data;
+
+    // console.log({ res, data });
 
     if (res.status !== 200) {
       return {

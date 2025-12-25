@@ -59,6 +59,10 @@ const SignInClient = ({
   const resetData = params.get("reset");
   const recordResetData = params.get("record");
 
+  const redirectRecord = path.startsWith(`/${locale}/c`)
+    ? path
+    : redirectData?.toString();
+
   useEffect(() => {
     const newRequestCount = 3 - Number(recordResetData);
     if (resetData === "success") {
@@ -89,7 +93,7 @@ const SignInClient = ({
   const handleGoogleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const response = await signWithGoogle(redirectData);
+    const response = await signWithGoogle(redirectRecord);
 
     if (response?.error) {
       toast.error(`Autentifikasi Google Gagal`, {
