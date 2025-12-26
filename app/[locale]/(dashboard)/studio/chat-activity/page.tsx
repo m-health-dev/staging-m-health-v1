@@ -60,6 +60,7 @@ const ChatActivityStudio = async ({
       </div>
       <Studio2DataTable
         columns={columns}
+        locale={locale}
         data={data}
         meta={meta}
         links={links}

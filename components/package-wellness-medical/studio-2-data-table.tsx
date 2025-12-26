@@ -50,6 +50,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   meta?: any;
   links: any;
+  locale: string;
   type?:
     | "chat-activity"
     | "vendor"
@@ -63,6 +64,7 @@ interface DataTableProps<TData, TValue> {
 export function Studio2DataTable<TData, TValue>({
   columns,
   data,
+  locale,
   meta,
   links,
   type = "default",
@@ -70,7 +72,6 @@ export function Studio2DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
   const params = useSearchParams();
-  const locale = useLocale();
 
   const [viewCard, setViewCard] = React.useState(false);
   const [loading, setLoading] = React.useState(false);

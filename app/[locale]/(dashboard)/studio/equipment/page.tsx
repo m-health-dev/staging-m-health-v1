@@ -62,6 +62,7 @@ const EquipmentStudio = async ({
         columns={columns}
         data={data}
         meta={meta}
+        locale={locale}
         links={links}
         deleteAction={deleteMedical}
       />

@@ -62,6 +62,7 @@ const ArticleStudio = async ({
       <Studio1DataTable
         columns={columns}
         data={data}
+        locale={locale}
         meta={meta}
         links={links}
         deleteAction={deleteArticles}

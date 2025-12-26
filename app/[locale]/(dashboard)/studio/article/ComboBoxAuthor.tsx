@@ -42,11 +42,23 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
 
   const authorIds = useWatch({ name: "author", control: form.control }) || [];
 
+  console.log("authorIds", authorIds);
+
+  useEffect(() => {
+    if (!authorIds || authorIds.length === 0) {
+      form.setValue("author", [""], {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+  }, [authorIds, form]);
+
   useEffect(() => {
     const fetchAuthors = async () => {
       setLoading(true);
-      const res = await getAllArticleAuthorWithoutPagination();
-      setAuthorData(res.data);
+
+      const { data } = await getAllArticleAuthorWithoutPagination();
+      setAuthorData(data);
 
       if (readAuthorIds?.length) {
         form.setValue("author", readAuthorIds, {
@@ -54,15 +66,12 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
           shouldValidate: true,
         });
       }
-      // else if (authorIds.length === 0) {
-      //   form.setValue("author", [""]);
-      // }
 
       setLoading(false);
     };
 
     fetchAuthors();
-  }, [readAuthorIds]);
+  }, [readAuthorIds, form]);
 
   const filteredAuthors = useMemo(() => {
     if (!query.trim()) return authorData.slice(0, 10);
@@ -120,10 +129,10 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
                   <PopoverTrigger asChild>
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="default"
                       disabled={loading}
                       className={cn(
-                        "flex-1 h-12 rounded-2xl justify-between",
+                        "flex-1 h-12 rounded-2xl justify-between bg-white hover:ring-2 hover:ring-primary hover:bg-white focus:bg-white focus:ring-2 focus:ring-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white text-primary!",
                         author && "text-primary font-semibold"
                       )}
                     >
@@ -191,7 +200,7 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-12 h-12 rounded-2xl bg-transparent"
+                    className="w-12 h-12 rounded-2xl bg-white"
                     onClick={addAuthor}
                   >
                     <Plus />

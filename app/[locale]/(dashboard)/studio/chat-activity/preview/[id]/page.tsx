@@ -19,6 +19,8 @@ const PreviewChatSessionPage = async ({
   const locale = await getLocale();
   const urgent = sessionChat.urgent;
 
+  console.log({ all });
+
   if (sessionChat.error) {
     notFound();
   }

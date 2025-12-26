@@ -68,16 +68,19 @@ export function ComboBoxStatus() {
                 <CommandInput placeholder="Cari Status..." />
                 <CommandEmpty>Tidak ditemukan.</CommandEmpty>
 
-                <CommandGroup>
+                <CommandGroup className="p-2">
                   {options.map((o) => (
                     <CommandItem
                       key={o.value}
                       value={o.value}
                       className={cn(
-                        "font-sans mb-2",
-                        o.value === "draft" && "bg-blue-50 text-blue-500",
-                        o.value === "published" && "bg-green-50 text-green-500",
-                        o.value === "archived" && "bg-amber-50 text-amber-500"
+                        "font-sans mb-2 rounded-lg",
+                        o.value === "draft" &&
+                          "bg-blue-50! text-blue-500! hover:bg-blue-100! hover:ring ring-inset hover:ring-blue-500",
+                        o.value === "published" &&
+                          "bg-green-50! text-green-500! hover:bg-green-100! hover:ring ring-inset hover:ring-green-500",
+                        o.value === "archived" &&
+                          "bg-amber-50! text-amber-500! hover:bg-amber-100! hover:ring ring-inset hover:ring-amber-500"
                       )}
                       onSelect={() => {
                         form.setValue("status", o.value);

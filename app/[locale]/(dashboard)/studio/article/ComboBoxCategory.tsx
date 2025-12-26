@@ -44,6 +44,35 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
     useWatch({ name: "category", control: form.control }) || [];
 
   useEffect(() => {
+    if (!categoryIds || categoryIds.length === 0) {
+      form.setValue("category", [""], {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+  }, [categoryIds, form]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoading(true);
+
+      const { data } = await getAllArticleCategoryWithoutPagination();
+      setCategoryData(data);
+
+      if (readCategoryIds?.length) {
+        form.setValue("category", readCategoryIds, {
+          shouldDirty: false,
+          shouldValidate: true,
+        });
+      }
+
+      setLoading(false);
+    };
+
+    fetchCategories();
+  }, [readCategoryIds, form]);
+
+  useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
       const res = await getAllArticleCategoryWithoutPagination();
@@ -125,10 +154,10 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
                   <PopoverTrigger asChild>
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="default"
                       disabled={loading}
                       className={cn(
-                        "flex-1 h-12 rounded-2xl justify-between",
+                        "flex-1 h-12 rounded-2xl justify-between bg-white hover:ring-2 hover:ring-primary hover:bg-white focus:bg-white focus:ring-2 focus:ring-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white text-primary!",
                         category && "text-primary font-semibold"
                       )}
                     >
@@ -198,7 +227,7 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-12 h-12 rounded-2xl bg-transparent"
+                    className="w-12 h-12 rounded-2xl bg-white"
                     onClick={addCategory}
                   >
                     <Plus />

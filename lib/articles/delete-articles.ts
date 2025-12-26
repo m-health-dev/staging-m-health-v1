@@ -12,6 +12,9 @@ const apiBaseUrl =
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
 export async function deleteArticles(id: string) {
+  if (!id) {
+    return { error: "ID is required to delete article." };
+  }
   try {
     console.log("Sending articles/delete to BE:", id);
     const articlesData = (await getArticlesByID(id)).data.data;
@@ -26,7 +29,7 @@ export async function deleteArticles(id: string) {
       filesToDelete.push(...articlesData.highlight_images);
     }
 
-    if (filesToDelete.length === 1) {
+    if (filesToDelete.length === 1 && filesToDelete !== null) {
       const deleteSingle = await deleteSingleFile(filesToDelete[0]);
       if (!deleteSingle) {
         return {

@@ -21,7 +21,9 @@ const HeaderPreviewChat = ({
     <ContainerWrap>
       <div className="flex flex-row justify-between items-center sticky top-0 z-20 pt-6 pb-1">
         <div className="">
-          <h5 className="text-primary font-semibold capitalize">{all.title}</h5>
+          <h5 className="text-primary font-semibold capitalize">
+            {all.data.title}
+          </h5>
         </div>
         <Studio1DeleteCopyFunction
           id={id}
