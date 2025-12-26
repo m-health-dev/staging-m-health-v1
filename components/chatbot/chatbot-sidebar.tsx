@@ -100,9 +100,7 @@ export function ChatbotSidebar({
       const res = await DeleteChatSession(sessionID);
 
       if (res.success) {
-        toast.success("Successfully Deleted Chat Session!", {
-          description: sessionID.slice(0, 8).toUpperCase(),
-        });
+        toast.success("Successfully Deleted Chat Session!");
         if (pathname.includes(sessionID)) {
           router.push("/");
         } else {

@@ -135,10 +135,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     >
       <div>
         <div
-          className={`relative p-3 rounded-2xl transition-all text-wrap wrap-anywhere ${
+          className={`relative rounded-2xl transition-all text-wrap wrap-anywhere ${
             isUser
-              ? "bg-primary text-primary-foreground rounded-br-none max-w-xs lg:max-w-md"
-              : "bg-white text-foreground rounded-bl-none max-w-full"
+              ? "bg-primary text-primary-foreground rounded-br-none max-w-xs lg:max-w-md px-3 pt-3 pb-1"
+              : "bg-white text-foreground rounded-bl-none max-w-full px-3 pt-3 pb-1"
           }`}
         >
           {!replyTo?.message ? (
@@ -254,11 +254,16 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           </ReactMarkdown>
 
           {!isUser && urgent && (
-            <div className="mt-3 mb-5 bg-background py-10 px-3 rounded-2xl">
+            <div className="mt-3 mb-5 bg-white py-10 px-3 rounded-2xl border w-full">
               <Link
                 href={`/${locale}/connect?session=${sessionId}`}
-                className="flex items-center justify-center w-full"
+                className="flex items-center justify-center w-full gap-3 flex-col"
               >
+                <p className="text-center max-w-md">
+                  {locale === routing.defaultLocale
+                    ? "Jika anda ingin berkonsultasi dengan dokter untuk penanganan lebih lanjut, silakan klik tombol di bawah ini."
+                    : "If you want to consult a doctor for further treatment, please click the button below."}
+                </p>
                 <Button
                   variant="default"
                   size={"lg"}
@@ -273,7 +278,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             </div>
           )}
           {/* Timestamp */}
-          {timestamp && (
+          {/* {timestamp && (
             <p
               className={`text-xs! mt-1 ${
                 isUser
@@ -283,7 +288,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             >
               <LocalDateTime date={timestamp} />
             </p>
-          )}
+          )} */}
         </div>
         <div
           className={`flex ${
@@ -291,15 +296,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           } mt-2 group`}
         >
           <div
-            className={`action_button bg-white inline-flex gap-0.5 px-2 py-1.5 ${
+            className={`action_button  inline-flex gap-0.5 bg-white  px-2 py-1.5 shadow-sm ${
               isUser
                 ? "rounded-b-full rounded-tl-full"
                 : "rounded-b-full rounded-tr-full"
-            }   shadow-sm`}
+            }   `}
           >
             <button
               onClick={() => onReply?.(cleanMessage)}
-              className="text-muted-foreground pointer-events-auto cursor-pointer hover:bg-gray-100 p-1 rounded-full"
+              className="text-muted-foreground pointer-events-auto cursor-pointer hover:bg-white p-1 rounded-full"
               title="Reply"
             >
               <Undo2 className="size-4.5" />
@@ -307,7 +312,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
             <button
               onClick={handleCopy}
-              className=" text-muted-foreground pointer-events-auto cursor-pointer hover:bg-gray-100 p-1 rounded-full"
+              className=" text-muted-foreground pointer-events-auto cursor-pointer hover:bg-white p-1 rounded-full"
               title="Salin pesan"
             >
               {copied ? (

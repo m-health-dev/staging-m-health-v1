@@ -256,14 +256,14 @@ const ChatStart = ({
                 ref={textareaRef}
                 placeholder={
                   locale === routing.defaultLocale
-                    ? "Sampaikan keluhanmu disini..."
-                    : "Submit your health complaints here..."
+                    ? "Ceritakan kesehatanmu disini..."
+                    : "Describe your health here..."
                 }
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={isLoading}
-                className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed ${
+                className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed h-auto ${
                   isExpanded
                     ? "max-h-52 py-2 text-base"
                     : "min-h-12 text-base py-3"
@@ -272,7 +272,7 @@ const ChatStart = ({
               <button
                 onClick={() => handleSendMessage(text)}
                 disabled={isLoading || !text.trim()}
-                className={`ml-2 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
+                className={`ml-2 mr-1 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
                   isLoading || !text.trim()
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-primary text-white hover:bg-primary/90"

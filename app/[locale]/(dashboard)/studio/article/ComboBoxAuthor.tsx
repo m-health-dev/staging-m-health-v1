@@ -17,16 +17,17 @@ import {
 import {
   Command,
   CommandInput,
-  CommandEmpty,
+  CommandList,
   CommandGroup,
   CommandItem,
+  CommandEmpty,
 } from "@/components/ui/command";
 import { Plus, Trash2 } from "lucide-react";
 import Avatar from "boring-avatars";
 import { cn } from "@/lib/utils";
 import LoadingComponent from "@/components/utility/loading-component";
 import { getAllArticleAuthorWithoutPagination } from "@/lib/article-author/get-article-author";
-import { ArticleAuthorType } from "@/types/articles.types";
+import type { ArticleAuthorType } from "@/types/articles.types";
 
 interface Props {
   readAuthorIds?: string[];
@@ -34,15 +35,13 @@ interface Props {
 
 export function AuthorMultiSelectField({ readAuthorIds }: Props) {
   const form = useFormContext();
-  const [open, setOpen] = useState(false);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [authorData, setAuthorData] = useState<ArticleAuthorType[]>([]);
 
-  const authorIds =
-    useWatch({ name: "author_ids", control: form.control }) || [];
+  const authorIds = useWatch({ name: "author", control: form.control }) || [];
 
-  // fetch author + handle update mode
   useEffect(() => {
     const fetchAuthors = async () => {
       setLoading(true);
@@ -50,14 +49,14 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
       setAuthorData(res.data);
 
       if (readAuthorIds?.length) {
-        form.setValue("author_ids", readAuthorIds, {
+        form.setValue("author", readAuthorIds, {
           shouldDirty: false,
           shouldValidate: true,
         });
-      } else if (authorIds.length === 0) {
-        // create mode → buka 1 slot
-        form.setValue("author_ids", [""]);
       }
+      // else if (authorIds.length === 0) {
+      //   form.setValue("author", [""]);
+      // }
 
       setLoading(false);
     };
@@ -79,23 +78,23 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
   const updateAuthor = (index: number, id: string) => {
     const next = [...authorIds];
     next[index] = id;
-    form.setValue("author_ids", next, {
+    form.setValue("author", next, {
       shouldDirty: true,
       shouldValidate: true,
     });
-    setOpen(false);
+    setOpenIndex(null);
   };
 
   const addAuthor = () => {
     if (authorIds.length >= 3) return;
-    form.setValue("author_ids", [...authorIds, ""], {
+    form.setValue("author", [...authorIds, ""], {
       shouldDirty: true,
     });
   };
 
   const removeAuthor = (index: number) => {
     const next = authorIds.filter((_: any, i: number) => i !== index);
-    form.setValue("author_ids", next, {
+    form.setValue("author", next, {
       shouldDirty: true,
       shouldValidate: true,
     });
@@ -104,7 +103,7 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
   return (
     <FormField
       control={form.control}
-      name="author_ids"
+      name="author"
       render={() => (
         <FormItem className="space-y-3">
           <FormLabel className="text-primary font-semibold!">Author</FormLabel>
@@ -114,7 +113,10 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
 
             return (
               <div key={index} className="flex items-center gap-2">
-                <Popover open={open} onOpenChange={setOpen}>
+                <Popover
+                  open={openIndex === index}
+                  onOpenChange={(open) => setOpenIndex(open ? index : null)}
+                >
                   <PopoverTrigger asChild>
                     <Button
                       type="button"
@@ -141,33 +143,35 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
                         placeholder="Cari author..."
                         onValueChange={setQuery}
                       />
-                      <CommandEmpty>Tidak ditemukan.</CommandEmpty>
+                      <CommandList>
+                        <CommandEmpty>Tidak ditemukan.</CommandEmpty>
 
-                      <CommandGroup className="max-h-64 overflow-y-auto">
-                        {filteredAuthors.map((a) => (
-                          <CommandItem
-                            key={a.id}
-                            value={a.name}
-                            onSelect={() => updateAuthor(index, a.id)}
-                            disabled={authorIds.includes(a.id)}
-                          >
-                            <Avatar
-                              name={a.name}
-                              size={20}
-                              variant="beam"
-                              className="mr-2"
-                              colors={[
-                                "#3e77ab",
-                                "#22b26e",
-                                "#f2f26f",
-                                "#fff7bd",
-                                "#95cfb7",
-                              ]}
-                            />
-                            {a.name}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
+                        <CommandGroup className="max-h-64 overflow-y-auto">
+                          {filteredAuthors.map((a) => (
+                            <CommandItem
+                              key={a.id}
+                              value={a.name}
+                              onSelect={() => updateAuthor(index, a.id)}
+                              disabled={authorIds.includes(a.id)}
+                            >
+                              <Avatar
+                                name={a.name}
+                                size={20}
+                                variant="beam"
+                                className="mr-2"
+                                colors={[
+                                  "#3e77ab",
+                                  "#22b26e",
+                                  "#f2f26f",
+                                  "#fff7bd",
+                                  "#95cfb7",
+                                ]}
+                              />
+                              {a.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
                     </Command>
                   </PopoverContent>
                 </Popover>
@@ -187,7 +191,7 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-12 h-12 rounded-2xl"
+                    className="w-12 h-12 rounded-2xl bg-transparent"
                     onClick={addAuthor}
                   >
                     <Plus />

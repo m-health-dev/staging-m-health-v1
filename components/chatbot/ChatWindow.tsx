@@ -325,7 +325,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     </div>
                   </div>
                 )}
-                <div ref={messagesEndRef} className="h-10" />
+                <div ref={messagesEndRef} className="h-[50vh]" />
               </div>
             )}
           </div>
@@ -377,7 +377,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyDown={handleKeyDown}
                       disabled={isLoading}
-                      className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed ${
+                      className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed h-auto ${
                         isExpanded
                           ? "max-h-52 py-2 text-base"
                           : "min-h-12 text-base py-3"

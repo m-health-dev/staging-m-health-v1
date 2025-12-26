@@ -17,16 +17,16 @@ import {
 import {
   Command,
   CommandInput,
-  CommandEmpty,
+  CommandList,
   CommandGroup,
   CommandItem,
+  CommandEmpty,
 } from "@/components/ui/command";
 import { Plus, Trash2 } from "lucide-react";
 import Avatar from "boring-avatars";
 import { cn } from "@/lib/utils";
 import LoadingComponent from "@/components/utility/loading-component";
-import { getAllArticleAuthorWithoutPagination } from "@/lib/article-author/get-article-author";
-import { ArticleAuthorType, ArticleCategoryType } from "@/types/articles.types";
+import type { ArticleCategoryType } from "@/types/articles.types";
 import { getAllArticleCategoryWithoutPagination } from "@/lib/article-category/get-article-category";
 
 interface Props {
@@ -35,15 +35,14 @@ interface Props {
 
 export function CategoryMultiSelectField({ readCategoryIds }: Props) {
   const form = useFormContext();
-  const [open, setOpen] = useState(false);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [categoryData, setCategoryData] = useState<ArticleCategoryType[]>([]);
 
   const categoryIds =
-    useWatch({ name: "category_ids", control: form.control }) || [];
+    useWatch({ name: "category", control: form.control }) || [];
 
-  // fetch Category + handle update mode
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
@@ -51,14 +50,14 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
       setCategoryData(res.data);
 
       if (readCategoryIds?.length) {
-        form.setValue("category_ids", readCategoryIds, {
+        form.setValue("category", readCategoryIds, {
           shouldDirty: false,
           shouldValidate: true,
         });
-      } else if (categoryIds.length === 0) {
-        // create mode → buka 1 slot
-        form.setValue("category_ids", [""]);
       }
+      // else if (categoryIds.length === 0) {
+      //   form.setValue("category", [""]);
+      // }
 
       setLoading(false);
     };
@@ -68,35 +67,35 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
 
   const filteredCategories = useMemo(() => {
     if (!query.trim()) return categoryData.slice(0, 10);
-    return categoryData.filter((a) =>
-      a.id_category.toLowerCase().includes(query.toLowerCase())
+    return categoryData.filter((c) =>
+      c.en_category.toLowerCase().includes(query.toLowerCase())
     );
   }, [categoryData, query]);
 
   const selectedCategories = useMemo(() => {
-    return categoryData.filter((a) => categoryIds.includes(a.id_category));
+    return categoryData.filter((c) => categoryIds.includes(c.id_category));
   }, [categoryData, categoryIds]);
 
   const updateCategory = (index: number, id: string) => {
     const next = [...categoryIds];
     next[index] = id;
-    form.setValue("category_ids", next, {
+    form.setValue("category", next, {
       shouldDirty: true,
       shouldValidate: true,
     });
-    setOpen(false);
+    setOpenIndex(null);
   };
 
   const addCategory = () => {
     if (categoryIds.length >= 3) return;
-    form.setValue("category_ids", [...categoryIds, ""], {
+    form.setValue("category", [...categoryIds, ""], {
       shouldDirty: true,
     });
   };
 
   const removeCategory = (index: number) => {
     const next = categoryIds.filter((_: any, i: number) => i !== index);
-    form.setValue("category_ids", next, {
+    form.setValue("category", next, {
       shouldDirty: true,
       shouldValidate: true,
     });
@@ -105,7 +104,7 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
   return (
     <FormField
       control={form.control}
-      name="author_ids"
+      name="category"
       render={() => (
         <FormItem className="space-y-3">
           <FormLabel className="text-primary font-semibold!">
@@ -114,12 +113,15 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
 
           {categoryIds.map((categoryId: string, index: number) => {
             const category = categoryData.find(
-              (a) => a.id_category === categoryId
+              (c) => c.id_category === categoryId
             );
 
             return (
               <div key={index} className="flex items-center gap-2">
-                <Popover open={open} onOpenChange={setOpen}>
+                <Popover
+                  open={openIndex === index}
+                  onOpenChange={(open) => setOpenIndex(open ? index : null)}
+                >
                   <PopoverTrigger asChild>
                     <Button
                       type="button"
@@ -133,7 +135,7 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
                       {loading ? (
                         <LoadingComponent />
                       ) : category ? (
-                        category.id_category
+                        category.en_category
                       ) : (
                         "Pilih Category"
                       )}
@@ -143,38 +145,40 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
                   <PopoverContent className="p-0">
                     <Command>
                       <CommandInput
-                        placeholder="Cari author..."
+                        placeholder="Cari category..."
                         onValueChange={setQuery}
                       />
-                      <CommandEmpty>Tidak ditemukan.</CommandEmpty>
+                      <CommandList>
+                        <CommandEmpty>Tidak ditemukan.</CommandEmpty>
 
-                      <CommandGroup className="max-h-64 overflow-y-auto">
-                        {filteredCategories.map((a) => (
-                          <CommandItem
-                            key={a.id_category}
-                            value={a.id_category}
-                            onSelect={() =>
-                              updateCategory(index, a.id_category)
-                            }
-                            disabled={categoryIds.includes(a.id_category)}
-                          >
-                            <Avatar
-                              name={a.id_category}
-                              size={20}
-                              variant="beam"
-                              className="mr-2"
-                              colors={[
-                                "#3e77ab",
-                                "#22b26e",
-                                "#f2f26f",
-                                "#fff7bd",
-                                "#95cfb7",
-                              ]}
-                            />
-                            {a.id_category}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
+                        <CommandGroup className="max-h-64 overflow-y-auto">
+                          {filteredCategories.map((c) => (
+                            <CommandItem
+                              key={c.id_category}
+                              value={c.en_category}
+                              onSelect={() =>
+                                updateCategory(index, c.id_category)
+                              }
+                              disabled={categoryIds.includes(c.id_category)}
+                            >
+                              <Avatar
+                                name={c.en_category}
+                                size={20}
+                                variant="beam"
+                                className="mr-2"
+                                colors={[
+                                  "#3e77ab",
+                                  "#22b26e",
+                                  "#f2f26f",
+                                  "#fff7bd",
+                                  "#95cfb7",
+                                ]}
+                              />
+                              {c.en_category}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
                     </Command>
                   </PopoverContent>
                 </Popover>
@@ -194,7 +198,7 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-12 h-12 rounded-2xl"
+                    className="w-12 h-12 rounded-2xl bg-transparent"
                     onClick={addCategory}
                   >
                     <Plus />
