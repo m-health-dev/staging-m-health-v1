@@ -14,6 +14,13 @@ export const NavigationLinks = [
     },
   },
   {
+    path: "package",
+    label: {
+      id: "Paket Kesehatan & Medis",
+      en: "Packages",
+    },
+  },
+  {
     path: "wellness",
     label: {
       id: "Kesehatan",

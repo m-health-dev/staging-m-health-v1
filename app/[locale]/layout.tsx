@@ -89,7 +89,7 @@ export default async function RootLayout({ children, params }: Props) {
             />
             <Analytics />
             <SpeedInsights />
-            <SnowFall />
+            {/* <SnowFall /> */}
             {children}
             <OneTapComponent />
           </NextIntlClientProvider>

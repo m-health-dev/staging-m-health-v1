@@ -100,19 +100,19 @@ const SignUpClient = ({ image }: { image: any }) => {
   }
 
   return (
-    <>
-      <Image
-        src={
-          "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-        }
-        width={180}
-        height={60}
-        className="object-contain my-8 flex justify-center items-center mx-auto"
-        alt="M-Health Logo"
-      />
+    <div className="min-h-screen flex justify-center items-center bg-white">
       <ContainerWrap size="xl">
-        <div className="flex items-center justify-center lg:min-h-screen 3xl:min-h-[calc(100vh-80px)] bg-white py-10 mt-5 mb-10 rounded-4xl p-5">
-          <div className="md:max-w-sm w-full col-span-1">
+        <div className="flex justify-center items-center">
+          <div className="max-w-sm">
+            <Image
+              src={
+                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+              }
+              width={180}
+              height={60}
+              className="object-contain mb-8 flex justify-center items-center"
+              alt="M-Health Logo"
+            />
             <h3 className="font-bold text-primary mb-10">
               Create Your Account
             </h3>
@@ -251,19 +251,9 @@ const SignUpClient = ({ image }: { image: any }) => {
               .
             </p>
           </div>
-          <div className="col-span-2">
-            <Image
-              src={image}
-              width={320}
-              height={320}
-              unoptimized
-              alt={image}
-              className="ml-20 rounded-4xl shadow aspect-square min-w-2xl max-w-2xl h-full object-cover object-center lg:flex hidden"
-            />
-          </div>
         </div>
       </ContainerWrap>
-    </>
+    </div>
   );
 };
 

@@ -70,19 +70,19 @@ const ResetPassClient = ({ image }: { image: any }) => {
   }
 
   return (
-    <>
-      <Image
-        src={
-          "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-        }
-        width={180}
-        height={60}
-        className="object-contain mt-5 flex justify-center items-center mx-auto"
-        alt="M-Health Logo"
-      />
+    <div className="min-h-screen flex justify-center items-center bg-white">
       <ContainerWrap size="xl">
-        <div className="flex items-center justify-center lg:min-h-screen 3xl:min-h-[calc(100vh-80px)] bg-white py-10 mt-5 mb-10 p-5 rounded-4xl">
+        <div className="flex min-h-screen items-center justify-center">
           <div className="md:max-w-sm w-full col-span-1">
+            <Image
+              src={
+                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+              }
+              width={180}
+              height={60}
+              className="object-contain mb-8 flex justify-center items-center"
+              alt="M-Health Logo"
+            />
             <h3 className="font-bold text-primary mb-2">Reset Your Password</h3>
             <p className="mb-8 text-sm! text-muted-foreground">
               You only have 3 attempts to recover your account. After that, you
@@ -109,7 +109,7 @@ const ResetPassClient = ({ image }: { image: any }) => {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="w-sm space-y-5"
+                className="space-y-5"
               >
                 <FormField
                   control={form.control}
@@ -191,7 +191,7 @@ const ResetPassClient = ({ image }: { image: any }) => {
           </div>
         </div>
       </ContainerWrap>
-    </>
+    </div>
   );
 };
 

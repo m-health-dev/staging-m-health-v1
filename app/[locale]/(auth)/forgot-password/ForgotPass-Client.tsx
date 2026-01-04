@@ -63,19 +63,19 @@ const ForgotPassClient = ({ image }: { image: any }) => {
   }
 
   return (
-    <>
-      <Image
-        src={
-          "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-        }
-        width={180}
-        height={60}
-        className="object-contain my-8 flex justify-center items-center mx-auto"
-        alt="M-Health Logo"
-      />
+    <div className="min-h-screen flex justify-center items-center bg-white">
       <ContainerWrap size="xl">
-        <div className="flex items-center justify-center lg:min-h-screen 3xl:min-h-[calc(100vh-80px)] bg-white py-10 mt-5 mb-10 p-5 rounded-4xl">
+        <div className="flex items-center justify-center">
           <div className="md:max-w-sm w-full col-span-1">
+            <Image
+              src={
+                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+              }
+              width={180}
+              height={60}
+              className="object-contain mb-8 flex justify-center items-center"
+              alt="M-Health Logo"
+            />
             <h3 className="font-bold text-primary mb-10">
               Recover Your Account
             </h3>
@@ -131,7 +131,7 @@ const ForgotPassClient = ({ image }: { image: any }) => {
           </div>
         </div>
       </ContainerWrap>
-    </>
+    </div>
   );
 };
 

@@ -14,6 +14,7 @@ import {
 
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { Diamond } from "lucide-react";
+import { routing } from "@/i18n/routing";
 
 const Footer = () => {
   const buildId = process.env.VERCEL_GIT_COMMIT_SHA;
@@ -101,8 +102,20 @@ const Footer = () => {
             <h5 className="font-bold text-primary">Kerja Sama</h5>
 
             <div className="space-y-2">
-              <p>Mitra Rumah Sakit</p>
-              <p>Mitra Hotel</p>
+              <Link href={"/vendor"}>
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Mitra Rumah Sakit dan Pelatih"
+                    : "Hospital and Trainer Partners"}
+                </p>
+              </Link>
+              <Link href={"/hotel"}>
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Mitra Hotel"
+                    : "Hotel Partners"}{" "}
+                </p>
+              </Link>
               <p>Lainnya</p>
             </div>
           </div>

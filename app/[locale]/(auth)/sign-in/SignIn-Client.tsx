@@ -131,227 +131,336 @@ const SignInClient = ({
     setLoading(false);
   }
 
-  return (
-    <div
-      className={cn(
-        component
-          ? "w-full flex justify-center items-center"
-          : "min-h-screen flex flex-col justify-center bg-white"
-      )}
-    >
-      {/* <Image
-        src={
-          "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-        }
-        width={180}
-        height={60}
-        className="object-contain my-8 flex justify-center items-center mx-auto"
-        alt="M-Health Logo"
-      /> */}
-
+  return component ? (
+    <div className={cn(" flex flex-col justify-center bg-white")}>
       <div
         className={cn(
-          !component && "lg:grid lg:grid-cols-2 items-center justify-center p-5"
+          "lg:grid lg:grid-cols-2 flex flex-col gap-8 items-center justify-center lg:p-3 p-0"
         )}
       >
-        {!component && (
-          <div className="lg:hidden block mb-10">
+        <div>
+          <Image
+            src={
+              "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+            }
+            width={180}
+            height={60}
+            className="object-contain mb-8 flex justify-center items-center"
+            alt="M-Health Logo"
+          />
+
+          <h3
+            className={cn(
+              "font-bold text-primary",
+              SignInToChat ? "mb-4" : "mb-10"
+            )}
+          >
+            {locale === routing.defaultLocale
+              ? "Masuk"
+              : "Log In to Your Account"}
+          </h3>
+          {SignInToChat && (
+            <p className="text-sm! text-muted-foreground">
+              {locale === routing.defaultLocale
+                ? "Anda harus masuk untuk melanjutkan percakapan."
+                : "You must be logged in to continue your conversation."}
+            </p>
+          )}
+          {error && (
+            <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2 mt-2">
+              <p className="font-bold mb-1">Autentifikasi Gagal</p>
+              <p className="text-sm!">{error}</p>
+            </div>
+          )}
+          {warning && (
+            <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2 mt-2">
+              <p className="font-bold mb-1">Autentifikasi Gagal</p>
+              <p className="text-sm!">{warning}</p>
+            </div>
+          )}
+        </div>
+
+        <div className="w-full">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="*:mb-5">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-primary font-semibold!">
+                      Email
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} type="email" className="h-12" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-primary font-semibold!">
+                      Password
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative w-full h-12">
+                        <Input
+                          {...field}
+                          type={`${showPass ? "text" : "password"}`}
+                          className="h-12"
+                        />
+                        <div className="absolute right-4 top-0 flex min-h-full items-center">
+                          {showPass ? (
+                            <EyeClosed
+                              className="size-5 text-primary"
+                              onClick={() => setShowPass(false)}
+                            />
+                          ) : (
+                            <Eye
+                              className="size-5 text-primary"
+                              onClick={() => setShowPass(true)}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex w-full justify-end select-none">
+                <button
+                  type="button"
+                  className="text-primary text-end"
+                  onClick={() =>
+                    router.push(
+                      `/forgot-password${
+                        form.getValues().email !== ""
+                          ? `?email=${form.getValues().email}`
+                          : ""
+                      }`
+                    )
+                  }
+                >
+                  <p className="text-sm! underline cursor-pointer">
+                    I forgot my password
+                  </p>
+                </button>
+              </div>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 rounded-full"
+              >
+                {loading ? <Spinner /> : <p>Sign In</p>}
+              </Button>
+            </form>
+          </Form>
+          <div className="flex justify-center items-center mb-5">
+            <div className="border-b border-gray-300 w-full"></div>
+            <p className="px-5 text-gray-500">or</p>
+            <div className="border-b border-gray-300 w-full"></div>
+          </div>
+          <Button
+            variant="outline"
+            type="button"
+            className="w-full h-12 rounded-full flex items-center gap-2 mb-3"
+            onClick={handleGoogleSignIn}
+          >
+            <FontAwesomeIcon icon={faGoogle} /> <p>Continue with Google</p>
+          </Button>
+
+          <Button
+            variant="outline"
+            type="button"
+            className="w-full h-12 rounded-full flex items-center gap-2"
+            onClick={() => router.push(`/${locale}/magic`)}
+          >
+            <ChevronsRight className="size-5" /> <p>Magic Link Sign In</p>
+          </Button>
+          <p className="text-muted-foreground text-center text-sm! mt-5">
+            Don't have an account?{" "}
+            <span
+              onClick={() => router.push(`/${locale}/sign-up`)}
+              className="text-health cursor-pointer underline"
+            >
+              Sign Up
+            </span>{" "}
+            now.
+          </p>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div className={cn("min-h-screen flex flex-col justify-center bg-white")}>
+      <ContainerWrap size="xxl">
+        <div className={cn("flex items-center justify-center")}>
+          <div className={cn("w-full max-w-sm")}>
             <Image
               src={
-                "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/dummy/lembah_sriti_calm_night.jpg"
+                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
               }
-              width={720}
-              height={720}
-              unoptimized
-              alt={
-                "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/dummy/lembah_sriti_calm_night.jpg"
-              }
-              className="rounded-4xl shadow aspect-video w-full h-full object-cover object-center"
+              width={180}
+              height={60}
+              className="object-contain mb-8 flex justify-center items-center"
+              alt="M-Health Logo"
             />
-          </div>
-        )}
 
-        <div
-          className={cn(
-            "flex w-full items-center justify-center",
-            !component && "-ml-6"
-          )}
-        >
-          <div className={cn("w-full", component ? "" : "max-w-md")}>
-            <h3
-              className={cn(
-                "font-bold text-primary",
-                SignInToChat ? "mb-4" : "mb-10"
-              )}
-            >
-              {locale === routing.defaultLocale
-                ? "Masuk"
-                : "Log In to Your Account"}
-            </h3>
-            {SignInToChat && (
-              <p className="text-sm! text-muted-foreground">
+            <div>
+              <h3
+                className={cn(
+                  "font-bold text-primary",
+                  SignInToChat ? "mb-4" : "mb-10"
+                )}
+              >
                 {locale === routing.defaultLocale
-                  ? "Anda harus masuk untuk melanjutkan percakapan."
-                  : "You must be logged in to continue your conversation."}
-              </p>
-            )}
-            {error && (
-              <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2 mt-2">
-                <p className="font-bold mb-1">Autentifikasi Gagal</p>
-                <p className="text-sm!">{error}</p>
-              </div>
-            )}
-            {warning && (
-              <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2 mt-2">
-                <p className="font-bold mb-1">Autentifikasi Gagal</p>
-                <p className="text-sm!">{warning}</p>
-              </div>
-            )}
-
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="*:mb-5 mt-5"
-              >
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Email
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} type="email" className="h-12" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Password
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative w-full h-12">
-                          <Input
-                            {...field}
-                            type={`${showPass ? "text" : "password"}`}
-                            className="h-12"
-                          />
-                          <div className="absolute right-4 top-0 flex min-h-full items-center">
-                            {showPass ? (
-                              <EyeClosed
-                                className="size-5 text-primary"
-                                onClick={() => setShowPass(false)}
-                              />
-                            ) : (
-                              <Eye
-                                className="size-5 text-primary"
-                                onClick={() => setShowPass(true)}
-                              />
-                            )}
-                          </div>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex w-full justify-end select-none">
-                  <button
-                    type="button"
-                    className="text-primary text-end"
-                    onClick={() =>
-                      router.push(
-                        `/forgot-password${
-                          form.getValues().email !== ""
-                            ? `?email=${form.getValues().email}`
-                            : ""
-                        }`
-                      )
-                    }
-                  >
-                    <p className="text-sm! underline cursor-pointer">
-                      I forgot my password
-                    </p>
-                  </button>
+                  ? "Masuk"
+                  : "Log In to Your Account"}
+              </h3>
+              {SignInToChat && (
+                <p className="text-sm! text-muted-foreground">
+                  {locale === routing.defaultLocale
+                    ? "Anda harus masuk untuk melanjutkan percakapan."
+                    : "You must be logged in to continue your conversation."}
+                </p>
+              )}
+              {error && (
+                <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2 mt-2">
+                  <p className="font-bold mb-1">Autentifikasi Gagal</p>
+                  <p className="text-sm!">{error}</p>
                 </div>
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-12 rounded-full"
-                >
-                  {loading ? <Spinner /> : <p>Sign In</p>}
-                </Button>
-              </form>
-            </Form>
-            <div className="flex justify-center items-center mb-5">
-              <div className="border-b border-gray-300 w-full"></div>
-              <p className="px-5 text-gray-500">or</p>
-              <div className="border-b border-gray-300 w-full"></div>
+              )}
+              {warning && (
+                <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2 mt-2">
+                  <p className="font-bold mb-1">Autentifikasi Gagal</p>
+                  <p className="text-sm!">{warning}</p>
+                </div>
+              )}
             </div>
-            <Button
-              variant="outline"
-              type="button"
-              className="w-full h-12 rounded-full flex items-center gap-2 mb-3"
-              onClick={handleGoogleSignIn}
-            >
-              <FontAwesomeIcon icon={faGoogle} /> <p>Continue with Google</p>
-            </Button>
 
-            <Button
-              variant="outline"
-              type="button"
-              className="w-full h-12 rounded-full flex items-center gap-2"
-              onClick={() => router.push(`/${locale}/magic`)}
-            >
-              <ChevronsRight className="size-5" /> <p>Magic Link Sign In</p>
-            </Button>
-            <p className="text-muted-foreground text-center text-sm! mt-5">
-              Don't have an account?{" "}
-              <span
-                onClick={() => router.push(`/${locale}/sign-up`)}
-                className="text-health cursor-pointer underline"
+            <div>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="*:mb-5 mt-5"
+                >
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          Email
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} type="email" className="h-12" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          Password
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative w-full h-12">
+                            <Input
+                              {...field}
+                              type={`${showPass ? "text" : "password"}`}
+                              className="h-12"
+                            />
+                            <div className="absolute right-4 top-0 flex min-h-full items-center">
+                              {showPass ? (
+                                <EyeClosed
+                                  className="size-5 text-primary"
+                                  onClick={() => setShowPass(false)}
+                                />
+                              ) : (
+                                <Eye
+                                  className="size-5 text-primary"
+                                  onClick={() => setShowPass(true)}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex w-full justify-end select-none">
+                    <button
+                      type="button"
+                      className="text-primary text-end"
+                      onClick={() =>
+                        router.push(
+                          `/forgot-password${
+                            form.getValues().email !== ""
+                              ? `?email=${form.getValues().email}`
+                              : ""
+                          }`
+                        )
+                      }
+                    >
+                      <p className="text-sm! underline cursor-pointer">
+                        I forgot my password
+                      </p>
+                    </button>
+                  </div>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full h-12 rounded-full"
+                  >
+                    {loading ? <Spinner /> : <p>Sign In</p>}
+                  </Button>
+                </form>
+              </Form>
+              <div className="flex justify-center items-center mb-5">
+                <div className="border-b border-gray-300 w-full"></div>
+                <p className="px-5 text-gray-500">or</p>
+                <div className="border-b border-gray-300 w-full"></div>
+              </div>
+              <Button
+                variant="outline"
+                type="button"
+                className="w-full h-12 rounded-full flex items-center gap-2 mb-3"
+                onClick={handleGoogleSignIn}
               >
-                Sign Up
-              </span>{" "}
-              now.
-            </p>
+                <FontAwesomeIcon icon={faGoogle} /> <p>Continue with Google</p>
+              </Button>
+
+              <Button
+                variant="outline"
+                type="button"
+                className="w-full h-12 rounded-full flex items-center gap-2"
+                onClick={() => router.push(`/${locale}/magic`)}
+              >
+                <ChevronsRight className="size-5" /> <p>Magic Link Sign In</p>
+              </Button>
+              <p className="text-muted-foreground text-center text-sm! mt-5">
+                Don't have an account?{" "}
+                <span
+                  onClick={() => router.push(`/${locale}/sign-up`)}
+                  className="text-health cursor-pointer underline"
+                >
+                  Sign Up
+                </span>{" "}
+                now.
+              </p>
+            </div>
           </div>
         </div>
-        {!component && (
-          <div className="relative">
-            <div className="absolute top-0 left-0 bg-white py-5 px-7 rounded-br-4xl rounded-tl-4xl">
-              <Image
-                src={
-                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-                }
-                width={120}
-                height={40}
-                className="object-contain flex justify-start items-start"
-                alt="M-Health Logo"
-              />
-            </div>
-            <Image
-              src={
-                "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/dummy/lembah_sriti_calm_night.jpg"
-              }
-              width={720}
-              height={720}
-              unoptimized
-              alt={
-                "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/dummy/lembah_sriti_calm_night.jpg"
-              }
-              className="rounded-4xl shadow aspect-square w-full h-full object-cover object-center lg:flex hidden"
-            />
-          </div>
-        )}
-      </div>
+      </ContainerWrap>
     </div>
   );
 };

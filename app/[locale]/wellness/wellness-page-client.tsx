@@ -28,7 +28,7 @@ const WellnessClientPage = ({
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
   return (
     <div className="mb-[10vh]">
-      <div className="lg:grid-cols-4 md:grid-cols-2 grid-cols-2 gap-5 lg:grid hidden">
+      <div className="lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5 grid">
         {wellness.map((d, i) => (
           <Link
             href={`/${locale}/wellness/${d.slug}`}

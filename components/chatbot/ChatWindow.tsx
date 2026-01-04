@@ -200,32 +200,25 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   return (
     <div className="relative flex flex-col min-h-screen">
       <Dialog open={dialogSignIn}>
-        {/* <DialogTrigger className="flex items-center gap-2 px-2 py-1">
-                <IconLogout className="size-4" />
-                <p className="text-sm! text-muted-foreground">
-                  {locale === routing.defaultLocale ? "Keluar" : "Log out"}
-                </p>
-              </DialogTrigger> */}
         <DialogContent
-          className="bg-white rounded-2xl max-w-sm! px-5"
+          className="bg-white rounded-2xl px-5 lg:min-w-4xl lg:max-w-4xl max-w-sm"
           showCloseButton={false}
         >
           <DialogTitle className="hidden" />
-          <div className="flex w-full items-center">
-            <SignInClient
-              component
-              SignInToChat
-              onSignInSuccess={() => {
-                setHasSignedIn(true);
-                setDialogSignIn(false);
-                toast.success(
-                  locale === routing.defaultLocale
-                    ? "Silakan lanjutkan percakapan"
-                    : "You can continue the conversation"
-                );
-              }}
-            />
-          </div>
+
+          <SignInClient
+            component
+            SignInToChat
+            onSignInSuccess={() => {
+              setHasSignedIn(true);
+              setDialogSignIn(false);
+              toast.success(
+                locale === routing.defaultLocale
+                  ? "Silakan lanjutkan percakapan"
+                  : "You can continue the conversation"
+              );
+            }}
+          />
         </DialogContent>
       </Dialog>
       <div className="flex-1 pb-4">

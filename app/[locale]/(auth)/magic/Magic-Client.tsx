@@ -35,7 +35,7 @@ export const RequestMagicLinkSchema = z.object({
   email: z.email(),
 });
 
-const MagicLinkClient = ({ image }: { image: any }) => {
+const MagicLinkClient = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const [warning, setWarning] = React.useState("");
@@ -86,23 +86,22 @@ const MagicLinkClient = ({ image }: { image: any }) => {
   }
 
   return (
-    <>
-      <Image
-        src="https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-        width={180}
-        height={60}
-        className="object-contain my-8 flex justify-center items-center mx-auto"
-        alt="M-Health Logo"
-      />
-
+    <div className="min-h-screen flex justify-center items-center bg-white w-full">
       <ContainerWrap size="xl">
-        <div className="flex items-center justify-center lg:min-h-screen 3xl:min-h-[calc(100vh-80px)] bg-white py-10 mt-5 mb-10 p-5 rounded-4xl">
-          <div className="md:max-w-sm w-full col-span-1">
-            <header className="mb-10">
+        <div className="flex items-center justify-center w-full">
+          <div className="max-w-sm w-full">
+            <Image
+              src="https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+              width={180}
+              height={60}
+              className="object-contain mb-8 flex justify-center items-center"
+              alt="M-Health Logo"
+            />
+            <div className="mb-10">
               <h3 className="font-bold text-primary mb-2">
                 Magic Link Request
               </h3>
-            </header>
+            </div>
 
             {error && (
               <AlertBox type="error" title="Permintaan Gagal" message={error} />
@@ -125,7 +124,7 @@ const MagicLinkClient = ({ image }: { image: any }) => {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmitSend)}
-                className="*:mb-5 mt-5"
+                className="*:mb-5 mt-5 w-full"
               >
                 <FormField
                   control={form.control}
@@ -160,19 +159,9 @@ const MagicLinkClient = ({ image }: { image: any }) => {
               now.
             </p>
           </div>
-          <div className="col-span-2">
-            <Image
-              src={image}
-              width={640}
-              height={640}
-              unoptimized
-              alt={image}
-              className="ml-20 rounded-4xl shadow aspect-square min-w-2xl max-w-2xl h-full object-cover object-center lg:flex hidden"
-            />
-          </div>
         </div>
       </ContainerWrap>
-    </>
+    </div>
   );
 };
 

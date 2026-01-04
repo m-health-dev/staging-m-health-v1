@@ -187,7 +187,7 @@ const NavHeader = ({
               <DialogTrigger asChild>
                 <button className="hover:bg-primary py-2 px-4 rounded-full hover:text-background flex justify-center items-center w-full gap-3 text-muted-foreground">
                   <Share2 className="-ml-0.5 size-4" />
-                  <p className="text-sm!">
+                  <p className="text-sm! md:block hidden">
                     {locale === routing.defaultLocale ? "Bagikan" : "Share"}
                   </p>
                 </button>
@@ -197,7 +197,7 @@ const NavHeader = ({
                   <DialogTitle>
                     <div className="flex w-full items-center gap-3 text-muted-foreground">
                       <Share2 className="-ml-0.5 size-5" />
-                      <p className="">
+                      <p>
                         {locale === routing.defaultLocale ? "Bagikan" : "Share"}
                       </p>
                     </div>
@@ -491,7 +491,7 @@ const NavHeader = ({
                       </p>
                     </NavigationMenuTrigger>
                     <NavigationMenuContent className="w-sm!">
-                      <NavigationMenuLink href={`/${locale}/packages`}>
+                      <NavigationMenuLink href={`/${locale}/package`}>
                         <p className="text-primary font-bold">
                           {locale === routing.defaultLocale
                             ? "Paket Kesehatan & Medis"

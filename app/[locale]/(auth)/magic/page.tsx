@@ -5,11 +5,8 @@ import { createClient } from "@/utils/supabase/client";
 
 const OTPPage = async () => {
   const supabase = await createClient();
-  const { data } = supabase.storage
-    .from("m-health-public")
-    .getPublicUrl("dummy/apple_diet_program.jpg");
-  const image = data.publicUrl;
-  return <MagicLinkClient image={image} />;
+
+  return <MagicLinkClient />;
 };
 
 export default OTPPage;

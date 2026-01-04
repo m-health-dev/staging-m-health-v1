@@ -17,20 +17,21 @@ export default function LocalDateTime({
   specificFormat?: string;
 }) {
   let formattedDate: string;
+  const locale = useLocale();
 
-  // if (locale === "id") {
-  // Indonesia → WIB (Asia/Jakarta, UTC+7)
-  formattedDate = dayjs(date)
-    .tz("Asia/Jakarta")
-    .locale("id")
-    .format(specificFormat || "DD MMMM YYYY - HH:mm");
-  // } else {
-  //   // English → Pacific Time (America/Los_Angeles)
-  //   formattedDate = dayjs(date)
-  //     .tz("UTC")
-  //     .locale("en")
-  //     .format(specificFormat || "DD MMMM YYYY - HH:mm UTC");
-  // }
+  if (locale === "id") {
+    // Indonesia → WIB (Asia/Jakarta, UTC+7)
+    formattedDate = dayjs(date)
+      .tz("Asia/Jakarta")
+      .locale("id")
+      .format(specificFormat || "DD MMMM YYYY - HH:mm");
+  } else {
+    // English → Pacific Time (America/Los_Angeles)
+    formattedDate = dayjs(date)
+      .tz("UTC")
+      .locale("en")
+      .format(specificFormat || "DD MMMM YYYY - HH:mm UTC");
+  }
 
   return <span>{formattedDate}</span>;
 }
