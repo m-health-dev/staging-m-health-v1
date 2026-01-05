@@ -11,65 +11,56 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import {
   Dropzone,
   DropzoneEmptyState,
   DropzoneContent,
 } from "@/components/ui/shadcn-io/dropzone";
-
-import { ArticleSchema } from "@/lib/zodSchema";
+import { HeroSchema, HotelSchema, VendorSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye, Trash, Percent } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { EyeClosed, Eye, Trash } from "lucide-react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { toast } from "sonner";
 import z from "zod";
 import { Button } from "@/components/ui/button";
-
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
+import { addHotel } from "@/lib/hotel/post-patch-hotel";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import { addHero } from "@/lib/hero/post-patch-hero";
+import { Switch } from "@/components/ui/switch";
 
-import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
-import { addArticles } from "@/lib/articles/post-patch-articles";
-import { ComboBoxArticleAuthorJob } from "@/components/Form/ComboBoxArticleAuthorJob";
-import { AuthorMultiSelectField } from "../ComboBoxAuthor";
-import { CategoryMultiSelectField } from "../ComboBoxCategory";
-
-const AddPackage = () => {
-  const [highlightPreview, setHighlightPreview] = useState<string | null>(null);
+const AddHero = () => {
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
-  const [uploadLoadingHLImage, setUploadLoadingHLImage] = useState(false);
+  const [uploadLoadingImage, setUploadLoadingImage] = useState(false);
   const [deletedImages, setDeletedImages] = useState<string[]>([]);
 
   const [name, setName] = useState("");
   const router = useRouter();
   const locale = useLocale();
 
-  const form = useForm<z.infer<typeof ArticleSchema>>({
-    resolver: zodResolver(ArticleSchema),
+  const form = useForm<z.infer<typeof HeroSchema>>({
+    resolver: zodResolver(HeroSchema),
     defaultValues: {
-      en_title: "",
-      id_title: "",
-      en_content: "",
-      id_content: "",
-      highlight_image: "",
-      author: [],
-      category: [],
-      status: "",
+      title: "",
+      image: "",
+      link: "",
+      display_order: "",
+      is_active: true,
     },
   });
 
   async function handleImageUpload(files: File[]) {
     const formData = new FormData();
     formData.append("file", files[0]); // upload 1 dulu, nanti jika mau multiple bisa looping
-    formData.append("model", "article/contents");
+    formData.append("model", "hero");
     // formData.append("field", "referenceImage");
 
     try {
@@ -97,11 +88,7 @@ const AddPackage = () => {
     }
   }
 
-  async function handleDelete(
-    url: string,
-    field: "highlight" | "reference",
-    index?: number
-  ) {
+  async function handleDelete(url: string, field: "image", index?: number) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
 
@@ -117,10 +104,10 @@ const AddPackage = () => {
 
     if (data.message) {
       setLoading(false);
-      if (field === "highlight") {
-        setHighlightPreview(null);
-        form.setValue("highlight_image", "");
-        toast.success("Highlight Image Deleted!");
+      if (field === "image") {
+        setImagePreview(null);
+        form.setValue("image", "");
+        toast.success("Image Deleted!");
       }
     } else {
       setLoading(false);
@@ -128,14 +115,14 @@ const AddPackage = () => {
     }
   }
 
-  async function onSubmit(data: z.infer<typeof ArticleSchema>) {
+  async function onSubmit(data: z.infer<typeof HeroSchema>) {
     setLoading(true);
-    const res = await addArticles(data);
+    const res = await addHero(data);
 
     if (res.success) {
       setLoading(false);
-      toast.success(`${data.id_title} added successfully!`);
-      router.push(`/${locale}/studio/article`);
+      toast.success(`${data.title} hero banner added successfully!`);
+      router.push(`/${locale}/studio/hero`);
     } else if (res.error) {
       setLoading(false);
       toast.error(res.error);
@@ -147,26 +134,26 @@ const AddPackage = () => {
       <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
         {name && (
           <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
-            Add Article
+            Add Hero Banner
           </p>
         )}
         <h4 className="text-primary font-semibold">
-          {name ? name : "Add Article"}
+          {name ? name : "Add Hero Banner"}
         </h4>
       </div>
 
       <div className="flex flex-col w-full justify-center items-center">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-5xl">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
             <div className="space-y-5">
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+              <div className="lg:grid flex flex-col grid-cols-2 gap-5">
                 <FormField
                   control={form.control}
-                  name="id_title"
+                  name="title"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        Indonesian Title
+                        Hero Title
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -183,23 +170,17 @@ const AddPackage = () => {
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
-                  name="en_title"
+                  name="link"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        English Title
+                        Link
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          className="h-12"
-                          onChange={(e) => {
-                            field.onChange(e); // sync ke react-hook-form
-                          }}
-                        />
+                        <Input {...field} type="url" className="h-12" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -207,33 +188,28 @@ const AddPackage = () => {
                 />
               </div>
               <hr />
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <AuthorMultiSelectField />
-                <CategoryMultiSelectField />
-              </div>
-              <hr />
 
               <FormField
                 control={form.control}
-                name="highlight_image"
+                name="image"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      Highlight Image
+                      Hero Image
                     </FormLabel>
-                    {highlightPreview === null ? (
+                    {imagePreview === null ? (
                       <FormControl>
                         <Dropzone
                           accept={{ "image/*": [] }}
                           maxSize={1024 * 1024 * 5}
                           onDrop={async (acceptedFiles) => {
-                            setUploadLoadingHLImage(true);
+                            setUploadLoadingImage(true);
                             const url = await handleImageUpload(acceptedFiles);
 
                             if (url) {
-                              form.setValue("highlight_image", url);
-                              setHighlightPreview(url);
-                              setUploadLoadingHLImage(false);
+                              form.setValue("image", url);
+                              setImagePreview(url);
+                              setUploadLoadingImage(false);
                             }
                           }}
                           onError={console.error}
@@ -243,16 +219,16 @@ const AddPackage = () => {
                           <DropzoneContent />
                         </Dropzone>
                       </FormControl>
-                    ) : uploadLoadingHLImage ? (
+                    ) : uploadLoadingImage ? (
                       <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
                     ) : (
-                      highlightPreview && (
+                      imagePreview && (
                         <div className="relative">
                           <Image
-                            src={highlightPreview}
+                            src={imagePreview}
                             width={320}
                             height={320}
-                            alt={highlightPreview}
+                            alt={imagePreview}
                             className="aspect-video w-full rounded-2xl mt-3 object-cover border"
                           />
                           <Button
@@ -261,11 +237,11 @@ const AddPackage = () => {
                             variant={"destructive_outline"}
                             onClick={() =>
                               handleDelete(
-                                highlightPreview.replace(
+                                imagePreview.replace(
                                   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
                                   ""
                                 ),
-                                "highlight"
+                                "image"
                               )
                             }
                             className="absolute w-10 h-10 top-5 right-2 rounded-full"
@@ -280,45 +256,47 @@ const AddPackage = () => {
                   </FormItem>
                 )}
               />
-
-              <hr />
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="en_content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
               <hr />
 
-              <ComboBoxStatus />
+              <FormField
+                control={form.control}
+                name="display_order"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-primary font-semibold!">
+                      Display Order
+                    </FormLabel>
+                    <FormDescription>
+                      Lower numbers appear first. Please use just between 1 to 5
+                    </FormDescription>
+                    <FormControl>
+                      <Input {...field} type="number" className="h-12" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="is_active"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-primary font-semibold!">
+                      Active
+                    </FormLabel>
+                    <FormDescription>
+                      Toggle whether this hero banner is visible.
+                    </FormDescription>
+                    <FormControl>
+                      <Switch
+                        checked={!!field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <div className="lg:col-span-2 col-span-1 flex w-full items-center justify-center mt-5">
                 <Button
@@ -337,4 +315,4 @@ const AddPackage = () => {
   );
 };
 
-export default AddPackage;
+export default AddHero;

@@ -18,7 +18,7 @@ const UpdateHotelPage = async ({
     notFound();
   }
 
-  return <UpdateHotelForm id={id} hotelData={res.data.data} />;
+  return <UpdateHotelForm id={id} hotelData={res.data} />;
 };
 
 export default UpdateHotelPage;

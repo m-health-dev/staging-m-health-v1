@@ -28,7 +28,7 @@ const HeaderPreviewChat = ({
         <Studio1DeleteCopyFunction
           id={id}
           deleteAction={DeleteChatSession}
-          name={all.title}
+          name={all.data.title}
           locale={locale}
           resourceLabel="Chat Session"
           router={router}

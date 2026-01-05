@@ -44,12 +44,15 @@ import LoadingTableCard from "../utility/loading/loading-table-card";
 import SimplePagination from "../utility/simple-pagination";
 import StatusBadge from "../utility/status-badge";
 import Image from "next/image";
+import Avatar from "boring-avatars";
+
+import { nanoid } from "nanoid";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  columns: ColumnDef<TData, TValue>[] | null | undefined;
+  data: TData[] | null | undefined;
   meta?: any;
-  links: any;
+  links?: any;
   locale: string;
   type?:
     | "chat-activity"
@@ -57,6 +60,10 @@ interface DataTableProps<TData, TValue> {
     | "hotel"
     | "packages"
     | "events"
+    | "users"
+    | "article-category"
+    | "authors"
+    | "hero"
     | "default";
   deleteAction?: (id: string) => Promise<{ error?: string }>;
 }
@@ -73,6 +80,9 @@ export function Studio1DataTable<TData, TValue>({
   const router = useRouter();
   const params = useSearchParams();
 
+  const safeColumns = Array.isArray(columns) ? columns : [];
+  const safeData = Array.isArray(data) ? data : [];
+
   const [viewCard, setViewCard] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
@@ -80,6 +90,8 @@ export function Studio1DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+
+  // console.log("Data Received in Table:", data);
 
   const { open } = useSidebar();
 
@@ -126,8 +138,8 @@ export function Studio1DataTable<TData, TValue>({
   };
 
   const table = useReactTable({
-    data,
-    columns,
+    data: safeData,
+    columns: safeColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -143,6 +155,11 @@ export function Studio1DataTable<TData, TValue>({
   });
 
   const now = new Date();
+  const filteredRows = table?.getFilteredRowModel()?.rows ?? [];
+
+  console.log("columns:", columns);
+  console.log("safeColumns:", safeColumns);
+  console.log("data:", data);
 
   return (
     <>
@@ -154,10 +171,38 @@ export function Studio1DataTable<TData, TValue>({
             <Input
               placeholder="Filter by Name"
               value={
-                (table.getColumn("id_title")?.getFilterValue() as string) ?? ""
+                (table
+                  .getColumn(
+                    `${
+                      type === "users"
+                        ? "fullname"
+                        : type === "authors"
+                        ? "name"
+                        : type === "article-category"
+                        ? "id_category"
+                        : type === "hero"
+                        ? "title"
+                        : "id_title"
+                    }`
+                  )
+                  ?.getFilterValue() as string) ?? ""
               }
               onChange={(event) =>
-                table.getColumn("id_title")?.setFilterValue(event.target.value)
+                table
+                  .getColumn(
+                    `${
+                      type === "users"
+                        ? "fullname"
+                        : type === "authors"
+                        ? "name"
+                        : type === "article-category"
+                        ? "id_category"
+                        : type === "hero"
+                        ? "title"
+                        : "id_title"
+                    }`
+                  )
+                  ?.setFilterValue(event.target.value)
               }
               className="lg:max-w-sm w-full h-12"
             />
@@ -243,7 +288,7 @@ export function Studio1DataTable<TData, TValue>({
                       .map((column) => {
                         return (
                           <DropdownMenuCheckboxItem
-                            key={column.id}
+                            key={nanoid()}
                             className="capitalize"
                             checked={column.getIsVisible()}
                             onCheckedChange={(value) =>
@@ -261,11 +306,13 @@ export function Studio1DataTable<TData, TValue>({
           </div>
           {viewCard && (
             <div className="md:grid flex flex-col lg:grid-cols-3 md:grid-cols-2 gap-4">
-              {table.getFilteredRowModel().rows.length ? (
-                table.getFilteredRowModel().rows.map((row) => {
+              {filteredRows.length ? (
+                filteredRows.map((row) => {
                   const actionCell = row
                     .getVisibleCells()
                     .find((c) => c.column.id === "actions");
+
+                  const id = nanoid();
 
                   return (
                     // <RowContextMenu
@@ -277,7 +324,7 @@ export function Studio1DataTable<TData, TValue>({
                     //   router={router}
                     // >
                     <div
-                      key={row.id}
+                      key={id}
                       className="rounded-xl border p-4  bg-white relative"
                     >
                       <div className="flex flex-col gap-3 items-start relative">
@@ -290,6 +337,81 @@ export function Studio1DataTable<TData, TValue>({
                           </div>
                         )}
                         <div>
+                          {type === "users" && (
+                            <div className="inline-flex gap-2 items-center mb-3">
+                              {!row.getValue("avatar_url") ? (
+                                <Avatar
+                                  name={String(
+                                    row.getValue("fullname") || "User"
+                                  )}
+                                  className="w-20! h-20! border rounded-full"
+                                  colors={[
+                                    "#3e77ab",
+                                    "#22b26e",
+                                    "#f2f26f",
+                                    "#fff7bd",
+                                    "#95cfb7",
+                                  ]}
+                                  variant="beam"
+                                  size={20}
+                                />
+                              ) : (
+                                <Image
+                                  src={row.getValue("avatar_url")}
+                                  alt={row.getValue("fullname")}
+                                  width={100}
+                                  height={100}
+                                  className={
+                                    "w-20 h-20 object-center object-cover aspect-square rounded-full"
+                                  }
+                                />
+                              )}
+                            </div>
+                          )}
+                          {type === "hero" && (
+                            <div className="flex w-full mb-3">
+                              <Image
+                                src={row.getValue("image")}
+                                alt={row.getValue("title")}
+                                width={150}
+                                height={150}
+                                className={
+                                  "w-full h-full object-center object-cover aspect-video rounded-2xl"
+                                }
+                              />
+                            </div>
+                          )}
+                          {type === "authors" && (
+                            <div className="inline-flex gap-2 items-center mb-3">
+                              {!row.getValue("profile_image") ? (
+                                <Avatar
+                                  name={String(
+                                    row.getValue("name") || "Author"
+                                  )}
+                                  className="w-20! h-20! border rounded-full"
+                                  colors={[
+                                    "#3e77ab",
+                                    "#22b26e",
+                                    "#f2f26f",
+                                    "#fff7bd",
+                                    "#95cfb7",
+                                  ]}
+                                  variant="beam"
+                                  size={20}
+                                />
+                              ) : (
+                                <Image
+                                  src={row.getValue("profile_image")}
+                                  alt={row.getValue("name")}
+                                  width={100}
+                                  height={100}
+                                  className={
+                                    "w-20 h-20 object-center object-cover aspect-square rounded-full"
+                                  }
+                                />
+                              )}
+                            </div>
+                          )}
                           <div className="mb-2">
                             {new Date(
                               row.getValue("created_at")
@@ -308,11 +430,34 @@ export function Studio1DataTable<TData, TValue>({
                             {String(row.getValue("id")).slice(0, 8)}
                           </p>
                           <h5 className="font-semibold text-primary text-lg">
-                            {row.getValue("id_title")}
+                            {row.getValue(
+                              `${
+                                type === "users"
+                                  ? "fullname"
+                                  : type === "authors"
+                                  ? "name"
+                                  : type === "article-category"
+                                  ? "id_category"
+                                  : type === "hero"
+                                  ? "title"
+                                  : "id_title"
+                              }`
+                            )}
                           </h5>
-                          <p className="text-muted-foreground text-sm! mt-2">
-                            {row.getValue("en_title")}
-                          </p>
+                          {type !== "users" &&
+                            type !== "authors" &&
+                            type !== "article-category" &&
+                            type !== "hero" && (
+                              <p className="text-muted-foreground text-sm! mt-2">
+                                {row.getValue("en_title")}
+                              </p>
+                            )}
+                          {type === "article-category" && (
+                            <p className="text-muted-foreground text-sm! mt-2">
+                              {row.getValue("en_category")}
+                            </p>
+                          )}
+
                           {type === "events" && (
                             <div className="inline-flex gap-2 items-center mt-3">
                               <Image
@@ -348,9 +493,14 @@ export function Studio1DataTable<TData, TValue>({
                             <LocalDateTime date={row.getValue("updated_at")} />
                           </p>
                         </div>
-                        <div className="flex justify-end mt-2 absolute bottom-4 right-4">
-                          <StatusBadge status={row.getValue("status")} />
-                        </div>
+                        {type !== "users" &&
+                          type !== "authors" &&
+                          type !== "article-category" &&
+                          type !== "hero" && (
+                            <div className="flex justify-end mt-2 absolute bottom-4 right-4">
+                              <StatusBadge status={row.getValue("status")} />
+                            </div>
+                          )}
                       </div>
                     </div>
                     // </RowContextMenu>
@@ -376,7 +526,7 @@ export function Studio1DataTable<TData, TValue>({
                     <TableRow key={headerGroup.id}>
                       {headerGroup.headers.map((header) => {
                         return (
-                          <TableHead key={header.id} className="bg-muted">
+                          <TableHead key={nanoid()} className="bg-muted">
                             {header.isPlaceholder
                               ? null
                               : flexRender(
@@ -390,14 +540,14 @@ export function Studio1DataTable<TData, TValue>({
                   ))}
                 </TableHeader>
                 <TableBody>
-                  {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) => (
+                  {filteredRows.length ? (
+                    filteredRows.map((row) => (
                       <TableRow
-                        key={row.id}
+                        key={nanoid()}
                         data-state={row.getIsSelected() && "selected"}
                       >
                         {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
+                          <TableCell key={nanoid()}>
                             <p className="text-sm!">
                               {flexRender(
                                 cell.column.columnDef.cell,
@@ -411,7 +561,7 @@ export function Studio1DataTable<TData, TValue>({
                   ) : (
                     <TableRow>
                       <TableCell
-                        colSpan={columns.length}
+                        colSpan={safeColumns.length}
                         className="h-24 text-center"
                       >
                         No results.

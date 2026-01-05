@@ -8,6 +8,7 @@ import "swiper/css/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { nanoid } from "nanoid";
 
 import "swiper/css/effect-fade";
 
@@ -43,8 +44,8 @@ export default function JumbotronSlide({ data }: { data: any[] }) {
             className="w-full rounded-2xl"
           >
             {data.map((slide, key) => (
-              <SwiperSlide key={key} className="border">
-                <Link href={slide.author.profile} target="_blank">
+              <SwiperSlide key={nanoid()} className="border">
+                <Link href={slide.link} target="_blank">
                   <SlideImage slide={slide} />
                 </Link>
               </SwiperSlide>
@@ -125,10 +126,10 @@ function SlideImage({ slide }: { slide: any }) {
 
       {/* Gambar */}
       <Image
-        src={"https://placehold.co/800x280.png"}
+        src={slide.image || "https://placehold.co/800x280.png"}
         width={800}
         height={280}
-        alt={slide.alt}
+        alt={slide.title || "Jumbotron Image"}
         unoptimized
         onLoadingComplete={() => setIsLoaded(true)}
         className={`w-full h-full object-cover object-center rounded-2xl transition-opacity duration-700 ${

@@ -1,102 +1,53 @@
 "use server";
 
-import { error } from "console";
-import { success } from "zod";
-import { getVendorByID } from "./get-users";
-import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
-import { createClient } from "@/utils/supabase/client";
+import { createClientAdmin } from "@/utils/supabase/admin";
+import { deleteSingleFile } from "../image/deleteImage";
 
-const apiBaseUrl =
-  process.env.NODE_ENV === "production"
-    ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
-    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
-
-export async function deleteVendor(id: string) {
+export async function deleteUsers(id: string) {
+  if (!id) {
+    return { error: "ID is required to delete users." };
+  }
   try {
-    console.log("Sending vendor/delete to BE:", id);
-    const vendorData = (await getVendorByID(id)).data.data;
+    console.log("Deleting user with ID:", id);
+    const supabase = await createClientAdmin();
 
-    if (!vendorData)
-      return { error: "Error vendor/read in vendor/delete ID:", id };
+    const { data: user, error: userErr } = await supabase
+      .from("accounts")
+      .select("id, avatar_url")
+      .eq("id", id)
+      .single();
 
-    const filesToDelete: string[] = [];
-
-    // Logo
-    if (vendorData.logo) filesToDelete.push(vendorData.logo);
-
-    // Highlight (array)
-    if (vendorData.highlight_images?.length > 0) {
-      filesToDelete.push(...vendorData.highlight_images);
-    }
-
-    // Reference images (array)
-    if (vendorData.reference_images?.length > 0) {
-      filesToDelete.push(...vendorData.reference_images);
-    }
-
-    if (filesToDelete.length === 1) {
-      const deleteSingle = await deleteSingleFile(filesToDelete[0]);
-      if (!deleteSingle) {
-        return {
-          error:
-            "Error vendor/read in vendor/delete ID" +
-            id +
-            " when delete single images:" +
-            filesToDelete,
-        };
-      }
-    } else if (filesToDelete.length > 1) {
-      const deleteMultiple = await deleteMultipleFiles(filesToDelete);
-      if (!deleteMultiple) {
-        return {
-          error:
-            "Error vendor/read in vendor/delete ID" +
-            id +
-            " when delete multiple images:" +
-            filesToDelete,
-        };
-      }
-    }
-
-    const supabase = await createClient();
-
-    const {
-      data: deleteVendor,
-      count,
-      error: errorDeleteVendor,
-    } = await supabase.from("vendor").delete({ count: "exact" }).eq("id", id);
-
-    // const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
-    //   method: "DELETE",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-
-    // const data = await res.json();
-
-    // if (res.status !== 200) {
-    //   return {
-    //     success: false,
-    //     error: `Failed to sent vendor/delete data. Cause : ${res.status} - ${data.message}`,
-    //   };
-    // }
-
-    if (errorDeleteVendor) {
+    if (userErr) {
       return {
-        error: errorDeleteVendor.message,
+        success: false,
+        error: userErr.message,
+      };
+    }
+
+    if (user?.avatar_url) {
+      await deleteSingleFile(user.avatar_url);
+    }
+
+    const { data: userData, error: userError } =
+      await supabase.auth.admin.deleteUser(id);
+
+    if (userError) {
+      console.error("Error deleting user:", userError);
+      return {
+        success: false,
+        error: userError.message,
       };
     }
 
     return {
-      deleteVendor,
-      count,
+      userData,
       success: true,
     };
   } catch (error) {
-    console.error("Sent vendor/delete Error:", error);
+    console.error("Sent users/delete Error:", error);
     return {
       success: false,
+      error: error instanceof Error ? error.message : String(error),
       message: "Terjadi kesalahan saat terhubung ke server.",
     };
   }

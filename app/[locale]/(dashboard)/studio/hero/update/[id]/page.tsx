@@ -1,18 +1,24 @@
 import React from "react";
-
+import UpdateVendorForm from "./updateForm";
+import { getVendorByID } from "@/lib/vendors/get-vendor";
+import { toast } from "sonner";
+import { getHotelByID } from "@/lib/hotel/get-hotel";
+import UpdateHotelForm from "./updateForm";
 import { notFound } from "next/navigation";
 import { getUserByID } from "@/lib/users/get-users";
 import AccountClientForm from "@/app/[locale]/(dashboard)/account/account-client-form";
 import { getLocale } from "next-intl/server";
 import ContainerWrap from "@/components/utility/ContainerWrap";
+import { getHeroByID } from "@/lib/hero/get-hero";
+import UpdateHeroClient from "./updateForm";
 
-const UpdateUserPage = async ({
+const UpdateHeroPage = async ({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) => {
   const { id } = await params;
-  const res = await getUserByID(id);
+  const res = await getHeroByID(id);
 
   const locale = await getLocale();
 
@@ -20,14 +26,7 @@ const UpdateUserPage = async ({
     notFound();
   }
 
-  return (
-    <ContainerWrap>
-      <h2 className="my-20 text-start text-primary font-bold">
-        {locale === "id" ? "Perbarui Data Pengguna" : "Update Users Data"}
-      </h2>
-      <AccountClientForm admin locale={locale} account={res.data} />
-    </ContainerWrap>
-  );
+  return <UpdateHeroClient locale={locale} hero={res.data} />;
 };
 
-export default UpdateUserPage;
+export default UpdateHeroPage;

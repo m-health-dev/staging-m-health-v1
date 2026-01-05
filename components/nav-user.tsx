@@ -45,6 +45,8 @@ import { toast } from "sonner";
 import { routing } from "@/i18n/routing";
 import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const Avatar = dynamic(() => import("boring-avatars"), {
   ssr: false,
@@ -99,7 +101,13 @@ export function NavUser({
       <SidebarMenuItem className="px-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible::bg-sidebar-accent focus-visible::text-sidebar-accent-foreground rounded-2xl! focus:outline focus-visible:outline hover:outline px-2 py-2 flex gap-3 items-center w-full">
+            <div
+              className={cn(
+                type === "side"
+                  ? "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible::bg-sidebar-accent focus-visible::text-sidebar-accent-foreground rounded-2xl! focus:outline focus-visible:outline hover:outline px-2 py-2 flex gap-3 items-center w-full"
+                  : ""
+              )}
+            >
               {user.avatar_url ? (
                 <Image
                   src={user.avatar_url}
@@ -190,10 +198,15 @@ export function NavUser({
 
             <DropdownMenuGroup>
               <DropdownMenuItem className="py-2">
-                <IconUserCircle />
-                <p className="text-sm! text-muted-foreground">
-                  Pengaturan Akun
-                </p>
+                <Link
+                  href={`/account?id=${user.id}`}
+                  className="flex items-center gap-2"
+                >
+                  <IconUserCircle />
+                  <p className="text-sm! text-muted-foreground">
+                    Pengaturan Akun
+                  </p>
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
 

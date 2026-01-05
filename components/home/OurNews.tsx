@@ -11,8 +11,6 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Skeleton } from "../ui/skeleton";
 
 const OurNews = async () => {
-  const n = await get5ImageNews();
-
   return (
     <div className="mt-[5vh] bg-white border-t lg:rounded-t-[5rem] rounded-t-4xl">
       <ContainerWrap className="py-[5vh]">
@@ -41,10 +39,9 @@ const SkeletonComponent = () => {
 };
 
 const Content = async () => {
-  const [articlesResult, locale] = await Promise.all([
-    getAllPublicArticles(1, 4),
-    getLocale(),
-  ]);
+  const locale = await getLocale();
+
+  const { data: articlesResult } = await getAllPublicArticles(1, 4);
 
   const articles = Array.isArray(articlesResult.data)
     ? articlesResult.data

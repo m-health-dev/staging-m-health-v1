@@ -102,10 +102,6 @@ export async function getAllPublicArticles(
     if (res.status !== 200) {
       return {
         success: false,
-        data: [],
-        links: null,
-        meta: null,
-        total: 0,
         error: `Failed to receive articles/read data. Cause : ${json.message}`,
       };
     }
@@ -115,7 +111,7 @@ export async function getAllPublicArticles(
       data: json.data,
       links: json.links,
       meta: json.meta,
-      total: json.total,
+      total: json.meta.total,
       success: true,
     };
   } catch (error) {

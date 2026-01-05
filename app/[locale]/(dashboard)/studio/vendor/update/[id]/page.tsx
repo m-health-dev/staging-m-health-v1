@@ -15,7 +15,7 @@ const UpdateVendorPage = async ({
   if (res.error) {
     notFound();
   }
-  return <UpdateVendorForm id={id} vendorData={res.data.data} />;
+  return <UpdateVendorForm id={id} vendorData={res.data} />;
 };
 
 export default UpdateVendorPage;

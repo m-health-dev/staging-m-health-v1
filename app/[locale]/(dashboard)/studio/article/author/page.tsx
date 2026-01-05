@@ -62,6 +62,7 @@ const ArticleAuthorStudio = async ({
         locale={locale}
         meta={meta}
         links={links}
+        type="authors"
         deleteAction={deleteArticleAuthor}
       />
     </ContainerWrap>

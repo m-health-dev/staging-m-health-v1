@@ -21,7 +21,10 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { getAgeDetail } from "@/helper/getAge";
-import { patchAccount } from "@/lib/users/post-patch-users";
+import {
+  patchAccount,
+  patchAccountByAdmin,
+} from "@/lib/users/post-patch-users";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -83,9 +86,11 @@ function toUtcMidnightFromLocalDate(date: Date) {
 const AccountClientForm = ({
   locale,
   account,
+  admin,
 }: {
   locale: string;
   account: any;
+  admin?: boolean;
 }) => {
   const [loading, setLoading] = React.useState(false);
   const domicile = parseDomicile(account?.domicile);
@@ -185,28 +190,54 @@ const AccountClientForm = ({
 
   async function onSubmit(data: z.infer<typeof accountFormSchema>) {
     setLoading(true);
-    const res = await patchAccount({
-      email: data.email,
-      fullname: data.fullname,
-      phone: data.phone_number,
-      gender: data.gender,
-      height: data.height,
-      weight: data.weight,
-      // Store as UTC midnight of the selected local calendar day to avoid
-      // timezone shifting in timestamptz (e.g. appearing as -1 day in DB/UTC views).
-      birthdate: toUtcMidnightFromLocalDate(data.birthdate),
-      avatar_url: data.avatar_url || undefined,
-      domicile: {
-        city: data.domicile_city?.trim() || "",
-        district: data.domicile_district?.trim() || "",
-        address: data.domicile_address?.trim() || "",
-      },
-    });
+
+    let res;
+
+    if (!admin) {
+      res = await patchAccount({
+        email: data.email,
+        fullname: data.fullname,
+        phone: data.phone_number,
+        gender: data.gender,
+        height: data.height,
+        weight: data.weight,
+        birthdate: toUtcMidnightFromLocalDate(data.birthdate),
+        avatar_url: data.avatar_url || undefined,
+        domicile: {
+          city: data.domicile_city?.trim() || "",
+          district: data.domicile_district?.trim() || "",
+          address: data.domicile_address?.trim() || "",
+        },
+      });
+    } else {
+      res = await patchAccountByAdmin(
+        {
+          email: data.email,
+          fullname: data.fullname,
+          phone: data.phone_number,
+          gender: data.gender,
+          height: data.height,
+          weight: data.weight,
+          birthdate: toUtcMidnightFromLocalDate(data.birthdate),
+          avatar_url: data.avatar_url || undefined,
+          domicile: {
+            city: data.domicile_city?.trim() || "",
+            district: data.domicile_district?.trim() || "",
+            address: data.domicile_address?.trim() || "",
+          },
+        },
+        { id: account.id }
+      );
+    }
 
     if (res.success) {
       setLoading(false);
       toast.success(locale === "id" ? res.message?.id : res.message?.en);
-      router.refresh();
+      if (!admin) {
+        router.refresh();
+      } else {
+        router.push(`/${locale}/studio/users`);
+      }
     } else if (res.error) {
       setLoading(false);
       toast.error(locale === "id" ? res.error.id : res.error.en);
@@ -304,7 +335,12 @@ const AccountClientForm = ({
                       Email
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} type="email" className="h-12" />
+                      <Input
+                        readOnly
+                        {...field}
+                        type="email"
+                        className="h-12"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

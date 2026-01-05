@@ -1,6 +1,7 @@
 "use server";
 
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { createClientAdmin } from "@/utils/supabase/admin";
 
 export type DomicilePayload = {
   city?: string;
@@ -82,51 +83,72 @@ export async function patchAccount(payload: {
   }
 }
 
-export async function updateVendor(
+export async function patchAccountByAdmin(
   payload: {
-    name?: string;
-    en_description?: string;
-    id_description?: string;
-    category?: string;
-    specialist?: string[];
-    logo?: string;
-    highlight_image?: string;
-    reference_image?: string[];
-    location_map?: string;
+    fullname?: string;
+    email?: string;
+    phone?: string | number;
+    phone_number?: string;
+    gender?: string;
+    domicile?: DomicilePayload;
+    height?: number;
+    weight?: number;
+    avatar_url?: string;
+    birthdate?: Date;
   },
-  id: string
+  { id }: { id: string }
 ) {
   try {
-    console.log("Sending vendor/update to BE:", payload);
-    const accessToken = await getAccessToken();
+    const normalized = {
+      email: payload.email,
+      fullname: payload.fullname,
+      phone: payload.phone ?? payload.phone_number,
+      gender: payload.gender,
+      domicile: payload.domicile,
+      height: payload.height,
+      weight: payload.weight,
+      avatar_url: payload.avatar_url,
+      birthdate: payload.birthdate,
+    };
 
-    const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    console.log("Sending admin account/patch to BE:", normalized);
 
-    const data = await res.json();
+    const supabase = await createClientAdmin();
 
-    if (res.status !== 200) {
+    const { data: AdminUserUpdate, error: AdminUserUpdateError } =
+      await supabase
+        .from("accounts")
+        .update(normalized)
+        .eq("id", id)
+        .select()
+        .single();
+
+    if (AdminUserUpdateError) {
       return {
         success: false,
-        error: `Failed to sent vendor/update data. Cause: ${res.status} - ${data.message}`,
+        error: {
+          id: `Gagal mengirim data pembaruan akun. Penyebab: ${AdminUserUpdateError.message}`,
+          en: `Failed to sent account/patch data. Cause: ${AdminUserUpdateError.message}`,
+        },
       };
     }
 
     return {
-      data,
+      data: AdminUserUpdate,
       success: true,
+      message: {
+        id: "Akun berhasil diperbarui.",
+        en: "Account updated successfully.",
+      },
     };
   } catch (error) {
-    console.error("Sent vendor/update Error:", error);
+    console.error("Sent account/patch Error:", error);
     return {
       success: false,
-      message: "Terjadi kesalahan saat terhubung ke server.",
+      message: {
+        id: "Terjadi kesalahan saat terhubung ke server.",
+        en: "An error occurred while connecting to the server.",
+      },
     };
   }
 }

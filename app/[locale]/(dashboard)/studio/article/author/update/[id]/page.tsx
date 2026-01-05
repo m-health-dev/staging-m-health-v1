@@ -16,7 +16,7 @@ const UpdateArticleAuthorPage = async ({
   if (res.error) {
     notFound();
   }
-  return <UpdateArticleAuthorForm id={id} data={res.data.data} />;
+  return <UpdateArticleAuthorForm id={id} data={res.data} />;
 };
 
 export default UpdateArticleAuthorPage;

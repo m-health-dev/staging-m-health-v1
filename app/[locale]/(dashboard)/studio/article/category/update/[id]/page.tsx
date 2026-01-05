@@ -18,7 +18,7 @@ const UpdateArticleCategoryPage = async ({
   if (res.error) {
     notFound();
   }
-  return <UpdateArticleCategoryForm id={id} data={res.data.data} />;
+  return <UpdateArticleCategoryForm id={id} data={res.data} />;
 };
 
 export default UpdateArticleCategoryPage;

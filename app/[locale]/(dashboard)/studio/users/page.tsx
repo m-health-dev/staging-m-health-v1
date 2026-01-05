@@ -14,8 +14,11 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { VendorHotelDataTable } from "@/components/vendor-hotel/vendor-hotel-data-table";
 import { deleteHotel } from "@/lib/hotel/delete-hotel";
 import UnderConstruction from "@/components/utility/under-construction";
+import { getAllUsers } from "@/lib/users/get-users";
+import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
+import { deleteUsers } from "@/lib/users/delete-users";
 
-const Hotel = async ({
+const Users = async ({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -24,11 +27,13 @@ const Hotel = async ({
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 10);
 
-  const { data, meta, links } = await getAllHotel(page, per_page); // nanti page bisa dynamic
+  const { data, meta, links, total } = await getAllUsers(page, per_page); // nanti page bisa dynamic
 
   const locale = await getLocale();
 
   const supabase = await createClient();
+
+  // console.log({ data });
 
   const { count: countUsers } = await supabase
     .from("accounts")
@@ -61,21 +66,21 @@ const Hotel = async ({
         </p>
         <div className="flex flex-wrap gap-4 items-center">
           <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
-            {countUsers} User
+            {total} User
           </p>
         </div>
       </div>
-      <UnderConstruction element />
-      {/* <VendorHotelDataTable
+      <Studio1DataTable
         columns={columns}
         data={data}
         meta={meta}
         links={links}
-        resourceType="hotel"
-        deleteAction={deleteHotel}
-      /> */}
+        type="users"
+        deleteAction={deleteUsers}
+        locale={locale}
+      />
     </ContainerWrap>
   );
 };
 
-export default Hotel;
+export default Users;

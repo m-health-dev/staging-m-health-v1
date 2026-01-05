@@ -21,26 +21,18 @@ import { Spinner } from "@/components/ui/spinner";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
-import { deleteHotel } from "@/lib/hotel/delete-hotel";
-import { deleteVendor } from "@/lib/vendors/delete-vendor";
-import { VendorType } from "@/types/vendor.types";
+import { deleteUsers } from "@/lib/users/delete-users";
+import { UsersType } from "@/types/account.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Avatar from "boring-avatars";
-import {
-  Check,
-  Copy,
-  CopyCheck,
-  MoreHorizontal,
-  PenSquare,
-  Trash2,
-} from "lucide-react";
+import { Check, Copy, MoreHorizontal, PenSquare, Trash2 } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export const columns: ColumnDef<VendorType>[] = [
+export const columns: ColumnDef<UsersType>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -52,22 +44,22 @@ export const columns: ColumnDef<VendorType>[] = [
     },
   },
   {
-    accessorKey: "logo",
+    accessorKey: "avatar_url",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Logo" />
+      <DataTableColumnHeader column={column} title="Avatar" />
     ),
 
     cell: ({ row }) => {
-      const logo: string = row.getValue("logo");
-      const name: string = row.getValue("name");
+      const avatar_url: string = row.getValue("avatar_url");
+      const fullname: string = row.getValue("fullname");
 
       const [error, setError] = useState(false);
 
-      // Jika tidak ada logo atau sudah error → tampilkan avatar
-      if (!logo || error) {
+      // Jika tidak ada avatar_url atau sudah error → tampilkan avatar
+      if (!avatar_url || error) {
         return (
           <Avatar
-            name={name}
+            name={fullname || "User Avatar"}
             className="w-10! h-10! border rounded-full"
             colors={["#3e77ab", "#22b26e", "#f2f26f", "#fff7bd", "#95cfb7"]}
             variant="beam"
@@ -78,8 +70,8 @@ export const columns: ColumnDef<VendorType>[] = [
 
       return (
         <Image
-          src={logo}
-          alt={name || "Vendor Logo"}
+          src={avatar_url}
+          alt={fullname || "User Avatar"}
           width={40}
           height={40}
           className="object-cover w-10 h-10 rounded-full border"
@@ -88,14 +80,24 @@ export const columns: ColumnDef<VendorType>[] = [
       );
     },
   },
-
   {
-    accessorKey: "name",
+    accessorKey: "email",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Email" />
     ),
     cell: ({ row }) => {
-      const name: string = row.getValue("name");
+      const email: string = row.getValue("email");
+      return <span>{email}</span>;
+    },
+  },
+
+  {
+    accessorKey: "fullname",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Fullname" />
+    ),
+    cell: ({ row }) => {
+      const fullname: string = row.getValue("fullname");
       const createdAt: Date = new Date(row.getValue("created_at"));
       const now = new Date();
 
@@ -113,7 +115,7 @@ export const columns: ColumnDef<VendorType>[] = [
               New
             </span>
           )}
-          {name}
+          {fullname}
         </span>
       );
     },
@@ -143,7 +145,7 @@ export const columns: ColumnDef<VendorType>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const id: string = row.getValue("id");
-      const hotelName: string = row.getValue("name");
+      const fullname: string = row.getValue("fullname");
 
       const [copied, setCopied] = useState(false);
       const [openConfirm, setOpenConfirm] = useState(false);
@@ -166,7 +168,7 @@ export const columns: ColumnDef<VendorType>[] = [
 
       const handleCopyName = async () => {
         try {
-          await navigator.clipboard.writeText(hotelName);
+          await navigator.clipboard.writeText(fullname);
           setCopied(true);
           setTimeout(() => setCopied(false), 2000);
         } catch (err) {
@@ -174,16 +176,16 @@ export const columns: ColumnDef<VendorType>[] = [
         }
       };
 
-      const handleDeleteHotel = async () => {
+      const handleDeleteUser = async () => {
         try {
           setLoading(true);
-          const res = await deleteHotel(id);
+          const res = await deleteUsers(id);
           if (!res.error) {
-            toast.success("Success to Delete Hotel", {
-              description: `${id.slice(0, 8).toUpperCase()} - ${hotelName}`,
+            toast.success("Success to Delete User", {
+              description: `${id.slice(0, 8).toUpperCase()} - ${fullname}`,
             });
           } else if (res.error) {
-            toast.error("Failed to Delete Hotel", {
+            toast.error("Failed to Delete User", {
               description: `${res.error}`,
             });
           }
@@ -191,7 +193,7 @@ export const columns: ColumnDef<VendorType>[] = [
           router.refresh();
         } catch (err) {
           setLoading(false);
-          toast.warning("Failed to Delete Hotel", { description: `${err}` });
+          toast.warning("Failed to Delete User", { description: `${err}` });
         }
       };
 
@@ -210,7 +212,7 @@ export const columns: ColumnDef<VendorType>[] = [
                 <p
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
-                    router.push(`/${locale}/studio/hotel/update/${id}`)
+                    router.push(`/${locale}/studio/users/update/${id}`)
                   }
                 >
                   <PenSquare />
@@ -281,19 +283,19 @@ export const columns: ColumnDef<VendorType>[] = [
                 <DialogTitle asChild>
                   <h6 className="text-red-500">
                     {locale === routing.defaultLocale
-                      ? "Konfirmasi Penghapusan Hotel"
-                      : "Delete Hotel Confirmation"}
+                      ? "Konfirmasi Penghapusan User"
+                      : "Delete User Confirmation"}
                   </h6>
                 </DialogTitle>
                 <p className="text-muted-foreground">
                   {locale === routing.defaultLocale
-                    ? "Untuk menghapus hotel ini, silahkan ketik nama hotel:"
-                    : "To delete this hotel, please type the hotel name:"}{" "}
+                    ? "Untuk menghapus user ini, silahkan ketik nama user:"
+                    : "To delete this user, please type the user name:"}{" "}
                   <span
                     className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
                     onClick={handleCopyName}
                   >
-                    {hotelName}{" "}
+                    {fullname}{" "}
                     {!copied ? (
                       <Copy className="size-4" />
                     ) : (
@@ -311,8 +313,8 @@ export const columns: ColumnDef<VendorType>[] = [
                 className="w-full border px-3 py-2 h-12 rounded-2xl"
                 placeholder={
                   locale === routing.defaultLocale
-                    ? "Tulis nama hotel di sini"
-                    : "Write hotel name here"
+                    ? "Tulis nama user di sini"
+                    : "Write user name here"
                 }
               />
               <p className="text-xs! text-red-500">
@@ -337,9 +339,9 @@ export const columns: ColumnDef<VendorType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== hotelName}
+                  disabled={inputName !== fullname}
                   onClick={async () => {
-                    await handleDeleteHotel();
+                    await handleDeleteUser();
                     setOpenConfirm(false);
                   }}
                 >

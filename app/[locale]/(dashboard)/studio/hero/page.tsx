@@ -1,20 +1,26 @@
-import { Button } from "@/components/ui/button";
-import ContainerWrap from "@/components/utility/ContainerWrap";
-import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
-import { routing } from "@/i18n/routing";
-import { createClient } from "@/utils/supabase/client";
-import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
-import { getLocale } from "next-intl/server";
-import Link from "next/link";
+import { getAllVendor } from "@/lib/vendors/get-vendor";
+import { Account } from "@/types/account.types";
+import React from "react";
 import { columns } from "./columns";
-import { deleteMedical } from "@/lib/medical/delete-medical";
-import { getAllEvents } from "@/lib/events/get-events";
-import { getAllArticleAuthor } from "@/lib/article-author/get-article-author";
-import { deleteArticleAuthor } from "@/lib/article-author/delete-article-author";
-import { getAllArticleCategory } from "@/lib/article-category/get-article-category";
-import { deleteArticleCategory } from "@/lib/article-category/delete-article-category";
+import { VendorType } from "@/types/vendor.types";
+import Link from "next/link";
+import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import { createClient } from "@/utils/supabase/server";
+import { getAllHotel } from "@/lib/hotel/get-hotel";
+import ContainerWrap from "@/components/utility/ContainerWrap";
+import { VendorHotelDataTable } from "@/components/vendor-hotel/vendor-hotel-data-table";
+import { deleteHotel } from "@/lib/hotel/delete-hotel";
+import UnderConstruction from "@/components/utility/under-construction";
+import { getAllUsers } from "@/lib/users/get-users";
+import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
+import { deleteUsers } from "@/lib/users/delete-users";
+import { getAllHero } from "@/lib/hero/get-hero";
+import { deleteHero } from "@/lib/hero/delete-hero";
 
-const ArticleCategoryStudio = async ({
+const Hero = async ({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -23,19 +29,27 @@ const ArticleCategoryStudio = async ({
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 10);
 
-  const { data, meta, links } = await getAllArticleCategory(page, per_page); // nanti page bisa dynamic
+  const { data, meta, links, total } = await getAllHero(page, per_page); // nanti page bisa dynamic
 
   const locale = await getLocale();
+
+  const supabase = await createClient();
+
+  // console.log({ data });
+
+  const { count: counthero } = await supabase
+    .from("hero_section")
+    .select("id", { count: "exact" });
 
   return (
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
-          <h4 className="text-primary font-semibold">Article Categories</h4>
+          <h4 className="text-primary font-semibold">Hero Data</h4>
         </div>
-        <Link href={`/${locale}/studio/article/category/add`}>
+        <Link href={`/${locale}/studio/hero/add`}>
           <Button className="rounded-2xl flex lg:w-fit w-full">
-            <Plus /> <p className="lg:block hidden">Add New Category</p>
+            <Plus /> <p className="lg:block hidden">Add New Hero</p>
           </Button>
         </Link>
       </div>
@@ -54,7 +68,7 @@ const ArticleCategoryStudio = async ({
         </p>
         <div className="flex flex-wrap gap-4 items-center">
           <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
-            {meta.total} Category
+            {total} Hero Banner
           </p>
         </div>
       </div>
@@ -62,13 +76,13 @@ const ArticleCategoryStudio = async ({
         columns={columns}
         data={data}
         meta={meta}
-        locale={locale}
         links={links}
-        type="article-category"
-        deleteAction={deleteArticleCategory}
+        type="hero"
+        deleteAction={deleteHero}
+        locale={locale}
       />
     </ContainerWrap>
   );
 };
 
-export default ArticleCategoryStudio;
+export default Hero;

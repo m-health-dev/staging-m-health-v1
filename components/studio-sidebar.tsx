@@ -41,6 +41,7 @@ import {
   FileText,
   Focus,
   GalleryHorizontal,
+  GalleryVertical,
   Grid2X2Check,
   HeartHandshake,
   HeartPlus,
@@ -95,72 +96,77 @@ const data = {
       url: "/studio/events",
       icon: PartyPopper,
     },
-  ],
-  navClouds: [
     {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      title: "Hero",
+      url: "/studio/hero",
+      icon: GalleryVertical,
     },
   ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
+  // navClouds: [
+  //   {
+  //     title: "Capture",
+  //     icon: IconCamera,
+  //     isActive: true,
+  //     url: "#",
+  //     items: [
+  //       {
+  //         title: "Active Proposals",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Archived",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Proposal",
+  //     icon: IconFileDescription,
+  //     url: "#",
+  //     items: [
+  //       {
+  //         title: "Active Proposals",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Archived",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Prompts",
+  //     icon: IconFileAi,
+  //     url: "#",
+  //     items: [
+  //       {
+  //         title: "Active Proposals",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Archived",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  // ],
+  // navSecondary: [
+  //   {
+  //     title: "Settings",
+  //     url: "#",
+  //     icon: IconSettings,
+  //   },
+  //   {
+  //     title: "Get Help",
+  //     url: "#",
+  //     icon: IconHelp,
+  //   },
+  //   {
+  //     title: "Search",
+  //     url: "#",
+  //     icon: IconSearch,
+  //   },
+  // ],
   type: [
     {
       name: "Vendor",
@@ -224,16 +230,16 @@ const data = {
     },
   ],
   website_config: [
-    {
-      name: "Default Metadata",
-      url: "/studio/metadata",
-      icon: FileText,
-    },
-    {
-      name: "About",
-      url: "/studio/about",
-      icon: Focus,
-    },
+    // {
+    //   name: "Default Metadata",
+    //   url: "/studio/metadata",
+    //   icon: FileText,
+    // },
+    // {
+    //   name: "About",
+    //   url: "/studio/about",
+    //   icon: Focus,
+    // },
     {
       name: "Terms of Service",
       url: "/studio/legal/terms",
@@ -272,6 +278,9 @@ export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="hide-scroll">
+        <p className="text-xs! px-4">Accounts</p>
+        {accounts && <NavUser user={accounts} locale={locale} type="side" />}
+
         <NavMain items={data.navMain} />
         <NavMenu title="Type" items={data.type} />
         <NavMenu title="Chat Bot" items={data.chatbot} />
@@ -280,10 +289,10 @@ export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
         <NavMenu title="Payment" items={data.payment} />
         <NavMenu title="User Management" items={data.user_management} />
         <NavMenu title="Website Config" items={data.website_config} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
-        <div className="sticky bottom-0 py-2 bg-linear-to-t from-white via-white px-1">
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
+        {/* <div className="fixed bottom-0 py-2 bg-linear-to-t from-white via-white px-1">
           {accounts && <NavUser user={accounts} locale={locale} type="side" />}
-        </div>
+        </div> */}
       </SidebarContent>
       {/* <SidebarFooter>
         <NavUser user={data.user} />

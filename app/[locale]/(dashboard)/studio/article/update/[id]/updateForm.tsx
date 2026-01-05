@@ -310,8 +310,6 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
               />
 
               <hr />
-
-              <hr />
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
                 <FormField
                   control={form.control}

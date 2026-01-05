@@ -25,34 +25,49 @@ const StudioDashboard = async () => {
 
   const { count: AccountTotal } = await supabase
     .from("accounts")
-    .select("*", { count: "exact" });
+    .select("id", { count: "exact" });
   const { count: ChatSession } = await supabase
     .from("chat_activity")
-    .select("*", { count: "exact" });
+    .select("id", { count: "exact" });
   const { count: Packages } = await supabase
     .from("packages")
-    .select("*", { count: "exact" });
+    .select("id", { count: "exact" });
   const { count: Wellness } = await supabase
     .from("wellness")
-    .select("*", { count: "exact" });
+    .select("id", { count: "exact" });
   const { count: Medical } = await supabase
     .from("medical")
-    .select("*", { count: "exact" });
+    .select("id", { count: "exact" });
   const { count: Vendor } = await supabase
     .from("vendor")
-    .select("*", { count: "exact" });
+    .select("id", { count: "exact" });
   const { count: Hotel } = await supabase
     .from("hotel")
-    .select("*", { count: "exact" });
+    .select("id", { count: "exact" });
   const { count: Events } = await supabase
     .from("events")
-    .select("*", { count: "exact" });
+    .select("id", { count: "exact" });
   const { count: Equipment } = await supabase
     .from("medical_equipment")
-    .select("*", { count: "exact" });
+    .select("id", { count: "exact" });
   const { count: Article } = await supabase
     .from("article")
-    .select("*", { count: "exact" });
+    .select("id", { count: "exact" });
+  const { count: ArticleAuthor } = await supabase
+    .from("author")
+    .select("id", { count: "exact" });
+  const { count: ArticleCategory } = await supabase
+    .from("article_category")
+    .select("id", { count: "exact" });
+  const { count: Hero } = await supabase
+    .from("hero_section")
+    .select("id", { count: "exact" });
+  const { count: TOS } = await supabase
+    .from("terms_of_service")
+    .select("id", { count: "exact" });
+  const { count: Privacy } = await supabase
+    .from("privacy_policy")
+    .select("id", { count: "exact" });
   return (
     <ContainerWrap>
       <div className="my-10">
@@ -162,6 +177,56 @@ const StudioDashboard = async () => {
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
               <p>Article</p>
+            </div>
+          </div>
+        </div>
+        <div className="group/stats">
+          <div className="bg-white rounded-2xl overflow-hidden relative border">
+            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+              <h3 className="text-primary font-semibold">{ArticleAuthor}</h3>
+            </div>
+            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+              <p>Article Author</p>
+            </div>
+          </div>
+        </div>
+        <div className="group/stats">
+          <div className="bg-white rounded-2xl overflow-hidden relative border">
+            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+              <h3 className="text-primary font-semibold">{ArticleCategory}</h3>
+            </div>
+            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+              <p>Article Category</p>
+            </div>
+          </div>
+        </div>
+        <div className="group/stats">
+          <div className="bg-white rounded-2xl overflow-hidden relative border">
+            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+              <h3 className="text-primary font-semibold">{Hero}</h3>
+            </div>
+            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+              <p>Hero Banner</p>
+            </div>
+          </div>
+        </div>
+        <div className="group/stats">
+          <div className="bg-white rounded-2xl overflow-hidden relative border">
+            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+              <h3 className="text-primary font-semibold">{TOS}</h3>
+            </div>
+            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+              <p>Terms of Service</p>
+            </div>
+          </div>
+        </div>
+        <div className="group/stats">
+          <div className="bg-white rounded-2xl overflow-hidden relative border">
+            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+              <h3 className="text-primary font-semibold">{Privacy}</h3>
+            </div>
+            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+              <p>Privacy Policy</p>
             </div>
           </div>
         </div>

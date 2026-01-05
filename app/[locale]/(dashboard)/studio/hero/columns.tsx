@@ -19,39 +19,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
-import StatusBadge from "@/components/utility/status-badge";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
-import { deleteArticleCategory } from "@/lib/article-category/delete-article-category";
-import { deleteEvent } from "@/lib/events/delete-events";
-import { deleteMedical } from "@/lib/medical/delete-medical";
-import { deletePackage } from "@/lib/packages/delete-packages";
-import { ArticleCategoryType } from "@/types/articles.types";
-import { VendorType } from "@/types/vendor.types";
+import { deleteHero } from "@/lib/hero/delete-hero";
+import { deleteUsers } from "@/lib/users/delete-users";
+import { UsersType } from "@/types/account.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Avatar from "boring-avatars";
-import {
-  Check,
-  Copy,
-  CopyCheck,
-  MoreHorizontal,
-  PenSquare,
-  Trash2,
-} from "lucide-react";
+import { Check, Copy, MoreHorizontal, PenSquare, Trash2 } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export const columns: ColumnDef<ArticleCategoryType>[] = [
-  //   {
-  //     id: "number",
-  //     cell: ({ row }) => {
-  //       return row.index + 1;
-  //     },
-  //   },
-
+export const columns: ColumnDef<UsersType>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -63,13 +45,30 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
     },
   },
   {
-    accessorKey: "id_category",
-    enableHiding: false,
+    accessorKey: "is_active",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID Category" />
+      <DataTableColumnHeader column={column} title="Active" />
     ),
     cell: ({ row }) => {
-      const id_category: string = row.getValue("id_category");
+      const is_active: string = row.getValue("is_active");
+      return is_active ? (
+        <span className="bg-green-50 border border-green-300 text-green-600 px-2 py-1 rounded-full">
+          Active
+        </span>
+      ) : (
+        <span className="bg-amber-50 border border-amber-300 text-amber-600 px-2 py-1 rounded-full">
+          Inactive
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "title",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Title" />
+    ),
+    cell: ({ row }) => {
+      const title: string = row.getValue("title");
       const createdAt: Date = new Date(row.getValue("created_at"));
       const now = new Date();
 
@@ -87,22 +86,26 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
               New
             </span>
           )}
-          {id_category}
+          {title}
         </span>
       );
     },
   },
   {
-    accessorKey: "en_category",
-
+    accessorKey: "image",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="EN Category" />
+      <DataTableColumnHeader column={column} title="Image" />
     ),
     cell: ({ row }) => {
-      const en_category: string = row.getValue("en_category");
-      return <span className="text-wrap">{en_category}</span>;
+      const image: string = row.getValue("image");
+      return (
+        <span>
+          {image.split("/")[8]}/{image.split("/")[9]}
+        </span>
+      );
     },
   },
+
   {
     accessorKey: "created_at",
     header: ({ column }) => (
@@ -123,13 +126,12 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
       return <LocalDateTime date={updated_at} />;
     },
   },
-
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       const id: string = row.getValue("id");
-      const id_category: string = row.getValue("id_category");
+      const title: string = row.getValue("title");
 
       const [copied, setCopied] = useState(false);
       const [openConfirm, setOpenConfirm] = useState(false);
@@ -152,7 +154,7 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
 
       const handleCopyName = async () => {
         try {
-          await navigator.clipboard.writeText(id_category);
+          await navigator.clipboard.writeText(title);
           setCopied(true);
           setTimeout(() => setCopied(false), 2000);
         } catch (err) {
@@ -160,16 +162,16 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
         }
       };
 
-      const handleDelete = async () => {
+      const handleDeleteHero = async () => {
         try {
           setLoading(true);
-          const res = await deleteArticleCategory(id);
+          const res = await deleteHero(id);
           if (!res.error) {
-            toast.success("Success to Delete Article Category", {
-              description: `${id.slice(0, 8).toUpperCase()} - ${id_category}`,
+            toast.success("Success to Delete Hero", {
+              description: `${id.slice(0, 8).toUpperCase()} - ${title}`,
             });
           } else if (res.error) {
-            toast.error("Failed to Delete Article Category", {
+            toast.error("Failed to Delete Hero", {
               description: `${res.error}`,
             });
           }
@@ -177,9 +179,7 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
           router.refresh();
         } catch (err) {
           setLoading(false);
-          toast.warning("Failed to Article Category", {
-            description: `${err}`,
-          });
+          toast.warning("Failed to Delete Hero", { description: `${err}` });
         }
       };
 
@@ -198,9 +198,7 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
                 <p
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
-                    router.push(
-                      `/${locale}/studio/article/category/update/${id}`
-                    )
+                    router.push(`/${locale}/studio/hero/update/${id}`)
                   }
                 >
                   <PenSquare />
@@ -229,6 +227,41 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {/* <span className="lg:hidden flex flex-col w-full items-center space-y-3">
+            <Button
+              variant={"default"}
+              className="flex w-full"
+              onClick={() =>
+                router.push(`/${locale}/studio/hotel/update/${id}`)
+              }
+            >
+              <PenSquare />
+              Update Data
+            </Button>
+
+            <Button
+              variant={"destructive_outline"}
+              className="flex w-full"
+              onClick={() => setOpenConfirm(true)}
+            >
+              <Trash2 />
+              Delete Data
+            </Button>
+
+            <Button
+              className="flex w-full"
+              variant={"outline"}
+              onClick={handleCopyLink}
+            >
+              {!copied ? (
+                <Copy className="size-4" />
+              ) : (
+                <Check className="size-4" />
+              )}
+              Copy ID
+            </Button>
+          </span> */}
+
           {/* Modal Konfirmasi */}
           <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
             <DialogContent className="sm:max-w-md bg-white">
@@ -236,19 +269,19 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
                 <DialogTitle asChild>
                   <h6 className="text-red-500">
                     {locale === routing.defaultLocale
-                      ? "Konfirmasi Penghapusan Article Category"
-                      : "Delete Article Category Confirmation"}
+                      ? "Konfirmasi Penghapusan Hero Banner"
+                      : "Delete Hero Banner Confirmation"}
                   </h6>
                 </DialogTitle>
                 <p className="text-muted-foreground">
                   {locale === routing.defaultLocale
-                    ? "Untuk menghapus Article Category ini, silahkan ketik nama Article Category:"
-                    : "To delete this Article Category, please type the Article Category name:"}{" "}
+                    ? "Untuk menghapus hero banner ini, silahkan ketik judul hero banner:"
+                    : "To delete this hero banner, please type the hero banner title:"}{" "}
                   <span
                     className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
                     onClick={handleCopyName}
                   >
-                    {id_category}{" "}
+                    {title}{" "}
                     {!copied ? (
                       <Copy className="size-4" />
                     ) : (
@@ -266,8 +299,8 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
                 className="w-full border px-3 py-2 h-12 rounded-2xl"
                 placeholder={
                   locale === routing.defaultLocale
-                    ? "Tulis nama Article Category di sini"
-                    : "Write Article Category name here"
+                    ? "Tulis judul hero banner di sini"
+                    : "Write hero banner title here"
                 }
               />
               <p className="text-xs! text-red-500">
@@ -292,9 +325,9 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== id_category}
+                  disabled={inputName !== title}
                   onClick={async () => {
-                    await handleDelete();
+                    await handleDeleteHero();
                     setOpenConfirm(false);
                   }}
                 >

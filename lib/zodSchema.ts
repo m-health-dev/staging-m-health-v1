@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import { title } from "node:process";
 
 export const phoneSchema = z.string().refine((val) => {
   const cleaned = val.replace(/\D/g, "");
@@ -207,4 +208,12 @@ export const ArticleSchema = z.object({
   en_content: z.string(),
   id_content: z.string(),
   status: z.string(),
+});
+
+export const HeroSchema = z.object({
+  title: z.string().min(3),
+  image: z.string().min(1),
+  link: z.url(), // Seharusnya link bisa nullable atau optional
+  display_order: z.string(),
+  is_active: z.boolean(),
 });

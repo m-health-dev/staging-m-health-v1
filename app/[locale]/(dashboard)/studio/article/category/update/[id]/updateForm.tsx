@@ -241,7 +241,7 @@ const UpdateArticleCategoryForm = ({ id, data }: UpdateForm) => {
 
       <div className="flex flex-col w-full justify-center items-center">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-5xl">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
             <div className="space-y-5">
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
                 <FormField

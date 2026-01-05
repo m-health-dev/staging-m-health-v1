@@ -14,3 +14,18 @@ export type Account = {
   google_fullname: string;
   google_avatar: string;
 };
+
+export type UsersType = {
+  id: string;
+  email: string;
+  fullname: string;
+  phone: string;
+  gender: string;
+  domicile: JSON;
+  height: number;
+  weight: number;
+  avatar_url: string;
+  birthdate: Date;
+  created_at: string;
+  updated_at: string;
+};

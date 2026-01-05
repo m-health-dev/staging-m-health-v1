@@ -66,11 +66,23 @@ export const columns: ColumnDef<ArticleAuthorType>[] = [
     accessorKey: "profile_image",
     enableHiding: true,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Org" />
+      <DataTableColumnHeader column={column} title="Avatar" />
     ),
     cell: ({ row }) => {
       const profile_image: string = row.getValue("profile_image");
       const name: string = row.getValue("name");
+
+      if (!profile_image) {
+        return (
+          <Avatar
+            name={name}
+            className="w-10! h-10! border rounded-full"
+            colors={["#3e77ab", "#22b26e", "#f2f26f", "#fff7bd", "#95cfb7"]}
+            variant="beam"
+            size={20}
+          />
+        );
+      }
 
       return (
         <span className="inline-flex items-center gap-2">
@@ -114,13 +126,6 @@ export const columns: ColumnDef<ArticleAuthorType>[] = [
         </span>
       );
     },
-  },
-  {
-    accessorKey: "name",
-    enableHiding: true,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
   },
   {
     accessorKey: "created_at",
