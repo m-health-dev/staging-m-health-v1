@@ -84,6 +84,7 @@ export async function getVendorByID(id: string) {
   try {
     const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
       method: "GET",
+      next: { revalidate: 60 },
       headers: {
         "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
@@ -117,6 +118,7 @@ export async function getVendorBySlug(slug: string) {
   try {
     const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${slug}`, {
       method: "GET",
+      next: { revalidate: 60 },
       headers: {
         "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",

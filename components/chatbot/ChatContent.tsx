@@ -17,6 +17,7 @@ import LoadingComponent from "../utility/loading-component";
 import { useChatHistory } from "@/hooks/use-chat-bot-hisstory";
 import { Stethoscope } from "lucide-react";
 import { routing } from "@/i18n/routing";
+import ChatNavHeader from "../utility/header/ChatNavHeader";
 
 const ChatContent = ({
   packages,
@@ -119,7 +120,7 @@ const ChatContent = ({
           labels={labels}
         />
         <SidebarInset className="p-0! m-0! flex flex-col">
-          <NavHeader
+          <ChatNavHeader
             sessionId={sessionID}
             status={status}
             shareSlug={shareSlug}
@@ -200,7 +201,7 @@ const ChatContent = ({
           labels={labels}
         />
         <SidebarInset className="p-0! m-0! ">
-          <NavHeader
+          <ChatNavHeader
             sessionId={sessionID}
             status={status}
             shareSlug={shareSlug}

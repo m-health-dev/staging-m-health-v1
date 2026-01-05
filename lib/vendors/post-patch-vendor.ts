@@ -3,6 +3,8 @@
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 import { createClient } from "@/utils/supabase/server";
 import { error } from "console";
+import { getLocale } from "next-intl/server";
+import { revalidatePath } from "next/cache";
 import { success } from "zod";
 
 const apiBaseUrl =
@@ -42,6 +44,13 @@ export async function addVendor(payload: {
         error: `Failed to sent vendor/create data. Cause: ${res.status} - ${data.message}`,
       };
     }
+
+    const locale = await getLocale();
+
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/vendor`);
+    revalidatePath(`/${locale}/vendor/${data.slug}`);
+    revalidatePath(`/${locale}/studio/vendor/${data.slug}`);
 
     return {
       data,
@@ -91,6 +100,12 @@ export async function updateVendor(
         error: `Failed to sent vendor/update data. Cause: ${res.status} - ${data.message}`,
       };
     }
+    const locale = await getLocale();
+
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/vendor`);
+    revalidatePath(`/${locale}/vendor/${data.slug}`);
+    revalidatePath(`/${locale}/studio/vendor/${data.slug}`);
 
     return {
       data,

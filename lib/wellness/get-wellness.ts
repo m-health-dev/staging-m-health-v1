@@ -15,7 +15,7 @@ export async function getAllWellness(page: number = 1, per_page: number = 10) {
     const res = await fetch(
       `${apiBaseUrl}/api/v1/wellness?page=${page}&per_page=${per_page}`,
       {
-        next: { revalidate: 60 },
+        cache: "no-store",
         method: "GET",
         headers: {
           "X-API-Key": apiSecretKey,

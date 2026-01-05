@@ -17,6 +17,7 @@ export async function getAllPublicMedicalEquipment(
     const res = await fetch(
       `${apiBaseUrl}/api/v1/medical-equipment?status=published&page=${page}&per_page=${per_page}`,
       {
+        next: { revalidate: 60 },
         method: "GET",
         headers: {
           "X-API-Key": apiSecretKey,
@@ -59,6 +60,7 @@ export async function getAllMedicalEquipment(
     const res = await fetch(
       `${apiBaseUrl}/api/v1/medical-equipment?page=${page}&per_page=${per_page}`,
       {
+        cache: "no-store",
         method: "GET",
         headers: {
           "X-API-Key": apiSecretKey,

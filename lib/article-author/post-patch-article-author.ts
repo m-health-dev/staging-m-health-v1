@@ -3,6 +3,8 @@
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 import { createClient } from "@/utils/supabase/server";
 import { error } from "console";
+import { getLocale } from "next-intl/server";
+import { revalidatePath } from "next/cache";
 import { success } from "zod";
 
 const apiBaseUrl =
@@ -36,6 +38,13 @@ export async function addArticleAuthor(payload: {
         error: `Failed to sent article-author/create data. Cause: ${res.status} - ${data.message}`,
       };
     }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/article`);
+    revalidatePath(`/${locale}/studio/article/author`);
+    revalidatePath(`/${locale}/article/${data.slug}`);
+    revalidatePath(`/${locale}/studio/article/author/${data.slug}`);
 
     return {
       data,
@@ -79,6 +88,13 @@ export async function updateArticleAuthor(
         error: `Failed to sent article-author/update data. Cause: ${res.status} - ${data.message}`,
       };
     }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/article`);
+    revalidatePath(`/${locale}/studio/article/author`);
+    revalidatePath(`/${locale}/article/${data.slug}`);
+    revalidatePath(`/${locale}/studio/article/author/${data.slug}`);
 
     return {
       data,

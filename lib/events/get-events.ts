@@ -31,6 +31,7 @@ export async function getAllEvents(page: number = 1, per_page: number = 10) {
         data: [],
         links: null,
         meta: null,
+        total: 0,
         error: `Failed to receive events/read data. Cause : ${json.message}`,
       };
     }
@@ -40,6 +41,7 @@ export async function getAllEvents(page: number = 1, per_page: number = 10) {
       data: json.data,
       links: json.links,
       meta: json.meta,
+      total: json.total,
       success: true,
     };
   } catch (error) {

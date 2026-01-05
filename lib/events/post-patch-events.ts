@@ -47,6 +47,12 @@ export async function addEvent(payload: {
       };
     }
 
+    const locale = await getLocale();
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/event`);
+    revalidatePath(`/${locale}/event/${data.slug}`);
+    revalidatePath(`/${locale}/studio/events/${data.slug}`);
+
     return {
       data,
       success: true,
@@ -102,7 +108,10 @@ export async function updateEvent(
       };
     }
 
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/event`);
     revalidatePath(`/${locale}/event/${data.slug}`);
+    revalidatePath(`/${locale}/studio/events/${data.slug}`);
 
     return {
       data,

@@ -26,12 +26,13 @@ export async function addMedical(payload: {
   id_medical_package_content: string;
   included: string[];
   vendor_id: string;
-  hotel_id: string;
+  hotel_id?: string;
   real_price: number;
   discount_price: number;
   status: string;
 }) {
   try {
+    const locale = await getLocale();
     console.log("Sending medical/create to BE:", payload);
     const accessToken = await getAccessToken();
     const res = await fetch(`${apiBaseUrl}/api/v1/medical`, {
@@ -51,6 +52,11 @@ export async function addMedical(payload: {
         error: `Failed to sent medical/create data. Cause: ${res.status} - ${data.message}`,
       };
     }
+
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/medical`);
+    revalidatePath(`/${locale}/medical/${data.slug}`);
+    revalidatePath(`/${locale}/studio/medical/${data.slug}`);
 
     return {
       data,
@@ -110,7 +116,10 @@ export async function updateMedical(
       };
     }
 
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/medical`);
     revalidatePath(`/${locale}/medical/${data.slug}`);
+    revalidatePath(`/${locale}/studio/medical/${data.slug}`);
 
     return {
       data,

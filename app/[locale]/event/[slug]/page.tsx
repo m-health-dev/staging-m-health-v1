@@ -29,10 +29,10 @@ const EventsContent = async ({
     <Wrapper>
       <ContainerWrap className="mt-10">
         <div className="grid lg:grid-cols-4 grid-cols-1 gap-5 items-center">
-          <div className="col-span-1">
+          <div className="lg:col-span-1">
             <CarouselEvent e={e} />
           </div>
-          <div className="col-span-3">
+          <div className="lg:col-span-3">
             <div className="flex flex-col gap-4">
               <h2 className="text-primary font-semibold">
                 {locale === routing.defaultLocale ? e.id_title : e.en_title}
@@ -65,18 +65,27 @@ const EventsContent = async ({
                         specificFormat="HH:mm"
                       />{" "}
                       -{" "}
-                      <LocalDateTime date={e.end_date} specificFormat="HH:mm" />
+                      <LocalDateTime
+                        date={e.end_date}
+                        specificFormat={`HH:mm ${
+                          locale === routing.defaultLocale ? "WIB" : "UTC"
+                        }`}
+                      />
                     </p>
                   ) : (
                     <p className="text-muted-foreground">
                       <LocalDateTime
                         date={e.start_date}
-                        specificFormat="DD MMM YYYY - HH:mm"
+                        specificFormat={`DD MMM YYYY - HH:mm ${
+                          locale === routing.defaultLocale ? "WIB" : "UTC"
+                        }`}
                       />{" "}
                       {locale === routing.defaultLocale ? "sampai" : "to"}{" "}
                       <LocalDateTime
                         date={e.end_date}
-                        specificFormat="DD MMM YYYY - HH:mm"
+                        specificFormat={`DD MMM YYYY - HH:mm ${
+                          locale === routing.defaultLocale ? "WIB" : "UTC"
+                        }`}
                       />
                     </p>
                   )}
@@ -105,7 +114,7 @@ const EventsContent = async ({
       </ContainerWrap>
       <ContainerWrap className="mb-[10vh]">
         <div className="grid lg:grid-cols-4 grid-cols-1 gap-5 items-start mt-10">
-          <div className="col-span-3 bg-white p-5 rounded-2xl border">
+          <div className="lg:col-span-3 bg-white p-5 rounded-2xl border">
             <p className="text-sm! text-muted-foreground mb-2">
               {locale === routing.defaultLocale
                 ? "Tentang Acara"
@@ -123,8 +132,8 @@ const EventsContent = async ({
               />
             </div>
           </div>
-          <div>
-            <div className="bg-white border rounded-2xl p-4">
+          <div className="lg:order-last order-first">
+            <div className="bg-white border rounded-2xl p-4 ">
               <p className="text-primary font-semibold">
                 {locale === routing.defaultLocale
                   ? "Informasi Registrasi"

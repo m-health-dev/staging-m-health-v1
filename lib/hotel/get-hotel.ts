@@ -47,6 +47,7 @@ export async function getAllHotel(page: number = 1, per_page: number = 10) {
     const res = await fetch(
       `${apiBaseUrl}/api/v1/hotels?page=${page}&per_page=${per_page}`,
       {
+        cache: "no-store",
         method: "GET",
         headers: {
           "X-API-Key": apiSecretKey,

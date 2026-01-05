@@ -36,7 +36,7 @@ export function NavMenu({
     icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   }[];
 }) {
-  const { isMobile } = useSidebar();
+  // const { isMobile } = useSidebar();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">

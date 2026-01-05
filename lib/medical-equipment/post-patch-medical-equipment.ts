@@ -46,6 +46,12 @@ export async function addMedicalEquipment(payload: {
       };
     }
 
+    const locale = await getLocale();
+
+    revalidatePath(`/${locale}/equipment`);
+    revalidatePath(`/${locale}/equipment/${data.slug}`);
+    revalidatePath(`/${locale}/studio/equipment/${data.slug}`);
+
     return {
       data,
       success: true,
@@ -98,7 +104,9 @@ export async function updateMedicalEquipment(
       };
     }
 
+    revalidatePath(`/${locale}/equipment`);
     revalidatePath(`/${locale}/equipment/${data.slug}`);
+    revalidatePath(`/${locale}/studio/equipment/${data.slug}`);
 
     return {
       data,

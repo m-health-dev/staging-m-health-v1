@@ -31,6 +31,7 @@ const CurrentEventsGrid = ({
   if (!Array.isArray(data) || data.length <= 0) {
     return <FailedGetDataNotice />;
   }
+
   return (
     <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
       {data.map((e, i) => (
@@ -74,8 +75,8 @@ const CurrentEventsGrid = ({
                     <p className="text-muted-foreground">{e.location_name}</p>
                   </Link>
                 </div>
-                <div className="events_location flex gap-2 items-center">
-                  <Calendar className="size-4" />
+                <div className="events_location flex gap-2 items-start">
+                  <Calendar className="size-4 mt-1" />
                   {new Date(e.start_date).toLocaleDateString("id-ID") ===
                   new Date(e.end_date).toLocaleDateString("id-ID") ? (
                     <p className="text-muted-foreground">
@@ -86,21 +87,32 @@ const CurrentEventsGrid = ({
                       ,{" "}
                       <LocalDateTime
                         date={e.start_date}
-                        specificFormat="HH:mm"
+                        specificFormat={`HH:mm ${
+                          locale === routing.defaultLocale ? "WIB" : "UTC"
+                        }`}
                       />{" "}
                       -{" "}
-                      <LocalDateTime date={e.end_date} specificFormat="HH:mm" />
+                      <LocalDateTime
+                        date={e.end_date}
+                        specificFormat={`HH:mm ${
+                          locale === routing.defaultLocale ? "WIB" : "UTC"
+                        }`}
+                      />
                     </p>
                   ) : (
                     <p className="text-muted-foreground">
                       <LocalDateTime
                         date={e.start_date}
-                        specificFormat="DD MMM YYYY - HH:mm"
+                        specificFormat={`DD MMM YYYY - HH:mm ${
+                          locale === routing.defaultLocale ? "WIB" : "UTC"
+                        }`}
                       />{" "}
                       {locale === routing.defaultLocale ? "sampai" : "to"}{" "}
                       <LocalDateTime
                         date={e.end_date}
-                        specificFormat="DD MMM YYYY - HH:mm"
+                        specificFormat={`DD MMM YYYY - HH:mm ${
+                          locale === routing.defaultLocale ? "WIB" : "UTC"
+                        }`}
                       />
                     </p>
                   )}

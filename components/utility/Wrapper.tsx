@@ -4,11 +4,11 @@ import Footer from "./footer/Footer";
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main>
+    <>
       <NavHeader />
       {children}
       <Footer />
-    </main>
+    </>
   );
 };
 

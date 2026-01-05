@@ -1,19 +1,34 @@
+import { Button } from "@/components/ui/button";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import Wrapper from "@/components/utility/Wrapper";
 import { getCommits } from "@/lib/GitChangeLog";
 import {
+  ArrowLeftCircle,
   Code,
   GitCommitHorizontal,
   GitPullRequestCreateArrow,
+  Turntable,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function Changelog() {
   const commits: any[] = await getCommits();
 
   return (
     <ContainerWrap>
+      <div>
+        <Link href={"/home?return_from=changelog"}>
+          <Button
+            variant="outline"
+            className="rounded-full mt-10 text-primary pointer-events-auto cursor-pointer"
+          >
+            <ArrowLeftCircle className="mr-2 size-5" />
+            Back to Home
+          </Button>
+        </Link>
+      </div>
       <div className="font-bold text-primary text-start py-10 sticky top-0 bg-linear-to-b from-background via-background z-20">
         <div className="flex lg:flex-row flex-col lg:items-center items-start gap-2">
           <div className="bg-white p-2 w-8 h-8 aspect-square rounded-full border border-primary flex justify-center items-center">

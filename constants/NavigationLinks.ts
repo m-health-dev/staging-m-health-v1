@@ -49,7 +49,7 @@ export const NavigationLinks = [
     },
   },
   {
-    path: "events",
+    path: "event",
     label: {
       id: "Acara",
       en: "Events",

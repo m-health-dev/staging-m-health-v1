@@ -53,6 +53,7 @@ export async function getAllArticleCategory(
     const res = await fetch(
       `${apiBaseUrl}/api/v1/article-categories?page=${page}&per_page=${per_page}`,
       {
+        cache: "no-store",
         method: "GET",
         headers: {
           "X-API-Key": apiSecretKey,

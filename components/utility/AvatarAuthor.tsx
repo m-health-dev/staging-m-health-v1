@@ -18,10 +18,12 @@ const AvatarAuthor = ({
   author_id,
   size = "sm",
   locale,
+  asCard,
 }: {
   author_id?: string;
   size?: "sm" | "md" | "lg";
   locale: string;
+  asCard?: boolean;
 }) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -156,7 +158,8 @@ const AvatarAuthor = ({
         </p>
         <p
           className={cn(
-            "text-muted-foreground normal-case line-clamp-1 text-xs! italic"
+            "text-muted-foreground normal-case line-clamp-1 text-xs! italic",
+            asCard && "hidden"
           )}
         >
           {data?.jobdesc}

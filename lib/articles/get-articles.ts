@@ -105,6 +105,7 @@ export async function getAllPublicArticles(
         data: [],
         links: null,
         meta: null,
+        total: 0,
         error: `Failed to receive articles/read data. Cause : ${json.message}`,
       };
     }
@@ -114,6 +115,7 @@ export async function getAllPublicArticles(
       data: json.data,
       links: json.links,
       meta: json.meta,
+      total: json.total,
       success: true,
     };
   } catch (error) {

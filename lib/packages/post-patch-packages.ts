@@ -55,6 +55,13 @@ export async function addPackage(payload: {
       };
     }
 
+    const locale = await getLocale();
+
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/package`);
+    revalidatePath(`/${locale}/package/${data.slug}`);
+    revalidatePath(`/${locale}/studio/packages/${data.slug}`);
+
     return {
       data,
       success: true,
@@ -116,7 +123,10 @@ export async function updatePackage(
       };
     }
 
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/package`);
     revalidatePath(`/${locale}/package/${data.slug}`);
+    revalidatePath(`/${locale}/studio/packages/${data.slug}`);
 
     return {
       data,

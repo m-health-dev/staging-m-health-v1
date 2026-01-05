@@ -31,12 +31,16 @@ const MedicalPage = async ({
   const locale = await getLocale();
   return (
     <Wrapper>
+      <div className="font-bold text-white mb-20 pt-40 pb-20 -mt-28 text-center bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
+        <ContainerWrap>
+          <h1>
+            {locale === routing.defaultLocale
+              ? "Paket Medis"
+              : "Our Medical Packages"}
+          </h1>
+        </ContainerWrap>
+      </div>{" "}
       <ContainerWrap>
-        <h1 className="font-bold text-primary my-20 text-center">
-          {locale === routing.defaultLocale
-            ? "Layanan Medis Kami"
-            : "Our Medical Services"}
-        </h1>{" "}
         <Suspense fallback={<SkeletonComponent per_page={per_page} />}>
           <Content
             params={params}

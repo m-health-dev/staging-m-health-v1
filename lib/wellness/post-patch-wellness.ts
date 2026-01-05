@@ -26,7 +26,7 @@ export async function addWellness(payload: {
   id_wellness_package_content: string;
   included: string[];
   vendor_id: string;
-  hotel_id: string;
+  hotel_id?: string;
   real_price: number;
   discount_price: number;
   status: string;
@@ -52,6 +52,12 @@ export async function addWellness(payload: {
         error: `Failed to sent wellness/create data. Cause: ${res.status} - ${data.message}`,
       };
     }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/wellness`);
+    revalidatePath(`/${locale}/wellness/${data.slug}`);
+    revalidatePath(`/${locale}/studio/wellness/${data.slug}`);
 
     return {
       data,
@@ -111,7 +117,10 @@ export async function updateWellness(
       };
     }
 
+    revalidatePath(`/${locale}/home`);
+    revalidatePath(`/${locale}/wellness`);
     revalidatePath(`/${locale}/wellness/${data.slug}`);
+    revalidatePath(`/${locale}/studio/wellness/${data.slug}`);
 
     return {
       data,
