@@ -29,7 +29,7 @@ export default function CalendarDatePicker({
         <PopoverTrigger asChild>
           <div
             id="date"
-            className="flex items-center border rounded-2xl h-12 px-2 w-full justify-between font-normal"
+            className="flex items-center border rounded-2xl h-12 px-2 w-full justify-between font-normal bg-white"
           >
             {value ? (
               <LocalDateTime date={`${value}`} specificFormat="DD MMMM YYYY" />
