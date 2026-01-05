@@ -213,7 +213,7 @@ const MedicalDetailClient = ({
         <div className="flex lg:flex-row flex-col lg:gap-8 gap-4 lg:items-center items-start my-5">
           <div>
             <p className="text-xs! font-medium text-muted-foreground mb-2">
-              {labels.hospital}
+              {labels.vendor}
             </p>
             <AvatarVendorHotel
               size="md"
@@ -222,17 +222,19 @@ const MedicalDetailClient = ({
               vendor_id={p.vendor_id}
             />
           </div>
-          <div>
-            <p className="text-xs! font-medium text-muted-foreground mb-2">
-              Hotel
-            </p>
-            <AvatarVendorHotel
-              size="md"
-              type="hotel"
-              hotel_id={p.hotel_id}
-              locale={locale}
-            />
-          </div>
+          {p.hotel_id && (
+            <div>
+              <p className="text-xs! font-medium text-muted-foreground mb-2">
+                Hotel
+              </p>
+              <AvatarVendorHotel
+                size="md"
+                type="hotel"
+                hotel_id={p.hotel_id}
+                locale={locale}
+              />
+            </div>
+          )}
         </div>
         <div className="lg:hidden flex my-5">
           <PriceInfo

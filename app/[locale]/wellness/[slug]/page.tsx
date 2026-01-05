@@ -35,6 +35,7 @@ const WellnessDetailSlug = async ({
           unisex: t("unisex"),
           hospital: t("hospital"),
           price_info: t("price_info"),
+          vendor: t("vendor"),
         }}
       />
     </Wrapper>

@@ -103,7 +103,7 @@ const AvatarVendorHotel = ({
       </div>
     </div>
   ) : // Jika data ada dan memiliki logo
-  data.logo ? (
+  data.logo !== null ? (
     <div>
       <button
         onClick={() => router.push(`/${locale}/${type}/${data.slug}`)}
