@@ -28,7 +28,7 @@ export async function getAllArticleAuthorWithoutPagination() {
       };
     }
 
-    console.log({ json });
+    // console.log({ json });
     return {
       data: json.data,
       success: true,

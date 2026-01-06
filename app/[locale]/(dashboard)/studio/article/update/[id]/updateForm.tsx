@@ -69,6 +69,13 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
   const router = useRouter();
   const locale = useLocale();
 
+  const authorIds = (data.author ?? []).map((a: any) =>
+    typeof a === "string" ? a : a?.id
+  );
+  const categoryIds = (data.category ?? []).map((c: any) =>
+    typeof c === "string" ? c : c?.id
+  );
+
   const form = useForm<z.infer<typeof ArticleSchema>>({
     resolver: zodResolver(ArticleSchema),
     defaultValues: {
@@ -77,8 +84,8 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
       en_content: data.en_content || "",
       id_content: data.id_content || "",
       highlight_image: data.highlight_image || "",
-      author: data.author || [],
-      category: data.category || [],
+      author: authorIds,
+      category: categoryIds,
       status: data.status || "",
     },
   });
@@ -158,6 +165,8 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
     }
   }
 
+  // const authorIds = data.author.map((authorId) => authorId.id);
+
   return (
     <ContainerWrap className="pb-20">
       <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5 flex justify-between items-center">
@@ -236,8 +245,8 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
               </div>
               <hr />
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <AuthorMultiSelectField readAuthorIds={data.author} />
-                <CategoryMultiSelectField readCategoryIds={data.category} />
+                <AuthorMultiSelectField readAuthorIds={authorIds} />
+                <CategoryMultiSelectField readCategoryIds={categoryIds} />
               </div>
               <hr />
 

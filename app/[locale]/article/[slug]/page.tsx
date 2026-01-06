@@ -49,15 +49,12 @@ const ArticleContent = async ({
             </p>
           </div>
           <div className="flex flex-row gap-5 mt-5">
-            <div className="flex flex-wrap">
+            <div className="flex flex-wrap gap-5">
               {article.author &&
-                article.author.map((authorID: string, index: number) => (
-                  <AvatarAuthor
-                    key={index}
-                    size="md"
-                    author_id={authorID}
-                    locale={locale}
-                  />
+                article.author.map((author) => (
+                  <div key={author.id}>
+                    <AvatarAuthor author={author} size="md" locale={locale} />
+                  </div>
                 ))}
             </div>
           </div>
@@ -71,9 +68,9 @@ const ArticleContent = async ({
               "https://placehold.co/800x450.png?text=M+HEALTH+DEVELOPMENT"
             }
             alt={article.slug}
-            width={800}
-            height={450}
-            className="w-full h-auto aspect-video rounded-2xl my-10"
+            width={1920}
+            height={1080}
+            className="w-full h-auto aspect-video rounded-2xl my-10 object-cover object-center"
           />
         </div>
       </ContainerWrap>

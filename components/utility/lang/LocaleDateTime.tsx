@@ -16,8 +16,8 @@ export default function LocalDateTime({
   date: string | Date;
   specificFormat?: string;
 }) {
-  let formattedDate: string;
   const locale = useLocale();
+  let formattedDate: string;
 
   if (locale === "id") {
     // Indonesia → WIB (Asia/Jakarta, UTC+7)

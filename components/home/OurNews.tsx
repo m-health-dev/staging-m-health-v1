@@ -43,9 +43,7 @@ const Content = async () => {
 
   const { data: articlesResult } = await getAllPublicArticles(1, 4);
 
-  const articles = Array.isArray(articlesResult.data)
-    ? articlesResult.data
-    : [];
+  const articles = Array.isArray(articlesResult) ? articlesResult : [];
 
   const t = await getTranslations("utility");
   return (

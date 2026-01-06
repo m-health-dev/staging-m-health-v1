@@ -1,104 +1,120 @@
 "use client";
 
-import { getHotelByID } from "@/lib/hotel/get-hotel";
-import { getVendorByID } from "@/lib/vendors/get-vendor";
 import Image from "next/image";
 import Avatar from "boring-avatars";
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { getArticleAuthorByID } from "@/lib/article-author/get-article-author";
 
 const authorCache: Record<string, any> = {};
 
 const AvatarAuthor = ({
-  author_id,
+  author,
   size = "sm",
   locale,
   asCard,
 }: {
-  author_id?: string;
+  author?: any;
   size?: "sm" | "md" | "lg";
   locale: string;
   asCard?: boolean;
 }) => {
+  const authorImage = author?.profile_image;
+  const authorName = author?.name;
+  const authorJobdesc = author?.jobdesc;
+
+  console.log("author avatar author:", author);
+
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  useEffect(() => {
-    const loadData = async () => {
-      const key = `${author_id}`;
+  const [imageError, setImageError] = useState(false);
 
-      // kalau sudah ada di cache → langsung pakai
-      if (authorCache[key]) {
-        setData(authorCache[key]);
-        setLoading(false);
-        return;
-      }
+  useRouter();
 
-      try {
-        setLoading(true);
+  // useEffect(() => {
+  //   // if author changes, don't keep previous broken-image state
+  //   setImageError(false);
+  // }, [author]);
 
-        let res = null;
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     if (!author) {
+  //       setData(null);
+  //       setLoading(false);
+  //       return;
+  //     }
 
-        res = (await getArticleAuthorByID(author_id!)).data;
+  //     const key = `${author}`;
 
-        const result = res ?? null;
+  //     // kalau sudah ada di cache → langsung pakai
+  //     if (authorCache[key]) {
+  //       setData(authorCache[key]);
+  //       setLoading(false);
+  //       return;
+  //     }
 
-        authorCache[key] = result; // simpan cache
-        setData(result);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //     try {
+  //       setLoading(true);
 
-    loadData();
-  }, [author_id]);
+  //       let res = null;
+
+  //       res = (await getArticleAuthorByID(author)).data;
+
+  //       const result = res ?? null;
+
+  //       authorCache[key] = result; // simpan cache
+  //       setData(result);
+  //     } catch (error) {
+  //       console.error(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   loadData();
+  // }, [author]);
 
   // fallback avatar ketika loading atau logo tidak tersedia
-  return loading ? (
-    <div className="inline-flex gap-2 items-center">
-      <div
-        className={cn(
-          size === "sm" && "w-7 h-7",
-          size === "md" && "w-10 h-10",
-          size === "lg" && "w-14 h-14"
-        )}
-      >
-        <Skeleton
-          className={cn(
-            "rounded-full",
-            size === "sm" && "w-7 h-7",
-            size === "md" && "w-10 h-10",
-            size === "lg" && "w-14 h-14"
-          )}
-        />
-      </div>
-      <div
-        className={cn(
-          "w-32",
-          size === "sm" && "h-5",
-          size === "md" && "h-7",
-          size === "lg" && "h-10"
-        )}
-      >
-        <Skeleton
-          className={cn(
-            "w-32 rounded-full",
-            size === "sm" && "h-5",
-            size === "md" && "h-7",
-            size === "lg" && "h-10"
-          )}
-        />
-      </div>
-    </div>
-  ) : // Jika data ada dan memiliki logo
-  data.profile_image ? (
+  // loading ? (
+  //   <div className="inline-flex gap-2 items-center">
+  //     <div
+  //       className={cn(
+  //         size === "sm" && "w-7 h-7",
+  //         size === "md" && "w-10 h-10",
+  //         size === "lg" && "w-14 h-14"
+  //       )}
+  //     >
+  //       <Skeleton
+  //         className={cn(
+  //           "rounded-full",
+  //           size === "sm" && "w-7 h-7",
+  //           size === "md" && "w-10 h-10",
+  //           size === "lg" && "w-14 h-14"
+  //         )}
+  //       />
+  //     </div>
+  //     <div
+  //       className={cn(
+  //         "w-32",
+  //         size === "sm" && "h-5",
+  //         size === "md" && "h-7",
+  //         size === "lg" && "h-10"
+  //       )}
+  //     >
+  //       <Skeleton
+  //         className={cn(
+  //           "w-32 rounded-full",
+  //           size === "sm" && "h-5",
+  //           size === "md" && "h-7",
+  //           size === "lg" && "h-10"
+  //         )}
+  //       />
+  //     </div>
+  //   </div>
+  // ) : // Jika data ada dan memiliki logo
+  return authorImage ? (
     <div>
       <button
         // onClick={() => router.push(`/${locale}/${type}/${data.slug}`)}
@@ -106,8 +122,12 @@ const AvatarAuthor = ({
       >
         <div className="inline-flex gap-2 items-center">
           <Image
-            src={data.profile_image}
-            alt={data.slug || "author-profile-image"}
+            src={
+              imageError
+                ? "https://placehold.co/80x80/png?text=No+Image"
+                : authorImage
+            }
+            alt={authorName || "author-profile-image"}
             width={80}
             height={80}
             className={cn(
@@ -116,6 +136,7 @@ const AvatarAuthor = ({
               size === "md" && "w-10 h-10",
               size === "lg" && "w-14 h-14"
             )}
+            onError={() => setImageError(true)}
           />
           <p
             className={cn(
@@ -125,7 +146,7 @@ const AvatarAuthor = ({
               size === "lg" && "text-base!"
             )}
           >
-            {data?.name}
+            {authorName}
           </p>
         </div>
       </button>
@@ -133,7 +154,7 @@ const AvatarAuthor = ({
   ) : (
     <div className="inline-flex gap-2 items-center">
       <Avatar
-        name={data?.name}
+        name={authorName ?? author ?? "Unknown"}
         className={cn(
           "border rounded-full",
           size === "sm" && "w-7 h-7",
@@ -154,7 +175,7 @@ const AvatarAuthor = ({
             size === "lg" && "text-base!"
           )}
         >
-          {data?.name}
+          {authorName ?? "Unknown"}
         </p>
         <p
           className={cn(
@@ -162,7 +183,7 @@ const AvatarAuthor = ({
             asCard && "hidden"
           )}
         >
-          {data?.jobdesc}
+          {authorJobdesc ?? ""}
         </p>
       </div>
     </div>

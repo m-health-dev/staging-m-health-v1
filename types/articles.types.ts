@@ -28,7 +28,7 @@ export type ArticleType = {
   en_content: string;
   id_content: string;
   highlight_image: string;
-  author: string[];
+  author: Array<ArticleAuthorType>;
   category: string[];
   status: string;
 };

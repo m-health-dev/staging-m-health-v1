@@ -6,6 +6,7 @@ import LocalDateTime from "../utility/lang/LocaleDateTime";
 import { ArticleType } from "@/types/articles.types";
 import { routing } from "@/i18n/routing";
 import Link from "next/link";
+import AvatarAuthor from "../utility/AvatarAuthor";
 
 const OurNewsGrid = ({
   data,
@@ -37,17 +38,20 @@ const OurNewsGrid = ({
             >
               <div className="relative aspect-video">
                 <Image
-                  src={
-                    "https://placehold.co/720x403.png?text=M+HEALTH+DEVELOPMENT"
-                  } // Ganti dengan n.image_url saat tersedia
-                  width={720}
-                  height={403}
+                  src={n.highlight_image} // Ganti dengan n.image_url saat tersedia
+                  width={1920}
+                  height={1080}
                   alt={n.en_title}
                   className="w-full aspect-video object-center object-cover rounded-2xl z-10"
                 />
                 <div className="flex flex-wrap gap-2 absolute bottom-5 left-5">
                   {n.category?.map((cat, i) => (
-                    <span key={i}>{cat}</span>
+                    <p
+                      key={i}
+                      className="bg-primary px-3 py-1 rounded-full text-white capitalize"
+                    >
+                      {cat}
+                    </p>
                   ))}
                 </div>
               </div>
@@ -61,28 +65,14 @@ const OurNewsGrid = ({
                 <h5 className="capitalize text-primary group-hover:text-white transition-all duration-300 font-bold line-clamp-2">
                   {locale === routing.defaultLocale ? n.id_title : n.en_title}
                 </h5>
-                <p className="line-clamp-2 text-muted-foreground group-hover:text-white/50 transition-all duration-300 my-2">
+                {/* <p className="line-clamp-2 text-muted-foreground group-hover:text-white/50 transition-all duration-300 my-2">
                   {locale === routing.defaultLocale
                     ? n.id_content
                     : n.en_content}
-                </p>
+                </p> */}
 
                 <div className="inline-flex gap-2 items-center mt-2">
-                  <Avatar
-                    name={n.author[0] || "Unknown"}
-                    colors={[
-                      "#3e77ab",
-                      "#22b26e",
-                      "#f2f26f",
-                      "#fff7bd",
-                      "#95cfb7",
-                    ]}
-                    variant="beam"
-                    size={20}
-                  />
-                  <p className="text-sm! group-hover:text-white text-health normal-case line-clamp-1">
-                    {n.author[0] || "Unknown"}
-                  </p>
+                  <AvatarAuthor author={n.author[0]} locale={locale} asCard />
                 </div>
               </div>
             </div>

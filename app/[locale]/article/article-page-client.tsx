@@ -31,8 +31,17 @@ const ArticlePageClient = ({
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
   const router = useRouter();
+
+  console.log({ articles });
   return (
     <div className="mb-[10vh]">
+      {articles.length === 0 && (
+        <p className="text-center text-muted-foreground my-10">
+          {locale === routing.defaultLocale
+            ? "Tidak ada artikel."
+            : "No articles available."}
+        </p>
+      )}
       <div className="grid 3xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-7 *:lg:last:hidden *:3xl:last:grid">
         {articles.map((n) => {
           return (
@@ -48,6 +57,7 @@ const ArticlePageClient = ({
                 <div className="relative aspect-video">
                   <Image
                     src={
+                      n.highlight_image ||
                       "https://placehold.co/720x403.png?text=M+HEALTH+DEVELOPMENT"
                     } // Ganti dengan n.image_url saat tersedia
                     width={720}
@@ -55,6 +65,7 @@ const ArticlePageClient = ({
                     alt={n.en_title}
                     className="w-full aspect-video object-center object-cover rounded-2xl z-10"
                   />
+
                   <div className="flex flex-wrap gap-2 absolute bottom-5 left-5">
                     {n.category?.map((cat, i) => (
                       <p
@@ -76,18 +87,15 @@ const ArticlePageClient = ({
                   <h5 className="capitalize text-primary group-hover:text-white transition-all duration-300 font-bold line-clamp-2">
                     {locale === routing.defaultLocale ? n.id_title : n.en_title}
                   </h5>
-                  <p className="line-clamp-2 text-muted-foreground group-hover:text-white/50 transition-all duration-300 my-2">
+                  {/* <p className="line-clamp-2 text-muted-foreground group-hover:text-white/50 transition-all duration-300 my-2">
+                  div
                     {locale === routing.defaultLocale
                       ? n.id_content
                       : n.en_content}
-                  </p>
+                  </p> */}
 
                   <div className="inline-flex gap-2 items-center mt-2">
-                    <AvatarAuthor
-                      author_id={n.author[0] || "Unknown"}
-                      locale={locale}
-                      asCard
-                    />
+                    <AvatarAuthor author={n.author[0]} locale={locale} asCard />
                   </div>
                 </div>
               </div>
