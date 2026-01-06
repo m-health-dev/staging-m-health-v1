@@ -228,14 +228,18 @@ const ChatStart = ({
       <div className="flex flex-col lg:items-center max-w-full">
         <div className="start_conversation mb-10 lg:text-center text-start">
           <h2 className="text-primary font-extrabold mb-2">
-            {locale === routing.defaultLocale
-              ? "Sedang nggak enak badan?"
-              : "Are you feeling unwell?"}
+            {accounts?.fullname
+              ? locale === routing.defaultLocale
+                ? `Halo, ${accounts.fullname.split(" ")[0]}! 👋`
+                : `Hi, ${accounts.fullname.split(" ")[0]}! 👋`
+              : locale === routing.defaultLocale
+              ? `Halo, Aku Mei! Senang bertemu denganmu!`
+              : `Hi, I'm Mei! Nice to meet you!`}
           </h2>
           <h3 className="text-primary">
             {locale === routing.defaultLocale
-              ? "Tenang aku disini buat bantu kamu"
-              : "Don't worry, I'm here to help you."}
+              ? "Tanyakan apapun tentang kesehatanmu."
+              : "Ask me anything about your health."}
           </h3>
         </div>
 

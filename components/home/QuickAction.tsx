@@ -6,6 +6,7 @@ import { Input } from "../ui/input";
 import {
   Activity,
   CalendarHeart,
+  Camera,
   HeartPlus,
   MessageCircleHeart,
   Newspaper,
@@ -21,6 +22,16 @@ const QuickAction = ({ includeSearchBar }: { includeSearchBar?: boolean }) => {
   const locale = useLocale();
 
   const quickLinks = [
+    {
+      id: 0,
+      href: `/${locale}/connect`,
+      label: `${
+        locale === routing.defaultLocale
+          ? "Tele Konsultasi"
+          : "Tele Consultation"
+      }`,
+      icon: <Camera />,
+    },
     {
       id: 1,
       href: `/${locale}`,
@@ -45,7 +56,7 @@ const QuickAction = ({ includeSearchBar }: { includeSearchBar?: boolean }) => {
     },
     {
       id: 4,
-      href: `/${locale}/events`,
+      href: `/${locale}/event`,
       label: `${
         locale === routing.defaultLocale ? "Acara Terbaru" : "Our Events"
       }`,
@@ -87,7 +98,7 @@ const QuickAction = ({ includeSearchBar }: { includeSearchBar?: boolean }) => {
         )}
 
         {/* Quick Links Bar */}
-        <div className="flex w-full overflow-x-auto lg:overflow-x-visible hide-scroll pb-2 gap-4 items-center justify-start lg:justify-center no-scrollbar cursor-grab">
+        <div className="flex w-full overflow-x-auto lg:overflow-x-visible hide-scroll pb-2 gap-4 items-center justify-start lg:justify-center no-scrollbar cursor-grab lg:flex-nowrap md:flex-wrap max-w-full">
           {visibleLinks.map(({ id, href, label, icon }) => (
             <Link key={href} href={href} className="group shrink-0">
               <button className="cursor-pointer bg-white py-1.5 pl-2 pr-5 border rounded-full inline-flex gap-3 items-center shadow-sm group-hover:bg-primary transition-all duration-300">

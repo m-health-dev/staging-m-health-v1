@@ -219,7 +219,7 @@ const ChatNavHeader = ({
                           </p>
                           <div className="flex items-center gap-2 w-full mt-4">
                             <div className="p-4 bg-accent rounded-2xl flex w-full">
-                              <p className="text-sm! line-clamp-1 w-full">{`${baseUrl}/share/${shareLink}`}</p>
+                              <p className="text-sm! text-wrap w-full">{`https://staging.m-health.id/share/${shareLink}`}</p>
                             </div>
                             <button
                               onClick={() => handleCopyName()}
