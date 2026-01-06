@@ -2,7 +2,7 @@ import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { createClient } from "@/utils/supabase/server";
 import CWDComponent from "./cwd-component";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 
 const CWDPage = async ({
   searchParams,
@@ -10,22 +10,26 @@ const CWDPage = async ({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
   const supabase = await createClient();
-  const session = (await searchParams).session;
-  const chatSession = String(session);
+  const params = await searchParams;
+  const sessionParam = params.session;
+  const sessionString = Array.isArray(sessionParam)
+    ? sessionParam[0]
+    : sessionParam;
+  const chatSession =
+    typeof sessionString === "string" && sessionString.trim()
+      ? sessionString.trim()
+      : undefined;
 
-  const { data: sessionChat } = await supabase
-    .from("chat_activity")
-    .select("id")
-    .eq("id", chatSession);
+  let checkSession = false;
 
-  if (
-    !sessionChat ||
-    chatSession === undefined ||
-    chatSession === null ||
-    !session ||
-    !chatSession
-  ) {
-    notFound();
+  if (chatSession) {
+    const { data: sessionChat } = await supabase
+      .from("chat_activity")
+      .select("id")
+      .eq("id", chatSession)
+      .limit(1);
+
+    checkSession = Array.isArray(sessionChat) && sessionChat.length > 0;
   }
   const { data, error: sessionError } = await supabase.auth.getSession();
 
@@ -42,7 +46,7 @@ const CWDPage = async ({
     }
   }
 
-  console.log(session);
+  // console.log(session);
 
   const cookie = await cookies();
 
@@ -53,12 +57,21 @@ const CWDPage = async ({
     .from("consult_schedule")
     .select("scheduled_datetime");
 
+  const locale = await getLocale();
+  const t = await getTranslations("consult");
+
   return (
     <CWDComponent
       accounts={userData}
       publicID={publicID}
       dateBooked={dateBooked}
+      checkSession={checkSession}
       chatSession={chatSession}
+      labels={{
+        title: t("title"),
+        desc: t("desc"),
+      }}
+      locale={locale}
     />
   );
 };

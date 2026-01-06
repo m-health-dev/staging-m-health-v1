@@ -28,7 +28,7 @@ export async function getAllArticleWithoutPagination() {
       };
     }
 
-    console.log({ json });
+    // console.log({ json });
     return {
       data: json.data,
       success: true,

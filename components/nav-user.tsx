@@ -78,15 +78,24 @@ export function NavUser({
         throw error;
       }
 
-      toast.success("Kamu Berhasil Keluar!");
+      toast.success(
+        locale === routing.defaultLocale
+          ? "Kamu Berhasil Keluar!"
+          : "Signed out successfully!"
+      );
 
       // Redirect to login page after successful sign out
       router.refresh();
     } catch (err: any) {
       setError(err.message || "An error occurred while signing out");
-      toast.error("Yah, Kamu Tidak Berhasil Keluar", {
-        description: err.message || "An error occurred while signing out",
-      });
+      toast.error(
+        locale === routing.defaultLocale
+          ? "Yah, Kamu Tidak Berhasil Keluar"
+          : "Failed to sign out",
+        {
+          description: err.message || "An error occurred while signing out",
+        }
+      );
     } finally {
       setIsLoading(false);
     }
@@ -164,7 +173,7 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 {user.google_avatar || user.avatar_url ? (
                   <Image
-                    src={user.google_avatar || user.avatar_url}
+                    src={user.avatar_url || user.google_avatar!}
                     height={100}
                     width={100}
                     alt={user.fullname}

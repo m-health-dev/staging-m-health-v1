@@ -23,19 +23,17 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import {
-  handleSendMagicLinkAction,
-  handleSendOTPAction,
-  handleVerifyOTPAction,
-} from "../actions/auth.actions";
+import { handleSendMagicLinkAction } from "../actions/auth.actions";
 import Image from "next/image";
 import z from "zod";
+import { locale } from "dayjs";
+import { routing } from "@/i18n/routing";
 
 export const RequestMagicLinkSchema = z.object({
   email: z.email(),
 });
 
-const MagicLinkClient = () => {
+const MagicLinkClient = ({ locale }: { locale: string }) => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const [warning, setWarning] = React.useState("");
@@ -80,9 +78,22 @@ const MagicLinkClient = () => {
   function handleResponse(response: any) {
     if (!response) return;
 
-    if (response.error) setError(response.error);
-    if (response.warning) setWarning(response.warning);
-    if (response.success) setSuccess(response.success);
+    if (response.error)
+      setError(
+        locale === routing.defaultLocale ? response.error.id : response.error.en
+      );
+    if (response.warning)
+      setWarning(
+        locale === routing.defaultLocale
+          ? response.warning.id
+          : response.warning.en
+      );
+    if (response.success)
+      setSuccess(
+        locale === routing.defaultLocale
+          ? response.success.id
+          : response.success.en
+      );
   }
 
   return (
@@ -99,24 +110,32 @@ const MagicLinkClient = () => {
             />
             <div className="mb-10">
               <h3 className="font-bold text-primary mb-2">
-                Magic Link Request
+                {locale === "id"
+                  ? "Masuk dengan Tautan Ajaib"
+                  : "Sign In with Magic Link"}
               </h3>
             </div>
 
             {error && (
-              <AlertBox type="error" title="Permintaan Gagal" message={error} />
+              <AlertBox
+                type="error"
+                title={locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                message={error}
+              />
             )}
             {warning && (
               <AlertBox
                 type="warning"
-                title="Permintaan Gagal"
+                title={locale === "id" ? "Permintaan Gagal" : "Request Failed"}
                 message={warning}
               />
             )}
             {success && (
               <AlertBox
                 type="success"
-                title="Permintaan Berhasil"
+                title={
+                  locale === "id" ? "Permintaan Berhasil" : "Request Successful"
+                }
                 message={success}
               />
             )}
@@ -149,14 +168,13 @@ const MagicLinkClient = () => {
             </Form>
 
             <p className="text-muted-foreground text-sm! mt-5 text-center">
-              Don't have an account?{" "}
+              {locale === "id" ? "Belum punya akun?" : "Don't have an account?"}{" "}
               <span
                 onClick={() => router.push("/sign-up")}
                 className="text-health cursor-pointer underline"
               >
-                Sign Up
+                {locale === "id" ? "Daftar." : "Sign Up."}
               </span>{" "}
-              now.
             </p>
           </div>
         </div>

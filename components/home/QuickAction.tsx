@@ -50,7 +50,7 @@ const QuickAction = ({ includeSearchBar }: { includeSearchBar?: boolean }) => {
       id: 3,
       href: `/${locale}/wellness`,
       label: `${
-        locale === routing.defaultLocale ? "Paket Kesehatan" : "Wellness"
+        locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness"
       }`,
       icon: <HeartPlus />,
     },

@@ -16,122 +16,53 @@ import sha1 from "crypto-js/sha1";
 import { NextResponse } from "next/server";
 import { use } from "react";
 
-const signUpSchema = z.object({
-  fullname: z
-    .string()
-    .min(5, {
-      message: "Email Wajib Diisi!",
-    })
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-      message: "Email yang kamu gunakan salah!",
-    }),
-  email: z
-    .email()
-    .min(5, {
-      message: "Email Wajib Diisi!",
-    })
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-      message: "Email yang kamu gunakan salah!",
-    }),
-  password: z
-    .string()
-    .min(8, {
-      message: "Kami mengharuskan password berisi setidaknya 8 karakter",
-    })
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
-      message:
-        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, dan karakter spesial",
-    }),
-});
 const signInSchema = z.object({
   email: z
     .string()
-    .min(5, {
-      message: "Email Wajib Diisi!",
-    })
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-      message: "Email yang kamu gunakan salah!",
-    }),
+    .min(5)
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
   password: z
     .string()
-    .min(8, {
-      message: "Kami mengharuskan password berisi setidaknya 8 karakter",
-    })
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
-      message:
-        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, dan karakter spesial",
-    }),
+    .min(8)
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/),
   redirect: z.string(),
 });
 const magicSchema = z.object({
   email: z
     .string()
-    .min(5, {
-      message: "Email Wajib Diisi!",
-    })
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-      message: "Email yang kamu gunakan salah!",
-    }),
+    .min(5)
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
 });
 
 // Zod schemas
 const emailSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.email(),
 });
 
 const otpSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  otp: z.string().min(6, { message: "OTP must be at least 6 characters" }),
+  email: z.email(),
+  otp: z.string().min(6),
 });
 
-const forgotPasswordSchema = z.object({
-  email: z
-    .string()
-    .min(5, {
-      message: "Email Wajib Diisi!",
-    })
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-      message: "Email yang kamu gunakan salah!",
-    }),
-  callbackUrl: z.string(),
-});
 const resetPasswordSchema = z.object({
   password: z
     .string()
-    .min(8, {
-      message: "Kami mengharuskan password berisi setidaknya 8 karakter",
-    })
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
-      message:
-        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, serta karakter spesial",
-    }),
+    .min(8)
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/),
   confirmPassword: z
     .string()
-    .min(8, {
-      message: "Kami mengharuskan password berisi setidaknya 8 karakter",
-    })
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/, {
-      message:
-        "Gunakan setidaknya 8 karakter dan memiliki huruf besar, huruf kecil, angka, serta karakter spesial",
-    }),
+    .min(8)
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/),
 });
-
-// export async function getUserRole() {
-//   const supabase = await createClient();
-//   const checkUserRole = (await supabase.auth.getClaims()).data?.claims;
-//   const readUserRole = checkUserRole?.user_role as string | "404";
-
-//   return readUserRole;
-// }
 
 export async function getUserRole() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
 
-  if (error || !data) return "404";
+  if (error || !data) return "N/A";
 
   const claims = data.claims as any;
-  return claims.user_role ?? "404";
+  return claims.user_role ?? "N/A";
 }
 
 export async function getAccessToken() {
@@ -163,13 +94,17 @@ export const signUpAction = async (data: {
 
   if (!validatedData.success) {
     return {
-      success: false,
       errors: validatedData.error.cause,
     };
   }
 
   if (!validatedData.data.email || !validatedData.data.password) {
-    return { error: "Email and password are required" };
+    return {
+      error: {
+        id: "Email dan password wajib diisi. - 0X1IEP",
+        en: "Email and password are required. - 0X1IEP",
+      },
+    };
   }
 
   // Check if password has been pwned
@@ -193,7 +128,10 @@ export const signUpAction = async (data: {
       const localCount = Number(count).toLocaleString(`id-ID`);
       if (hashSuffix === suffix) {
         return {
-          error: `Password ini telah ditemukan sebanyak ${localCount} kali dalam kebocoran data. Silakan pilih password lain yang lebih aman. - Have I Been Pwned`,
+          error: {
+            id: `Password ini telah ditemukan sebanyak ${localCount} kali dalam kebocoran data. Silakan pilih password lain yang lebih aman. - 0X1PWB`,
+            en: `This password has been found ${localCount} times in data breaches. Please choose a different, more secure password. - 0X1PWB`,
+          },
         };
       }
     }
@@ -233,26 +171,36 @@ export const signUpAction = async (data: {
 
     if (signUpError?.code === "weak_password") {
       return {
-        warning:
-          "Password harus memiliki minimal 8 karakter dan mencakup huruf besar, huruf kecil, angka, dan karakter spesial.",
+        warning: {
+          id: "Password yang kamu gunakan terlalu lemah. Silahkan gunakan kombinasi huruf besar, huruf kecil, angka, dan karakter spesial dengan minimal 8 karakter. - 0X1WP",
+          en: "The password you used is too weak. Please use a combination of uppercase letters, lowercase letters, numbers, and special characters with a minimum of 8 characters. - 0X1WP",
+        },
       };
     }
 
     return {
-      error:
-        signUpError.message ||
-        "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi.",
+      error: {
+        id: `${signUpError.message} - 0X1ERX`,
+        en: `${signUpError.message} - 0X1ERX`,
+      },
     };
   } else if (
     signUpData.user &&
     signUpData.user.identities &&
     signUpData.user.identities.length === 0
   ) {
-    return { warning: "Email ini sudah terdaftar." };
+    return {
+      warning: {
+        id: "Registrasi gagal. Silahkan coba lagi atau gunakan metode pendaftaran lainnya. - 0X1SF",
+        en: "Registration failed. Please try again or use another sign-up method. - 0X1SF",
+      },
+    };
   } else {
     return {
-      success:
-        "Terima kasih telah mendaftar! Silakan periksa email Anda untuk link verifikasi.",
+      success: {
+        id: "Terima kasih telah mendaftar! Silakan periksa email Anda untuk link verifikasi.",
+        en: "Thank you for signing up! Please check your email for the verification link.",
+      },
       user_id: signUpData.user?.id,
     };
   }
@@ -267,7 +215,7 @@ export const signInAction = async (data: {
   const validatedData = signInSchema.safeParse(data);
   const locale = await getLocale();
 
-  console.log("vakidatedData:", validatedData);
+  // console.log("validatedData:", validatedData);
 
   if (!validatedData.success) {
     return {
@@ -277,7 +225,12 @@ export const signInAction = async (data: {
   }
 
   if (!validatedData.data.email || !validatedData.data.password) {
-    return { error: "Email and password are required" };
+    return {
+      error: {
+        id: "Email dan password wajib diisi. - 0X2IEP",
+        en: "Email and password are required. - 0X2IEP",
+      },
+    };
   }
 
   const { data: user, error } = await supabase.auth.signInWithPassword({
@@ -308,25 +261,39 @@ export const signInAction = async (data: {
     console.error(error.code + " " + error.message);
     if (error?.code === "unexpected_failure") {
       return {
-        error:
-          "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi. Jika, masalah ini terus terjadi hubungi kami di halaman bantuan.",
+        error: {
+          id: "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi. Jika, masalah ini terus terjadi hubungi kami di halaman bantuan. - 0X2UF",
+          en: "An unknown error occurred. Please try again. If this problem persists, contact us on the help page. - 0X2UF",
+        },
       };
     } else if (error?.code === "invalid_credentials") {
       return {
-        error: "Silahkan cek kembali email dan password yang kamu gunakan.",
+        error: {
+          id: "Silahkan cek kembali email dan password yang kamu gunakan. - 0X2IC",
+          en: "Please check the email and password you used. - 0X2IC",
+        },
       };
     } else if (error?.code === "email_not_confirmed") {
       return {
-        warning:
-          "Silahkan cek email kamu dan konfirmasi email yang kamu gunakan.",
+        warning: {
+          id: "Silahkan cek email kamu dan konfirmasi email yang kamu gunakan. - 0X2ENC",
+          en: "Please check your email and confirm the email you used. - 0X2ENC",
+        },
       };
     } else if (error?.code === "user_banned") {
       return {
-        error:
-          "Akun kamu telah ditangguhkan. Untuk informasi selengkapnya silahkan hubungi kami di halaman bantuan.",
+        error: {
+          id: "Akun kamu telah ditangguhkan. Untuk informasi selengkapnya silahkan hubungi kami di halaman bantuan. - 0X2BAN",
+          en: "Your account has been suspended. For more information, please contact us on the help page. - 0X2BAN",
+        },
       };
     } else if (error.code) {
-      return { error: `${error.message}` };
+      return {
+        error: {
+          id: `${error.message} - 0X2ERX`,
+          en: `${error.message} - 0X2ERX`,
+        },
+      };
     }
   } else {
     return redirect(redirectTo);
@@ -347,7 +314,12 @@ export const handleSendMagicLinkAction = async (data: { email: string }) => {
   }
 
   if (!validatedData.data.email) {
-    return { error: "Email are required" };
+    return {
+      error: {
+        id: "Email are required - 0X3IE",
+        en: "Email are required - 0X3IE",
+      },
+    };
   }
 
   let options = {
@@ -366,17 +338,27 @@ export const handleSendMagicLinkAction = async (data: { email: string }) => {
   if (error?.code == `otp_disabled`) {
     console.error(error.code + " " + error.message);
     return {
-      warning: "Kamu tidak dapat menggunakan Magic Link untuk registrasi akun.",
+      warning: {
+        id: "Kamu tidak dapat menggunakan Magic Link untuk registrasi akun. - 0X3CUR",
+        en: "You cannot use Magic Link to register an account. - 0X3CUR",
+      },
     };
     // return encodedRedirect("error", "/magic", "Pengiriman OTP Gagal. Kamu tidak dapat menggunakan metode OTP untuk registrasi akun.");
   } else if (error) {
     console.error(error.code + " " + error.message);
-    return { warning: "Silahkan cek kembali email yang kamu kirimkan." };
+    return {
+      warning: {
+        id: `${error.message} - 0X3ER`,
+        en: `${error.message} - 0X3ER`,
+      },
+    };
     // return encodedRedirect("error", "/magic", "Silahkan cek kembali email yang kamu kirimkan.");
   }
   return {
-    success:
-      "Silahkan cek email anda, kami telah mengirimkan tautan untuk masuk.",
+    success: {
+      id: "Silahkan cek email anda, kami telah mengirimkan tautan untuk masuk. ",
+      en: "Please check your email, we have sent a link to log in. ",
+    },
   };
   // return encodedRedirect(
   //   "success",
@@ -385,96 +367,96 @@ export const handleSendMagicLinkAction = async (data: { email: string }) => {
   // );
 };
 
-export const handleSendOTPAction = async (data: { email: string }) => {
-  const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+// export const handleSendOTPAction = async (data: { email: string }) => {
+//   const supabase = await createClient();
+//   const origin = (await headers()).get("origin");
 
-  const validatedData = emailSchema.safeParse(data);
+//   const validatedData = emailSchema.safeParse(data);
 
-  if (!validatedData.success) {
-    return {
-      success: false,
-      errors: validatedData.error.cause,
-    };
-  }
+//   if (!validatedData.success) {
+//     return {
+//       success: false,
+//       errors: validatedData.error.cause,
+//     };
+//   }
 
-  if (!validatedData.data.email) {
-    return { error: "Email are required" };
-  }
+//   if (!validatedData.data.email) {
+//     return { error: "Email are required" };
+//   }
 
-  let options = {
-    emailRedirectTo: `${origin}/auth/callback`,
-    shouldCreateUser: true,
-  };
+//   let options = {
+//     emailRedirectTo: `${origin}/auth/callback`,
+//     shouldCreateUser: true,
+//   };
 
-  const { allowPassword } = getAuthTypes();
-  if (allowPassword) options.shouldCreateUser = false;
+//   const { allowPassword } = getAuthTypes();
+//   if (allowPassword) options.shouldCreateUser = false;
 
-  const { error } = await supabase.auth.signInWithOtp({
-    email: validatedData.data.email,
-    options: options,
-  });
+//   const { error } = await supabase.auth.signInWithOtp({
+//     email: validatedData.data.email,
+//     options: options,
+//   });
 
-  if (error?.code == `otp_disabled`) {
-    console.error(error.code + " " + error.message);
-    return {
-      warning: "Kamu tidak dapat menggunakan Magic Link untuk registrasi akun.",
-    };
-    // return encodedRedirect("error", "/magic", "Pengiriman OTP Gagal. Kamu tidak dapat menggunakan metode OTP untuk registrasi akun.");
-  } else if (error?.code === "unexpected_failure") {
-    return {
-      error:
-        "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi. Jika, masalah ini terus terjadi hubungi kami di halaman bantuan.",
-    };
-  } else if (error) {
-    console.error(error.code + " " + error.message);
-    return { warning: error.message };
-    // return encodedRedirect("error", "/magic", "Silahkan cek kembali email yang kamu kirimkan.");
-  }
-  // return encodedRedirect("req", "/otp/verify", `${validatedData.data.email}`)
-  return redirect(`/one-time/verify?email=${validatedData.data.email}`);
-};
+//   if (error?.code == `otp_disabled`) {
+//     console.error(error.code + " " + error.message);
+//     return {
+//       warning: "Kamu tidak dapat menggunakan Magic Link untuk registrasi akun.",
+//     };
+//     // return encodedRedirect("error", "/magic", "Pengiriman OTP Gagal. Kamu tidak dapat menggunakan metode OTP untuk registrasi akun.");
+//   } else if (error?.code === "unexpected_failure") {
+//     return {
+//       error:
+//         "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi. Jika, masalah ini terus terjadi hubungi kami di halaman bantuan.",
+//     };
+//   } else if (error) {
+//     console.error(error.code + " " + error.message);
+//     return { warning: error.message };
+//     // return encodedRedirect("error", "/magic", "Silahkan cek kembali email yang kamu kirimkan.");
+//   }
+//   // return encodedRedirect("req", "/otp/verify", `${validatedData.data.email}`)
+//   return redirect(`/one-time/verify?email=${validatedData.data.email}`);
+// };
 
-export const handleVerifyOTPAction = async (data: {
-  email: string;
-  otp: string;
-}) => {
-  const supabase = await createClient();
-  const validatedData = otpSchema.safeParse(data);
+// export const handleVerifyOTPAction = async (data: {
+//   email: string;
+//   otp: string;
+// }) => {
+//   const supabase = await createClient();
+//   const validatedData = otpSchema.safeParse(data);
 
-  if (!validatedData.success) {
-    return {
-      success: false,
-      errors: validatedData.error.cause,
-    };
-  }
+//   if (!validatedData.success) {
+//     return {
+//       success: false,
+//       errors: validatedData.error.cause,
+//     };
+//   }
 
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.verifyOtp({
-    email: validatedData.data.email,
-    token: validatedData.data.otp,
-    type: "email",
-  });
+//   const {
+//     data: { session },
+//     error,
+//   } = await supabase.auth.verifyOtp({
+//     email: validatedData.data.email,
+//     token: validatedData.data.otp,
+//     type: "email",
+//   });
 
-  if (error) {
-    console.error(error.code + " " + error.message);
-    if (error.code === "invalid_otp") {
-      return { warning: "Kode OTP tidak valid. Silakan coba lagi." };
-    } else {
-      return {
-        error: "Terjadi kesalahan saat memverifikasi OTP. Silakan coba lagi.",
-      };
-    }
-  }
+//   if (error) {
+//     console.error(error.code + " " + error.message);
+//     if (error.code === "invalid_otp") {
+//       return { warning: "Kode OTP tidak valid. Silakan coba lagi." };
+//     } else {
+//       return {
+//         error: "Terjadi kesalahan saat memverifikasi OTP. Silakan coba lagi.",
+//       };
+//     }
+//   }
 
-  if (!session) {
-    return { error: "Sesi tidak berhasil dibuat. Silakan coba lagi." };
-  }
+//   if (!session) {
+//     return { error: "Sesi tidak berhasil dibuat. Silakan coba lagi." };
+//   }
 
-  return redirect("/dashboard");
-};
+//   return redirect("/dashboard");
+// };
 
 export const signWithGoogle = async (redirectTo?: string) => {
   const supabase = await createClient();
@@ -487,7 +469,8 @@ export const signWithGoogle = async (redirectTo?: string) => {
 
     options: {
       redirectTo: `${origin}/auth/oauth?next=${encodeURIComponent(
-        redirectTo?.replace("https://staging.m-health.id", "") || "/dashboard"
+        redirectTo?.replace(process.env.NEXT_PUBLIC_BASE_URL || "", "") ||
+          "/dashboard"
       )}`,
       queryParams: {
         access_type: "offline",
@@ -499,17 +482,24 @@ export const signWithGoogle = async (redirectTo?: string) => {
     console.error(error.code + " " + error.message);
     if (error?.code === "unexpected_failure") {
       return {
-        error:
-          "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi. Jika, masalah ini terus terjadi hubungi kami di halaman bantuan.",
+        error: {
+          id: "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi. Jika, masalah ini terus terjadi hubungi kami di halaman bantuan. - 0X4UF",
+          en: "An unknown error occurred. Please try again. If this problem persists, contact us on the help page. - 0X4UF",
+        },
       };
     } else if (error?.code === "invalid_credentials") {
       return {
-        warning: "Silahkan cek kembali email dan password yang kamu gunakan.",
+        warning: {
+          id: "Silahkan cek kembali email dan password yang kamu gunakan. - 0X4IC",
+          en: "Please check the email and password you used. - 0X4IC",
+        },
       };
     } else if (error?.code === "email_not_confirmed") {
       return {
-        warning:
-          "Silahkan cek email kamu dan konfirmasi email yang kamu gunakan.",
+        warning: {
+          id: "Silahkan cek email kamu dan konfirmasi email yang kamu gunakan. - 0X4ENC",
+          en: "Please check your email and confirm the email you used. - 0X4ENC",
+        },
       };
     } else if (error.code) {
       return { error: `${error.message}` };
@@ -538,7 +528,12 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   }
 
   if (!validatedData.data.email) {
-    return { error: "Email are required" };
+    return {
+      error: {
+        id: "Email harus diisi. - 0X5ER",
+        en: "Email are required. - 0X5ER",
+      },
+    };
   }
 
   // Cek jumlah permintaan reset berdasarkan email
@@ -551,7 +546,10 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   if (reqErr) {
     return {
       success: false,
-      error: "Terjadi kesalahan saat memeriksa permintaan reset.",
+      error: {
+        id: "Terjadi kesalahan saat memeriksa permintaan reset. - 0X5CRRA",
+        en: "An error occurred while checking the reset request. - 0X5CRRA",
+      },
     };
   }
 
@@ -559,8 +557,10 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   if (checkRequested && checkRequested.request >= 3) {
     return {
       success: false,
-      error:
-        "Anda sudah melakukan percobaan reset password sebanyak 3 (tiga) kali. Silahkan hubungi dukungan.",
+      error: {
+        id: "Anda sudah melakukan percobaan reset password sebanyak 3 (tiga) kali. Silahkan hubungi dukungan. - 0X5MRR",
+        en: "You have attempted to reset your password 3 (three) times. Please contact support. - 0X5MRR",
+      },
     };
   }
 
@@ -581,7 +581,10 @@ export const forgotPasswordAction = async (data: { email: string }) => {
     console.error("UPSERT ERROR:", updateErr);
     return {
       success: false,
-      error: "Terjadi kesalahan saat mencatat permintaan reset.",
+      error: {
+        id: "Tidak dapat memperbarui data permintaan reset. - 0X5URX",
+        en: "Cannot update reset request data. - 0X5URX",
+      },
     };
   }
 
@@ -596,7 +599,10 @@ export const forgotPasswordAction = async (data: { email: string }) => {
     console.error("SELECT ERROR:", selectErr);
     return {
       success: false,
-      error: "Tidak dapat mengambil data permintaan reset.",
+      error: {
+        id: "Tidak dapat mengambil data permintaan reset. - 0X5GRX",
+        en: "Cannot retrieve reset request data. - 0X5GRX",
+      },
     };
   }
 
@@ -612,14 +618,20 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   if (emailErr) {
     return {
       success: false,
-      error: "Terjadi kesalahan saat memeriksa email.",
+      error: {
+        id: "Terjadi kesalahan saat memeriksa email. - 0X5CEX",
+        en: "An error occurred while checking the email. - 0X5CEX",
+      },
     };
   }
 
   if (!checkEmail) {
     return {
       success: false,
-      error: "Email tidak terdata dalam basis data kami.",
+      error: {
+        id: "Email tidak terdata dalam basis data kami. - 0X5NED",
+        en: "Email is not registered in our database. - 0X5NED",
+      },
     };
   }
 
@@ -633,8 +645,10 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   if (error) {
     console.error(error.code + " " + error.message);
     return {
-      warning:
-        "Untuk sementara, kami tidak dapat mengirimkan tautan untuk Reset Password. Coba beberapa saat lagi.",
+      warning: {
+        id: "Terjadi kesalahan saat mengirimkan email reset password. Silahkan coba lagi. - 0X5ERX",
+        en: "An error occurred while sending the password reset email. Please try again. - 0X5ERX",
+      },
     };
   }
 
@@ -646,8 +660,10 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   // }
 
   return {
-    success:
-      "Silahkan cek email kamu, Kami telah mengirimkan tautan untuk Reset Password.",
+    success: {
+      id: "Silahkan cek email kamu, Kami telah mengirimkan tautan untuk Reset Password.",
+      en: "Please check your email, we have sent a link to Reset Password.",
+    },
   };
 };
 
@@ -667,11 +683,21 @@ export const resetPasswordAction = async (data: {
   }
 
   if (!validatedData.data.password || !validatedData.data.confirmPassword) {
-    return { warning: "Password diperlukan untuk melanjutkan." };
+    return {
+      warning: {
+        id: "Password dan konfirmasi password wajib diisi. - 0X6IEP",
+        en: "Password and confirm password are required. - 0X6IEP",
+      },
+    };
   }
 
   if (validatedData.data.password !== validatedData.data.confirmPassword) {
-    return { warning: "Password tidak sama." };
+    return {
+      warning: {
+        id: "Password tidak sama. - 0X6IEQ",
+        en: "Passwords do not match. - 0X6IEQ",
+      },
+    };
   }
 
   const hashedPasswordSHA = sha1(validatedData.data.confirmPassword);
@@ -701,7 +727,10 @@ export const resetPasswordAction = async (data: {
       const localCount = Number(count).toLocaleString(`id-ID`);
       if (hashSuffix === suffix) {
         return {
-          error: `Password ini telah ditemukan sebanyak ${localCount} kali dalam kebocoran data. Silakan pilih password lain yang lebih aman. - Have I Been Pwned`,
+          error: {
+            id: `Password ini telah ditemukan sebanyak ${localCount} kali dalam kebocoran data. Silakan pilih password lain yang lebih aman. - 0X6PWB`,
+            en: `This password has been found ${localCount} times in data breaches. Please choose a different, more secure password. - 0X6PWB`,
+          },
         };
       }
     }
@@ -724,10 +753,20 @@ export const resetPasswordAction = async (data: {
 
   if (error) {
     if (error.code === "same_password") {
-      return { warning: "Silahkan gunakan kombinasi password yang lain." };
+      return {
+        warning: {
+          id: "Mohon gunakan kombinasi password lainnya. - 0X6SP",
+          en: "Please use a different password combination. - 0X6SP",
+        },
+      };
     }
     console.error(error.code + " " + error.message);
-    return { error: "Password tidak berhasil diperbarui." };
+    return {
+      error: {
+        id: "Terjadi kesalahan saat memperbarui password. Silahkan coba lagi. - 0X6ERX",
+        en: "An error occurred while updating the password. Please try again. - 0X6ERX",
+      },
+    };
   }
 
   await supabase.auth.signOut();
@@ -735,14 +774,19 @@ export const resetPasswordAction = async (data: {
     redirect(
       `/${locale}/sign-in?reset=success&email=${user.user?.email}&record=${checkRequested.request}`
     ),
-    { success: "Password berhasil diperbarui." }
+    {
+      success: {
+        id: "Password berhasil diperbarui. Silahkan login kembali.",
+        en: "Password updated successfully. Please log in again.",
+      },
+    }
   );
 };
 
 export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  return redirect("/?sign-out=success");
+  return redirect("/?sign_out=success");
 };
 
 export async function deleteUser() {

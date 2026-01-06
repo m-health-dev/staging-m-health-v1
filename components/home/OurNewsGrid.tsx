@@ -19,7 +19,7 @@ const OurNewsGrid = ({
 }) => {
   console.log("Our News Grid data:", data.length);
   return (
-    <div className="grid 3xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-7 *:lg:last:hidden *:3xl:last:grid">
+    <div className="grid 3xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-7 *:lg:last:grid *:3xl:last:grid">
       {data.map((n) => {
         // Ambil hanya topic yang disetujui
         // const approvedTopics = Object.entries(n.topic || {})
@@ -48,9 +48,11 @@ const OurNewsGrid = ({
                   {n.category?.map((cat, i) => (
                     <p
                       key={i}
-                      className="bg-primary px-3 py-1 rounded-full text-white capitalize"
+                      className="bg-primary px-3 py-1 rounded-full text-white capitalize text-sm!"
                     >
-                      {cat}
+                      {locale === routing.defaultLocale
+                        ? cat.id_category
+                        : cat.en_category}
                     </p>
                   ))}
                 </div>
@@ -65,11 +67,15 @@ const OurNewsGrid = ({
                 <h5 className="capitalize text-primary group-hover:text-white transition-all duration-300 font-bold line-clamp-2">
                   {locale === routing.defaultLocale ? n.id_title : n.en_title}
                 </h5>
-                {/* <p className="line-clamp-2 text-muted-foreground group-hover:text-white/50 transition-all duration-300 my-2">
-                  {locale === routing.defaultLocale
-                    ? n.id_content
-                    : n.en_content}
-                </p> */}
+                <div
+                  className="line-clamp-2 text-muted-foreground group-hover:text-white/50 transition-all duration-300 my-2"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      locale === routing.defaultLocale
+                        ? n.id_content
+                        : n.en_content,
+                  }}
+                />
 
                 <div className="inline-flex gap-2 items-center mt-2">
                   <AvatarAuthor author={n.author[0]} locale={locale} asCard />

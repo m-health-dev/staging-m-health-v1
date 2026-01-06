@@ -114,10 +114,14 @@ const SignInClient = ({
 
     if (res?.error) {
       setLoading(false);
-      setError(res?.error);
+      setError(
+        locale === routing.defaultLocale ? res?.error.id : res?.error.en
+      );
     } else if (res?.warning) {
       setLoading(false);
-      setWarning(res?.warning);
+      setWarning(
+        locale === routing.defaultLocale ? res?.warning.id : res?.warning.en
+      );
     } else {
       setLoading(false);
       onSignInSuccess?.();
@@ -132,7 +136,7 @@ const SignInClient = ({
   }
 
   return component ? (
-    <div className={cn(" flex flex-col justify-center bg-white")}>
+    <div className={cn("flex flex-col justify-center bg-white ")}>
       <div
         className={cn(
           "lg:grid lg:grid-cols-2 flex flex-col gap-8 items-center justify-center lg:p-3 p-0"
@@ -168,13 +172,21 @@ const SignInClient = ({
           )}
           {error && (
             <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2 mt-2">
-              <p className="font-bold mb-1">Autentifikasi Gagal</p>
+              <p className="font-bold mb-1">
+                {locale === routing.defaultLocale
+                  ? "Autentifikasi Gagal"
+                  : "Authentication Failed"}
+              </p>
               <p className="text-sm!">{error}</p>
             </div>
           )}
           {warning && (
             <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2 mt-2">
-              <p className="font-bold mb-1">Autentifikasi Gagal</p>
+              <p className="font-bold mb-1">
+                {locale === routing.defaultLocale
+                  ? "Autentifikasi Gagal"
+                  : "Authentication Failed"}
+              </p>
               <p className="text-sm!">{warning}</p>
             </div>
           )}
@@ -204,7 +216,9 @@ const SignInClient = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      Password
+                      {locale === routing.defaultLocale
+                        ? "Kata Sandi"
+                        : "Password"}
                     </FormLabel>
                     <FormControl>
                       <div className="relative w-full h-12">
@@ -247,7 +261,9 @@ const SignInClient = ({
                   }
                 >
                   <p className="text-sm! underline cursor-pointer">
-                    I forgot my password
+                    {locale === routing.defaultLocale
+                      ? "Lupa kata sandi"
+                      : "I forgot my password"}
                   </p>
                 </button>
               </div>
@@ -256,13 +272,21 @@ const SignInClient = ({
                 disabled={loading}
                 className="w-full h-12 rounded-full"
               >
-                {loading ? <Spinner /> : <p>Sign In</p>}
+                {loading ? (
+                  <Spinner />
+                ) : (
+                  <p>
+                    {locale === routing.defaultLocale ? "Masuk" : "Sign In"}
+                  </p>
+                )}
               </Button>
             </form>
           </Form>
           <div className="flex justify-center items-center mb-5">
             <div className="border-b border-gray-300 w-full"></div>
-            <p className="px-5 text-gray-500">or</p>
+            <p className="px-5 text-gray-500">
+              {locale === routing.defaultLocale ? "atau" : "or"}
+            </p>
             <div className="border-b border-gray-300 w-full"></div>
           </div>
           <Button
@@ -271,7 +295,12 @@ const SignInClient = ({
             className="w-full h-12 rounded-full flex items-center gap-2 mb-3"
             onClick={handleGoogleSignIn}
           >
-            <FontAwesomeIcon icon={faGoogle} /> <p>Continue with Google</p>
+            <FontAwesomeIcon icon={faGoogle} />{" "}
+            <p>
+              {locale === routing.defaultLocale
+                ? "Lanjutkan dengan Google"
+                : "Continue with Google"}
+            </p>
           </Button>
 
           <Button
@@ -280,23 +309,31 @@ const SignInClient = ({
             className="w-full h-12 rounded-full flex items-center gap-2"
             onClick={() => router.push(`/${locale}/magic`)}
           >
-            <ChevronsRight className="size-5" /> <p>Magic Link Sign In</p>
+            <ChevronsRight className="size-5" />{" "}
+            <p>
+              {locale === routing.defaultLocale
+                ? "Masuk dengan Magic Link"
+                : "Magic Link Sign In"}
+            </p>
           </Button>
           <p className="text-muted-foreground text-center text-sm! mt-5">
-            Don't have an account?{" "}
+            {locale === routing.defaultLocale
+              ? "Belum punya akun?"
+              : "Don't have an account?"}{" "}
             <span
               onClick={() => router.push(`/${locale}/sign-up`)}
               className="text-health cursor-pointer underline"
             >
-              Sign Up
+              {locale === routing.defaultLocale ? "Daftar." : "Sign Up."}
             </span>{" "}
-            now.
           </p>
         </div>
       </div>
     </div>
   ) : (
-    <div className={cn("min-h-screen flex flex-col justify-center bg-white")}>
+    <div
+      className={cn("min-h-screen flex flex-col justify-center bg-white py-10")}
+    >
       <ContainerWrap size="xxl">
         <div className={cn("flex items-center justify-center")}>
           <div className={cn("w-full max-w-sm")}>
@@ -330,13 +367,21 @@ const SignInClient = ({
               )}
               {error && (
                 <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2 mt-2">
-                  <p className="font-bold mb-1">Autentifikasi Gagal</p>
+                  <p className="font-bold mb-1">
+                    {locale === routing.defaultLocale
+                      ? "Autentifikasi Gagal"
+                      : "Authentication Failed"}
+                  </p>
                   <p className="text-sm!">{error}</p>
                 </div>
               )}
               {warning && (
                 <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2 mt-2">
-                  <p className="font-bold mb-1">Autentifikasi Gagal</p>
+                  <p className="font-bold mb-1">
+                    {locale === routing.defaultLocale
+                      ? "Autentifikasi Gagal"
+                      : "Authentication Failed"}
+                  </p>
                   <p className="text-sm!">{warning}</p>
                 </div>
               )}
@@ -369,7 +414,9 @@ const SignInClient = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-primary font-semibold!">
-                          Password
+                          {locale === routing.defaultLocale
+                            ? "Kata Sandi"
+                            : "Password"}
                         </FormLabel>
                         <FormControl>
                           <div className="relative w-full h-12">
@@ -412,7 +459,9 @@ const SignInClient = ({
                       }
                     >
                       <p className="text-sm! underline cursor-pointer">
-                        I forgot my password
+                        {locale === routing.defaultLocale
+                          ? "Lupa kata sandi"
+                          : "I forgot my password"}
                       </p>
                     </button>
                   </div>
@@ -421,13 +470,21 @@ const SignInClient = ({
                     disabled={loading}
                     className="w-full h-12 rounded-full"
                   >
-                    {loading ? <Spinner /> : <p>Sign In</p>}
+                    {loading ? (
+                      <Spinner />
+                    ) : (
+                      <p>
+                        {locale === routing.defaultLocale ? "Masuk" : "Sign In"}
+                      </p>
+                    )}
                   </Button>
                 </form>
               </Form>
               <div className="flex justify-center items-center mb-5">
                 <div className="border-b border-gray-300 w-full"></div>
-                <p className="px-5 text-gray-500">or</p>
+                <p className="px-5 text-gray-500">
+                  {locale === routing.defaultLocale ? "atau" : "or"}
+                </p>
                 <div className="border-b border-gray-300 w-full"></div>
               </div>
               <Button
@@ -436,7 +493,12 @@ const SignInClient = ({
                 className="w-full h-12 rounded-full flex items-center gap-2 mb-3"
                 onClick={handleGoogleSignIn}
               >
-                <FontAwesomeIcon icon={faGoogle} /> <p>Continue with Google</p>
+                <FontAwesomeIcon icon={faGoogle} />{" "}
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Lanjutkan dengan Google"
+                    : "Continue with Google"}
+                </p>
               </Button>
 
               <Button
@@ -445,17 +507,23 @@ const SignInClient = ({
                 className="w-full h-12 rounded-full flex items-center gap-2"
                 onClick={() => router.push(`/${locale}/magic`)}
               >
-                <ChevronsRight className="size-5" /> <p>Magic Link Sign In</p>
+                <ChevronsRight className="size-5" />{" "}
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Masuk dengan Magic Link"
+                    : "Magic Link Sign In"}
+                </p>
               </Button>
               <p className="text-muted-foreground text-center text-sm! mt-5">
-                Don't have an account?{" "}
+                {locale === routing.defaultLocale
+                  ? "Belum punya akun?"
+                  : "Don't have an account?"}{" "}
                 <span
                   onClick={() => router.push(`/${locale}/sign-up`)}
                   className="text-health cursor-pointer underline"
                 >
-                  Sign Up
+                  {locale === routing.defaultLocale ? "Daftar." : "Sign Up."}
                 </span>{" "}
-                now.
               </p>
             </div>
           </div>

@@ -72,32 +72,32 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
     fetchCategories();
   }, [readCategoryIds, form]);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      setLoading(true);
-      const res = await getAllArticleCategoryWithoutPagination();
-      setCategoryData(res.data);
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     setLoading(true);
+  //     const res = await getAllArticleCategoryWithoutPagination();
+  //     setCategoryData(res.data);
 
-      if (readCategoryIds?.length) {
-        form.setValue("category", readCategoryIds, {
-          shouldDirty: false,
-          shouldValidate: true,
-        });
-      }
-      // else if (categoryIds.length === 0) {
-      //   form.setValue("category", [""]);
-      // }
+  //     if (readCategoryIds?.length) {
+  //       form.setValue("category", readCategoryIds, {
+  //         shouldDirty: false,
+  //         shouldValidate: true,
+  //       });
+  //     }
+  //     // else if (categoryIds.length === 0) {
+  //     //   form.setValue("category", [""]);
+  //     // }
 
-      setLoading(false);
-    };
+  //     setLoading(false);
+  //   };
 
-    fetchCategories();
-  }, [readCategoryIds]);
+  //   fetchCategories();
+  // }, [readCategoryIds]);
 
   const filteredCategories = useMemo(() => {
     if (!query.trim()) return categoryData.slice(0, 10);
     return categoryData.filter((c) =>
-      c.en_category.toLowerCase().includes(query.toLowerCase())
+      c.id_category.toLowerCase().includes(query.toLowerCase())
     );
   }, [categoryData, query]);
 
@@ -141,9 +141,7 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
           </FormLabel>
 
           {categoryIds.map((categoryId: string, index: number) => {
-            const category = categoryData.find(
-              (c) => c.id_category === categoryId
-            );
+            const category = categoryData.find((c) => c.id === categoryId);
 
             return (
               <div key={index} className="flex items-center gap-2">
@@ -164,7 +162,7 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
                       {loading ? (
                         <LoadingComponent />
                       ) : category ? (
-                        category.en_category
+                        category.id_category
                       ) : (
                         "Pilih Category"
                       )}
@@ -183,15 +181,13 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
                         <CommandGroup className="max-h-64 overflow-y-auto">
                           {filteredCategories.map((c) => (
                             <CommandItem
-                              key={c.id_category}
-                              value={c.en_category}
-                              onSelect={() =>
-                                updateCategory(index, c.id_category)
-                              }
-                              disabled={categoryIds.includes(c.id_category)}
+                              key={c.id}
+                              value={c.id_category}
+                              onSelect={() => updateCategory(index, c.id)}
+                              disabled={categoryIds.includes(c.id)}
                             >
                               <Avatar
-                                name={c.en_category}
+                                name={c.id_category}
                                 size={20}
                                 variant="beam"
                                 className="mr-2"
@@ -203,7 +199,7 @@ export function CategoryMultiSelectField({ readCategoryIds }: Props) {
                                   "#95cfb7",
                                 ]}
                               />
-                              {c.en_category}
+                              {c.id_category}
                             </CommandItem>
                           ))}
                         </CommandGroup>

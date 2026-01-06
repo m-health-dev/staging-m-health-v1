@@ -258,7 +258,9 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
                     <FormLabel className="text-primary font-semibold!">
                       Highlight Image
                     </FormLabel>
-                    {highlightPreview === null ? (
+                    {uploadLoadingHLImage ? (
+                      <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
+                    ) : highlightPreview === null ? (
                       <FormControl>
                         <Dropzone
                           accept={{ "image/*": [] }}
@@ -280,15 +282,13 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
                           <DropzoneContent />
                         </Dropzone>
                       </FormControl>
-                    ) : uploadLoadingHLImage ? (
-                      <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
                     ) : (
                       highlightPreview && (
                         <div className="relative">
                           <Image
                             src={highlightPreview}
-                            width={320}
-                            height={320}
+                            width={1920}
+                            height={1080}
                             alt={highlightPreview}
                             className="aspect-video w-full rounded-2xl mt-3 object-cover border"
                           />
@@ -319,7 +319,7 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
               />
 
               <hr />
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+              <div className="flex flex-col gap-5 items-start w-full">
                 <FormField
                   control={form.control}
                   name="id_content"
@@ -335,6 +335,8 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
                     </FormItem>
                   )}
                 />
+
+                <hr />
 
                 <FormField
                   control={form.control}
@@ -363,7 +365,7 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
                   size={"lg"}
                   className="rounded-full flex lg:w-fit w-full"
                 >
-                  {loading ? <Spinner /> : "Submit"}
+                  {loading ? <Spinner /> : "Update"}
                 </Button>
               </div>
             </div>

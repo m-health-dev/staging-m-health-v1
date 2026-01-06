@@ -55,6 +55,8 @@ import {
 import { baseUrl } from "@/helper/baseUrl";
 import { getShareSlug } from "@/lib/chatbot/getChatActivity";
 import { Spinner } from "@/components/ui/spinner";
+import { getUserRole } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ChatNavHeader = ({
   status,
@@ -76,6 +78,12 @@ const ChatNavHeader = ({
   const [shareLink, setShareLink] = useState(shareSlug);
 
   const [initialStatus, setInitialStatus] = useState(status);
+
+  const [dashButton, setDashButton] = useState<"admin" | "user" | "default">(
+    "default"
+  );
+
+  const [loadingAccessButton, setLoadingAccessButton] = useState(true);
 
   useEffect(() => {
     if (status === "private") {
@@ -165,6 +173,26 @@ const ChatNavHeader = ({
       toast.warning("Failed to Copy Name", { description: `${err}` });
     }
   };
+
+  useEffect(() => {
+    setLoadingAccessButton(true);
+    const fetch = async () => {
+      setLoadingAccessButton(true);
+      const role = await getUserRole();
+      if (role === "admin") {
+        setDashButton("admin");
+        setLoadingAccessButton(false);
+      } else if (role === "user") {
+        setDashButton("user");
+        setLoadingAccessButton(false);
+      } else {
+        setDashButton("default");
+        setLoadingAccessButton(false);
+      }
+    };
+
+    fetch();
+  }, []);
 
   return pathCheck ? (
     <nav className="sticky top-0 px-5 bg-background z-99 lg:border-b-0 border-b border-primary/10">
@@ -324,20 +352,45 @@ const ChatNavHeader = ({
                   </div>
                 </SheetClose>
                 <div className="flex flex-col space-y-3 mt-5">
-                  <Link
-                    href={`/${locale}/sign-in`}
-                    className="group flex w-full"
-                    data-cursor-clickable
-                  >
-                    <Button
-                      className="flex w-full rounded-full cursor-pointer"
-                      size={"lg"}
+                  {loadingAccessButton ? (
+                    <div className="w-full flex h-12">
+                      <Skeleton className="w-full h-12 rounded-full" />
+                    </div>
+                  ) : dashButton === "admin" ? (
+                    <Link
+                      href={`/${locale}/studio`}
+                      className="group flex w-full"
+                      data-cursor-clickable
                     >
-                      <h6 className="font-bold">
-                        {locale === routing.defaultLocale ? "Masuk" : "Sign In"}
-                      </h6>
-                    </Button>
-                  </Link>
+                      <Button className="flex w-full rounded-full" size={"lg"}>
+                        <h6 className="font-bold">Studio</h6>
+                      </Button>
+                    </Link>
+                  ) : dashButton === "user" ? (
+                    <Link
+                      href={`/${locale}/dashboard`}
+                      className="group flex w-full"
+                      data-cursor-clickable
+                    >
+                      <Button className="flex w-full rounded-full" size={"lg"}>
+                        <h6 className="font-bold">Dashboard</h6>
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link
+                      href={`/${locale}/sign-in`}
+                      className="group flex w-full"
+                      data-cursor-clickable
+                    >
+                      <Button className="flex w-full rounded-full" size={"lg"}>
+                        <h6 className="font-bold">
+                          {locale === routing.defaultLocale
+                            ? "Masuk"
+                            : "Sign In"}
+                        </h6>
+                      </Button>
+                    </Link>
+                  )}
                   {NavigationLinks.map((link, i) => (
                     <Link
                       key={link.path}
@@ -487,7 +540,7 @@ const ChatNavHeader = ({
                       <p className="text-primary">
                         {" "}
                         {locale === routing.defaultLocale
-                          ? "Kesehatan & Medis"
+                          ? "Kebugaran & Medis"
                           : "Wellness & Medical"}
                       </p>
                     </NavigationMenuTrigger>
@@ -495,7 +548,7 @@ const ChatNavHeader = ({
                       <NavigationMenuLink href={`/${locale}/package`}>
                         <p className="text-primary font-bold">
                           {locale === routing.defaultLocale
-                            ? "Paket Kesehatan & Medis"
+                            ? "Paket Kebugaran & Medis"
                             : "Wellness & Medical Packages"}
                         </p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
@@ -506,7 +559,7 @@ const ChatNavHeader = ({
                       <NavigationMenuLink href={`/${locale}/wellness`}>
                         <p className="text-primary font-bold">
                           {locale === routing.defaultLocale
-                            ? "Paket Kesehatan"
+                            ? "Paket Kebugaran"
                             : "Wellness Package"}
                         </p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">

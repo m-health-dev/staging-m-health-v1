@@ -5,6 +5,7 @@ import { success } from "zod";
 import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
 import { createClient } from "@/utils/supabase/client";
 import { getArticlesByID } from "./get-articles";
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -17,7 +18,7 @@ export async function deleteArticles(id: string) {
   }
   try {
     console.log("Sending articles/delete to BE:", id);
-    const articlesData = (await getArticlesByID(id)).data.data;
+    const articlesData = (await getArticlesByID(id)).data;
 
     if (!articlesData)
       return { error: "Error articles/read in articles/delete ID:", id };
@@ -50,9 +51,12 @@ export async function deleteArticles(id: string) {
       error: errorDeleteArticles,
     } = await supabase.from("article").delete({ count: "exact" }).eq("id", id);
 
-    // const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
+    // const accessToken = await getAccessToken();
+
+    // const res = await fetch(`${apiBaseUrl}/api/v1/articles/${id}`, {
     //   method: "DELETE",
     //   headers: {
+    //     Authorization: `Bearer ${accessToken}`,
     //     "Content-Type": "application/json",
     //   },
     // });
@@ -66,11 +70,11 @@ export async function deleteArticles(id: string) {
     //   };
     // }
 
-    if (errorDeleteArticles) {
-      return {
-        error: errorDeleteArticles.message,
-      };
-    }
+    // if (errorDeleteArticles) {
+    //   return {
+    //     error: errorDeleteArticles.message,
+    //   };
+    // }
 
     return {
       deleteArticles,

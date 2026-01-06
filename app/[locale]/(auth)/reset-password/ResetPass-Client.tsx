@@ -30,8 +30,9 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { resetPasswordAction } from "../actions/auth.actions";
+import { locale } from "dayjs";
 
-const ResetPassClient = ({ image }: { image: any }) => {
+const ResetPassClient = ({ locale }: { locale: string }) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
@@ -57,10 +58,10 @@ const ResetPassClient = ({ image }: { image: any }) => {
 
     if (response?.warning) {
       setLoading(false);
-      setWarning(response.warning);
+      setWarning(locale === "id" ? response.warning.id : response.warning.en);
     } else if (response?.error) {
       setLoading(false);
-      setError(response.error);
+      setError(locale === "id" ? response.error.id : response.error.en);
     } else if (response?.success) {
       setLoading(false);
       setSuccess(`${response.success}`);
@@ -83,26 +84,39 @@ const ResetPassClient = ({ image }: { image: any }) => {
               className="object-contain mb-8 flex justify-center items-center"
               alt="M-Health Logo"
             />
-            <h3 className="font-bold text-primary mb-2">Reset Your Password</h3>
+            <h3 className="font-bold text-primary mb-2">
+              {locale === "id"
+                ? "Atur Ulang Kata Sandi Anda"
+                : "Reset Your Password"}
+            </h3>
             <p className="mb-8 text-sm! text-muted-foreground">
-              You only have 3 attempts to recover your account. After that, you
-              will need to contact support.
+              {locale === "id"
+                ? "Anda hanya memiliki 3 kali percobaan untuk memulihkan akun Anda. Setelah itu, Anda perlu menghubungi dukungan."
+                : "You only have 3 attempts to recover your account. After that, you will need to contact support."}
             </p>
             {error && (
               <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
-                <p className="font-bold mb-1">Permintaan Gagal</p>
+                <p className="font-bold mb-1">
+                  {locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                </p>
                 <p className="text-sm!">{error}</p>
               </div>
             )}
             {warning && (
               <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
-                <p className="font-bold mb-1">Permintaan Gagal</p>
+                <p className="font-bold mb-1">
+                  {locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                </p>
                 <p className="text-sm!">{warning}</p>
               </div>
             )}
             {success && (
               <div className="bg-green-50 text-green-500 p-4 border border-green-500 rounded-2xl mb-2">
-                <p className="font-bold mb-1">Permintaan Berhasil</p>
+                <p className="font-bold mb-1">
+                  {locale === "id"
+                    ? "Permintaan Berhasil"
+                    : "Request Successful"}
+                </p>
                 <p className="text-sm!">{success}</p>
               </div>
             )}
@@ -117,7 +131,7 @@ const ResetPassClient = ({ image }: { image: any }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        Password
+                        {locale === "id" ? "Kata Sandi Baru" : "New Password"}
                       </FormLabel>
                       <FormControl>
                         <div className="relative w-full h-12">
@@ -152,7 +166,9 @@ const ResetPassClient = ({ image }: { image: any }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        Confirm Password
+                        {locale === "id"
+                          ? "Konfirmasi Kata Sandi"
+                          : "Confirm Password"}
                       </FormLabel>
                       <FormControl>
                         <div className="relative w-full h-12">
@@ -184,7 +200,15 @@ const ResetPassClient = ({ image }: { image: any }) => {
                 />
 
                 <Button type="submit" className="w-full h-12 rounded-full">
-                  {loading ? <Spinner /> : <p>Reset Password</p>}
+                  {loading ? (
+                    <Spinner />
+                  ) : (
+                    <p>
+                      {locale === "id"
+                        ? "Atur Ulang Kata Sandi"
+                        : "Reset Password"}
+                    </p>
+                  )}
                 </Button>
               </form>
             </Form>

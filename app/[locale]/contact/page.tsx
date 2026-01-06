@@ -47,11 +47,12 @@ const ContactPage = async () => {
             </Link>
             <div className="mt-10">
               <h6 className="font-bold text-primary">
-                {locale === routing.defaultLocale
-                  ? "PT. Medika Integrasi Persada"
-                  : "Medika Integrasi Persada Ltd."}
+                PT. Medika Integrasi Persada
               </h6>
-              <div className="text-muted-foreground mt-2">
+              <h6 className="font-bold text-primary">
+                PT. Medika Integrasi Klinik Indonesia
+              </h6>
+              <div className="text-muted-foreground mt-4">
                 <p>
                   {locale === routing.defaultLocale
                     ? " Jl. Pandan 11A, Gading Kasri, Kec. Klojen, Kota Malang, Jawa Timur 65115"

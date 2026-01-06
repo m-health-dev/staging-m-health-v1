@@ -54,6 +54,12 @@ import {
 import { baseUrl } from "@/helper/baseUrl";
 import { getShareSlug } from "@/lib/chatbot/getChatActivity";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  getAccessToken,
+  getUserRole,
+} from "@/app/[locale]/(auth)/actions/auth.actions";
+import { set } from "zod";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const NavHeader = ({
   status,
@@ -73,6 +79,12 @@ const NavHeader = ({
 
   const [loading, setLoading] = useState(false);
   const [shareLink, setShareLink] = useState(shareSlug);
+
+  const [dashButton, setDashButton] = useState<"admin" | "user" | "default">(
+    "default"
+  );
+
+  const [loadingAccessButton, setLoadingAccessButton] = useState(true);
 
   const [initialStatus, setInitialStatus] = useState(status);
 
@@ -165,6 +177,26 @@ const NavHeader = ({
     }
   };
 
+  useEffect(() => {
+    setLoadingAccessButton(true);
+    const fetch = async () => {
+      setLoadingAccessButton(true);
+      const role = await getUserRole();
+      if (role === "admin") {
+        setDashButton("admin");
+        setLoadingAccessButton(false);
+      } else if (role === "user") {
+        setDashButton("user");
+        setLoadingAccessButton(false);
+      } else {
+        setDashButton("default");
+        setLoadingAccessButton(false);
+      }
+    };
+
+    fetch();
+  }, []);
+
   return (
     <ContainerWrap className="sticky top-8 z-99 hover:scale-101 transition-all duration-300 group">
       <nav className="px-5 z-99 lg:border-b-0 border-b border-primary/10 bg-white transition-all duration-300 rounded-full mt-8">
@@ -213,19 +245,54 @@ const NavHeader = ({
                     </div>
                   </SheetClose>
                   <div className="flex flex-col space-y-5 mt-5">
-                    <Link
-                      href={`/${locale}/sign-in`}
-                      className="group flex w-full"
-                      data-cursor-clickable
-                    >
-                      <Button className="flex w-full rounded-full" size={"lg"}>
-                        <h6 className="font-bold">
-                          {locale === routing.defaultLocale
-                            ? "Masuk"
-                            : "Sign In"}
-                        </h6>
-                      </Button>
-                    </Link>
+                    {loadingAccessButton ? (
+                      <div className="w-full flex h-12">
+                        <Skeleton className="w-full h-12 rounded-full" />
+                      </div>
+                    ) : dashButton === "admin" ? (
+                      <Link
+                        href={`/${locale}/studio`}
+                        className="group flex w-full"
+                        data-cursor-clickable
+                      >
+                        <Button
+                          className="flex w-full rounded-full"
+                          size={"lg"}
+                        >
+                          <h6 className="font-bold">Studio</h6>
+                        </Button>
+                      </Link>
+                    ) : dashButton === "user" ? (
+                      <Link
+                        href={`/${locale}/dashboard`}
+                        className="group flex w-full"
+                        data-cursor-clickable
+                      >
+                        <Button
+                          className="flex w-full rounded-full"
+                          size={"lg"}
+                        >
+                          <h6 className="font-bold">Dashboard</h6>
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/${locale}/sign-in`}
+                        className="group flex w-full"
+                        data-cursor-clickable
+                      >
+                        <Button
+                          className="flex w-full rounded-full"
+                          size={"lg"}
+                        >
+                          <h6 className="font-bold">
+                            {locale === routing.defaultLocale
+                              ? "Masuk"
+                              : "Sign In"}
+                          </h6>
+                        </Button>
+                      </Link>
+                    )}
 
                     {NavigationLinks.map((link, i) => (
                       <Link
@@ -279,7 +346,7 @@ const NavHeader = ({
                       <p className="text-primary">
                         {" "}
                         {locale === routing.defaultLocale
-                          ? "Kesehatan & Medis"
+                          ? "Kebugaran & Medis"
                           : "Wellness & Medical"}
                       </p>
                     </NavigationMenuTrigger>
@@ -287,7 +354,7 @@ const NavHeader = ({
                       <NavigationMenuLink href={`/${locale}/package`}>
                         <p className="text-primary font-bold">
                           {locale === routing.defaultLocale
-                            ? "Paket Kesehatan & Medis"
+                            ? "Paket Kebugaran & Medis"
                             : "Wellness & Medical Packages"}
                         </p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
@@ -298,7 +365,7 @@ const NavHeader = ({
                       <NavigationMenuLink href={`/${locale}/wellness`}>
                         <p className="text-primary font-bold">
                           {locale === routing.defaultLocale
-                            ? "Paket Kesehatan"
+                            ? "Paket Kebugaran"
                             : "Wellness Package"}
                         </p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
@@ -365,18 +432,51 @@ const NavHeader = ({
                 </p>
               </Link>
 
-              <Link href={`/sign-in`} className="group" data-cursor-clickable>
-                <Button
-                  size={"lg"}
-                  className="rounded-full inline-flex items-center font-normal h-10 px-5! pointer-events-auto cursor-pointer"
+              {loadingAccessButton ? (
+                <div className="w-24 h-10">
+                  <Skeleton className="w-full h-10 rounded-full" />
+                </div>
+              ) : dashButton === "admin" ? (
+                <Link
+                  href={`/${locale}/studio`}
+                  className="group"
+                  data-cursor-clickable
                 >
-                  <p>
-                    {" "}
-                    {locale === routing.defaultLocale ? "Masuk" : "Sign In"}
-                  </p>
-                  <LogIn />
-                </Button>
-              </Link>
+                  <Button
+                    className="rounded-full inline-flex items-center font-normal h-10 px-5! pointer-events-auto cursor-pointer"
+                    size={"lg"}
+                  >
+                    <p>Studio</p>
+                  </Button>
+                </Link>
+              ) : dashButton === "user" ? (
+                <Link
+                  href={`/${locale}/dashboard`}
+                  className="group"
+                  data-cursor-clickable
+                >
+                  <Button
+                    className="rounded-full inline-flex items-center font-normal h-10 px-5! pointer-events-auto cursor-pointer"
+                    size={"lg"}
+                  >
+                    <p>Dashboard</p>
+                  </Button>
+                </Link>
+              ) : (
+                <Link href={`/sign-in`} className="group" data-cursor-clickable>
+                  <Button
+                    size={"lg"}
+                    className="rounded-full inline-flex items-center font-normal h-10 px-5! pointer-events-auto cursor-pointer"
+                  >
+                    <p>
+                      {" "}
+                      {locale === routing.defaultLocale ? "Masuk" : "Sign In"}
+                    </p>
+                    <LogIn />
+                  </Button>
+                </Link>
+              )}
+
               <div>
                 <LanguageSwitcher short className="w-fit h-10!" />
               </div>

@@ -30,7 +30,9 @@ const ArticleContent = async ({
                   key={i}
                   className="capitalize bg-primary text-white px-3 py-1 rounded-full"
                 >
-                  {cat}
+                  {locale === routing.defaultLocale
+                    ? cat.id_category
+                    : cat.en_category}
                 </p>
               ))}
           </div>

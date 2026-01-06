@@ -79,19 +79,19 @@ const SignUpClient = ({ image }: { image: any }) => {
 
     if (response?.error) {
       setLoading(false);
-      setError(response.error);
+      setError(locale === "id" ? response.error.id : response.error.en);
       // toast.error(`Registrasi Gagal`, {
       //   description: `${response.error}`,
       // });
     } else if (response?.warning) {
       setLoading(false);
-      setWarning(response.warning);
+      setWarning(locale === "id" ? response.warning.id : response.warning.en);
       // toast.warning(`Registrasi Gagal`, {
       //   description: `${response.warning}`,
       // });
     } else if (response?.success) {
       setLoading(false);
-      setSuccess(`${response.success}`);
+      setSuccess(locale === "id" ? response.success.id : response.success.en);
       // toast.success(`Registrasi Berhasil`, {
       //   description: `${response.success}`,
       // });
@@ -100,7 +100,7 @@ const SignUpClient = ({ image }: { image: any }) => {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-white">
+    <div className="min-h-screen flex justify-center items-center bg-white py-10">
       <ContainerWrap size="xl">
         <div className="flex justify-center items-center">
           <div className="max-w-sm">
@@ -114,23 +114,35 @@ const SignUpClient = ({ image }: { image: any }) => {
               alt="M-Health Logo"
             />
             <h3 className="font-bold text-primary mb-10">
-              Create Your Account
+              {locale === "id" ? "Buat Akun Baru" : "Create a New Account"}
             </h3>
             {error && (
               <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
-                <p className="font-bold mb-1">Registrasi Akun Gagal</p>
+                <p className="font-bold mb-1">
+                  {locale === "id"
+                    ? "Registrasi Akun Gagal"
+                    : "Account Registration Failed"}
+                </p>
                 <p className="text-sm!">{error}</p>
               </div>
             )}
             {warning && (
               <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
-                <p className="font-bold mb-1">Registrasi Akun Gagal</p>
+                <p className="font-bold mb-1">
+                  {locale === "id"
+                    ? "Registrasi Akun Gagal"
+                    : "Account Registration Failed"}
+                </p>
                 <p className="text-sm!">{warning}</p>
               </div>
             )}
             {success && (
               <div className="bg-green-50 text-green-500 p-4 border border-green-500 rounded-2xl mb-2">
-                <p className="font-bold mb-1">Registrasi Akun Berhasil</p>
+                <p className="font-bold mb-1">
+                  {locale === "id"
+                    ? "Registrasi Akun Berhasil"
+                    : "Account Registration Successful"}
+                </p>
                 <p className="text-sm!">{success}</p>
               </div>
             )}
@@ -145,7 +157,7 @@ const SignUpClient = ({ image }: { image: any }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        Full Name
+                        {locale === "id" ? "Nama Lengkap" : "Full Name"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} type="text" className="h-12" />
@@ -175,7 +187,7 @@ const SignUpClient = ({ image }: { image: any }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        Password
+                        {locale === "id" ? "Kata Sandi" : "Password"}
                       </FormLabel>
                       <FormControl>
                         <div className="relative w-full h-12">
@@ -205,30 +217,41 @@ const SignUpClient = ({ image }: { image: any }) => {
                 />
                 <div>
                   <p className="text-muted-foreground text-sm!">
-                    By signing up you agree to the{" "}
+                    {locale === "id"
+                      ? "Dengan mendaftar, kamu setuju dengan"
+                      : "By signing up you agree to our"}{" "}
                     <span
                       className="text-health underline cursor-pointer"
                       onClick={() => router.push("/terms-of-service")}
                     >
-                      Terms of Service
+                      {locale === "id" ? "Syarat Layanan" : "Terms of Service"}
                     </span>{" "}
-                    and{" "}
+                    {locale === "id" ? "dan" : "and"}{" "}
                     <span
                       className="text-health underline cursor-pointer"
                       onClick={() => router.push("/privacy-policy")}
                     >
-                      Privacy Policy
+                      {locale === "id"
+                        ? "Kebijakan Privasi"
+                        : "Privacy Policy."}
                     </span>
+                    {locale === "id" && "kami."}
                   </p>
                 </div>
                 <Button type="submit" className="w-full h-12 rounded-full">
-                  {loading ? <Spinner /> : <p>Sign Up</p>}
+                  {loading ? (
+                    <Spinner />
+                  ) : (
+                    <p>{locale === "id" ? "Daftar" : "Sign Up"}</p>
+                  )}
                 </Button>
               </form>
             </Form>
             <div className="flex justify-center items-center mb-5">
               <div className="border-b border-gray-300 w-full"></div>
-              <p className="px-5 text-gray-500">or</p>
+              <p className="px-5 text-gray-500">
+                {locale === "id" ? "atau" : "or"}
+              </p>
               <div className="border-b border-gray-300 w-full"></div>
             </div>
 
@@ -238,15 +261,22 @@ const SignUpClient = ({ image }: { image: any }) => {
               className="w-full h-12 rounded-full flex items-center"
               onClick={handleGoogleSignIn}
             >
-              <FontAwesomeIcon icon={faGoogle} /> <p>Sign Up with Google</p>
+              <FontAwesomeIcon icon={faGoogle} />{" "}
+              <p>
+                {locale === "id"
+                  ? "Daftar dengan Google"
+                  : "Sign Up with Google"}
+              </p>
             </Button>
             <p className="text-muted-foreground text-sm! mt-5 text-center">
-              Already have an account?{" "}
+              {locale === "id"
+                ? "Sudah punya akun?"
+                : "Already have an account?"}{" "}
               <span
                 onClick={() => router.push(`/${locale}/sign-in`)}
                 className="text-health cursor-pointer underline"
               >
-                Sign In
+                {locale === "id" ? "Masuk" : "Sign In"}
               </span>
               .
             </p>

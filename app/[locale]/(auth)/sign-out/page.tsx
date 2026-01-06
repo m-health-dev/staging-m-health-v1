@@ -15,11 +15,15 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
+import { locale } from "dayjs";
+import { useLocale } from "next-intl";
 
 export default function SignOutPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  const locale = useLocale();
 
   const handleSignOut = async () => {
     setIsLoading(true);
@@ -33,15 +37,24 @@ export default function SignOutPage() {
         throw error;
       }
 
-      toast.success("Kamu Berhasil Keluar!");
+      toast.success(
+        locale === "id"
+          ? "Kamu Berhasil Keluar!"
+          : "You have successfully signed out!"
+      );
 
       // Redirect to login page after successful sign out
-      router.push("/sign-in");
+      router.push("/?sign_out=success");
     } catch (err: any) {
       setError(err.message || "An error occurred while signing out");
-      toast.error("Yah, Kamu Tidak Berhasil Keluar", {
-        description: err.message || "An error occurred while signing out",
-      });
+      toast.error(
+        locale === "id"
+          ? "Yah, Kamu Tidak Berhasil Keluar"
+          : "Oops, you failed to sign out",
+        {
+          description: err.message || "An error occurred while signing out",
+        }
+      );
     } finally {
       setIsLoading(false);
     }
@@ -56,10 +69,14 @@ export default function SignOutPage() {
       <Card className="w-full max-w-md shadow-none">
         <CardHeader>
           <CardTitle className="text-2xl font-semibold text-primary">
-            <h4>Sign Out</h4>
+            <h4>{locale === "id" ? "Keluar" : "Sign Out"}</h4>
           </CardTitle>
           <CardDescription>
-            <p>Are you sure you want to sign out of your account?</p>
+            <p>
+              {locale === "id"
+                ? "Apakah kamu yakin ingin keluar dari akunmu?"
+                : "Are you sure you want to sign out of your account?"}
+            </p>
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -71,8 +88,9 @@ export default function SignOutPage() {
             </Alert>
           )}
           <p className="text-sm! text-muted-foreground">
-            You will be logged out of your account and will need to sign in
-            again to access your data.
+            {locale === "id"
+              ? "Kamu akan perlu masuk kembali untuk mengakses akunmu."
+              : "You will need to sign in again to access your account."}
           </p>
         </CardContent>
         <CardFooter className="flex justify-between">
@@ -82,7 +100,7 @@ export default function SignOutPage() {
             onClick={handleCancel}
             disabled={isLoading}
           >
-            Cancel
+            {locale === "id" ? "Batal" : "Cancel"}
           </Button>
           <Button
             variant="destructive"
@@ -90,7 +108,13 @@ export default function SignOutPage() {
             disabled={isLoading}
             className="gap-2 rounded-full px-5!"
           >
-            {isLoading ? "Signing out..." : "Sign Out"}
+            {isLoading
+              ? locale === "id"
+                ? "Keluar..."
+                : "Signing out..."
+              : locale === "id"
+              ? "Keluar"
+              : "Sign Out"}
             {!isLoading && <LogOut className="h-4 w-4" />}
           </Button>
         </CardFooter>

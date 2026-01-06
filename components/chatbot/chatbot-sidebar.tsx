@@ -242,7 +242,7 @@ export function ChatbotSidebar({
 
         <div className="px-4">
           <p className="font-extrabold text-primary mb-3 px-2">
-            {locale === routing.defaultLocale ? "Kesehatan" : "Wellness"}
+            {locale === routing.defaultLocale ? "Kebugaran" : "Wellness"}
           </p>
           <div className="space-y-5">
             {wellness.map((img, i) => (

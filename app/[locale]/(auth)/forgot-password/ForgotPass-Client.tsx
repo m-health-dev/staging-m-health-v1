@@ -27,7 +27,7 @@ import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { forgotPasswordAction } from "../actions/auth.actions";
 
-const ForgotPassClient = ({ image }: { image: any }) => {
+const ForgotPassClient = ({ locale }: { locale: string }) => {
   const [showPass, setShowPass] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -51,10 +51,10 @@ const ForgotPassClient = ({ image }: { image: any }) => {
 
     if (response?.warning) {
       setLoading(false);
-      setWarning(response.warning);
+      setWarning(locale === "id" ? response.warning.id : response.warning.en);
     } else if (response?.error) {
       setLoading(false);
-      setError(response.error);
+      setError(locale === "id" ? response.error.id : response.error.en);
     } else if (response?.success) {
       setLoading(false);
       setSuccess(`${response.success}`);
@@ -77,23 +77,31 @@ const ForgotPassClient = ({ image }: { image: any }) => {
               alt="M-Health Logo"
             />
             <h3 className="font-bold text-primary mb-10">
-              Recover Your Account
+              {locale === "id" ? "Lupa Kata Sandi" : "Forgot Your Password?"}
             </h3>
             {error && (
               <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
-                <p className="font-bold mb-1">Permintaan Gagal</p>
+                <p className="font-bold mb-1">
+                  {locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                </p>
                 <p className="text-sm!">{error}</p>
               </div>
             )}
             {warning && (
               <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
-                <p className="font-bold mb-1">Permintaan Gagal</p>
+                <p className="font-bold mb-1">
+                  {locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                </p>
                 <p className="text-sm!">{warning}</p>
               </div>
             )}
             {success && (
               <div className="bg-green-50 text-green-500 p-4 border border-green-500 rounded-2xl mb-2">
-                <p className="font-bold mb-1">Permintaan Berhasil</p>
+                <p className="font-bold mb-1">
+                  {locale === "id"
+                    ? "Permintaan Berhasil"
+                    : "Request Successful"}
+                </p>
                 <p className="text-sm!">{success}</p>
               </div>
             )}
@@ -119,12 +127,21 @@ const ForgotPassClient = ({ image }: { image: any }) => {
                 />
                 <div>
                   <p className="text-muted-foreground text-sm!">
-                    You only have 3 attempts to recover your account. After
-                    that, you will need to contact support.
+                    {locale === "id"
+                      ? "Kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda."
+                      : "We will send a link to reset your password."}
                   </p>
                 </div>
                 <Button type="submit" className="w-full h-12 rounded-full">
-                  {loading ? <Spinner /> : <p>Reset Password</p>}
+                  {loading ? (
+                    <Spinner />
+                  ) : (
+                    <p>
+                      {locale === "id"
+                        ? "Atur Ulang Kata Sandi"
+                        : "Reset Password"}
+                    </p>
+                  )}
                 </Button>
               </form>
             </Form>
