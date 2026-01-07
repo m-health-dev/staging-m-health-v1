@@ -64,6 +64,7 @@ interface DataTableProps<TData, TValue> {
     | "article-category"
     | "authors"
     | "hero"
+    | "legal"
     | "default";
   deleteAction?: (id: string) => Promise<{ error?: string }>;
 }
@@ -168,44 +169,47 @@ export function Studio1DataTable<TData, TValue>({
       ) : (
         <>
           <div className="flex lg:flex-row flex-col lg:items-center items-end justify-center lg:justify-between pb-4 gap-4">
-            <Input
-              placeholder="Filter by Name"
-              value={
-                (table
-                  .getColumn(
-                    `${
-                      type === "users"
-                        ? "fullname"
-                        : type === "authors"
-                        ? "name"
-                        : type === "article-category"
-                        ? "id_category"
-                        : type === "hero"
-                        ? "title"
-                        : "id_title"
-                    }`
-                  )
-                  ?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table
-                  .getColumn(
-                    `${
-                      type === "users"
-                        ? "fullname"
-                        : type === "authors"
-                        ? "name"
-                        : type === "article-category"
-                        ? "id_category"
-                        : type === "hero"
-                        ? "title"
-                        : "id_title"
-                    }`
-                  )
-                  ?.setFilterValue(event.target.value)
-              }
-              className="lg:max-w-sm w-full h-12"
-            />
+            {type !== "legal" && (
+              <Input
+                placeholder="Filter by Name"
+                value={
+                  (table
+                    .getColumn(
+                      `${
+                        type === "users"
+                          ? "fullname"
+                          : type === "authors"
+                          ? "name"
+                          : type === "article-category"
+                          ? "id_category"
+                          : type === "hero"
+                          ? "title"
+                          : "id_title"
+                      }`
+                    )
+                    ?.getFilterValue() as string) ?? ""
+                }
+                onChange={(event) =>
+                  table
+                    .getColumn(
+                      `${
+                        type === "users"
+                          ? "fullname"
+                          : type === "authors"
+                          ? "name"
+                          : type === "article-category"
+                          ? "id_category"
+                          : type === "hero"
+                          ? "title"
+                          : "id_title"
+                      }`
+                    )
+                    ?.setFilterValue(event.target.value)
+                }
+                className="lg:max-w-sm w-full h-12"
+              />
+            )}
+
             <div className="flex flex-row gap-4">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -286,9 +290,10 @@ export function Studio1DataTable<TData, TValue>({
                       .getAllColumns()
                       .filter((column) => column.getCanHide())
                       .map((column) => {
+                        const id = nanoid();
                         return (
                           <DropdownMenuCheckboxItem
-                            key={nanoid()}
+                            key={id}
                             className="capitalize"
                             checked={column.getIsVisible()}
                             onCheckedChange={(value) =>
@@ -429,6 +434,21 @@ export function Studio1DataTable<TData, TValue>({
                           <p className="text-sm! text-muted-foreground uppercase mb-5">
                             {String(row.getValue("id")).slice(0, 8)}
                           </p>
+
+                          {type === "legal" ? (
+                            <h5 className="font-semibold text-primary text-lg">
+                              {row.getValue("version")}
+                            </h5>
+                          ) : (
+                            type !== "users" &&
+                            type !== "authors" &&
+                            type !== "article-category" &&
+                            type !== "hero" && (
+                              <p className="text-muted-foreground text-sm! mt-2">
+                                {row.getValue("en_title")}
+                              </p>
+                            )
+                          )}
                           <h5 className="font-semibold text-primary text-lg">
                             {row.getValue(
                               `${
@@ -444,14 +464,7 @@ export function Studio1DataTable<TData, TValue>({
                               }`
                             )}
                           </h5>
-                          {type !== "users" &&
-                            type !== "authors" &&
-                            type !== "article-category" &&
-                            type !== "hero" && (
-                              <p className="text-muted-foreground text-sm! mt-2">
-                                {row.getValue("en_title")}
-                              </p>
-                            )}
+
                           {type === "article-category" && (
                             <p className="text-muted-foreground text-sm! mt-2">
                               {row.getValue("en_category")}
@@ -525,8 +538,9 @@ export function Studio1DataTable<TData, TValue>({
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id}>
                       {headerGroup.headers.map((header) => {
+                        const id = nanoid();
                         return (
-                          <TableHead key={nanoid()} className="bg-muted">
+                          <TableHead key={id} className="bg-muted">
                             {header.isPlaceholder
                               ? null
                               : flexRender(

@@ -43,13 +43,16 @@ export default function JumbotronSlide({ data }: { data: any[] }) {
             }}
             className="w-full rounded-2xl"
           >
-            {data.map((slide, key) => (
-              <SwiperSlide key={nanoid()} className="border">
-                <Link href={slide.link} target="_blank">
-                  <SlideImage slide={slide} />
-                </Link>
-              </SwiperSlide>
-            ))}
+            {data.map((slide, key) => {
+              const id = nanoid();
+              return (
+                <SwiperSlide key={id} className="border">
+                  <Link href={slide.link} target="_blank">
+                    <SlideImage slide={slide} />
+                  </Link>
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
           <div className="lg:px-10 px-3 absolute top-0 left-0 z-20 flex h-full items-center transition-all duration-300 translate-x-20 group-hover/slide:translate-x-0 opacity-0 group-hover/slide:opacity-100">
             <button
@@ -131,7 +134,7 @@ function SlideImage({ slide }: { slide: any }) {
         height={280}
         alt={slide.title || "Jumbotron Image"}
         unoptimized
-        onLoadingComplete={() => setIsLoaded(true)}
+        onLoad={() => setIsLoaded(true)}
         className={`w-full h-full object-cover object-center rounded-2xl transition-opacity duration-700 ${
           isLoaded ? "opacity-100" : "opacity-0"
         }`}

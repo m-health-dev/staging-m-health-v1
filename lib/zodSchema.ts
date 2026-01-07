@@ -217,3 +217,10 @@ export const HeroSchema = z.object({
   display_order: z.string(),
   is_active: z.boolean(),
 });
+
+export const LegalSchema = z.object({
+  en_title: z.string().min(3),
+  id_title: z.string().min(3),
+  en_content: z.string(),
+  id_content: z.string(),
+});

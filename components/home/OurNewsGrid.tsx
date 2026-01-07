@@ -32,10 +32,7 @@ const OurNewsGrid = ({
             href={`/${locale}/article/${n.slug}`}
             className="no-underline"
           >
-            <div
-              key={n.id}
-              className="flex flex-col h-auto cursor-pointer group transition-all duration-300"
-            >
+            <div className="flex flex-col h-auto cursor-pointer group transition-all duration-300">
               <div className="relative aspect-video">
                 <Image
                   src={n.highlight_image} // Ganti dengan n.image_url saat tersedia
@@ -47,7 +44,7 @@ const OurNewsGrid = ({
                 <div className="flex flex-wrap gap-2 absolute bottom-5 left-5">
                   {n.category?.map((cat, i) => (
                     <p
-                      key={i}
+                      key={cat.id}
                       className="bg-primary px-3 py-1 rounded-full text-white capitalize text-sm!"
                     >
                       {locale === routing.defaultLocale
