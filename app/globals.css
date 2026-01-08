@@ -228,6 +228,12 @@ h6 {
   margin: 0.25rem 0;
 }
 
+.prose > p > a {
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .prose > blockquote {
   border-left: 4px solid var(--primary);
   padding-left: 1rem;

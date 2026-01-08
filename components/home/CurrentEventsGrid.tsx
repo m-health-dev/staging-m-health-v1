@@ -70,13 +70,13 @@ const CurrentEventsGrid = ({
 
               <div className="mt-2 mb-3">
                 <div className="events_location flex gap-2 items-center">
-                  <MapPin className="size-4" />
+                  <MapPin className="size-4 shrink-0" />
                   <Link href={e.location_map}>
                     <p className="text-muted-foreground">{e.location_name}</p>
                   </Link>
                 </div>
                 <div className="events_location flex gap-2 items-start">
-                  <Calendar className="size-4 mt-1" />
+                  <Calendar className="size-4 shrink-0 mt-1" />
                   {new Date(e.start_date).toLocaleDateString("id-ID") ===
                   new Date(e.end_date).toLocaleDateString("id-ID") ? (
                     <p className="text-muted-foreground">

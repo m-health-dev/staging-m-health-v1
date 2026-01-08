@@ -213,7 +213,7 @@ const NavHeader = ({
             />
           </Link>
           <div>
-            <div className="lg:hidden flex">
+            <div className="flex xl:hidden">
               <Sheet>
                 <SheetTrigger className=" bg-white text-primary p-2 rounded-full">
                   {" "}
@@ -327,7 +327,7 @@ const NavHeader = ({
               </Sheet>
             </div>
 
-            <div className="flex-row items-center flex-wrap gap-7 lg:flex md:hidden hidden">
+            <div className="flex-row items-center flex-wrap gap-7 xl:flex hidden">
               <Link
                 href={`/${locale}/about`}
                 className="group"

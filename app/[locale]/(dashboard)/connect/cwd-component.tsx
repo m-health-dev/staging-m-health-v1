@@ -926,7 +926,7 @@ M HEALTH Development Team`,
                         dan{" "}
                         <span
                           className="text-health underline cursor-pointer"
-                          onClick={() => router.push("/privacy-policy")}
+                          onClick={() => router.push("/privacy")}
                         >
                           Kebijakan Privasi
                         </span>{" "}

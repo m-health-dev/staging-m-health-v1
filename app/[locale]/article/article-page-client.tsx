@@ -27,7 +27,7 @@ const ArticlePageClient = ({
   meta: any;
   links: any;
 }) => {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
   const router = useRouter();
@@ -42,7 +42,7 @@ const ArticlePageClient = ({
             : "No articles available."}
         </p>
       )}
-      <div className="grid 3xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-7 *:lg:last:hidden *:3xl:last:grid">
+      <div className="grid 3xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-7 *:3xl:last:grid">
         {articles.map((n) => {
           return (
             <Link
@@ -63,6 +63,7 @@ const ArticlePageClient = ({
                     width={720}
                     height={403}
                     alt={n.en_title}
+                    loading="lazy"
                     className="w-full aspect-video object-center object-cover rounded-2xl z-10"
                   />
 
@@ -70,7 +71,7 @@ const ArticlePageClient = ({
                     {n.category?.map((cat, i) => (
                       <p
                         key={i}
-                        className="bg-primary px-3 py-1 rounded-full text-white capitalize text-sm!"
+                        className="bg-primary px-3 py-1 rounded-full text-white capitalize lg:text-sm! text-xs!"
                       >
                         {locale === routing.defaultLocale
                           ? cat.id_category
@@ -80,13 +81,17 @@ const ArticlePageClient = ({
                   </div>
                 </div>
                 <div className="px-5 pb-5 pt-12 -mt-7 group-hover:bg-primary transition-all duration-300 rounded-2xl grow">
-                  <p className="text-sm! text-muted-foreground mb-2 group-hover:text-white/70 transition-all duration-300">
-                    <LocalDateTime
-                      date={n.created_at}
-                      specificFormat="DD MMMM YYYY"
-                    />
-                  </p>
-                  <h5 className="capitalize text-primary group-hover:text-white transition-all duration-300 font-bold line-clamp-2">
+                  <div className="flex items-center gap-4 mb-2">
+                    <div className="w-5 h-0.25 bg-primary" />
+                    <p className="text-primary text-sm!">
+                      <LocalDateTime
+                        date={n.created_at}
+                        specificFormat="DD MMMM YYYY"
+                      />
+                    </p>
+                  </div>
+
+                  <h5 className="capitalize text-primary group-hover:text-white transition-all duration-300 font-bold line-clamp-3">
                     {locale === routing.defaultLocale ? n.id_title : n.en_title}
                   </h5>
                   <div

@@ -28,8 +28,8 @@ const TermsPage = async () => {
           dangerouslySetInnerHTML={{
             __html:
               locale === routing.defaultLocale
-                ? terms.en_content
-                : terms.id_content,
+                ? terms.id_content
+                : terms.en_content,
           }}
         />
       </ContainerWrap>

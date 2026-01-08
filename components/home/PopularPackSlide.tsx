@@ -107,7 +107,7 @@ export default function PopularPackSlide({
                       <div className="flex flex-col justify-center grow  max-w-full bg-white rounded-2xl -mt-5 p-4 h-full transition-all duration-100 z-50">
                         <div className="overflow-hidden">
                           <div>
-                            <h5 className="capitalize font-bold text-primary lg:line-clamp-3 line-clamp-1">
+                            <h5 className="capitalize font-bold text-primary line-clamp-3">
                               {locale === "id"
                                 ? slide.id_title
                                 : slide.en_title}
@@ -116,7 +116,7 @@ export default function PopularPackSlide({
                         </div>
                         <div className="mt-1 overflow-hidden">
                           <div>
-                            <p className="text-muted-foreground lg:line-clamp-2 line-clamp-1">
+                            <p className="text-muted-foreground line-clamp-2">
                               {locale === "id"
                                 ? slide.id_tagline
                                 : slide.en_tagline}
@@ -225,14 +225,14 @@ export default function PopularPackSlide({
                   <div className="flex flex-col justify-center grow  max-w-full bg-white rounded-2xl -translate-y-5 p-4 h-full transition-all duration-100 z-50">
                     <div className="overflow-hidden">
                       <div>
-                        <h5 className="capitalize font-bold text-primary lg:line-clamp-3 line-clamp-1">
+                        <h5 className="capitalize font-bold text-primary line-clamp-3">
                           {locale === "id" ? slide.id_title : slide.en_title}
                         </h5>
                       </div>
                     </div>
                     <div className="mt-1 overflow-hidden">
                       <div>
-                        <p className="text-muted-foreground lg:line-clamp-2 line-clamp-1">
+                        <p className="text-muted-foreground line-clamp-2">
                           {locale === "id"
                             ? slide.id_tagline
                             : slide.en_tagline}

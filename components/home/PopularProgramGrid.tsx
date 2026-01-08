@@ -152,7 +152,8 @@ const PopularProgramGrid = ({
       </div>
       <div className="flex-col gap-5 lg:hidden flex">
         {onlyGet4.map((d, i) => (
-          <div
+          <Link
+            href={`/${locale}/wellness/${d.slug}`}
             key={d.id}
             className="aspect-square relative group cursor-pointer group"
             onMouseEnter={() => setHoveredIndex(i)}
@@ -206,7 +207,7 @@ const PopularProgramGrid = ({
               </div>
             </div>
             <div className="bg-linear-to-t from-black absolute bottom-0 w-full transition-all duration-300 delay-300 h-full rounded-2xl"></div>
-          </div>
+          </Link>
         ))}
       </div>
     </>

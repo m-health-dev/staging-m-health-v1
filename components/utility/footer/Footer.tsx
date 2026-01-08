@@ -216,14 +216,14 @@ const Footer = () => {
 
             <div className="space-y-2">
               <p>
-                <Link href={"/privacy-policy"}>
+                <Link href={"/privacy"}>
                   {locale === routing.defaultLocale
                     ? "Kebijakan Privasi"
                     : "Privacy Policy"}{" "}
                 </Link>
               </p>
               <p>
-                <Link href={"/terms-and-conditions"}>
+                <Link href={"/terms"}>
                   {locale === routing.defaultLocale
                     ? "Syarat dan Ketentuan"
                     : "Terms and Conditions"}{" "}

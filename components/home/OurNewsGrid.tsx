@@ -45,7 +45,7 @@ const OurNewsGrid = ({
                   {n.category?.map((cat, i) => (
                     <p
                       key={cat.id}
-                      className="bg-primary px-3 py-1 rounded-full text-white capitalize text-sm!"
+                      className="bg-primary px-3 py-1 rounded-full text-white capitalize lg:text-sm! text-xs!"
                     >
                       {locale === routing.defaultLocale
                         ? cat.id_category
@@ -55,12 +55,21 @@ const OurNewsGrid = ({
                 </div>
               </div>
               <div className="px-5 pb-5 pt-12 -mt-7 bg-background group-hover:bg-primary transition-all duration-300 rounded-2xl grow">
-                <p className="text-sm! text-muted-foreground mb-2 group-hover:text-white/70 transition-all duration-300">
+                <div className="flex items-center gap-4 mb-2">
+                  <div className="w-5 h-0.25 bg-primary" />
+                  <p className="text-sm! text-muted-foreground group-hover:text-white/70 transition-all duration-300">
+                    <LocalDateTime
+                      date={n.created_at}
+                      specificFormat="DD MMMM YYYY"
+                    />
+                  </p>
+                </div>
+                {/* <p className="text-sm! text-muted-foreground mb-2 group-hover:text-white/70 transition-all duration-300">
                   <LocalDateTime
                     date={n.created_at}
                     specificFormat="DD MMMM YYYY"
                   />
-                </p>
+                </p> */}
                 <h5 className="capitalize text-primary group-hover:text-white transition-all duration-300 font-bold line-clamp-2">
                   {locale === routing.defaultLocale ? n.id_title : n.en_title}
                 </h5>

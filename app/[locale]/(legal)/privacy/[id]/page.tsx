@@ -53,8 +53,8 @@ const PrivacyPreview = async ({
           dangerouslySetInnerHTML={{
             __html:
               locale === routing.defaultLocale
-                ? data.en_content
-                : data.id_content,
+                ? data.id_content
+                : data.en_content,
           }}
         />
       </ContainerWrap>

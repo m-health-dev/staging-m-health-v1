@@ -40,7 +40,7 @@ const EventsContent = async ({
 
               <div className="mt-2 mb-3">
                 <div className="events_location flex gap-2 items-center mb-3">
-                  <div className="bg-white w-8 h-8 flex justify-center items-center border border-primary rounded-full">
+                  <div className="bg-white w-8 h-8 flex shrink-0 justify-center items-center border border-primary rounded-full">
                     <MapPin className="size-4 text-primary" />
                   </div>
 
@@ -49,7 +49,7 @@ const EventsContent = async ({
                   </Link>
                 </div>
                 <div className="events_location flex gap-2 items-center">
-                  <div className="bg-white w-8 h-8 flex justify-center items-center border border-primary rounded-full">
+                  <div className="bg-white w-8 h-8 flex shrink-0 justify-center items-center border border-primary rounded-full">
                     <Calendar className="size-4 text-primary" />
                   </div>
                   {new Date(e.start_date).toLocaleDateString("id-ID") ===

@@ -40,16 +40,14 @@ const MedicalPage = async ({
           </h1>
         </ContainerWrap>
       </div>{" "}
-      <ContainerWrap>
-        <Suspense fallback={<SkeletonComponent per_page={per_page} />}>
-          <Content
-            params={params}
-            page={page}
-            per_page={per_page}
-            locale={locale}
-          />
-        </Suspense>
-      </ContainerWrap>
+      <Suspense fallback={<SkeletonComponent per_page={per_page} />}>
+        <Content
+          params={params}
+          page={page}
+          per_page={per_page}
+          locale={locale}
+        />
+      </Suspense>
     </Wrapper>
   );
 };

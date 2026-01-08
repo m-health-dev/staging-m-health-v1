@@ -229,7 +229,7 @@ const SignUpClient = ({ image }: { image: any }) => {
                     {locale === "id" ? "dan" : "and"}{" "}
                     <span
                       className="text-health underline cursor-pointer"
-                      onClick={() => router.push("/privacy-policy")}
+                      onClick={() => router.push("/privacy")}
                     >
                       {locale === "id"
                         ? "Kebijakan Privasi"
