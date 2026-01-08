@@ -40,8 +40,8 @@ const HotelPublicDetailPage = async ({
       </ContainerWrap>
       <ContainerWrap size="md" className="mb-20">
         <div className=" flex  items-center lg:-mt-12 -mt-6 w-full z-10">
-          <div className="bg-white flex items-center gap-5 justify-between w-full rounded-2xl p-4">
-            <div className="inline-flex items-center gap-5">
+          <div className="bg-white flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0 justify-between w-full rounded-2xl p-4">
+            <div className="inline-flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0">
               <Image
                 src={v.logo}
                 width={720}
@@ -49,12 +49,12 @@ const HotelPublicDetailPage = async ({
                 alt={v.name}
                 className="aspect-square w-15 h-15 rounded-full object-center object-cover border"
               />
-              <h4 className="text-health font-bold">{v.name}</h4>
+              <h4 className="text-health font-bold lg:mb-0 mb-4">{v.name}</h4>
             </div>
             <Link href={v.location_map}>
               <div className="inline-flex items-center gap-1 bg-health text-white lg:px-4 px-2 py-2 lg:w-fit lg:h-fit rounded-full">
                 <MapPin className="size-5" />
-                <p className="lg:block hidden">Location</p>
+                <p className="block">Location</p>
               </div>
             </Link>
           </div>

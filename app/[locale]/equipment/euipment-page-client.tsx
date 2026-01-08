@@ -76,13 +76,13 @@ const EquipmentClientPage = ({
                             </p>
                           </div>
                           <p className="text-muted-foreground">
-                            <s>Rp{formatRupiah(slide.real_price)}</s>
+                            <s>{formatRupiah(slide.real_price)}</s>
                           </p>
                         </div>
 
                         <div className="flex justify-between items-end mt-2">
                           <h5 className="text-primary font-bold">
-                            Rp{formatRupiah(slide.discount_price)}
+                            {formatRupiah(slide.discount_price)}
                           </h5>
                         </div>
                       </div>

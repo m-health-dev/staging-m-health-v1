@@ -232,7 +232,7 @@ const NavHeader = ({
                 </SheetTrigger>
                 <SheetContent
                   side="right"
-                  className="p-8 bg-white z-999 lg:max-w-md!"
+                  className="p-8 bg-white z-999 lg:max-w-md! overflow-auto hide-scroll"
                 >
                   <SheetTitle />
                   <SheetClose className="flex items-center justify-end pointer-events-auto gap-2 cursor-pointer">

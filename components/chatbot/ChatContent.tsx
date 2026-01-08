@@ -72,8 +72,10 @@ const ChatContent = ({
   } = useChatHistory(user?.id, initialHistory || []);
 
   console.log({
-    historyLength: history.length,
-    initialHistoryLength: initialHistory?.length,
+    historyLength: Array.isArray(history) ? history.length : 0,
+    initialHistoryLength: Array.isArray(initialHistory)
+      ? initialHistory.length
+      : 0,
     hasMore,
     total,
     displayedCount,

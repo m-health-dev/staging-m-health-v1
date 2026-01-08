@@ -32,8 +32,8 @@ const ContactPage = async () => {
         <h1 className="text-primary text-center my-20 font-bold">
           {locale === routing.defaultLocale ? "Kontak" : "Contact Us"}
         </h1>
-        <div className="grid grid-cols-2 gap-10">
-          <div>
+        <div className="grid lg:grid-cols-2 grid-cols-1 gap-10">
+          <div className="bg-white rounded-2xl border p-4 h-fit">
             <Link href={`/${locale}/home`}>
               <Image
                 src={

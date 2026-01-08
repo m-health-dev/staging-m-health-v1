@@ -89,7 +89,7 @@ export default async function Home() {
         packages={packages}
         medical={medical}
         wellness={wellness}
-        initialHistory={historyData.data.data || []}
+        initialHistory={Array.isArray(historyData?.data?.data) ? historyData.data.data : []}
         publicIDFetch={publicID}
         user={userData}
         locale={locale}

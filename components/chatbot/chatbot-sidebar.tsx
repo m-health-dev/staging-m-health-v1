@@ -345,8 +345,7 @@ export function ChatbotSidebar({
         </div>
 
         <hr className="my-2 mx-4" />
-
-        {history.length >= 1 && (
+        {history && history.length >= 1 && (
           <>
             <div className="px-4">
               <p className="text-muted-foreground text-sm! px-2">
