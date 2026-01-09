@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import ClientVendorPublic from "./client-vendor";
+import { routing } from "@/i18n/routing";
 
 const VendorPublicPage = async ({
   searchParams,
@@ -29,10 +30,15 @@ const VendorPublicPage = async ({
     <Wrapper>
       <ContainerWrap>
         <div className="my-20">
-          <h3 className="text-primary font-semibold">Vendor Collaboration</h3>
+          <h3 className="text-primary font-semibold">
+            {locale === routing.defaultLocale
+              ? "Partner & Hospital Collaboration"
+              : "Mitra Kolaborasi & Rumah Sakit"}
+          </h3>
           <p className="text-muted-foreground max-w-xl mt-1 text-sm!">
-            We are collaboration with this hospital, coach, and product. Without
-            collaboration we're nothing.
+            {locale === routing.defaultLocale
+              ? "We are collaboration with this hospital, coach, and product. Without collaboration we're nothing."
+              : "Kami berkolaborasi dengan rumah sakit, pelatih, dan produk ini. Tanpa kolaborasi kami bukan apa-apa."}
           </p>
         </div>
         <div>

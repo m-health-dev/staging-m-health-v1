@@ -97,10 +97,10 @@ export function ComboBoxHotelListOption({
               >
                 {loading ? (
                   <LoadingComponent className="h-fit" />
-                ) : hotelName ? (
-                  hotelName
                 ) : selectedHotel ? (
                   selectedHotel.name
+                ) : hotelName ? (
+                  hotelName
                 ) : (
                   "Pilih Hotel"
                 )}

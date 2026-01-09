@@ -79,6 +79,7 @@ const UpdateVendorForm = ({
       highlight_image: vendorData?.highlight_image || "",
       reference_image: vendorData?.reference_image || [],
       location_map: vendorData?.location_map || "",
+      location: vendorData?.location || "",
     },
   });
 
@@ -202,11 +203,11 @@ const UpdateVendorForm = ({
         <div>
           {name && (
             <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
-              Update Vendor
+              Update Partner & Hospital
             </p>
           )}
           <h4 className="text-primary font-semibold ">
-            {name ? name : "Update Vendor"}
+            {name ? name : "Update Partner & Hospital"}
           </h4>
           <p className="text-sm! text-muted-foreground">{vendorData.slug}</p>
         </div>
@@ -249,24 +250,38 @@ const UpdateVendorForm = ({
                 )}
               />
               <div className="lg:grid flex flex-col grid-cols-2 gap-5 items-start">
-                <div className="space-y-5 w-full">
-                  <FormField
-                    control={form.control}
-                    name="location_map"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary font-semibold!">
-                          Maps Location URL
-                        </FormLabel>
-                        <FormControl>
-                          <Input {...field} type="url" className="h-12" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <ComboBoxVendor />
-                </div>
+                <FormField
+                  control={form.control}
+                  name="location_map"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Maps Location URL
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} type="url" className="h-12" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Location
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} type="text" className="h-12" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <ComboBoxVendor />
+
                 <DynamicInputField
                   form={form}
                   name="specialist"

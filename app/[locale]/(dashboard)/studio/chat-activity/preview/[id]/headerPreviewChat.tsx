@@ -1,6 +1,7 @@
 "use client";
 
 import { Studio1DeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
+import AvatarUser from "@/components/utility/AvatarUser";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { baseUrl } from "@/helper/baseUrl";
 import { DeleteChatSession } from "@/lib/chatbot/delete-chat-activity";
@@ -19,12 +20,13 @@ const HeaderPreviewChat = ({
   const router = useRouter();
   return (
     <ContainerWrap>
-      <div className="flex flex-row justify-between items-center sticky top-0 z-20 pt-6 pb-1">
+      <div className="flex flex-row justify-between items-center pt-6 pb-1">
         <div className="">
           <h5 className="text-primary font-semibold capitalize">
             {all.data.title}
           </h5>
         </div>
+
         <Studio1DeleteCopyFunction
           id={id}
           deleteAction={DeleteChatSession}

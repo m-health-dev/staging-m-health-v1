@@ -18,6 +18,8 @@ import { useChatHistory } from "@/hooks/use-chat-bot-hisstory";
 import { Stethoscope } from "lucide-react";
 import { routing } from "@/i18n/routing";
 import ChatNavHeader from "../utility/header/ChatNavHeader";
+import AvatarUser from "../utility/AvatarUser";
+import ContainerWrap from "../utility/ContainerWrap";
 
 const ChatContent = ({
   packages,
@@ -26,6 +28,7 @@ const ChatContent = ({
   initialHistory,
   session,
   sessionID,
+  userID,
   publicIDFetch,
   locale,
   user,
@@ -40,6 +43,7 @@ const ChatContent = ({
   wellness?: WellnessType[];
   session?: any[];
   initialHistory?: any[];
+  userID?: string;
   sessionID?: string;
   publicIDFetch?: string;
   locale: string;
@@ -105,6 +109,7 @@ const ChatContent = ({
             "--header-height": "calc(var(--spacing) * 12)",
           } as React.CSSProperties
         }
+        defaultOpen={false}
       >
         <ChatbotSidebar
           variant="inset"
@@ -120,6 +125,7 @@ const ChatContent = ({
           locale={locale}
           onRefreshHistory={refresh}
           labels={labels}
+          defaultOpen={false}
         />
         <SidebarInset className="p-0! m-0! flex flex-col">
           <ChatNavHeader
@@ -153,6 +159,19 @@ const ChatContent = ({
             </div>
           </div>
         )}
+        <ContainerWrap>
+          {userID && (
+            <div className="flex w-full flex-col bg-white p-3 border rounded-2xl mt-5">
+              <p className="text-muted-foreground text-sm! mb-2">
+                {locale === routing.defaultLocale
+                  ? "Dibuat oleh."
+                  : "Created by."}
+              </p>
+              <AvatarUser size="md" user={userID} locale={locale} />
+            </div>
+          )}
+        </ContainerWrap>
+
         <ChatStart
           chat={selectedChat}
           type="preview"
@@ -182,6 +201,7 @@ const ChatContent = ({
             "--header-height": "calc(var(--spacing) * 12)",
           } as React.CSSProperties
         }
+        defaultOpen={false}
       >
         <ChatbotSidebar
           variant="inset"
@@ -201,6 +221,7 @@ const ChatContent = ({
           displayedCount={displayedCount}
           total={total}
           labels={labels}
+          defaultOpen={false}
         />
         <SidebarInset className="p-0! m-0! ">
           <ChatNavHeader

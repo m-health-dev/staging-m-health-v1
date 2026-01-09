@@ -47,6 +47,7 @@ import Image from "next/image";
 import Avatar from "boring-avatars";
 
 import { nanoid } from "nanoid";
+import { Skeleton } from "../ui/skeleton";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[] | null | undefined;
@@ -127,6 +128,8 @@ export function Studio1DataTable<TData, TValue>({
   const getPerPage = Number(params.get("per_page"));
 
   const [perPage, setPerPage] = React.useState(10);
+
+  const [loadingHero, setLoadingHero] = useState(true);
 
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -373,19 +376,7 @@ export function Studio1DataTable<TData, TValue>({
                               )}
                             </div>
                           )}
-                          {type === "hero" && (
-                            <div className="flex w-full mb-3">
-                              <Image
-                                src={row.getValue("image")}
-                                alt={row.getValue("title")}
-                                width={150}
-                                height={150}
-                                className={
-                                  "w-full h-full object-center object-cover aspect-video rounded-2xl"
-                                }
-                              />
-                            </div>
-                          )}
+
                           {type === "authors" && (
                             <div className="inline-flex gap-2 items-center mb-3">
                               {!row.getValue("profile_image") ? (
@@ -514,6 +505,21 @@ export function Studio1DataTable<TData, TValue>({
                               <StatusBadge status={row.getValue("status")} />
                             </div>
                           )}
+                        {type === "hero" && (
+                          <div className="relative w-full h-auto mt-5 aspect-20/7">
+                            {loadingHero && (
+                              <Skeleton className="absolute inset-0 w-full h-auto aspect-20/7 rounded-2xl" />
+                            )}
+
+                            <Image
+                              src={row.getValue("image")}
+                              alt={row.getValue("title")}
+                              fill
+                              onLoadingComplete={() => setLoadingHero(false)}
+                              className="object-cover object-center rounded-2xl"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                     // </RowContextMenu>

@@ -17,9 +17,11 @@ import { cn } from "@/lib/utils";
 export function LanguageSwitcher({
   className,
   short,
+  onLanguageChange,
 }: {
   className?: string;
   short?: boolean;
+  onLanguageChange?: () => void;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -40,10 +42,18 @@ export function LanguageSwitcher({
 
     setLocale(newLocale);
 
+    // Simpan preferensi bahasa saat user mengganti bahasa
+    localStorage.setItem("mhealth_preferred_language", newLocale);
+
     const segments = pathname.split("/");
     segments[1] = newLocale;
     const newPath = segments.join("/") || "/";
     router.push(newPath);
+
+    // Panggil callback jika ada (untuk menutup dialog)
+    if (onLanguageChange) {
+      onLanguageChange();
+    }
   };
 
   if (!mounted) return null;

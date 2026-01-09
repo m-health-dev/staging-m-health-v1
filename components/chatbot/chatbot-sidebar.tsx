@@ -30,7 +30,7 @@ import { usePathname, useRouter } from "next/navigation";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { useTranslations } from "next-intl";
 import { routing } from "@/i18n/routing";
-import Avatar from "boring-avatars";
+
 import type { MedicalType } from "@/types/medical.types";
 import type { WellnessType } from "@/types/wellness.types";
 import type { PackageType } from "@/types/packages.types";
@@ -49,6 +49,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import dynamic from "next/dynamic";
+
+const Avatar = dynamic(() => import("boring-avatars"), {
+  ssr: false,
+});
 
 interface ChatbotSidebarProps extends React.ComponentProps<typeof Sidebar> {
   accounts?: Account;
@@ -67,6 +72,7 @@ interface ChatbotSidebarProps extends React.ComponentProps<typeof Sidebar> {
   displayedCount?: number;
   total?: number;
   labels?: any;
+  defaultOpen?: boolean;
 }
 
 export function ChatbotSidebar({
@@ -86,6 +92,7 @@ export function ChatbotSidebar({
   displayedCount,
   total,
   labels,
+  defaultOpen = true,
   ...props
 }: ChatbotSidebarProps) {
   const router = useRouter();

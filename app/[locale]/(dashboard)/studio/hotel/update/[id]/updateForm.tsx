@@ -73,6 +73,7 @@ const UpdateHotelForm = ({
       highlight_image: hotelData?.highlight_image || "",
       reference_image: hotelData?.reference_image || [],
       location_map: hotelData?.location_map || "",
+      location: hotelData?.location || "",
     },
   });
 
@@ -258,6 +259,22 @@ const UpdateHotelForm = ({
                       </FormLabel>
                       <FormControl>
                         <Input {...field} type="url" className="h-12" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Location
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} type="text" className="h-12" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -8,6 +8,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Studio1DeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
 import { DeleteChatSession } from "@/lib/chatbot/delete-chat-activity";
 import HeaderPreviewChat from "./headerPreviewChat";
+import AvatarUser from "@/components/utility/AvatarUser";
 
 const PreviewChatSessionPage = async ({
   params,
@@ -26,10 +27,14 @@ const PreviewChatSessionPage = async ({
   }
   return (
     <div>
-      <HeaderPreviewChat id={id} locale={locale} all={all} />
+      <div className="sticky top-0 z-20 bg-linear-to-b from-background via-background to-transparent">
+        <HeaderPreviewChat id={id} locale={locale} all={all} />
+      </div>
+
       <ChatContent
         type="preview"
         sessionID={id}
+        userID={all.data.user_id}
         session={sessionChat}
         locale={locale}
         urgent={urgent}

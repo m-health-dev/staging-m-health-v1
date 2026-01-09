@@ -136,7 +136,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Vendor}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Vendor</p>
+              <p>Partner & Hospital</p>
             </div>
           </div>
         </div>

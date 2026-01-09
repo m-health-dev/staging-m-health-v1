@@ -36,12 +36,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { addWellness } from "@/lib/wellness/post-patch-wellness";
-import { ComboBoxVendorListOption } from "../ComboBoxVendorListOption";
-import { ComboBoxHotelListOption } from "../ComboBoxHotelListOption";
-import { ComboBoxGender } from "../ComboBoxGender";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { RupiahInput } from "@/components/Form/PriceInput";
 import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
+import { ComboBoxGender } from "@/components/Form/ComboBoxGender";
+import { ComboBoxVendorListOption } from "@/components/Form/ComboBoxVendorListOption";
+import { ComboBoxHotelListOption } from "@/components/Form/ComboBoxHotelListOption";
 
 const AddMedical = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);

@@ -79,6 +79,7 @@ export const VendorSchema = z.object({
   highlight_image: z.string().min(1),
   reference_image: z.array(z.string()).min(1),
   location_map: z.url().min(1),
+  location: z.string().min(1),
 });
 
 export const HotelSchema = z.object({
@@ -89,6 +90,7 @@ export const HotelSchema = z.object({
   highlight_image: z.string().min(1),
   reference_image: z.array(z.string().min(1)),
   location_map: z.url().min(1),
+  location: z.string().min(1),
 });
 
 export const WellnessSchema = z.object({

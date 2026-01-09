@@ -233,8 +233,8 @@ const ChatStart = ({
                 ? `Halo, ${accounts.fullname.split(" ")[0]}! 👋`
                 : `Hi, ${accounts.fullname.split(" ")[0]}! 👋`
               : locale === routing.defaultLocale
-              ? `Halo, Aku Mei! Senang bertemu denganmu!`
-              : `Hi, I'm Mei! Nice to meet you!`}
+              ? `Halo! Senang bertemu denganmu!`
+              : `Hi! Nice to meet you!`}
           </h2>
           <h3 className="text-primary">
             {locale === routing.defaultLocale

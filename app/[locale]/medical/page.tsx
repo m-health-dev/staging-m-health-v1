@@ -40,14 +40,16 @@ const MedicalPage = async ({
           </h1>
         </ContainerWrap>
       </div>{" "}
-      <Suspense fallback={<SkeletonComponent per_page={per_page} />}>
-        <Content
-          params={params}
-          page={page}
-          per_page={per_page}
-          locale={locale}
-        />
-      </Suspense>
+      <ContainerWrap>
+        <Suspense fallback={<SkeletonComponent per_page={per_page} />}>
+          <Content
+            params={params}
+            page={page}
+            per_page={per_page}
+            locale={locale}
+          />
+        </Suspense>
+      </ContainerWrap>
     </Wrapper>
   );
 };
@@ -56,13 +58,11 @@ export default MedicalPage;
 
 const SkeletonComponent = ({ per_page }: { per_page: number }) => {
   return (
-    <ContainerWrap>
-      <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
-        {[...Array(per_page)].map((_, i) => (
-          <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
-        ))}
-      </div>
-    </ContainerWrap>
+    <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 pb-20">
+      {[...Array(per_page)].map((_, i) => (
+        <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
+      ))}
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, Suspense } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,68 +22,65 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { getAllVendorWithoutPagination } from "@/lib/vendors/get-vendor";
-import { VendorType } from "@/types/vendor.types";
-import { HotelType } from "@/types/hotel.types";
 import {
-  getAllHotelWithoutPagination,
-  getHotelByID,
-} from "@/lib/hotel/get-hotel";
-import LoadingComponent from "@/components/utility/loading-component";
+  getAllVendorWithoutPagination,
+  getVendorByID,
+} from "@/lib/vendors/get-vendor";
+import { VendorType } from "@/types/vendor.types";
 import Image from "next/image";
 import Avatar from "boring-avatars";
+import LoadingComponent from "@/components/utility/loading-component";
 
-export function ComboBoxHotelListOption({
-  readHotelID,
+export function ComboBoxVendorListOption({
+  readVendorID,
 }: {
-  readHotelID?: string;
+  readVendorID?: string;
 }) {
   const form = useFormContext();
   const [open, setOpen] = useState(false);
-  const [hotelData, setHotelData] = useState<HotelType[]>([]);
-  const [hotelName, setHotelName] = useState("");
+  const [vendorData, setVendorData] = useState<VendorType[]>([]);
+  const [vendorName, setVendorName] = useState("");
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchHotel = async () => {
+    const fetchVendor = async () => {
       setLoading(true);
-      const res = await getAllHotelWithoutPagination();
+      const data = (await getAllVendorWithoutPagination()).data;
 
-      if (readHotelID) {
-        const read = (await getHotelByID(readHotelID)).data;
-        setHotelName(read.name);
+      if (readVendorID) {
+        const read = (await getVendorByID(readVendorID)).data;
+        setVendorName(read.name);
         setLoading(false);
       }
 
-      setHotelData(res.data);
-      setLoading(false); // ← ini yang benar
+      setVendorData(data);
+      setLoading(false);
     };
-
-    fetchHotel();
+    fetchVendor();
   }, []);
 
   // tampilkan 10 pertama, jika tidak ada pencarian
-  const filteredHotels = useMemo(() => {
+  const filteredVendors = useMemo(() => {
     if (!query.trim()) {
-      return hotelData.slice(0, 10);
+      return vendorData.slice(0, 10);
     }
 
     const q = query.toLowerCase();
 
-    return hotelData.filter((v) => v.name.toLowerCase().includes(q));
-  }, [hotelData, query]);
+    return vendorData.filter((v) => v.name.toLowerCase().includes(q));
+  }, [vendorData, query]);
 
-  const hotelId = useWatch({ name: "hotel_id", control: form.control });
+  const vendorId = useWatch({ name: "vendor_id", control: form.control });
+  const selectedVendor = vendorData.find((v) => v.id === vendorId);
 
-  const selectedHotel = hotelData.find((v) => v.id === hotelId);
   return (
     <FormField
       control={form.control}
-      name="hotel_id"
+      name="vendor_id"
       render={({ field }) => (
         <FormItem className="flex flex-col gap-2">
-          <FormLabel className="text-primary font-semibold!">Hotel</FormLabel>
+          <FormLabel className="text-primary font-semibold!">Vendor</FormLabel>
 
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -97,12 +94,12 @@ export function ComboBoxHotelListOption({
               >
                 {loading ? (
                   <LoadingComponent className="h-fit" />
-                ) : hotelName ? (
-                  hotelName
-                ) : selectedHotel ? (
-                  selectedHotel.name
+                ) : selectedVendor ? (
+                  selectedVendor.name
+                ) : vendorName ? (
+                  vendorName
                 ) : (
-                  "Pilih Hotel"
+                  "Pilih Vendor"
                 )}
               </Button>
             </PopoverTrigger>
@@ -110,45 +107,53 @@ export function ComboBoxHotelListOption({
             <PopoverContent className="p-0 min-w-md max-w-full">
               <Command>
                 <CommandInput
-                  placeholder="Cari hotel..."
+                  placeholder="Cari vendor..."
                   onValueChange={(val) => setQuery(val)}
                 />
-                {/* <CommandEmpty>Tidak ditemukan.</CommandEmpty> */}
+                <CommandEmpty>Tidak ditemukan.</CommandEmpty>
+
                 {loading ? (
                   <div className="p-4 flex justify-center">
                     <LoadingComponent className="min-h-fit!" />
                   </div>
                 ) : (
                   <CommandGroup className="max-h-64 overflow-y-auto font-sans">
-                    {filteredHotels.map((hotel) => (
+                    {filteredVendors.map((vendor) => (
                       <CommandItem
-                        key={hotel.id}
-                        value={hotel.name}
+                        key={vendor.id}
+                        value={vendor.name}
                         onSelect={() => {
-                          form.setValue("hotel_id", hotel.id, {
+                          form.setValue("vendor_id", vendor.id, {
                             shouldValidate: true,
                             shouldDirty: true,
                           });
                           setOpen(false);
                         }}
                       >
-                        {hotel.logo ? (
+                        {vendor.name && vendor.logo ? (
                           <Image
-                            src={hotel.logo}
-                            alt={hotel.name}
-                            width={20}
-                            height={20}
-                            className="object-cover w-5! h-5! rounded-full border"
+                            src={vendor.logo}
+                            alt={vendor.name || "Vendor Logo"}
+                            width={100}
+                            height={100}
+                            className="object-cover w-5! h-5!  rounded-full border"
                           />
                         ) : (
                           <Avatar
-                            name={hotel.name}
+                            name={vendor.name}
+                            className="w-5! h-5! border rounded-full"
+                            colors={[
+                              "#3e77ab",
+                              "#22b26e",
+                              "#f2f26f",
+                              "#fff7bd",
+                              "#95cfb7",
+                            ]}
                             variant="beam"
                             size={20}
-                            className="w-5! h-5! border rounded-full"
                           />
                         )}
-                        {hotel.name}
+                        {vendor.name}
                       </CommandItem>
                     ))}
                   </CommandGroup>

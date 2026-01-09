@@ -64,6 +64,7 @@ const AddVendor = () => {
       highlight_image: "",
       reference_image: [],
       location_map: "",
+      location: "",
     },
   });
 
@@ -189,11 +190,11 @@ const AddVendor = () => {
       <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
         {name && (
           <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
-            Add Vendor
+            Add Partner & Hospital
           </p>
         )}
         <h4 className="text-primary font-semibold">
-          {name ? name : "Add Vendor"}
+          {name ? name : "Add Partner & Hospital"}
         </h4>
       </div>
 
@@ -225,24 +226,38 @@ const AddVendor = () => {
                 )}
               />
               <div className="lg:grid flex flex-col grid-cols-2 gap-5 items-start">
-                <div className="space-y-5 w-full">
-                  <FormField
-                    control={form.control}
-                    name="location_map"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-primary font-semibold!">
-                          Maps Location URL
-                        </FormLabel>
-                        <FormControl>
-                          <Input {...field} type="url" className="h-12" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <ComboBoxVendor />
-                </div>
+                <FormField
+                  control={form.control}
+                  name="location_map"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Maps Location URL
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} type="url" className="h-12" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold!">
+                        Location
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} type="text" className="h-12" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <ComboBoxVendor />
                 <DynamicInputField
                   form={form}
                   name="specialist"

@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 const options = [
   { value: "writter", label: "Writter" },
   { value: "editor", label: "Editor" },
+  { value: "doctor", label: "Doctor" },
 ];
 
 export function ComboBoxArticleAuthorJob() {

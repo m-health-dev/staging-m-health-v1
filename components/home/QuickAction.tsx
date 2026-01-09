@@ -13,13 +13,16 @@ import {
   Search,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
+import { ro } from "date-fns/locale";
 
 const QuickAction = ({ includeSearchBar }: { includeSearchBar?: boolean }) => {
   const pathname = usePathname();
   const locale = useLocale();
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   const quickLinks = [
     {
@@ -42,20 +45,28 @@ const QuickAction = ({ includeSearchBar }: { includeSearchBar?: boolean }) => {
     },
     {
       id: 2,
-      href: `/${locale}/medical`,
-      label: `${locale === routing.defaultLocale ? "Paket Medis" : "Medical"}`,
+      href: `/${locale}/package`,
+      label: `${locale === routing.defaultLocale ? "Paket" : "Our Packages"}`,
       icon: <Activity />,
     },
+    // {
+    //   id: 3,
+    //   href: `/${locale}/wellness`,
+    //   label: `${
+    //     locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness"
+    //   }`,
+    //   icon: <HeartPlus />,
+    // },
+    // {
+    //   id: 4,
+    //   href: `/${locale}/wellness`,
+    //   label: `${
+    //     locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness"
+    //   }`,
+    //   icon: <HeartPlus />,
+    // },
     {
-      id: 3,
-      href: `/${locale}/wellness`,
-      label: `${
-        locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness"
-      }`,
-      icon: <HeartPlus />,
-    },
-    {
-      id: 4,
+      id: 5,
       href: `/${locale}/event`,
       label: `${
         locale === routing.defaultLocale ? "Acara Terbaru" : "Our Events"
@@ -63,7 +74,7 @@ const QuickAction = ({ includeSearchBar }: { includeSearchBar?: boolean }) => {
       icon: <CalendarHeart />,
     },
     {
-      id: 5,
+      id: 6,
       href: `/${locale}/article`,
       label: `${
         locale === routing.defaultLocale ? "Artikel Terbaru" : "News & Article"
@@ -79,20 +90,33 @@ const QuickAction = ({ includeSearchBar }: { includeSearchBar?: boolean }) => {
     ? quickLinks.filter((link) => link.id !== 1)
     : quickLinks;
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    router.push(`/${locale}/search?q=${searchQuery}`);
+  };
+
   return (
     <div className="flex w-full justify-center">
       <div className="lg:max-w-2xl max-w-full w-full">
         {/* Search Bar */}
         {includeSearchBar && (
           <div className="search_anything mb-4">
-            <form className="flex gap-2 justify-end items-center relative group">
+            <form
+              onSubmit={handleSubmit}
+              className="flex gap-2 justify-end items-center relative group"
+            >
               <Input
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search anything"
                 className="h-14 rounded-full bg-white px-5 placeholder:text-primary/50 lg:text-[18px] text-base w-full focus-visible:border-muted-foreground/20 focus-visible:ring-0! outline-0!"
               />
-              <div className="absolute bg-white text-primary w-14 h-14 inline-flex items-center justify-center rounded-full border border-border shadow group-hover:bg-primary group-hover:text-background group-focus:bg-primary group-focus:text-background transition-all duration-300 cursor-pointer">
+              <button
+                type="submit"
+                className="absolute bg-white text-primary w-14 h-14 inline-flex items-center justify-center rounded-full border border-border shadow group-hover:bg-primary group-hover:text-background group-focus:bg-primary group-focus:text-background transition-all duration-300 cursor-pointer"
+              >
                 <Search />
-              </div>
+              </button>
             </form>
           </div>
         )}

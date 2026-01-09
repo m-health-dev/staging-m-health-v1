@@ -13,6 +13,7 @@ import ClientVendorPublic from "./client-hotel";
 import ClientHotelPublic from "./client-hotel";
 import { getAllHotel } from "@/lib/hotel/get-hotel";
 import { HotelType } from "@/types/hotel.types";
+import { routing } from "@/i18n/routing";
 
 const HotelPublicPage = async ({
   searchParams,
@@ -32,10 +33,15 @@ const HotelPublicPage = async ({
     <Wrapper>
       <ContainerWrap>
         <div className="my-20">
-          <h3 className="text-primary font-semibold">Hotel Collaboration</h3>
+          <h3 className="text-primary font-semibold">
+            {locale === routing.defaultLocale
+              ? "Hotel Collaboration"
+              : "Mitra Hotel"}
+          </h3>
           <p className="text-muted-foreground max-w-xl mt-1 text-sm!">
-            We are collaboration with this hotel. To give you the perfect
-            journey of wellness.
+            {locale === routing.defaultLocale
+              ? "We are collaboration with this hotel. To give you the perfect journey of wellness."
+              : "Kami berkolaborasi dengan hotel ini. Untuk memberikan Anda perjalanan kebugaran yang sempurna."}
           </p>
         </div>
         <div>

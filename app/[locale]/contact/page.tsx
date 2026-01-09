@@ -72,7 +72,7 @@ const ContactPage = async () => {
                 </Link>
               </div>
               <div className="social_media mt-5 flex items-center gap-2">
-                <Link href={"whatsapp://"}>
+                <Link href={"whatsapp://send?phone=6282310172457"}>
                   <FontAwesomeIcon
                     icon={faWhatsapp}
                     className="size-6 text-primary"

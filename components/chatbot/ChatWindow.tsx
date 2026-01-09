@@ -249,7 +249,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                   </div>
                 )}
                 {type === "preview" && (
-                  <div className="bg-linear-to-b from-background via-background  sticky top-0 z-20 py-6">
+                  <div className="bg-linear-to-b from-background via-background py-6">
                     <div className="bg-blue-100 text-blue-500 border border-blue-500 p-4 rounded-2xl flex flex-row items-center gap-3">
                       <div className="bg-white p-1 rounded-full w-8 h-8 flex justify-center items-center border border-blue-500">
                         <ScanEye className="size-5 w-4 h-4" />

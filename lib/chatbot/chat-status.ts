@@ -35,13 +35,11 @@ export async function ChangeChatStatus(session_id: string, statusSend: string) {
       if (res.status === 404) {
         return {
           success: false,
-          req: res,
           error: "Gagal Mengubah status chat. Sesi tidak ditemukan.",
         };
       } else if (res.status === 401) {
         return {
           success: false,
-          req: res,
           error:
             "Anda harus masuk untuk mengubah status chat. Unauthorized access.",
         };
@@ -90,7 +88,7 @@ export async function SetChatStatus(status: string, sessionID: string) {
     }
 
     return {
-      success: false,
+      success: true,
       data: set,
       message: "Success to change chat session status.",
     };

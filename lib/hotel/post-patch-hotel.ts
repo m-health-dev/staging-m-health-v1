@@ -20,6 +20,7 @@ export async function addHotel(payload: {
   highlight_image: string;
   reference_image: string[];
   location_map: string;
+  location: string;
 }) {
   try {
     console.log("Sending hotel/create to BE:", payload);
@@ -71,6 +72,7 @@ export async function updateHotel(
     highlight_image?: string;
     reference_image?: string[];
     location_map?: string;
+    location?: string;
   },
   id: string
 ) {

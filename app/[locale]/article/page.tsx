@@ -19,12 +19,34 @@ import EventPageClient from "./article-page-client";
 import { getAllEvents } from "@/lib/events/get-events";
 import { getAllPublicArticles } from "@/lib/articles/get-articles";
 import ArticlePageClient from "./article-page-client";
+import { Metadata, ResolvingMetadata } from "next";
 
-const ArticlePage = async ({
-  searchParams,
-}: {
+type Props = {
+  params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) => {
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  return {
+    title: `${
+      locale === routing.defaultLocale ? "Artikel" : "Articles"
+    } - M HEALTH`,
+    description: `${
+      locale === routing.defaultLocale
+        ? "Artikel dan informasi terbaru tentang kamu dan M HEALTH"
+        : "Articles and information about you and M HEALTH"
+    }`,
+  };
+}
+
+const ArticlePage = async ({ searchParams }: Props) => {
   const params = await searchParams;
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 10);

@@ -12,4 +12,5 @@ export type VendorType = {
   highlight_image: string;
   reference_image: string[];
   location_map: string;
+  location: string;
 };

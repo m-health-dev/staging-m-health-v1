@@ -48,9 +48,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { RupiahInput } from "@/components/Form/PriceInput";
 import { WellnessType } from "@/types/wellness.types";
-import { ComboBoxGender } from "../../ComboBoxGender";
-import { ComboBoxVendorListOption } from "../../ComboBoxVendorListOption";
-import { ComboBoxHotelListOption } from "../../ComboBoxHotelListOption";
+import { ComboBoxGender } from "@/components/Form/ComboBoxGender";
+import { ComboBoxVendorListOption } from "@/components/Form/ComboBoxVendorListOption";
+import { ComboBoxHotelListOption } from "@/components/Form/ComboBoxHotelListOption";
 import { deleteWellness } from "@/lib/wellness/delete-wellness";
 import { baseUrl } from "@/helper/baseUrl";
 import { MedicalType } from "@/types/medical.types";
@@ -759,7 +759,7 @@ const UpdatePackageForm = ({
                   size={"lg"}
                   className="rounded-full flex lg:w-fit w-full"
                 >
-                  {loading ? <Spinner /> : "Submit"}
+                  {loading ? <Spinner /> : "Update"}
                 </Button>
               </div>
             </div>

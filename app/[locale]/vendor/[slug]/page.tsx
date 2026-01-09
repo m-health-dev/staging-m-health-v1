@@ -38,7 +38,7 @@ const VendorPublicDetailPage = async ({
           width={720}
           height={405}
           alt={v.slug}
-          className="lg:aspect-13/4 aspect-video w-full rounded-2xl object-center object-cover"
+          className="lg:aspect-20/7 aspect-video w-full rounded-2xl object-center object-cover"
         />
       </ContainerWrap>
       <ContainerWrap size="md" className="mb-20">
@@ -61,6 +61,10 @@ const VendorPublicDetailPage = async ({
               </div>
             </Link>
           </div>
+        </div>
+        <p className="text-sm! text-muted-foreground mt-10 mb-2">Location</p>
+        <div className="flex flex-wrap gap-2 mb-5">
+          <p>{v.location}</p>
         </div>
         <p className="text-sm! text-muted-foreground mt-10 mb-2">Specialist</p>
         <div className="flex flex-wrap gap-2 mb-5">

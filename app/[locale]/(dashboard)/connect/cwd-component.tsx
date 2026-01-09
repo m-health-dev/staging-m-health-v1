@@ -437,7 +437,7 @@ M HEALTH Development Team`,
     <div className="bg-white">
       <ContainerWrap
         size="md"
-        className="flex justify-center items-center min-h-screen flex-col lg:min-w-2xl! lg:max-w-2xl!"
+        className="flex justify-center items-center min-h-screen flex-col lg:min-w-2xl! lg:max-w-2xl! py-20"
       >
         <Image
           src={

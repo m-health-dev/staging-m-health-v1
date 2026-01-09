@@ -21,6 +21,7 @@ import NextTopLoader from "nextjs-toploader";
 import OneTapComponent from "@/components/utility/GoogleOneTap";
 import SnowFall from "@/components/snow-fall";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import DialogSwitchLang from "@/components/utility/lang/DialogSwitchLang";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -91,6 +92,7 @@ export default async function RootLayout({ children, params }: Props) {
             />
             <Analytics />
             <SpeedInsights />
+            <DialogSwitchLang />
             {children}
             <OneTapComponent />
           </NextIntlClientProvider>

@@ -35,7 +35,7 @@ const HotelPublicDetailPage = async ({
           height={405}
           alt={v.slug}
           unoptimized
-          className="lg:aspect-13/4 aspect-video w-full rounded-2xl object-center object-cover"
+          className="lg:aspect-20/7 aspect-video w-full rounded-2xl object-center object-cover"
         />
       </ContainerWrap>
       <ContainerWrap size="md" className="mb-20">

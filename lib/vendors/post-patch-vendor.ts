@@ -22,6 +22,7 @@ export async function addVendor(payload: {
   highlight_image: string;
   reference_image: string[];
   location_map: string;
+  location: string;
 }) {
   try {
     console.log("Sending vendor/create to BE:", payload);
@@ -76,6 +77,7 @@ export async function updateVendor(
     highlight_image?: string;
     reference_image?: string[];
     location_map?: string;
+    location?: string;
   },
   id: string
 ) {

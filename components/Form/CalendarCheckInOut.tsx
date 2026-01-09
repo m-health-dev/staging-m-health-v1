@@ -36,11 +36,44 @@ export function CalendarCheckInOut({
   const [openFrom, setOpenFrom] = React.useState(false);
   const [openTo, setOpenTo] = React.useState(false);
 
+  const formatTimeFromDate = (date: Date) => {
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
   const hours = new Date().getHours();
   const minutes = new Date().getMinutes();
 
-  const [timeFrom, setTimeFrom] = React.useState(`${hours}:${minutes}:00`);
-  const [timeTo, setTimeTo] = React.useState(`${hours}:${minutes}:00`);
+  const [timeFrom, setTimeFrom] = React.useState(
+    startDate
+      ? formatTimeFromDate(startDate)
+      : `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+          2,
+          "0"
+        )}:00`
+  );
+  const [timeTo, setTimeTo] = React.useState(
+    endDate
+      ? formatTimeFromDate(endDate)
+      : `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+          2,
+          "0"
+        )}:00`
+  );
+
+  React.useEffect(() => {
+    if (startDate) {
+      setTimeFrom(formatTimeFromDate(startDate));
+    }
+  }, [startDate]);
+
+  React.useEffect(() => {
+    if (endDate) {
+      setTimeTo(formatTimeFromDate(endDate));
+    }
+  }, [endDate]);
 
   return (
     <div className="flex flex-col gap-4">

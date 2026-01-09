@@ -63,7 +63,7 @@ const Footer = () => {
                 </Link>
               </div>
               <div className="social_media mt-5 flex items-center gap-2">
-                <Link href={"whatsapp://"}>
+                <Link href={"whatsapp://send?phone=6282310172457"}>
                   <FontAwesomeIcon
                     icon={faWhatsapp}
                     className="size-6 text-primary"
@@ -167,8 +167,8 @@ const Footer = () => {
               <p>
                 <Link href={"/vendor"}>
                   {locale === routing.defaultLocale
-                    ? "Mitra Rumah Sakit dan Pelatih"
-                    : "Hospital and Trainer Partners"}
+                    ? "Mitra Kolaborasi dan Rumah Sakit"
+                    : "Partner & Hospital Partners"}{" "}
                 </Link>
               </p>
 
@@ -196,14 +196,14 @@ const Footer = () => {
 
             <div className="space-y-2">
               <p>
-                <Link href={"whatsapp://send?phone=1234567890"}>
+                <Link href={"whatsapp://send?phone=6282310172457"}>
                   {locale === routing.defaultLocale
                     ? "Bantuan Pelanggan"
                     : "Customer Support"}{" "}
                 </Link>
               </p>
               <p>
-                <Link href={"/help"}>
+                <Link href={"whatsapp://send?phone=628159880048"}>
                   {locale === routing.defaultLocale
                     ? "Bantuan Teknis"
                     : "Technical Support"}{" "}

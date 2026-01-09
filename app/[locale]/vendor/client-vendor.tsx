@@ -52,6 +52,20 @@ const ClientVendorPublic = ({
                         <p className="lg:text-sm! text-xs!">{v.category}</p>
                       </div>
                     </div>
+                    {v.location && (
+                      <div className="absolute top-0 right-0 p-4 z-10">
+                        <div
+                          className={cn(
+                            "px-3 py-1 bg-white rounded-xl capitalize truncate inline-flex w-fit text-primary"
+                          )}
+                        >
+                          <p className="lg:text-sm! text-xs!">
+                            {v.location.split(",")[0]}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="overflow-hidden rounded-2xl">
                       {v.name && v.highlight_image ? (
                         <Image
