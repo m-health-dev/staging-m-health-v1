@@ -56,7 +56,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const [copied, setCopied] = useState(false);
   const locale = useLocale();
 
-  const phoneNumber = "08159880048";
+  const phoneNumber = "082310172457";
 
   let cleanMessage = message.trim();
 
@@ -64,10 +64,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
   const whatsappLink = `https://wa.me/${phoneNumber.replace("0", "62")}`;
 
-  cleanMessage = cleanMessage.replace(
-    /(^|\s)(consultation|konsultasi)(\s|$)/gi,
-    " "
-  );
+  // cleanMessage = cleanMessage.replace(
+  //   /(^|\s)(consultation|konsultasi)(\s|$)/gi,
+  //   " "
+  // );
 
   cleanMessage = cleanMessage.replace(/[ \t]+/g, " ").trim();
 
