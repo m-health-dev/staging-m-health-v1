@@ -76,9 +76,9 @@ const VendorCard = ({ v, locale }: { v: VendorType; locale: string }) => {
             )}
           </div>
           <div>
-            <h5 className="font-semibold text-white line-clamp-1 mb-1">
+            <h6 className="font-semibold text-white text-xl! line-clamp-1 mb-1">
               {v.name}
-            </h5>
+            </h6>
             <div className="flex justify-start items-center flex-wrap gap-2">
               {v.specialist?.slice(0, 2).map((s, i) => (
                 <div

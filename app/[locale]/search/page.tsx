@@ -19,6 +19,7 @@ import EventPageClient from "./search-page-client";
 import { getAllEvents } from "@/lib/events/get-events";
 import { getAllSearchResultPublished } from "@/lib/search/get-search";
 import SearchPageClient from "./search-page-client";
+import QuickAction from "@/components/home/QuickAction";
 
 const SearchPage = async ({
   searchParams,
@@ -40,6 +41,13 @@ const SearchPage = async ({
             {locale === routing.defaultLocale ? "Hasil untuk" : "Results for"} "
             {query as string}"
           </p>
+          <div className="mt-5">
+            <QuickAction
+              includeSearchBar
+              withoutQuickLinks
+              query={query as string}
+            />
+          </div>
         </ContainerWrap>
       </div>{" "}
       <ContainerWrap>
