@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { contactSchema } from "./page";
 import z, { set } from "zod";
 import { sendContactMessage } from "./contact-action";
 import { useLocale } from "next-intl";
@@ -23,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Spinner } from "@/components/ui/spinner";
+import { contactSchema } from "@/lib/zodSchema";
 
 const ContactPageClient = () => {
   const [loading, setLoading] = React.useState(false);

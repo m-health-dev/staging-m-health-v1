@@ -20,12 +20,63 @@ import MedicalClientPage from "./wellness-page-client";
 import { routing } from "@/i18n/routing";
 import { getAllPublicWellness } from "@/lib/wellness/get-wellness";
 import WellnessClientPage from "./wellness-page-client";
+import { Metadata, ResolvingMetadata } from "next";
 
-const WellnessPage = async ({
-  searchParams,
-}: {
+type Props = {
+  params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) => {
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  return {
+    title: `${
+      locale === routing.defaultLocale
+        ? "Paket Kebugaran"
+        : "Our Wellness Packages"
+    } - M HEALTH`,
+    description: `${
+      locale === routing.defaultLocale
+        ? "Informasi mengenai berbagai paket kebugaran yang tersedia."
+        : "Information about various wellness packages available."
+    }`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale
+          ? "Paket Kebugaran"
+          : "Our Wellness Packages"
+      } - M HEALTH`,
+      description: `${
+        locale === routing.defaultLocale
+          ? "Informasi mengenai berbagai paket kebugaran yang tersedia."
+          : "Information about various wellness packages available."
+      }`,
+      images: [
+        {
+          url: `/api/og?title=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Paket Kebugaran"
+              : "Our Wellness Packages"
+          )}&description=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Informasi mengenai berbagai paket kebugaran yang tersedia."
+              : "Information about various wellness packages available."
+          )}&path=${encodeURIComponent(`m-health.id/wellness/${slug}`)}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+const WellnessPage = async ({ searchParams }: Props) => {
   const params = await searchParams;
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 10);

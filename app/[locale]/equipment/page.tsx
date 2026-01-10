@@ -18,12 +18,61 @@ import Wrapper from "@/components/utility/Wrapper";
 import { routing } from "@/i18n/routing";
 import { getAllPublicMedicalEquipment } from "@/lib/medical-equipment/get-medical-equipment";
 import EquipmentClientPage from "./euipment-page-client";
+import { Metadata, ResolvingMetadata } from "next";
 
-const EquipmentPage = async ({
-  searchParams,
-}: {
+type Props = {
+  params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) => {
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  return {
+    title: `${
+      locale === routing.defaultLocale ? "Alat Kesehatan" : "Medical Equipment"
+    } - M HEALTH`,
+    description: `${
+      locale === routing.defaultLocale
+        ? "Informasi mengenai berbagai alat kesehatan yang tersedia."
+        : "Information about various available medical equipment."
+    }`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale
+          ? "Alat Kesehatan"
+          : "Medical Equipment"
+      } - M HEALTH`,
+      description: `${
+        locale === routing.defaultLocale
+          ? "Informasi mengenai berbagai alat kesehatan yang tersedia."
+          : "Information about various available medical equipment."
+      }`,
+      images: [
+        {
+          url: `/api/og?title=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Alat Kesehatan"
+              : "Medical Equipment"
+          )}&description=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Informasi mengenai berbagai alat kesehatan yang tersedia."
+              : "Information about various available medical equipment."
+          )}&path=${encodeURIComponent(`m-health.id/equipment`)}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+const EquipmentPage = async ({ searchParams }: Props) => {
   const params = await searchParams;
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 10);

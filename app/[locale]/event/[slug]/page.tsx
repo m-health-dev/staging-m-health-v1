@@ -12,12 +12,58 @@ import Link from "next/link";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { Button } from "@/components/ui/button";
 import CarouselEvent from "./CarouselEvent";
+import type { Metadata, ResolvingMetadata } from "next";
+import { stripHtml } from "@/helper/removeHTMLTag";
 
-const EventsContent = async ({
-  params,
-}: {
+type Props = {
   params: Promise<{ slug: string }>;
-}) => {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  const { data } = await getEventBySlug(slug);
+  const e: EventsType = data.data;
+
+  const rawContent =
+    locale === routing.defaultLocale ? e.id_description : e.en_description;
+
+  const plainDescription = stripHtml(rawContent);
+
+  return {
+    title: `${
+      locale === routing.defaultLocale ? e.id_title : e.en_title
+    } - M HEALTH`,
+    description: `${plainDescription}`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale ? e.id_title : e.en_title
+      } - M HEALTH`,
+      description: `${plainDescription}`,
+      images: [
+        {
+          url:
+            e.highlight_image ||
+            `/api/og?title=${encodeURIComponent(
+              locale === routing.defaultLocale ? e.id_title : e.en_title
+            )}&description=${encodeURIComponent(
+              plainDescription
+            )}&path=${encodeURIComponent(`m-health.id/event/${slug}`)}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+const EventsContent = async ({ params }: Props) => {
   const { slug } = await params;
   const locale = await getLocale();
 

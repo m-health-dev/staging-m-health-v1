@@ -1,6 +1,7 @@
 import ChatContent from "@/components/chatbot/ChatContent";
 import PrivateChat from "@/components/chatbot/private-chat";
 import UnderConstruction from "@/components/utility/under-construction";
+import { routing } from "@/i18n/routing";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { GetChatStatus } from "@/lib/chatbot/chat-status";
 import {
@@ -14,6 +15,7 @@ import { getAllPackages } from "@/lib/packages/get-packages";
 import { getAllWellness } from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/server";
 import { hi } from "date-fns/locale";
+import type { Metadata, ResolvingMetadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
@@ -21,10 +23,45 @@ import { toast } from "sonner";
 
 export const dynamic = "force-dynamic";
 
-type paramsType = Promise<{ slug: string }>;
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
-export default async function SessionPage(props: { params: paramsType }) {
-  const { slug } = await props.params;
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  const { data, all } = await getChatSession(slug);
+  console.log({ data, all });
+
+  return {
+    title: `${all.data.title}`,
+    description: `M HEALTH Chat Session`,
+    openGraph: {
+      title: `${all.data.title}`,
+      description: `M HEALTH Chat Session`,
+      images: [
+        {
+          url: `/api/og?title=${encodeURIComponent(
+            all.data.title
+          )}&description=${encodeURIComponent(
+            "M HEALTH Chat Session"
+          )}&path=${encodeURIComponent(`m-health.id/c/${slug}`)}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+export default async function SessionPage({ params }: Props) {
+  const { slug } = await params;
 
   const [locale, cookieStore] = await Promise.all([getLocale(), cookies()]);
 

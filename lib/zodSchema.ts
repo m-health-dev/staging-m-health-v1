@@ -226,3 +226,11 @@ export const LegalSchema = z.object({
   en_content: z.string(),
   id_content: z.string(),
 });
+
+export const contactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.email("Invalid email address"),
+  phone_number: z.string().min(5, "Invalid phone number"),
+  message: z.string().min(3, "Message is required"),
+  subject: z.string().min(1, "Subject is required"),
+});

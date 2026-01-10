@@ -11,12 +11,63 @@ import Link from "next/link";
 import React from "react";
 import ClientVendorPublic from "./client-vendor";
 import { routing } from "@/i18n/routing";
+import type { Metadata, ResolvingMetadata } from "next";
 
-const VendorPublicPage = async ({
-  searchParams,
-}: {
+type Props = {
+  params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) => {
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  return {
+    title: `${
+      locale === routing.defaultLocale
+        ? "Mitra Kolaborasi dan Rumah Sakit"
+        : "Partner & Hospital Collaboration"
+    } - M HEALTH`,
+    description: `${
+      locale === routing.defaultLocale
+        ? "Kami berkolaborasi dengan rumah sakit, pelatih, dan produk ini. Tanpa kolaborasi kami bukan apa-apa."
+        : "We are collaboration with this hospital, coach, and product. Without collaboration we're nothing."
+    }`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale
+          ? "Mitra Kolaborasi dan Rumah Sakit"
+          : "Partner & Hospital Collaboration"
+      } - M HEALTH`,
+      description: `${
+        locale === routing.defaultLocale
+          ? "Kami berkolaborasi dengan rumah sakit, pelatih, dan produk ini. Tanpa kolaborasi kami bukan apa-apa."
+          : "We are collaboration with this hospital, coach, and product. Without collaboration we're nothing."
+      }`,
+      images: [
+        {
+          url: `/api/og?title=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Mitra Kolaborasi dan Rumah Sakit"
+              : "Partner & Hospital Collaboration"
+          )}&description=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Kami berkolaborasi dengan rumah sakit, pelatih, dan produk ini. Tanpa kolaborasi kami bukan apa-apa."
+              : "We are collaboration with this hospital, coach, and product. Without collaboration we're nothing."
+          )}&path=${encodeURIComponent(`m-health.id/vendor`)}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+const VendorPublicPage = async ({ searchParams }: Props) => {
   const params = await searchParams;
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 9);
@@ -32,13 +83,13 @@ const VendorPublicPage = async ({
         <div className="my-20">
           <h3 className="text-primary font-semibold">
             {locale === routing.defaultLocale
-              ? "Partner & Hospital Collaboration"
-              : "Mitra Kolaborasi & Rumah Sakit"}
+              ? "Mitra Kolaborasi & Rumah Sakit"
+              : "Partner & Hospital Collaboration"}
           </h3>
           <p className="text-muted-foreground max-w-xl mt-1 text-sm!">
             {locale === routing.defaultLocale
-              ? "We are collaboration with this hospital, coach, and product. Without collaboration we're nothing."
-              : "Kami berkolaborasi dengan rumah sakit, pelatih, dan produk ini. Tanpa kolaborasi kami bukan apa-apa."}
+              ? "Kami berkolaborasi dengan rumah sakit, pelatih, dan produk ini. Tanpa kolaborasi kami bukan apa-apa."
+              : "We are collaboration with this hospital, coach, and product. Without collaboration we're nothing."}
           </p>
         </div>
         <div>

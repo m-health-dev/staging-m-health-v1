@@ -1,11 +1,62 @@
 import PackageDetailClient from "@/components/package/PackageDetailClient";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import Wrapper from "@/components/utility/Wrapper";
+import { stripHtml } from "@/helper/removeHTMLTag";
+import { routing } from "@/i18n/routing";
 import { getPackageBySlug } from "@/lib/packages/get-packages";
 import { getImagePackageDetail } from "@/lib/unsplashImage";
+import { PackageType } from "@/types/packages.types";
+import type { Metadata, ResolvingMetadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
 import React from "react";
+
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  const data: PackageType = (await getPackageBySlug(slug)).data.data;
+
+  const rawContent =
+    locale === routing.defaultLocale ? data.id_tagline : data.en_tagline;
+
+  const plainDescription = stripHtml(rawContent);
+
+  return {
+    title: `${
+      locale === routing.defaultLocale ? data.id_title : data.en_title
+    } - M HEALTH`,
+    description: `${plainDescription}`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale ? data.id_title : data.en_title
+      } - M HEALTH`,
+      description: `${plainDescription}`,
+      images: [
+        {
+          url:
+            data.highlight_image ||
+            `/api/og?title=${encodeURIComponent(
+              locale === routing.defaultLocale ? data.id_title : data.en_title
+            )}&description=${encodeURIComponent(
+              plainDescription
+            )}&path=${encodeURIComponent(`m-health.id/package/${slug}`)}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
 
 const PackageDetailSlug = async ({
   params,

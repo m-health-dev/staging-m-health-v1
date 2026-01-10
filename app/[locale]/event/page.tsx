@@ -17,12 +17,57 @@ import Wrapper from "@/components/utility/Wrapper";
 import { routing } from "@/i18n/routing";
 import EventPageClient from "./event-page-client";
 import { getAllEvents } from "@/lib/events/get-events";
+import type { Metadata, ResolvingMetadata } from "next";
 
-const EventsPage = async ({
-  searchParams,
-}: {
+type Props = {
+  params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) => {
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  return {
+    title: `${
+      locale === routing.defaultLocale ? "Acara" : "Our Events"
+    } - M HEALTH`,
+    description: `${
+      locale === routing.defaultLocale
+        ? "Deskripsi acara dan informasi terkait lainnya."
+        : "Event descriptions and other related information."
+    }`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale ? "Acara" : "Our Events"
+      } - M HEALTH`,
+      description: `${
+        locale === routing.defaultLocale
+          ? "Deskripsi acara dan informasi terkait lainnya."
+          : "Event descriptions and other related information."
+      }`,
+      images: [
+        {
+          url: `/api/og?title=${encodeURIComponent(
+            locale === routing.defaultLocale ? "Acara" : "Our Events"
+          )}&description=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Deskripsi acara dan informasi terkait lainnya."
+              : "Event descriptions and other related information."
+          )}&path=${encodeURIComponent("m-health.id/event")}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+const EventsPage = async ({ searchParams }: Props) => {
   const params = await searchParams;
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 10);

@@ -9,12 +9,62 @@ import Image from "next/image";
 import React from "react";
 import EquipmentClientPage from "../euipment-page-client";
 import EquipmentDetailClient from "@/components/equipment/EquipmentDetailClient";
+import { MedicalEquipmentType } from "@/types/medical-equipment.types";
+import type { Metadata, ResolvingMetadata } from "next";
+import { routing } from "@/i18n/routing";
+import { stripHtml } from "@/helper/removeHTMLTag";
 
-const PackageDetailSlug = async ({
-  params,
-}: {
+type Props = {
   params: Promise<{ slug: string }>;
-}) => {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  const data: MedicalEquipmentType = (await getMedicalEquipmentBySlug(slug))
+    .data.data;
+
+  const rawContent =
+    locale === routing.defaultLocale
+      ? data.id_description
+      : data.en_description;
+
+  const plainDescription = stripHtml(rawContent);
+
+  return {
+    title: `${
+      locale === routing.defaultLocale ? data.id_title : data.en_title
+    } - M HEALTH`,
+    description: `${plainDescription}`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale ? data.id_title : data.en_title
+      } - M HEALTH`,
+      description: `${plainDescription}`,
+      images: [
+        {
+          url:
+            data.highlight_image ||
+            `/api/og?title=${encodeURIComponent(
+              locale === routing.defaultLocale ? data.id_title : data.en_title
+            )}&description=${encodeURIComponent(
+              plainDescription
+            )}&path=${encodeURIComponent(`m-health.id/equipment/${slug}`)}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+const PackageDetailSlug = async ({ params }: Props) => {
   const { slug } = await params;
 
   const locale = await getLocale();

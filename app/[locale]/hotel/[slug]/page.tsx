@@ -2,6 +2,7 @@ import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import UnderConstruction from "@/components/utility/under-construction";
 import Wrapper from "@/components/utility/Wrapper";
+import { stripHtml } from "@/helper/removeHTMLTag";
 import { routing } from "@/i18n/routing";
 import { getHotelBySlug } from "@/lib/hotel/get-hotel";
 import { cn } from "@/lib/utils";
@@ -10,16 +11,56 @@ import { HotelType } from "@/types/hotel.types";
 import { VendorType } from "@/types/vendor.types";
 import { createClient } from "@/utils/supabase/client";
 import { MapPin } from "lucide-react";
+import type { Metadata, ResolvingMetadata } from "next";
 import { getLocale } from "next-intl/server";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const HotelPublicDetailPage = async ({
-  params,
-}: {
+type Props = {
   params: Promise<{ slug: string }>;
-}) => {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  const v: HotelType = (await getHotelBySlug(slug)).data.data;
+
+  const rawContent =
+    locale === routing.defaultLocale ? v.id_description : v.en_description;
+
+  const plainDescription = stripHtml(rawContent);
+
+  return {
+    title: `${v.name} - M HEALTH`,
+    description: `${plainDescription}`,
+    openGraph: {
+      title: `${v.name} - M HEALTH`,
+      description: `${plainDescription}`,
+      images: [
+        {
+          url:
+            v.highlight_image ||
+            `/api/og?title=${encodeURIComponent(
+              v.name
+            )}&description=${encodeURIComponent(
+              plainDescription
+            )}&path=${encodeURIComponent(`m-health.id/hotel/${slug}`)}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+const HotelPublicDetailPage = async ({ params }: Props) => {
   const { slug } = await params;
 
   const supabase = await createClient();

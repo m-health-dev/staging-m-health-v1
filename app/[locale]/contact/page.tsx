@@ -15,14 +15,27 @@ import {
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
+import type { Metadata, ResolvingMetadata } from "next";
 
-export const contactSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.email("Invalid email address"),
-  phone_number: z.string().min(5, "Invalid phone number"),
-  message: z.string().min(3, "Message is required"),
-  subject: z.string().min(1, "Subject is required"),
-});
+export const metadata: Metadata = {
+  title: `Contact Us- M HEALTH`,
+  description: `Pandan St. 11A, Gading Kasri, Klojen District, Malang City, East Java 65115 | info@m-health.id`,
+  openGraph: {
+    title: `Contact Us - M HEALTH`,
+    description: `Pandan St. 11A, Gading Kasri, Klojen District, Malang City, East Java 65115 | info@m-health.id`,
+    images: [
+      {
+        url: `/api/og?title=${encodeURIComponent(
+          "Contact Us"
+        )}&description=${encodeURIComponent(
+          "Pandan St. 11A, Gading Kasri, Klojen District, Malang City, East Java 65115 | info@m-health.id"
+        )}&path=${encodeURIComponent("m-health.id/contact")}`,
+        width: 800,
+        height: 450,
+      },
+    ],
+  },
+};
 
 const ContactPage = async () => {
   const locale = await getLocale();

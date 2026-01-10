@@ -1,9 +1,10 @@
 import z from "zod";
-import { contactSchema } from "./page";
+
 import { createClient } from "@/utils/supabase/client";
 import { sendMail } from "@/lib/mail/send-mail";
 import { send } from "node:process";
 import { sub } from "date-fns";
+import { contactSchema } from "@/lib/zodSchema";
 
 export const contactSchemaBE = z.object({
   name: z.string().min(1),

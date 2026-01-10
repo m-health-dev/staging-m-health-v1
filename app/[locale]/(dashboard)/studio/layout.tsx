@@ -11,9 +11,14 @@ import { routing } from "@/i18n/routing";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { createClient } from "@/utils/supabase/server";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
+import type { Metadata } from "next";
 type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
+};
+
+export const metadata: Metadata = {
+  title: "Studio - M HEALTH",
 };
 
 export default async function Page({ children, params }: Props) {

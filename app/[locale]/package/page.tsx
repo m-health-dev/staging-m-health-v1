@@ -16,12 +16,63 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PackageClientPage from "./package-page-client";
 import Wrapper from "@/components/utility/Wrapper";
 import { routing } from "@/i18n/routing";
+import type { Metadata, ResolvingMetadata } from "next";
 
-const PackagePage = async ({
-  searchParams,
-}: {
+type Props = {
+  params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) => {
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  return {
+    title: `${
+      locale === routing.defaultLocale
+        ? "Paket Kebugaran & Medis"
+        : "Wellness & Medical Packages"
+    } - M HEALTH`,
+    description: `${
+      locale === routing.defaultLocale
+        ? "Informasi mengenai berbagai paket kebugaran dan medis yang tersedia."
+        : "Information about various wellness and medical packages available."
+    }`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale
+          ? "Paket Kebugaran & Medis"
+          : "Wellness & Medical Packages"
+      } - M HEALTH`,
+      description: `${
+        locale === routing.defaultLocale
+          ? "Informasi mengenai berbagai paket kebugaran dan medis yang tersedia."
+          : "Information about various wellness and medical packages available."
+      }`,
+      images: [
+        {
+          url: `/api/og?title=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Paket Kebugaran & Medis"
+              : "Wellness & Medical Packages"
+          )}&description=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Informasi mengenai berbagai paket kebugaran dan medis yang tersedia."
+              : "Information about various wellness and medical packages available."
+          )}&path=${encodeURIComponent(`m-health.id/package`)}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+const PackagePage = async ({ searchParams }: Props) => {
   const params = await searchParams;
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 10);

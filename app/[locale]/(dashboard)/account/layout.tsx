@@ -8,8 +8,13 @@ import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { SiteHeaderDashboard } from "@/components/site-header-dashboard";
 import { createClient } from "@/utils/supabase/server";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
+import type { Metadata } from "next";
 type Props = {
   children: React.ReactNode;
+};
+
+export const metadata: Metadata = {
+  title: "Account Settings - M HEALTH",
 };
 
 export default async function Page({ children }: Props) {

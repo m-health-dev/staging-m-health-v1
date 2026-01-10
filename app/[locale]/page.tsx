@@ -1,5 +1,6 @@
 import ChatContent from "@/components/chatbot/ChatContent";
 import SnowFall from "@/components/snow-fall";
+import { routing } from "@/i18n/routing";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import {
   getChatHistory,
@@ -15,11 +16,66 @@ import {
   getAllWellness,
 } from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/server";
+import { Metadata, ResolvingMetadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
+
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  return {
+    title: `${
+      locale === routing.defaultLocale
+        ? "Konsultasi dengan AI"
+        : "Consult with AI"
+    } - M HEALTH`,
+    description: `${
+      locale === routing.defaultLocale
+        ? "M HEALTH adalah platform kesehatan digital yang dirancang untuk membantu Anda mendapatkan informasi medis yang cepat, akurat, dan terpercaya. Kami memahami bahwa mencari solusi kesehatan sering kali terasa membingungkan. Oleh karena itu, kami hadir sebagai `digital front door` — pintu gerbang kesehatan yang memudahkan siapa pun untuk bertanya, berkonsultasi, serta merencanakan perjalanan medis dan wellness secara sederhana, transparan, dan terjangkau."
+        : "M HEALTH is a digital health platform designed to help you access fast, accurate, and reliable medical information. We understand that finding the right health solutions can often feel overwhelming. That’s why we act as a `digital front door` — making it easier for anyone to ask questions, consult with professionals, and plan their medical and wellness journey in a simple, transparent, and affordable way."
+    }`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale
+          ? "Konsultasi dengan AI"
+          : "Consult with AI"
+      } - M HEALTH`,
+      description: `${
+        locale === routing.defaultLocale
+          ? "M HEALTH adalah platform kesehatan digital yang dirancang untuk membantu Anda mendapatkan informasi medis yang cepat, akurat, dan terpercaya. Kami memahami bahwa mencari solusi kesehatan sering kali terasa membingungkan. Oleh karena itu, kami hadir sebagai `digital front door` — pintu gerbang kesehatan yang memudahkan siapa pun untuk bertanya, berkonsultasi, serta merencanakan perjalanan medis dan wellness secara sederhana, transparan, dan terjangkau."
+          : "M HEALTH is a digital health platform designed to help you access fast, accurate, and reliable medical information. We understand that finding the right health solutions can often feel overwhelming. That’s why we act as a `digital front door` — making it easier for anyone to ask questions, consult with professionals, and plan their medical and wellness journey in a simple, transparent, and affordable way."
+      }`,
+      images: [
+        {
+          url: `/api/og?title=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Konsultasi dengan AI"
+              : "Consult with AI"
+          )}&description=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "M HEALTH adalah platform kesehatan digital yang dirancang untuk membantu Anda mendapatkan informasi medis yang cepat, akurat, dan terpercaya. Kami memahami bahwa mencari solusi kesehatan sering kali terasa membingungkan. Oleh karena itu, kami hadir sebagai `digital front door` — pintu gerbang kesehatan yang memudahkan siapa pun untuk bertanya, berkonsultasi, serta merencanakan perjalanan medis dan wellness secara sederhana, transparan, dan terjangkau."
+              : "M HEALTH is a digital health platform designed to help you access fast, accurate, and reliable medical information. We understand that finding the right health solutions can often feel overwhelming. That’s why we act as a `digital front door` — making it easier for anyone to ask questions, consult with professionals, and plan their medical and wellness journey in a simple, transparent, and affordable way."
+          )}&path=${encodeURIComponent("m-health.id/home")}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -81,7 +137,7 @@ export default async function Home() {
     }
   }
 
-  console.log({ checkUser, session, userID, userData, publicID, historyData });
+  // console.log({ checkUser, session, userID, userData, publicID, historyData });
 
   return (
     <>
@@ -89,7 +145,9 @@ export default async function Home() {
         packages={packages}
         medical={medical}
         wellness={wellness}
-        initialHistory={Array.isArray(historyData?.data?.data) ? historyData.data.data : []}
+        initialHistory={
+          Array.isArray(historyData?.data?.data) ? historyData.data.data : []
+        }
         publicIDFetch={publicID}
         user={userData}
         locale={locale}

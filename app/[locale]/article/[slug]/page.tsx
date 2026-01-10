@@ -3,18 +3,66 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import UnderConstruction from "@/components/utility/under-construction";
 import Wrapper from "@/components/utility/Wrapper";
+import { stripHtml } from "@/helper/removeHTMLTag";
 import { routing } from "@/i18n/routing";
 import { getArticlesBySlug } from "@/lib/articles/get-articles";
 import { ArticleType } from "@/types/articles.types";
+import { Metadata, ResolvingMetadata } from "next";
 import { getLocale } from "next-intl/server";
+import { headers } from "next/headers";
 import Image from "next/image";
 import React from "react";
 
-const ArticleContent = async ({
-  params,
-}: {
+type Props = {
   params: Promise<{ slug: string }>;
-}) => {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const article: ArticleType = (await getArticlesBySlug(slug)).data.data;
+
+  const locale = await getLocale();
+
+  const rawContent =
+    locale === routing.defaultLocale ? article.id_content : article.en_content;
+
+  const plainDescription = stripHtml(rawContent);
+
+  return {
+    title: `${
+      locale === routing.defaultLocale ? article.id_title : article.en_title
+    } - M HEALTH`,
+    description: `${plainDescription.slice(0, 160)}...`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale ? article.id_title : article.en_title
+      } - M HEALTH`,
+      description: `${plainDescription.slice(0, 160)}...`,
+      images: [
+        {
+          url:
+            article.highlight_image ||
+            `/api/og?title=${encodeURIComponent(
+              locale === routing.defaultLocale
+                ? article.id_title
+                : article.en_title
+            )}&description=${encodeURIComponent(
+              plainDescription.slice(0, 160) || "M HEALTH Official Website"
+            )}&path=${encodeURIComponent(article.slug || "m-health.id")}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+const ArticleContent = async ({ params }: Props) => {
   const { slug } = await params;
   const locale = await getLocale();
 

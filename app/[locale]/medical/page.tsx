@@ -18,12 +18,61 @@ import Wrapper from "@/components/utility/Wrapper";
 import { getAllPublicMedical } from "@/lib/medical/get-medical";
 import MedicalClientPage from "./medical-page-client";
 import { routing } from "@/i18n/routing";
+import type { Metadata, ResolvingMetadata } from "next";
 
-const MedicalPage = async ({
-  searchParams,
-}: {
+type Props = {
+  params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) => {
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const locale = await getLocale();
+
+  return {
+    title: `${
+      locale === routing.defaultLocale ? "Paket Medis" : "Our Medical Packages"
+    } - M HEALTH`,
+    description: `${
+      locale === routing.defaultLocale
+        ? "Informasi mengenai berbagai paket medis yang tersedia."
+        : "Information about various medical packages available."
+    }`,
+    openGraph: {
+      title: `${
+        locale === routing.defaultLocale
+          ? "Paket Medis"
+          : "Our Medical Packages"
+      } - M HEALTH`,
+      description: `${
+        locale === routing.defaultLocale
+          ? "Informasi mengenai berbagai paket medis yang tersedia."
+          : "Information about various medical packages available."
+      }`,
+      images: [
+        {
+          url: `/api/og?title=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Paket Medis"
+              : "Our Medical Packages"
+          )}&description=${encodeURIComponent(
+            locale === routing.defaultLocale
+              ? "Informasi mengenai berbagai paket medis yang tersedia."
+              : "Information about various medical packages available."
+          )}&path=${encodeURIComponent(`m-health.id/medical`)}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+const MedicalPage = async ({ searchParams }: Props) => {
   const params = await searchParams;
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 10);
