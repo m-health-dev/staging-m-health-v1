@@ -13,6 +13,8 @@ import { supportedLocales, getLocaleFromPath } from "@/lib/locales";
 import { useLanguage } from "./LanguageContext";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 
 export function LanguageSwitcher({
   className,
@@ -27,6 +29,7 @@ export function LanguageSwitcher({
   const pathname = usePathname();
   const { locale, setLocale } = useLanguage();
   const [mounted, setMounted] = React.useState(false);
+  const [isChanging, setIsChanging] = React.useState(false);
 
   // Pastikan komponen hanya render setelah mount
   React.useEffect(() => setMounted(true), []);
@@ -40,6 +43,7 @@ export function LanguageSwitcher({
   const handleChange = (newLocale: string) => {
     if (newLocale === locale) return;
 
+    setIsChanging(true);
     setLocale(newLocale);
 
     // Simpan preferensi bahasa saat user mengganti bahasa
@@ -54,19 +58,35 @@ export function LanguageSwitcher({
     if (onLanguageChange) {
       onLanguageChange();
     }
+
+    // Reset loading state setelah navigasi
+    setTimeout(() => setIsChanging(false), 500);
   };
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <Skeleton
+        className={cn("h-12 w-32 rounded-full border-red-500", className)}
+      />
+    );
+  }
 
   return (
-    <Select value={locale} onValueChange={handleChange}>
+    <Select value={locale} onValueChange={handleChange} disabled={isChanging}>
       <SelectTrigger
         className={cn(
           "border border-primary font-sans rounded-full bg-white relative z-9999 w-full h-12! px-5",
+          isChanging && "opacity-50 cursor-not-allowed",
           className
         )}
       >
-        <SelectValue placeholder="Language" />
+        {isChanging ? (
+          <div className="flex items-center gap-2 w-full">
+            <Spinner />
+          </div>
+        ) : (
+          <SelectValue placeholder="Language" />
+        )}
       </SelectTrigger>
       <SelectContent
         className="border border-primary rounded-2xl font-sans z-9999 py-1 px-1"

@@ -65,7 +65,7 @@ export default async function RootLayout({ children, params }: Props) {
         <LanguageProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <NextTopLoader
-              color="#3e77ab"
+              color="#30b878"
               initialPosition={0.08}
               crawlSpeed={200}
               height={3}
@@ -73,7 +73,7 @@ export default async function RootLayout({ children, params }: Props) {
               showSpinner={false}
               easing="ease"
               speed={200}
-              shadow="0 0 10px #3e77ab,0 0 5px #3e77ab"
+              shadow="0 0 10px #30b878,0 0 5px #30b878"
               template='<div class="bar" role="bar"><div class="peg"></div></div> 
   <div class="spinner" role="spinner"><div class="spinner-icon"></div></div>'
               zIndex={1600}

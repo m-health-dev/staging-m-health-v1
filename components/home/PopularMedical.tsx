@@ -15,13 +15,17 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { MedicalType } from "@/types/medical.types";
 import { Skeleton } from "../ui/skeleton";
 import { getAllMedical } from "@/lib/medical/get-medical";
+import { routing } from "@/i18n/routing";
 
-const PopularMedical = () => {
+const PopularMedical = async () => {
+  const locale = await getLocale();
   return (
     <div className="bg-health pt-[5vh] pb-[30vh] -mt-[20vh] lg:rounded-t-[5rem] rounded-t-4xl">
       <ContainerWrap>
-        <h1 className="font-bold text-white pt-[2vh] pb-[6vh]">
-          Popular Medical
+        <h1 className="font-bold text-white pt-[2vh] pb-[2vh]">
+          {locale === routing.defaultLocale
+            ? "Paket Medis"
+            : "Medical Packages"}
         </h1>
       </ContainerWrap>
       <Suspense fallback={<SkeletonComponent />}>
@@ -36,7 +40,7 @@ export default PopularMedical;
 const SkeletonComponent = () => {
   return (
     <ContainerWrap>
-      <div className="grid grid-cols-5 gap-4">
+      <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6">
         {[...Array(5)].map((_, i) => (
           <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
         ))}

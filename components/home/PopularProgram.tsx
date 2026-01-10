@@ -11,13 +11,17 @@ import { getAllWellness } from "@/lib/wellness/get-wellness";
 import { WellnessType } from "@/types/wellness.types";
 import { Skeleton } from "../ui/skeleton";
 import { getLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 
-const PopularProgram = () => {
+const PopularProgram = async () => {
+  const locale = await getLocale();
   return (
     <div className="bg-primary pt-[5vh] pb-[30vh] mt-[7vh] lg:rounded-t-[5rem] rounded-t-4xl">
       <ContainerWrap>
         <h1 className="font-bold text-white pt-[2vh] pb-[6vh]">
-          Popular Wellness
+          {locale === routing.defaultLocale
+            ? "Program Kebugaran"
+            : "Wellness Programs"}
         </h1>
         <Suspense fallback={<SkeletonComponent />}>
           <Content />
@@ -31,7 +35,7 @@ export default PopularProgram;
 
 const SkeletonComponent = () => {
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6">
       {[...Array(4)].map((_, i) => (
         <Skeleton
           key={i}

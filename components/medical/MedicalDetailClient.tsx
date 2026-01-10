@@ -35,6 +35,8 @@ import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import PriceInfo from "../utility/PriceInfo";
 import { MedicalType } from "@/types/medical.types";
+import { Skeleton } from "../ui/skeleton";
+import { cn } from "@/lib/utils";
 
 const MedicalDetailClient = ({
   medical: p,
@@ -48,48 +50,15 @@ const MedicalDetailClient = ({
   const swiperRef = useRef<any>(null);
   const sliderImage = [p.highlight_image, ...p.reference_image];
 
-  const t = useTranslations("utility");
+  // const t = useTranslations("utility");
 
-  // const [count, setCount] = useState(1);
-  // const price = 33000000;
-
-  // Hitung harga langsung dari count agar selalu akurat
-  // const countedPrice = price * count;
   const payID = uuidv4();
 
   function formatRupiah(value: number) {
     return new Intl.NumberFormat("id-ID").format(value);
   }
 
-  // ketika input manual
-  // function handleChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
-  //   let val = parseInt(e.target.value);
-
-  //   if (isNaN(val)) {
-  //     setCount(1);
-  //     return;
-  //   }
-
-  //   // Batas 1–5
-  //   if (val < 1) val = 1;
-  //   if (val > 5) val = 5;
-
-  //   setCount(val);
-  // }
-
-  // function handleClickPlus() {
-  //   setCount((prev) => {
-  //     const newVal = Math.min(prev + 1, 5);
-  //     return newVal;
-  //   });
-  // }
-
-  // function handleClickMin() {
-  //   setCount((prev) => {
-  //     const newVal = Math.max(prev - 1, 1);
-  //     return newVal;
-  //   });
-  // }
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <ContainerWrap className="grid lg:grid-cols-8 grid-cols-1 gap-5 my-20">
@@ -115,14 +84,31 @@ const MedicalDetailClient = ({
             className="w-full rounded-2xl"
           >
             {sliderImage.map((img, key) => (
-              <SwiperSlide key={key} className="border">
-                <Image
-                  src={img}
-                  width={500}
-                  height={500}
-                  className="w-full aspect-square object-center object-cover"
-                  alt={img}
+              <SwiperSlide key={key} className="border relative">
+                <Skeleton
+                  className={cn(
+                    "absolute inset-0 z-10 rounded-2xl flex w-full justify-center items-center transition-all duration-500",
+                    imageLoaded ? "hidden" : "block"
+                  )}
                 />
+
+                <div className="aspect-square w-full h-auto rounded-2xl overflow-hidden">
+                  <Image
+                    src={
+                      img ||
+                      "https://placehold.co/720x403.png?text=IMAGE+NOT+FOUND"
+                    } // Ganti dengan slide.image_url saat tersedia
+                    width={720}
+                    height={403}
+                    alt={img}
+                    onLoad={() => setImageLoaded(true)}
+                    loading="lazy"
+                    className={cn(
+                      "relative w-full aspect-square object-center object-cover rounded-2xl transition-all duration-500  group-hover:scale-105",
+                      imageLoaded ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -250,13 +236,13 @@ const MedicalDetailClient = ({
             <div className="inline-flex items-center gap-2">
               <Sun className="text-primary size-5" />{" "}
               <p>
-                {p.duration_by_day} {t("days")}
+                {p.duration_by_day} {labels.days}
               </p>
             </div>
             <div className="inline-flex items-center gap-2">
               <Moon className="text-primary size-5" />{" "}
               <p>
-                {p.duration_by_night} {t("night")}
+                {p.duration_by_night} {labels.night}
               </p>
             </div>
           </div>

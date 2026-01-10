@@ -1,3 +1,4 @@
+import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import UnderConstruction from "@/components/utility/under-construction";
 import Wrapper from "@/components/utility/Wrapper";
@@ -60,6 +61,15 @@ const HotelPublicDetailPage = async ({
           </div>
         </div>
 
+        {v.location && (
+          <>
+            <p className="text-sm! text-muted-foreground mt-10 mb-2">
+              {locale === routing.defaultLocale ? "Lokasi" : "Location"}
+            </p>
+
+            <p className="mb-5">{v.location}</p>
+          </>
+        )}
         <p className="text-sm! text-muted-foreground mt-10 mb-2">About</p>
         <div>
           <div
@@ -72,21 +82,28 @@ const HotelPublicDetailPage = async ({
             }}
           />
         </div>
-
-        <p className="text-sm! text-muted-foreground mt-10 mb-2">Gallery</p>
-        <div className="md:grid lg:grid-cols-3 md:grid-cols-2 flex flex-col gap-5">
-          {v.reference_image.map((r, i) => (
-            <div key={r}>
-              <Image
-                src={r}
-                width={720}
-                height={405}
-                alt={r}
-                className="aspect-video object-center object-cover rounded-2xl"
-              />
+        {v.reference_image.length > 0 && (
+          <>
+            <p className="text-sm! text-muted-foreground mt-10 mb-2">
+              {locale === routing.defaultLocale ? "Galeri" : "Gallery"}
+            </p>
+            <div className="md:grid lg:grid-cols-3 md:grid-cols-2 flex flex-col gap-5">
+              {v.reference_image.map((r, i) => (
+                <div key={r}>
+                  <ImageZoom>
+                    <Image
+                      src={r}
+                      width={720}
+                      height={405}
+                      alt={r}
+                      className="aspect-video object-center object-cover rounded-2xl"
+                    />
+                  </ImageZoom>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </ContainerWrap>
     </Wrapper>
   );

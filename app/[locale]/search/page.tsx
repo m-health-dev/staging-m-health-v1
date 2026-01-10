@@ -20,16 +20,20 @@ import { getAllEvents } from "@/lib/events/get-events";
 import { getAllSearchResultPublished } from "@/lib/search/get-search";
 import SearchPageClient from "./search-page-client";
 import QuickAction from "@/components/home/QuickAction";
+import { connection } from "next/server";
 
 const SearchPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
+  await connection();
+
   const params = await searchParams;
   const query = params.q;
 
   const locale = await getLocale();
+
   return (
     <Wrapper>
       <div className=" mb-20 pt-40 pb-20 -mt-28 text-center bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
@@ -87,24 +91,40 @@ const Content = async ({
   const summaryData = Array.isArray(summary.by_type) ? summary.by_type : [];
 
   const t = await getTranslations("utility");
+
   return (
     <>
-      <p className="bg-white border inline-flex px-4 py-2 rounded-full mb-10">
-        {locale === routing.defaultLocale
-          ? `${total} Data ditemukan`
-          : `Found ${total} Data `}{" "}
-      </p>
-      {/* <pre>{JSON.stringify(results, null, 2)}</pre>
-      <pre>{JSON.stringify(summaryData, null, 2)}</pre> */}
-      <SearchPageClient
-        results={results}
-        summary={summaryData}
-        locale={locale}
-        labels={{
-          days: t("days"),
-          night: t("night"),
-        }}
-      />
+      {total === 0 ? (
+        <div className="bg-white border rounded-2xl p-4 mb-20">
+          <h5 className="text-primary font-bold">
+            {locale === routing.defaultLocale
+              ? "Tidak ada data ditemukan"
+              : "No data found"}
+          </h5>
+          <p>
+            {locale === routing.defaultLocale
+              ? "Coba gunakan kata kunci lain untuk pencarian Anda."
+              : "Try using different keywords for your search."}
+          </p>
+        </div>
+      ) : (
+        <>
+          <p className="bg-white border inline-flex px-4 py-2 rounded-full mb-10">
+            {locale === routing.defaultLocale
+              ? `${total} Data ditemukan`
+              : `Found ${total} Data `}{" "}
+          </p>
+          <SearchPageClient
+            results={results}
+            summary={summaryData}
+            locale={locale}
+            labels={{
+              days: t("days"),
+              night: t("night"),
+            }}
+          />
+        </>
+      )}
     </>
   );
 };

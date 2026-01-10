@@ -14,7 +14,7 @@
 }
 
 .xl {
-  @apply container mx-auto 2xl:max-w-11/12 3xl:max-w-7/12 px-4 lg:px-7;
+  @apply container mx-auto 2xl:max-w-11/12 3xl:max-w-8/12 px-4 lg:px-7;
 }
 
 .xxl {

@@ -124,7 +124,7 @@ const AvatarVendorHotel = ({
           />
           <p
             className={cn(
-              " text-health normal-case line-clamp-1",
+              " text-health normal-case line-clamp-1 -mb-0.5",
               size === "sm" && "text-xs!",
               size === "md" && "text-sm!",
               size === "lg" && "text-base!"

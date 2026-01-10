@@ -58,13 +58,11 @@ export default EquipmentPage;
 
 const SkeletonComponent = ({ per_page }: { per_page: number }) => {
   return (
-    <ContainerWrap>
-      <div className="grid 3xl:grid-cols-5 grid-cols-4 gap-4">
-        {[...Array(per_page)].map((_, i) => (
-          <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
-        ))}
-      </div>
-    </ContainerWrap>
+    <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 pb-20">
+      {[...Array(per_page)].map((_, i) => (
+        <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
+      ))}
+    </div>
   );
 };
 

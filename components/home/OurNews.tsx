@@ -9,12 +9,16 @@ import {
 } from "@/lib/articles/get-articles";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Skeleton } from "../ui/skeleton";
+import { routing } from "@/i18n/routing";
 
 const OurNews = async () => {
+  const locale = await getLocale();
   return (
     <div className="mt-[5vh] bg-white border-t lg:rounded-t-[5rem] rounded-t-4xl">
       <ContainerWrap className="py-[5vh]">
-        <h1 className="font-bold text-primary mt-5 mb-16 text-center">News</h1>
+        <h1 className="font-bold text-primary mt-5 mb-16 text-center">
+          {locale === routing.defaultLocale ? "Artikel Terbaru" : "Our News"}
+        </h1>
         <Suspense fallback={<SkeletonComponent />}>
           <Content />
         </Suspense>
@@ -28,13 +32,11 @@ export default OurNews;
 
 const SkeletonComponent = () => {
   return (
-    <ContainerWrap>
-      <div className="grid grid-cols-5 gap-4">
-        {[...Array(3)].map((_, i) => (
-          <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
-        ))}
-      </div>
-    </ContainerWrap>
+    <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5">
+      {[...Array(3)].map((_, i) => (
+        <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
+      ))}
+    </div>
   );
 };
 

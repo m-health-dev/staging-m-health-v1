@@ -6,6 +6,9 @@ import { routing } from "@/i18n/routing";
 import React from "react";
 import AvatarVendorHotel from "../utility/AvatarVendorHotel";
 import { WellnessType } from "@/types/wellness.types";
+import { Skeleton } from "../ui/skeleton";
+import { cn } from "@/lib/utils";
+import { Spinner } from "../ui/spinner";
 
 const WellnessCard = ({
   locale,
@@ -17,6 +20,7 @@ const WellnessCard = ({
   i: number;
 }) => {
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
+  const [imageLoaded, setImageLoaded] = React.useState(false);
   return (
     <Link
       href={`/${locale}/wellness/${d.slug}`}
@@ -25,13 +29,39 @@ const WellnessCard = ({
       onMouseEnter={() => setHoveredIndex(i)}
       onMouseLeave={() => setHoveredIndex(null)}
     >
-      <Image
+      <div className="relative aspect-4/5 rounded-2xl group-hover:outline-2 group-hover:outline-health transition-all duration-100">
+        <div
+          className={cn(
+            "absolute inset-0 z-10 bg-white/20 backdrop-blur-2xl rounded-2xl flex w-full justify-center items-center transition-all duration-500",
+            imageLoaded ? "opacity-0" : "opacity-100"
+          )}
+        >
+          <Spinner />
+        </div>
+
+        <Image
+          src={
+            d.highlight_image ||
+            "https://placehold.co/720x403.png?text=IMAGE+NOT+FOUND"
+          } // Ganti dengan slide.image_url saat tersedia
+          width={720}
+          height={403}
+          alt={locale === "id" ? d.id_title : d.en_title}
+          onLoad={() => setImageLoaded(true)}
+          loading="lazy"
+          className={cn(
+            "w-full aspect-4/5 object-center object-cover rounded-2xl z-10 transition-all duration-500",
+            imageLoaded ? "opacity-100" : "opacity-0"
+          )}
+        />
+      </div>
+      {/* <Image
         src={d.highlight_image}
         width={500}
         height={500}
         alt={d.slug}
         className="object-center w-full h-full aspect-4/5 object-cover rounded-2xl group-hover:outline-2 group-hover:outline-health transition-all duration-100"
-      />
+      /> */}
       <motion.div
         initial={{ y: 0, z: 50 }}
         animate={{ y: hoveredIndex === i ? 0 : 0 }}

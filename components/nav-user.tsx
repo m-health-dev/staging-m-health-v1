@@ -226,7 +226,7 @@ export function NavUser({
                   {locale === routing.defaultLocale ? "Keluar" : "Log out"}
                 </p>
               </DialogTrigger>
-              <DialogContent className="bg-white rounded-2xl max-w-sm">
+              <DialogContent className="bg-white rounded-2xl lg:max-w-sm w-full">
                 <DialogHeader>
                   <DialogTitle asChild>
                     <h5 className="text-red-600 font-semibold">
@@ -241,10 +241,10 @@ export function NavUser({
                       : "You will be logged out of your account and will need to sign in again to access your data."}
                   </DialogDescription>
                   <DialogFooter>
-                    <div className="flex items-center w-full mt-5 gap-5 justify-end">
+                    <div className="flex lg:flex-row flex-col items-center w-full mt-5 gap-5 justify-end">
                       <Button
                         variant="outline"
-                        className="rounded-full"
+                        className="rounded-full lg:w-fit w-full"
                         onClick={handleCancel}
                         disabled={isLoading}
                       >
@@ -252,7 +252,7 @@ export function NavUser({
                       </Button>
                       <Button
                         variant={"destructive_outline"}
-                        className="btn btn-destructive gap-2 rounded-full px-5!"
+                        className="btn btn-destructive gap-2 rounded-full px-5! lg:w-fit w-full"
                         onClick={handleSignOut}
                         disabled={isLoading}
                       >

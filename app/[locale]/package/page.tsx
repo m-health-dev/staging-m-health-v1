@@ -32,7 +32,9 @@ const PackagePage = async ({
       <div className="font-bold text-white mb-20 pt-40 pb-20 -mt-28 text-center bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
         <ContainerWrap>
           <h1>
-            {locale === routing.defaultLocale ? "Paket Kami" : "Our Packages"}
+            {locale === routing.defaultLocale
+              ? "Paket Kebugaran & Medis"
+              : "Wellness & Medical Packages"}
           </h1>
         </ContainerWrap>
       </div>{" "}
@@ -54,7 +56,7 @@ export default PackagePage;
 
 const SkeletonComponent = ({ per_page }: { per_page: number }) => {
   return (
-    <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
+    <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 pb-20">
       {[...Array(per_page)].map((_, i) => (
         <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
       ))}

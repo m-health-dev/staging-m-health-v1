@@ -61,6 +61,8 @@ import {
 import { set } from "zod";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const userCache: Record<string, any> = {};
+
 const NavHeader = ({
   status,
   sessionId,
@@ -103,98 +105,53 @@ const NavHeader = ({
     path.startsWith(`/${locale}/c`) ||
     path.startsWith(`/${locale}/share`);
 
-  const handleSetPublic = async () => {
-    if (sessionData === "") return;
-    setLoading(true);
-    try {
-      const setPublic = await ChangeChatStatus(sessionData, "public");
+  // useEffect(() => {
+  //   setLoadingAccessButton(true);
+  //   const fetch = async () => {
+  //     setLoadingAccessButton(true);
+  //     const role = await getUserRole();
+  //     if (role === "admin") {
+  //       setDashButton("admin");
+  //       setLoadingAccessButton(false);
+  //       userCache["role"] = "admin";
+  //     } else if (role === "user") {
+  //       setDashButton("user");
+  //       setLoadingAccessButton(false);
+  //       userCache["role"] = "user";
+  //     } else {
+  //       setDashButton("default");
+  //       setLoadingAccessButton(false);
+  //     }
+  //   };
 
-      console.log({ setPublic });
-
-      if (setPublic.error) {
-        toast.warning("Failed to change chat session to Open to Public", {
-          description: `${setPublic.error}`,
-        });
-        setLoading(false);
-      } else {
-        toast.success(
-          "This chat can now be viewed and modified by the public.",
-          {
-            description:
-              "Please share with caution. You can also set this chat back to private.",
-          }
-        );
-        setLoading(false);
-        setInitialStatus("public");
-        setOpenPublic(true);
-        setShareLink(setPublic.data);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to change chat session to Open to Public", {
-        description: `${error}`,
-      });
-      setLoading(false);
-    }
-  };
-
-  const handleSetPrivate = async () => {
-    if (sessionData === "") return;
-    setLoading(true);
-    try {
-      const setPrivate = await ChangeChatStatus(sessionData, "private");
-
-      console.log({ setPrivate });
-
-      if (setPrivate.error) {
-        toast.warning("Failed to set up private chat session.", {
-          description: `${setPrivate.error}`,
-        });
-        setLoading(false);
-      } else {
-        toast.success("This chat is now visible only to you.");
-        setOpenPublic(false);
-        setInitialStatus("private");
-        setLoading(false);
-        setShareLink("");
-      }
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-      toast.error("Failed to set up private chat session.", {
-        description: `${error}`,
-      });
-    }
-  };
-
-  const handleCopyName = async () => {
-    try {
-      await navigator.clipboard.writeText(`${baseUrl}/share/${shareLink}`);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      toast.warning("Failed to Copy Name", { description: `${err}` });
-    }
-  };
+  //   fetch();
+  // }, []);
 
   useEffect(() => {
     setLoadingAccessButton(true);
-    const fetch = async () => {
+
+    const fetchRole = async () => {
       setLoadingAccessButton(true);
-      const role = await getUserRole();
-      if (role === "admin") {
-        setDashButton("admin");
+
+      // 1. Cek apakah sudah ada cache
+      if (userCache["role"]) {
+        setDashButton(userCache["role"]);
         setLoadingAccessButton(false);
-      } else if (role === "user") {
-        setDashButton("user");
-        setLoadingAccessButton(false);
-      } else {
-        setDashButton("default");
-        setLoadingAccessButton(false);
+        return;
       }
+
+      // 2. Jika tidak ada, fetch dari server
+      const role = await getUserRole();
+
+      // 3. Simpan ke cache
+      userCache["role"] = role;
+
+      // 4. Set state
+      setDashButton(role);
+      setLoadingAccessButton(false);
     };
 
-    fetch();
+    fetchRole();
   }, []);
 
   return (
@@ -433,8 +390,8 @@ const NavHeader = ({
               </Link>
 
               {loadingAccessButton ? (
-                <div className="w-24 h-10">
-                  <Skeleton className="w-full h-10 rounded-full" />
+                <div className="w-24 h-12">
+                  <Skeleton className="w-full h-12 rounded-full" />
                 </div>
               ) : dashButton === "admin" ? (
                 <Link
@@ -443,7 +400,7 @@ const NavHeader = ({
                   data-cursor-clickable
                 >
                   <Button
-                    className="rounded-full inline-flex items-center font-normal h-10 px-5! pointer-events-auto cursor-pointer"
+                    className="rounded-full inline-flex items-center font-normal h-12 px-5! pointer-events-auto cursor-pointer"
                     size={"lg"}
                   >
                     <p>Studio</p>
@@ -456,7 +413,7 @@ const NavHeader = ({
                   data-cursor-clickable
                 >
                   <Button
-                    className="rounded-full inline-flex items-center font-normal h-10 px-5! pointer-events-auto cursor-pointer"
+                    className="rounded-full inline-flex items-center font-normal h-12 px-5! pointer-events-auto cursor-pointer"
                     size={"lg"}
                   >
                     <p>Dashboard</p>
@@ -466,7 +423,7 @@ const NavHeader = ({
                 <Link href={`/sign-in`} className="group" data-cursor-clickable>
                   <Button
                     size={"lg"}
-                    className="rounded-full inline-flex items-center font-normal h-10 px-5! pointer-events-auto cursor-pointer"
+                    className="rounded-full inline-flex items-center font-normal h-12 px-5! pointer-events-auto cursor-pointer"
                   >
                     <p>
                       {" "}
@@ -478,7 +435,7 @@ const NavHeader = ({
               )}
 
               <div>
-                <LanguageSwitcher short className="w-fit h-10!" />
+                <LanguageSwitcher short className="w-fit h-12! -ml-1" />
               </div>
             </div>
           </div>

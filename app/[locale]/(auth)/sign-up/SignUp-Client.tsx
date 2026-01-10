@@ -104,15 +104,17 @@ const SignUpClient = ({ image }: { image: any }) => {
       <ContainerWrap size="xl">
         <div className="flex justify-center items-center">
           <div className="max-w-sm">
-            <Image
-              src={
-                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-              }
-              width={180}
-              height={60}
-              className="object-contain mb-8 flex justify-center items-center"
-              alt="M-Health Logo"
-            />
+            <Link href={`/${locale}`}>
+              <Image
+                src={
+                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+                }
+                width={180}
+                height={60}
+                className="object-contain mb-8 flex justify-center items-center"
+                alt="M-Health Logo"
+              />
+            </Link>
             <h3 className="font-bold text-primary mb-10">
               {locale === "id" ? "Buat Akun Baru" : "Create a New Account"}
             </h3>

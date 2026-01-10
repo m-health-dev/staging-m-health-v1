@@ -31,6 +31,7 @@ import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { resetPasswordAction } from "../actions/auth.actions";
 import { locale } from "dayjs";
+import Link from "next/link";
 
 const ResetPassClient = ({ locale }: { locale: string }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -75,15 +76,17 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
       <ContainerWrap size="xl">
         <div className="flex min-h-screen items-center justify-center">
           <div className="md:max-w-sm w-full col-span-1">
-            <Image
-              src={
-                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-              }
-              width={180}
-              height={60}
-              className="object-contain mb-8 flex justify-center items-center"
-              alt="M-Health Logo"
-            />
+            <Link href={`/${locale}`}>
+              <Image
+                src={
+                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+                }
+                width={180}
+                height={60}
+                className="object-contain mb-8 flex justify-center items-center"
+                alt="M-Health Logo"
+              />
+            </Link>
             <h3 className="font-bold text-primary mb-2">
               {locale === "id"
                 ? "Atur Ulang Kata Sandi Anda"

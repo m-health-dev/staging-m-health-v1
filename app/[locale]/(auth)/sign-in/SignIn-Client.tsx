@@ -34,6 +34,7 @@ import {
 } from "../actions/auth.actions";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const SignInClient = ({
   component = false,
@@ -139,19 +140,21 @@ const SignInClient = ({
     <div className={cn("flex flex-col justify-center bg-white ")}>
       <div
         className={cn(
-          "lg:grid lg:grid-cols-2 flex flex-col gap-8 items-center justify-center lg:p-3 p-0"
+          "lg:grid lg:grid-cols-2 flex flex-col gap-8 items-start justify-center lg:p-3 p-0"
         )}
       >
         <div>
-          <Image
-            src={
-              "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-            }
-            width={180}
-            height={60}
-            className="object-contain mb-8 flex justify-center items-center"
-            alt="M-Health Logo"
-          />
+          <Link href={`/${locale}`}>
+            <Image
+              src={
+                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+              }
+              width={180}
+              height={60}
+              className="object-contain mb-8 flex justify-center items-center"
+              alt="M-Health Logo"
+            />
+          </Link>
 
           <h3
             className={cn(
@@ -337,15 +340,17 @@ const SignInClient = ({
       <ContainerWrap size="xxl">
         <div className={cn("flex items-center justify-center")}>
           <div className={cn("w-full max-w-sm")}>
-            <Image
-              src={
-                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-              }
-              width={180}
-              height={60}
-              className="object-contain mb-8 flex justify-center items-center"
-              alt="M-Health Logo"
-            />
+            <Link href={`/${locale}`}>
+              <Image
+                src={
+                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+                }
+                width={180}
+                height={60}
+                className="object-contain mb-8 flex justify-center items-center"
+                alt="M-Health Logo"
+              />
+            </Link>
 
             <div>
               <h3

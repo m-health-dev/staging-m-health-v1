@@ -11,12 +11,18 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { getAllPackages } from "@/lib/packages/get-packages";
 import { PackageType } from "@/types/packages.types";
 import { Skeleton } from "../ui/skeleton";
+import { routing } from "@/i18n/routing";
 
-const PopularPackage = () => {
+const PopularPackage = async () => {
+  const locale = await getLocale();
   return (
     <div className="mt-[10vh]">
       <ContainerWrap>
-        <h1 className="font-bold text-primary mt-10">Popular Package</h1>{" "}
+        <h1 className="font-bold text-primary mt-10">
+          {locale === routing.defaultLocale
+            ? "Paket Kebugaran & Medis"
+            : "Wellness & Medical Packages"}
+        </h1>
       </ContainerWrap>
       <Suspense fallback={<SkeletonComponent />}>
         <Content />
@@ -30,7 +36,7 @@ export default PopularPackage;
 const SkeletonComponent = () => {
   return (
     <ContainerWrap>
-      <div className="grid grid-cols-5 gap-4">
+      <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5">
         {[...Array(5)].map((_, i) => (
           <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
         ))}

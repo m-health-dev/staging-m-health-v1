@@ -13,7 +13,12 @@ import {
   Search,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { ro } from "date-fns/locale";
@@ -29,39 +34,82 @@ const QuickAction = ({
   query?: string;
 }) => {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const locale = useLocale();
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = React.useState("");
-
+  
+  const [searchQuery, setSearchQuery] = React.useState(query || "");
   const [loadingSearch, setLoadingSearch] = React.useState(false);
-  const [targetPath, setTargetPath] = React.useState<string | null>(null);
+  const [isNavigating, setIsNavigating] = React.useState(false);
+  const debounceTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const lastSearchedQuery = React.useRef<string>("");
 
+  const currentSearchParam = searchParams.get("q") || "";
+
+  // Initialize search query from URL on mount
   React.useEffect(() => {
+    if (query && searchQuery !== query) {
+      setSearchQuery(query);
+      lastSearchedQuery.current = query;
+    }
+  }, [query]);
+
+  // Handle debounced search
+  React.useEffect(() => {
+    // Clear previous timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // If search query is empty, clear loading state
     if (!searchQuery.trim()) {
+      setLoadingSearch(false);
+      setIsNavigating(false);
+      return;
+    }
+
+    // If the search query hasn't changed from the last search, don't search again
+    if (searchQuery === lastSearchedQuery.current) {
       setLoadingSearch(false);
       return;
     }
 
-    const debounceTimer = setTimeout(() => {
+    // Show loading immediately
+    setLoadingSearch(true);
+
+    // Debounce the navigation
+    debounceTimerRef.current = setTimeout(() => {
       const fullPath = `/${locale}/search?q=${encodeURIComponent(searchQuery)}`;
-      const cleanPath = `/${locale}/search`;
-
-      setLoadingSearch(true);
-      setTargetPath(cleanPath);
-
+      
+      setIsNavigating(true);
+      lastSearchedQuery.current = searchQuery;
+      
       router.push(fullPath);
-    }, 1000);
+    }, 600);
 
-    return () => clearTimeout(debounceTimer);
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
   }, [searchQuery, locale, router]);
 
+  // Detect when navigation is complete and URL has updated
   React.useEffect(() => {
-    if (targetPath && pathname === targetPath) {
+    if (isNavigating && currentSearchParam === lastSearchedQuery.current) {
+      // Navigation complete - turn off loading
       setLoadingSearch(false);
-      setTargetPath(null);
+      setIsNavigating(false);
     }
-  }, [pathname, targetPath]);
+  }, [currentSearchParam, isNavigating]);
 
+  // Reset loading when leaving search page
+  React.useEffect(() => {
+    if (!pathname.includes("/search")) {
+      setLoadingSearch(false);
+      setIsNavigating(false);
+    }
+  }, [pathname]);
   const quickLinks = [
     {
       id: 0,
@@ -130,10 +178,30 @@ const QuickAction = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Debouncing is handled by useEffect, so form submission is optional
-    // You can remove this or keep it for immediate search on Enter key
+    // Immediate search on Enter key press
     if (searchQuery.trim()) {
+      // Clear debounce timer
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      
+      setLoadingSearch(true);
+      setIsNavigating(true);
+      lastSearchedQuery.current = searchQuery;
+      
       router.push(`/${locale}/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    // If clearing the input, reset states
+    if (!value.trim()) {
+      setLoadingSearch(false);
+      setIsNavigating(false);
+      lastSearchedQuery.current = "";
     }
   };
 
@@ -148,17 +216,15 @@ const QuickAction = ({
               className="flex gap-2 justify-end items-center relative group"
             >
               <Input
-                defaultValue={query ? query : ""}
-                onChange={(e) => {
-                  setLoadingSearch(true);
-                  setSearchQuery(e.target.value);
-                }}
+                value={searchQuery}
+                onChange={handleInputChange}
                 placeholder="Search anything"
                 className="h-14 rounded-full bg-white px-5 placeholder:text-primary/50 lg:text-[18px] text-base w-full focus-visible:border-muted-foreground/20 focus-visible:ring-0! outline-0!"
               />
               <button
                 type="submit"
-                className="absolute bg-white text-primary w-14 h-14 inline-flex items-center justify-center rounded-full border border-border shadow group-hover:bg-primary group-hover:text-background group-focus:bg-primary group-focus:text-background transition-all duration-300 cursor-pointer"
+                disabled={loadingSearch}
+                className="absolute bg-white text-primary w-14 h-14 inline-flex items-center justify-center rounded-full border border-border shadow group-hover:bg-primary group-hover:text-background group-focus:bg-primary group-focus:text-background transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loadingSearch ? <Spinner /> : <Search />}
               </button>
@@ -166,7 +232,7 @@ const QuickAction = ({
           </div>
         )}
 
-        {withoutQuickLinks === false && (
+        {!withoutQuickLinks && (
           <div className="flex w-full overflow-x-auto lg:overflow-x-visible hide-scroll pb-2 gap-4 items-center justify-start lg:justify-center no-scrollbar cursor-grab lg:flex-nowrap md:flex-wrap max-w-full">
             {visibleLinks.map(({ id, href, label, icon }) => (
               <Link key={href} href={href} className="group shrink-0">

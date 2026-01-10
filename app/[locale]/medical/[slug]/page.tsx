@@ -36,6 +36,8 @@ const MedicalDetailSlug = async ({
           hospital: t("hospital"),
           price_info: t("price_info"),
           vendor: t("vendor"),
+          days: t("days"),
+          night: t("night"),
         }}
       />
     </Wrapper>

@@ -196,11 +196,21 @@ const ChatNavHeader = ({
   }, []);
 
   return (
-    <nav className="sticky top-0 px-5 bg-background z-99 lg:border-b-0 border-b border-primary/10">
-      <header className="py-5 flex items-center w-full justify-between">
+    <nav className="sticky top-0 px-5 bg-linear-to-b from-background to-transparent via-background via-80% z-99">
+      <header className="py-5 flex items-center w-full justify-between gap-5">
         {pathCheck && <SidebarTrigger className="-ml-1" />}
 
-        <Link href={`/${locale}/home`} className="translate-x-7">
+        <Link href={`/${locale}/home`} className="flex justify-start w-full">
+          <Image
+            src={
+              "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/mhealth_logo.PNG"
+            }
+            unoptimized
+            width={150}
+            height={40}
+            className="object-contain lg:flex hidden"
+            alt="M-Health Logo"
+          />
           <Image
             src={
               "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/mhealth_logo_crop.PNG"
@@ -208,7 +218,7 @@ const ChatNavHeader = ({
             unoptimized
             width={40}
             height={40}
-            className="object-contain"
+            className="object-contain lg:hidden flex"
             alt="M-Health Logo"
           />
         </Link>

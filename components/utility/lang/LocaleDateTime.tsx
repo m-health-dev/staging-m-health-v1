@@ -1,10 +1,12 @@
 "use client";
+
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import "dayjs/locale/id";
 import "dayjs/locale/en";
 import { useLocale } from "next-intl";
+import { useParams } from "next/navigation";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -16,10 +18,10 @@ export default function LocalDateTime({
   date: string | Date;
   specificFormat?: string;
 }) {
-  const locale = useLocale();
+  const params = useParams<{ locale: string }>();
   let formattedDate: string;
 
-  if (locale === "id") {
+  if (params.locale === "id") {
     // Indonesia → WIB (Asia/Jakarta, UTC+7)
     formattedDate = dayjs(date)
       .tz("Asia/Jakarta")

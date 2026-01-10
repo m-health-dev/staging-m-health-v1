@@ -41,7 +41,7 @@ const CallToAction = () => {
   return (
     <>
       <ContainerWrap>
-        <div className="flex flex-col justify-center items-center h-[50vh] text-center">
+        <div className="flex flex-col justify-center items-center h-[50vh] lg:text-center text-start">
           {/* Title */}
           <motion.h2
             initial={{ opacity: 0, y: 30 }}

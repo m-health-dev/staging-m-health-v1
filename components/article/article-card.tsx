@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
@@ -5,26 +7,52 @@ import { ArticleType } from "@/types/articles.types";
 import { routing } from "@/i18n/routing";
 import LocalDateTime from "../utility/lang/LocaleDateTime";
 import AvatarAuthor from "../utility/AvatarAuthor";
+import { Skeleton } from "../ui/skeleton";
+import { Spinner } from "../ui/spinner";
+import { cn } from "@/lib/utils";
 
-const ArticleCard = ({ n, locale }: { n: ArticleType; locale: string }) => {
+const ArticleCard = ({
+  n,
+  locale,
+  onHome,
+}: {
+  n: ArticleType;
+  locale: string;
+  onHome?: boolean;
+}) => {
+  const [imageLoaded, setImageLoaded] = React.useState(false);
   return (
     <div key={n.id}>
       <Link href={`/${locale}/article/${n.slug}`} className="no-underline">
         <div
           key={n.id}
-          className="flex flex-col h-auto cursor-pointer group transition-all duration-300 bg-white rounded-2xl"
+          className={cn(
+            "flex flex-col h-auto cursor-pointer group transition-all duration-300  rounded-2xl",
+            onHome ? "bg-background" : "bg-white"
+          )}
         >
           <div className="relative aspect-video">
+            <div
+              className={cn(
+                "absolute inset-0 bg-white/10 backdrop-blur-2xl z-10 rounded-2xl flex w-full justify-center items-center transition-all duration-500",
+                imageLoaded ? "opacity-0" : "opacity-100"
+              )}
+            />
+
             <Image
               src={
                 n.highlight_image ||
-                "https://placehold.co/720x403.png?text=M+HEALTH+DEVELOPMENT"
+                "https://placehold.co/720x403.png?text=IMAGE+NOT+FOUND"
               } // Ganti dengan n.image_url saat tersedia
               width={720}
               height={403}
               alt={n.en_title}
+              onLoad={() => setImageLoaded(true)}
               loading="lazy"
-              className="w-full aspect-video object-center object-cover rounded-2xl z-10"
+              className={cn(
+                "w-full aspect-video object-center object-cover rounded-2xl z-10 transition-all duration-500",
+                imageLoaded ? "opacity-100" : "opacity-0"
+              )}
             />
 
             <div className="flex flex-wrap gap-2 absolute bottom-5 left-5">
@@ -43,7 +71,7 @@ const ArticleCard = ({ n, locale }: { n: ArticleType; locale: string }) => {
           <div className="px-5 pb-5 pt-12 -mt-7 group-hover:bg-primary transition-all duration-300 rounded-2xl grow">
             <div className="flex items-center gap-4 mb-2">
               <div className="w-5 h-0.25 group-hover:bg-white bg-primary" />
-              <p className="text-primary text-sm!">
+              <p className="text-primary group-hover:text-white text-sm!">
                 <LocalDateTime
                   date={n.created_at}
                   specificFormat="DD MMMM YYYY"

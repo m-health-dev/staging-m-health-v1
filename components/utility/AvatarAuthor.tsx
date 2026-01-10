@@ -25,95 +25,15 @@ const AvatarAuthor = ({
   const authorName = author?.name;
   const authorJobdesc = author?.jobdesc;
 
-  console.log("author avatar author:", author);
+  // console.log("author avatar author:", author);
 
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [avatarLoading, setAvatarLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
 
   useRouter();
 
-  // useEffect(() => {
-  //   // if author changes, don't keep previous broken-image state
-  //   setImageError(false);
-  // }, [author]);
-
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     if (!author) {
-  //       setData(null);
-  //       setLoading(false);
-  //       return;
-  //     }
-
-  //     const key = `${author}`;
-
-  //     // kalau sudah ada di cache → langsung pakai
-  //     if (authorCache[key]) {
-  //       setData(authorCache[key]);
-  //       setLoading(false);
-  //       return;
-  //     }
-
-  //     try {
-  //       setLoading(true);
-
-  //       let res = null;
-
-  //       res = (await getArticleAuthorByID(author)).data;
-
-  //       const result = res ?? null;
-
-  //       authorCache[key] = result; // simpan cache
-  //       setData(result);
-  //     } catch (error) {
-  //       console.error(error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   loadData();
-  // }, [author]);
-
-  // fallback avatar ketika loading atau logo tidak tersedia
-  // loading ? (
-  //   <div className="inline-flex gap-2 items-center">
-  //     <div
-  //       className={cn(
-  //         size === "sm" && "w-7 h-7",
-  //         size === "md" && "w-10 h-10",
-  //         size === "lg" && "w-14 h-14"
-  //       )}
-  //     >
-  //       <Skeleton
-  //         className={cn(
-  //           "rounded-full",
-  //           size === "sm" && "w-7 h-7",
-  //           size === "md" && "w-10 h-10",
-  //           size === "lg" && "w-14 h-14"
-  //         )}
-  //       />
-  //     </div>
-  //     <div
-  //       className={cn(
-  //         "w-32",
-  //         size === "sm" && "h-5",
-  //         size === "md" && "h-7",
-  //         size === "lg" && "h-10"
-  //       )}
-  //     >
-  //       <Skeleton
-  //         className={cn(
-  //           "w-32 rounded-full",
-  //           size === "sm" && "h-5",
-  //           size === "md" && "h-7",
-  //           size === "lg" && "h-10"
-  //         )}
-  //       />
-  //     </div>
-  //   </div>
-  // ) : // Jika data ada dan memiliki logo
   return authorImage ? (
     <div>
       <button
@@ -121,23 +41,32 @@ const AvatarAuthor = ({
         className="cursor-pointer"
       >
         <div className="inline-flex gap-2 items-center">
-          <Image
-            src={
-              imageError
-                ? "https://placehold.co/80x80/png?text=No+Image"
-                : authorImage
-            }
-            alt={authorName || "author-profile-image"}
-            width={80}
-            height={80}
-            className={cn(
-              "object-cover  rounded-full border",
-              size === "sm" && "w-7 h-7",
-              size === "md" && "w-10 h-10",
-              size === "lg" && "w-14 h-14"
-            )}
-            onError={() => setImageError(true)}
-          />
+          <div className="relative">
+            <Skeleton
+              className={cn(
+                "absolute inset-0 z-10 rounded-full flex w-full justify-center items-center transition-all duration-500",
+                !avatarLoading ? "hidden" : "block"
+              )}
+            />
+            <Image
+              src={
+                imageError
+                  ? "https://placehold.co/80x80/png?text=No+Image"
+                  : authorImage
+              }
+              alt={authorName || "author-profile-image"}
+              width={80}
+              height={80}
+              className={cn(
+                "object-cover  rounded-full border",
+                size === "sm" && "w-7 h-7",
+                size === "md" && "w-10 h-10",
+                size === "lg" && "w-14 h-14"
+              )}
+              onLoad={() => setAvatarLoading(false)}
+              onError={() => setImageError(true)}
+            />
+          </div>
           <p
             className={cn(
               " text-health normal-case line-clamp-1",

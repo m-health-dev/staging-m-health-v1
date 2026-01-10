@@ -28,6 +28,7 @@ import Image from "next/image";
 import z from "zod";
 import { locale } from "dayjs";
 import { routing } from "@/i18n/routing";
+import Link from "next/link";
 
 export const RequestMagicLinkSchema = z.object({
   email: z.email(),
@@ -101,13 +102,17 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
       <ContainerWrap size="xl">
         <div className="flex items-center justify-center w-full">
           <div className="max-w-sm w-full">
-            <Image
-              src="https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-              width={180}
-              height={60}
-              className="object-contain mb-8 flex justify-center items-center"
-              alt="M-Health Logo"
-            />
+            <Link href={`/${locale}`}>
+              <Image
+                src={
+                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+                }
+                width={180}
+                height={60}
+                className="object-contain mb-8 flex justify-center items-center"
+                alt="M-Health Logo"
+              />
+            </Link>
             <div className="mb-10">
               <h3 className="font-bold text-primary mb-2">
                 {locale === "id"

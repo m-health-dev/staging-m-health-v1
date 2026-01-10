@@ -8,8 +8,6 @@ import React from "react";
 
 const About = async () => {
   const img = await getImageAbout();
-  const locale = await getLocale();
-  const data = img.results[0];
   return (
     <Wrapper>
       <AboutClient />

@@ -7,10 +7,13 @@ import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import { EventsType } from "@/types/events.types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 const CarouselEvent = ({ e }: { e: EventsType }) => {
   const swiperRef = useRef<any>(null);
   const sliderImage = [e.highlight_image, ...e.reference_image];
+  const [imageLoaded, setImageLoaded] = useState(false);
   return (
     <div className="w-full flex flex-col items-center relative group/slide">
       {/* Swiper Container */}
@@ -33,14 +36,30 @@ const CarouselEvent = ({ e }: { e: EventsType }) => {
         className="w-full rounded-2xl"
       >
         {sliderImage.map((img, key) => (
-          <SwiperSlide key={key} className="border">
-            <Image
-              src={img}
-              width={500}
-              height={500}
-              className="w-full aspect-square object-center object-cover"
-              alt={img}
+          <SwiperSlide key={key} className="border relative">
+            <Skeleton
+              className={cn(
+                "absolute inset-0 z-10 rounded-2xl flex w-full justify-center items-center transition-all duration-500",
+                imageLoaded ? "hidden" : "block"
+              )}
             />
+
+            <div className="aspect-square w-full h-auto rounded-2xl overflow-hidden">
+              <Image
+                src={
+                  img || "https://placehold.co/720x403.png?text=IMAGE+NOT+FOUND"
+                } // Ganti dengan slide.image_url saat tersedia
+                width={720}
+                height={403}
+                alt={img}
+                onLoad={() => setImageLoaded(true)}
+                loading="lazy"
+                className={cn(
+                  "relative w-full aspect-square object-center object-cover rounded-2xl transition-all duration-500  group-hover:scale-105",
+                  imageLoaded ? "opacity-100" : "opacity-0"
+                )}
+              />
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>

@@ -48,21 +48,21 @@ const AboutClient = () => {
         <ContainerWrap size="xl">
           <motion.h2
             variants={fadeUpItem}
-            className="mt-[10vh] mb-10 text-center text-primary font-bold"
+            className="mt-[10vh] mb-10 lg:text-center text-start text-primary font-bold"
           >
             {t("title")}
           </motion.h2>
 
           <motion.p
             variants={fadeUpItem}
-            className="text-center max-w-5xl mx-auto text-lg! leading-7"
+            className="lg:text-center text-start max-w-5xl mx-auto text-lg! leading-7"
           >
             {t("description")}
           </motion.p>
 
           <motion.h2
             variants={fadeUpItem}
-            className="mt-[10vh] mb-10 font-bold text-primary text-center"
+            className="mt-[10vh] mb-10 font-bold text-primary lg:text-center text-start"
           >
             {t("servicesTitle")}
           </motion.h2>
@@ -110,7 +110,7 @@ const AboutClient = () => {
 
           <motion.p
             variants={fadeUpItem}
-            className="mt-[20vh] text-center max-w-5xl mx-auto text-lg! text-primary leading-7 mb-20"
+            className="mt-[20vh] lg:text-center text-start max-w-5xl mx-auto text-lg! text-primary leading-7 mb-20"
           >
             {t("closing")}
           </motion.p>
