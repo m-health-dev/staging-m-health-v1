@@ -9,7 +9,7 @@ const apiBaseUrl =
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
-type typeOftarget = [
+export type typeOftarget = [
   "articles",
   "events",
   "hotels",
@@ -70,10 +70,15 @@ export async function getAllSearchResultPublishedByType(
   }
 }
 
-export async function getAllSearchResultPublished(query: string) {
+export async function getAllSearchResultPublished(
+  query: string,
+  target?: string
+) {
   try {
     const res = await fetch(
-      `${apiBaseUrl}/api/v1/search?q=${query}&status=published`,
+      target
+        ? `${apiBaseUrl}/api/v1/search?q=${query}&type=${target}&status=published`
+        : `${apiBaseUrl}/api/v1/search?q=${query}&status=published`,
       {
         method: "GET",
         headers: {

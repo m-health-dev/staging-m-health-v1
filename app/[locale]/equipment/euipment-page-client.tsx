@@ -10,6 +10,7 @@ import { MedicalEquipmentType } from "@/types/medical-equipment.types";
 import { formatRupiah } from "@/components/Form/PriceInput";
 import { calculateDiscount } from "@/components/utility/PriceInfo";
 import EquipmentCard from "@/components/equipment/equipment-card";
+import SearchArea from "@/components/utility/SearchArea";
 
 const EquipmentClientPage = ({
   equipment,
@@ -45,6 +46,7 @@ const EquipmentClientPage = ({
         defaultPerPage={10}
         onLoadingChange={setLoading}
       />
+      <SearchArea target="medical-equipment" />
     </div>
   );
 };

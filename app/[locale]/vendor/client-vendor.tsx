@@ -1,6 +1,7 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import SearchArea from "@/components/utility/SearchArea";
 import SimplePagination from "@/components/utility/simple-pagination";
 import { cn } from "@/lib/utils";
 import { VendorType } from "@/types/vendor.types";
@@ -150,6 +151,7 @@ const ClientVendorPublic = ({
           onLoadingChange={setLoading}
         />
       </div>
+      <SearchArea target="vendors" />
     </>
   );
 };

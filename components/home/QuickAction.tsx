@@ -28,16 +28,18 @@ const QuickAction = ({
   includeSearchBar,
   withoutQuickLinks,
   query,
+  target,
 }: {
   includeSearchBar?: boolean;
   withoutQuickLinks?: boolean;
   query?: string;
+  target?: string;
 }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const locale = useLocale();
   const router = useRouter();
-  
+
   const [searchQuery, setSearchQuery] = React.useState(query || "");
   const [loadingSearch, setLoadingSearch] = React.useState(false);
   const [isNavigating, setIsNavigating] = React.useState(false);
@@ -79,11 +81,19 @@ const QuickAction = ({
 
     // Debounce the navigation
     debounceTimerRef.current = setTimeout(() => {
-      const fullPath = `/${locale}/search?q=${encodeURIComponent(searchQuery)}`;
-      
+      let fullPath = "";
+
+      if (target) {
+        fullPath = `/${locale}/search?q=${encodeURIComponent(
+          searchQuery
+        )}&target=${target}`;
+      } else {
+        fullPath = `/${locale}/search?q=${encodeURIComponent(searchQuery)}`;
+      }
+
       setIsNavigating(true);
       lastSearchedQuery.current = searchQuery;
-      
+
       router.push(fullPath);
     }, 600);
 
@@ -110,6 +120,7 @@ const QuickAction = ({
       setIsNavigating(false);
     }
   }, [pathname]);
+
   const quickLinks = [
     {
       id: 0,
@@ -184,11 +195,11 @@ const QuickAction = ({
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
-      
+
       setLoadingSearch(true);
       setIsNavigating(true);
       lastSearchedQuery.current = searchQuery;
-      
+
       router.push(`/${locale}/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
@@ -196,7 +207,7 @@ const QuickAction = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
-    
+
     // If clearing the input, reset states
     if (!value.trim()) {
       setLoadingSearch(false);

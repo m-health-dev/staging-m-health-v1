@@ -11,6 +11,7 @@ import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { Button } from "@/components/ui/button";
 import SimplePagination from "@/components/utility/simple-pagination";
 import EventCard from "@/components/events/event-card";
+import SearchArea from "@/components/utility/SearchArea";
 
 const EventPageClient = ({
   event,
@@ -43,6 +44,7 @@ const EventPageClient = ({
         defaultPerPage={10}
         onLoadingChange={setLoading}
       />
+      <SearchArea target="events" />
     </div>
   );
 };

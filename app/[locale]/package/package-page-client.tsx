@@ -7,6 +7,7 @@ import Image from "next/image";
 import AvatarVendorHotel from "@/components/utility/AvatarVendorHotel";
 import React from "react";
 import PackageCard from "@/components/package/package-card";
+import SearchArea from "@/components/utility/SearchArea";
 
 const PackageClientPage = ({
   packages,
@@ -42,6 +43,7 @@ const PackageClientPage = ({
         defaultPerPage={10}
         onLoadingChange={setLoading}
       />
+      <SearchArea target="packages" />
     </div>
   );
 };

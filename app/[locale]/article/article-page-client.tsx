@@ -14,6 +14,7 @@ import { ArticleType } from "@/types/articles.types";
 import Avatar from "boring-avatars";
 import AvatarAuthor from "@/components/utility/AvatarAuthor";
 import ArticleCard from "@/components/article/article-card";
+import SearchArea from "@/components/utility/SearchArea";
 
 const ArticlePageClient = ({
   articles,
@@ -55,6 +56,7 @@ const ArticlePageClient = ({
         defaultPerPage={10}
         onLoadingChange={setLoading}
       />
+      <SearchArea target="articles" />
     </div>
   );
 };

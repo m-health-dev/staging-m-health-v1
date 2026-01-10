@@ -11,6 +11,7 @@ import { WellnessType } from "@/types/wellness.types";
 import { AnimatePresence, motion } from "framer-motion";
 import { routing } from "@/i18n/routing";
 import WellnessCard from "@/components/wellness/wellness-card";
+import SearchArea from "@/components/utility/SearchArea";
 
 const WellnessClientPage = ({
   wellness,
@@ -41,6 +42,7 @@ const WellnessClientPage = ({
         defaultPerPage={10}
         onLoadingChange={setLoading}
       />
+      <SearchArea target="wellness" />
     </div>
   );
 };

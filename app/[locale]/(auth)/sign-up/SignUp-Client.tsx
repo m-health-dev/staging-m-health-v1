@@ -236,7 +236,7 @@ const SignUpClient = ({ image }: { image: any }) => {
                       {locale === "id"
                         ? "Kebijakan Privasi"
                         : "Privacy Policy."}
-                    </span>
+                    </span>{" "}
                     {locale === "id" && "kami."}
                   </p>
                 </div>

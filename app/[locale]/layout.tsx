@@ -93,6 +93,7 @@ export default async function RootLayout({ children, params }: Props) {
             <Analytics />
             <SpeedInsights />
             <DialogSwitchLang />
+
             {children}
             <OneTapComponent />
           </NextIntlClientProvider>

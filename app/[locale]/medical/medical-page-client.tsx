@@ -8,6 +8,7 @@ import AvatarVendorHotel from "@/components/utility/AvatarVendorHotel";
 import React from "react";
 import { MedicalType } from "@/types/medical.types";
 import MedicalCard from "@/components/medical/medical-card";
+import SearchArea from "@/components/utility/SearchArea";
 
 const MedicalClientPage = ({
   medicals,
@@ -44,6 +45,7 @@ const MedicalClientPage = ({
         defaultPerPage={10}
         onLoadingChange={setLoading}
       />
+      <SearchArea target="medical" />
     </div>
   );
 };
