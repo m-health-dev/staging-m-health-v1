@@ -36,21 +36,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import PriceInfo from "../utility/PriceInfo";
 import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Account } from "@/types/account.types";
 
 const PackageDetailClient = ({
   package: p,
   locale,
   labels,
+  account,
 }: {
   package: PackageType;
   locale: string;
   labels: any;
+  account?: any;
 }) => {
   const swiperRef = useRef<any>(null);
   const sliderImage = [p.highlight_image, ...p.reference_image];
 
-  const t = useTranslations("utility");
-  const payID = uuidv4();
+  // const t = useTranslations("utility");
 
   function formatRupiah(value: number) {
     return new Intl.NumberFormat("id-ID").format(value);
@@ -221,9 +223,9 @@ const PackageDetailClient = ({
         <div className="lg:hidden flex my-5">
           <PriceInfo
             labels={labels}
-            payID={payID}
-            real_price={p.real_price}
-            discount_price={p.discount_price}
+            product={p}
+            account={account}
+            type="package"
           />
         </div>
         <hr />
@@ -232,13 +234,13 @@ const PackageDetailClient = ({
             <div className="inline-flex items-center gap-2">
               <Sun className="text-primary size-5" />{" "}
               <p>
-                {p.duration_by_day} {t("days")}
+                {p.duration_by_day} {labels.days}
               </p>
             </div>
             <div className="inline-flex items-center gap-2">
               <Moon className="text-primary size-5" />{" "}
               <p>
-                {p.duration_by_night} {t("night")}
+                {p.duration_by_night} {labels.night}
               </p>
             </div>
           </div>
@@ -344,9 +346,9 @@ const PackageDetailClient = ({
       <div className="lg:col-span-2 lg:block hidden">
         <PriceInfo
           labels={labels}
-          payID={payID}
-          real_price={p.real_price}
-          discount_price={p.discount_price}
+          product={p}
+          account={account}
+          type="package"
         />
       </div>
     </ContainerWrap>

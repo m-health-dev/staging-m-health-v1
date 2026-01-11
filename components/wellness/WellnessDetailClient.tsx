@@ -42,15 +42,15 @@ const WellnessDetailClient = ({
   wellness: p,
   locale,
   labels,
+  account,
 }: {
   wellness: WellnessType;
   locale: string;
   labels: any;
+  account?: any;
 }) => {
   const swiperRef = useRef<any>(null);
   const sliderImage = [p.highlight_image, ...p.reference_image];
-
-  const t = useTranslations("utility");
 
   const payID = uuidv4();
 
@@ -225,9 +225,9 @@ const WellnessDetailClient = ({
         <div className="lg:hidden flex my-5">
           <PriceInfo
             labels={labels}
-            payID={payID}
-            real_price={p.real_price}
-            discount_price={p.discount_price}
+            product={p}
+            account={account}
+            type="wellness"
           />
         </div>
         <hr />
@@ -236,13 +236,13 @@ const WellnessDetailClient = ({
             <div className="inline-flex items-center gap-2">
               <Sun className="text-primary size-5" />{" "}
               <p>
-                {p.duration_by_day} {t("days")}
+                {p.duration_by_day} {labels.days}
               </p>
             </div>
             <div className="inline-flex items-center gap-2">
               <Moon className="text-primary size-5" />{" "}
               <p>
-                {p.duration_by_night} {t("night")}
+                {p.duration_by_night} {labels.night}
               </p>
             </div>
           </div>
@@ -277,9 +277,9 @@ const WellnessDetailClient = ({
       <div className="lg:col-span-2 lg:block hidden">
         <PriceInfo
           labels={labels}
-          payID={payID}
-          real_price={p.real_price}
-          discount_price={p.discount_price}
+          product={p}
+          account={account}
+          type="wellness"
         />
       </div>
     </ContainerWrap>

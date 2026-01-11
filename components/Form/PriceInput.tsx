@@ -12,13 +12,13 @@ import {
 } from "@/components/ui/form";
 import { useEffect, useState } from "react";
 
-export const formatRupiah = (value: string | number) => {
+const formatRupiah = (value: string | number) => {
   const number = value.toString().replace(/[^0-9]/g, "");
   if (!number) return "Rp ";
   return "Rp " + number.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
-export const removeRupiahFormat = (value: string) =>
+const removeRupiahFormat = (value: string) =>
   value.replace(/Rp\s?/g, "").replace(/\./g, "");
 
 type RupiahInputProps = {

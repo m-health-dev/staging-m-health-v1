@@ -7,6 +7,7 @@ export type DomicilePayload = {
   city?: string;
   district?: string;
   address?: string;
+  postal_code?: number | string;
 };
 
 const apiBaseUrl =

@@ -42,10 +42,12 @@ const MedicalDetailClient = ({
   medical: p,
   locale,
   labels,
+  account,
 }: {
   medical: MedicalType;
   locale: string;
   labels: any;
+  account?: any;
 }) => {
   const swiperRef = useRef<any>(null);
   const sliderImage = [p.highlight_image, ...p.reference_image];
@@ -225,9 +227,9 @@ const MedicalDetailClient = ({
         <div className="lg:hidden flex my-5">
           <PriceInfo
             labels={labels}
-            payID={payID}
-            real_price={p.real_price}
-            discount_price={p.discount_price}
+            account={account}
+            type="medical"
+            product={p}
           />
         </div>
         <hr />
@@ -277,9 +279,9 @@ const MedicalDetailClient = ({
       <div className="lg:col-span-2 lg:block hidden">
         <PriceInfo
           labels={labels}
-          payID={payID}
-          real_price={p.real_price}
-          discount_price={p.discount_price}
+          account={account}
+          type="medical"
+          product={p}
         />
       </div>
     </ContainerWrap>

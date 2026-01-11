@@ -13,6 +13,8 @@ import { MedicalEquipmentType } from "@/types/medical-equipment.types";
 import type { Metadata, ResolvingMetadata } from "next";
 import { routing } from "@/i18n/routing";
 import { stripHtml } from "@/helper/removeHTMLTag";
+import { createClient } from "@/utils/supabase/server";
+import { getUserInfo } from "@/lib/auth/getUserInfo";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -71,11 +73,25 @@ const PackageDetailSlug = async ({ params }: Props) => {
   const data = (await getMedicalEquipmentBySlug(slug)).data.data;
   const t = await getTranslations("utility");
 
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  let account = null;
+  if (!session) {
+    return (account = null);
+  } else {
+    const accessToken = session.access_token;
+    account = await getUserInfo(accessToken);
+  }
+
   return (
     <Wrapper>
       <EquipmentDetailClient
         equipment={data}
         locale={locale}
+        account={account}
         labels={{
           detail: t("detail"),
           medical: t("medical"),

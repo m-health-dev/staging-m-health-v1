@@ -43,16 +43,17 @@ const EquipmentDetailClient = ({
   equipment: p,
   locale,
   labels,
+  account,
 }: {
   equipment: MedicalEquipmentType;
   locale: string;
   labels: any;
+  account?: any;
 }) => {
   const swiperRef = useRef<any>(null);
   const sliderImage = [p.highlight_image, ...p.reference_image];
 
-  const t = useTranslations("utility");
-  const payID = uuidv4();
+  const payID = "M-HEALTH-" + uuidv4();
 
   function formatRupiah(value: number) {
     return new Intl.NumberFormat("id-ID").format(value);
@@ -209,9 +210,9 @@ const EquipmentDetailClient = ({
         <div className="lg:hidden flex my-5">
           <PriceInfo
             labels={labels}
-            payID={payID}
-            real_price={p.real_price}
-            discount_price={p.discount_price}
+            product={p}
+            account={account}
+            type="medical-equipment"
           />
         </div>
         <div className="flex flex-col gap-5 mt-5">
@@ -232,9 +233,9 @@ const EquipmentDetailClient = ({
       <div className="lg:col-span-2 lg:block hidden">
         <PriceInfo
           labels={labels}
-          payID={payID}
-          real_price={p.real_price}
-          discount_price={p.discount_price}
+          account={account}
+          product={p}
+          type="medical-equipment"
         />
       </div>
     </ContainerWrap>

@@ -6,9 +6,9 @@ import Image from "next/image";
 import AvatarVendorHotel from "../utility/AvatarVendorHotel";
 import React from "react";
 import { calculateDiscount } from "../utility/PriceInfo";
-import { formatRupiah } from "../Form/PriceInput";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
+import { formatRupiah } from "@/helper/rupiah";
 
 const EquipmentCard = ({
   slide,

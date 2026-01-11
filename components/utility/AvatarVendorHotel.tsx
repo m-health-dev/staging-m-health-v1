@@ -1,3 +1,5 @@
+"use client";
+
 import { getHotelByID } from "@/lib/hotel/get-hotel";
 import { getVendorByID } from "@/lib/vendors/get-vendor";
 import Image from "next/image";

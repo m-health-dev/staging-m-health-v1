@@ -6,7 +6,12 @@ export type Account = {
   fullname: string;
   phone: number;
   gender: string;
-  domicile: JSON;
+  domicile: {
+    address?: string;
+    city?: string;
+    district?: string;
+    postal_code?: string;
+  };
   height: number;
   weight: number;
   avatar_url: string;

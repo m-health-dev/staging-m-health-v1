@@ -10,6 +10,10 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
 import React from "react";
+import { getAccessToken, getUser } from "../../(auth)/actions/auth.actions";
+import { getUserDetail } from "@/lib/auth/getUserDetail";
+import { getUserInfo } from "@/lib/auth/getUserInfo";
+import { createClient } from "@/utils/supabase/server";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -69,11 +73,25 @@ const PackageDetailSlug = async ({
   const data = (await getPackageBySlug(slug)).data.data;
   const t = await getTranslations("utility");
 
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  let account = null;
+  if (!session) {
+    return (account = null);
+  } else {
+    const accessToken = session.access_token;
+    account = await getUserInfo(accessToken);
+  }
+
   return (
     <Wrapper>
       <PackageDetailClient
         package={data}
         locale={locale}
+        account={account}
         labels={{
           detail: t("detail"),
           medical: t("medical"),

@@ -4,10 +4,12 @@ import Wrapper from "@/components/utility/Wrapper";
 import WellnessDetailClient from "@/components/wellness/WellnessDetailClient";
 import { stripHtml } from "@/helper/removeHTMLTag";
 import { routing } from "@/i18n/routing";
+import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { getPackageBySlug } from "@/lib/packages/get-packages";
 import { getImagePackageDetail } from "@/lib/unsplashImage";
 import { getWellnessBySlug } from "@/lib/wellness/get-wellness";
 import { WellnessType } from "@/types/wellness.types";
+import { createClient } from "@/utils/supabase/server";
 import type { Metadata, ResolvingMetadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
@@ -69,11 +71,25 @@ const WellnessDetailSlug = async ({
   const data = (await getWellnessBySlug(slug)).data.data;
   const t = await getTranslations("utility");
 
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  let account = null;
+  if (!session) {
+    return (account = null);
+  } else {
+    const accessToken = session.access_token;
+    account = await getUserInfo(accessToken);
+  }
+
   return (
     <Wrapper>
       <WellnessDetailClient
         wellness={data}
         locale={locale}
+        account={account}
         labels={{
           detail: t("detail"),
           medical: t("medical"),

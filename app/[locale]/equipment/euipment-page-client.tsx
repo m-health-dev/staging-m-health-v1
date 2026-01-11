@@ -7,8 +7,6 @@ import Image from "next/image";
 import AvatarVendorHotel from "@/components/utility/AvatarVendorHotel";
 import React from "react";
 import { MedicalEquipmentType } from "@/types/medical-equipment.types";
-import { formatRupiah } from "@/components/Form/PriceInput";
-import { calculateDiscount } from "@/components/utility/PriceInfo";
 import EquipmentCard from "@/components/equipment/equipment-card";
 import SearchArea from "@/components/utility/SearchArea";
 
