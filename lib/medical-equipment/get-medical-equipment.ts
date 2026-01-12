@@ -113,7 +113,7 @@ export async function getMedicalEquipmentByID(id: string) {
       };
     }
 
-    console.log(data);
+    // console.log(data);
 
     return {
       data,

@@ -235,7 +235,7 @@ const EquipmentDetailClient = ({
           labels={labels}
           account={account}
           product={p}
-          type="medical-equipment"
+          type="medical_equipment"
         />
       </div>
     </ContainerWrap>

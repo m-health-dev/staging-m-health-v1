@@ -34,6 +34,7 @@ import z from "zod";
 import Image from "next/image";
 import { routing } from "@/i18n/routing";
 import { usePaymentFlow } from "@/components/pay/PaymentFlowProvider";
+import { Textarea } from "@/components/ui/textarea";
 
 const accountFormSchema = z.object({
   email: z.email("Invalid email address"),
@@ -151,19 +152,25 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
       if (res.success) {
         setLoading(false);
         setBookingLoading(false);
-        toast.success(locale === "id" ? res.message?.id : res.message?.en);
-        if (!admin) {
-          router.refresh();
-        } else {
-          router.push(`/${locale}/studio/users`);
-        }
+        toast.success(
+          locale === "id"
+            ? "Data pemesanan berhasil disimpan!"
+            : "Booking data saved successfully!"
+        );
+
+        router.refresh();
+
         return true;
       }
 
       if (res.error) {
         setLoading(false);
         setBookingLoading(false);
-        toast.error(locale === "id" ? res.error.id : res.error.en);
+        toast.error(
+          locale === "id"
+            ? "Data pemesanan gagal disimpan!"
+            : "Failed to save booking data!"
+        );
       }
 
       return false;
@@ -196,10 +203,10 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
         <h3 className="text-primary font-bold mb-4">
           {locale === "id" ? "Formulir Pemesanan" : "Booking Form"}
         </h3>
-        <p className="mb-5 text-muted-foreground">
+        <p className="mb-5 text-primary text-xs! bg-blue-50 border-l-4 border-blue-500 px-4 py-2">
           {locale === "id"
-            ? "Silahkan isi data berikut untuk pemesanan, data akan secara otomatis disimpan pada akun anda."
-            : "Please fill in the following data for booking, the data will be automatically saved to your account."}
+            ? "Pastikan data berikut sudah benar. Silahkan isi/ perbaiki data berikut untuk mempermudah proses pemesanan, data akan secara otomatis disimpan sebagai data akun anda."
+            : "Please make sure the following data is correct. Please fill in/ correct the following data to facilitate the ordering process, the data will be automatically saved to your account."}
         </p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -320,7 +327,7 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                       {locale === "id" ? "Alamat Lengkap" : "Full Address"}
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} className="h-12" />
+                      <Textarea {...field} className="min-h-32" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

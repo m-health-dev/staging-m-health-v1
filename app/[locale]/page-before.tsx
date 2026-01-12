@@ -1,17 +1,28 @@
-import CurrentEvents from "@/components/home/CurrentEvents";
-import Jumbotron from "@/components/home/Jumbotron";
-import OurNews from "@/components/home/OurNews";
-import PopularMedical from "@/components/home/PopularMedical";
-import PopularPackage from "@/components/home/PopularPackage";
-import PopularProgram from "@/components/home/PopularProgram";
-import CallToAction from "@/components/utility/CallToAction";
-import Wrapper from "@/components/utility/Wrapper";
+import ChatContent from "@/components/chatbot/ChatContent";
+import SnowFall from "@/components/snow-fall";
 import { routing } from "@/i18n/routing";
+import { getUserInfo } from "@/lib/auth/getUserInfo";
+import {
+  getChatHistory,
+  getChatHistoryByUserID,
+} from "@/lib/chatbot/getChatActivity";
+import { getAllMedical, getAllPublicMedical } from "@/lib/medical/get-medical";
+import {
+  getAllPackages,
+  getAllPublicPackages,
+} from "@/lib/packages/get-packages";
+import {
+  getAllPublicWellness,
+  getAllWellness,
+} from "@/lib/wellness/get-wellness";
+import { createClient } from "@/utils/supabase/server";
 import { Metadata, ResolvingMetadata } from "next";
-import { NextIntlClientProvider } from "next-intl";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 
-// Add revalidation for better performance
+// Use ISR with revalidation instead of force-dynamic for better performance
 export const revalidate = 60; // Revalidate every 60 seconds
 
 type Props = {
@@ -29,7 +40,9 @@ export async function generateMetadata(
 
   return {
     title: `${
-      locale === routing.defaultLocale ? "Beranda" : "Home"
+      locale === routing.defaultLocale
+        ? "Konsultasi dengan AI"
+        : "Consult with AI"
     } - M HEALTH`,
     description: `${
       locale === routing.defaultLocale
@@ -38,7 +51,9 @@ export async function generateMetadata(
     }`,
     openGraph: {
       title: `${
-        locale === routing.defaultLocale ? "Beranda" : "Home"
+        locale === routing.defaultLocale
+          ? "Konsultasi dengan AI"
+          : "Consult with AI"
       } - M HEALTH`,
       description: `${
         locale === routing.defaultLocale
@@ -48,7 +63,9 @@ export async function generateMetadata(
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
-            locale === routing.defaultLocale ? "Beranda" : "Home"
+            locale === routing.defaultLocale
+              ? "Konsultasi dengan AI"
+              : "Consult with AI"
           )}&description=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "M HEALTH adalah platform kesehatan digital yang dirancang untuk membantu Anda mendapatkan informasi medis yang cepat, akurat, dan terpercaya. Kami memahami bahwa mencari solusi kesehatan sering kali terasa membingungkan. Oleh karena itu, kami hadir sebagai `digital front door` — pintu gerbang kesehatan yang memudahkan siapa pun untuk bertanya, berkonsultasi, serta merencanakan perjalanan medis dan wellness secara sederhana, transparan, dan terjangkau."
@@ -62,18 +79,85 @@ export async function generateMetadata(
   };
 }
 
-const HomePage = async () => {
-  return (
-    <Wrapper>
-      <Jumbotron />
-      <PopularPackage />
-      <PopularProgram />
-      <PopularMedical />
-      <CurrentEvents />
-      <OurNews />
-      <CallToAction />
-    </Wrapper>
-  );
-};
+export default async function Home() {
+  const cookieStore = await cookies();
+  const publicID = cookieStore.get("mhealth_public_id")?.value;
 
-export default HomePage;
+  const supabase = await createClient();
+
+  const t = await getTranslations("utility");
+
+  const [
+    {
+      data: { session },
+    },
+    packagesResult,
+    medicalResult,
+    wellnessResult,
+    locale,
+  ] = await Promise.all([
+    supabase.auth.getSession(),
+    getAllPublicPackages(1, 3),
+    getAllPublicMedical(1, 3),
+    getAllPublicWellness(1, 3),
+    getLocale(),
+  ]);
+
+  const packages = Array.isArray(packagesResult?.data)
+    ? packagesResult.data
+    : [];
+
+  const medical = Array.isArray(medicalResult?.data) ? medicalResult.data : [];
+
+  const wellness = Array.isArray(wellnessResult?.data)
+    ? wellnessResult.data
+    : [];
+
+  const { data: user, error } = await supabase.auth.getUser();
+
+  const checkUser = user.user;
+
+  let userID;
+
+  if (checkUser) {
+    userID = user.user?.id;
+  }
+
+  const historyData = checkUser
+    ? await getChatHistoryByUserID(userID!, 1, 10)
+    : publicID
+    ? await getChatHistory(publicID, 1, 10)
+    : { data: [], total: 0 };
+
+  let userData = null;
+
+  if (session?.access_token) {
+    try {
+      userData = await getUserInfo(session.access_token);
+    } catch (e) {
+      console.error("User info fetch failed:", e);
+    }
+  }
+
+  // console.log({ checkUser, session, userID, userData, publicID, historyData });
+
+  return (
+    <>
+      <ChatContent
+        packages={packages}
+        medical={medical}
+        wellness={wellness}
+        initialHistory={
+          Array.isArray(historyData?.data?.data) ? historyData.data.data : []
+        }
+        publicIDFetch={publicID}
+        user={userData}
+        locale={locale}
+        labels={{
+          delete: t("delete"),
+          cancel: t("cancel"),
+        }}
+      />
+    </>
+  );
+}

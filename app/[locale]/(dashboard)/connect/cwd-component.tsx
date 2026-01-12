@@ -35,7 +35,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { Label } from "recharts";
 import { toast } from "sonner";
-import z from "zod";
+import z, { check } from "zod";
 import {
   Dropzone,
   DropzoneContent,
@@ -49,7 +49,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import CalendarScheduleFull from "@/components/Form/CalendarScheduleFull";
+import ConsultationSchedulePicker from "@/components/Form/ConsultationSchedulePicker";
 import { baseUrl } from "@/helper/baseUrl";
 import { signUpAction } from "../../(auth)/actions/auth.actions";
 import { nanoid } from "nanoid";
@@ -60,6 +60,8 @@ import { generatePassword } from "@/helper/getPassword";
 import Link from "next/link";
 import { v4 as uuidv4 } from "uuid";
 import { createClient } from "@/utils/supabase/client";
+import { createConsultation } from "@/lib/consult/post-patch-consultation";
+import { se } from "date-fns/locale";
 
 type Step = 1 | 2 | 3;
 
@@ -205,7 +207,7 @@ const CWDComponent = ({
     phone_number: z.string().min(3),
     email: emailSchema,
     fullname: z.string().min(1),
-    complaint: z.string().min(3),
+    complaint: !checkSession ? z.string().min(10) : z.string().optional(),
     date_of_birth: z.date(),
     height: z.string().min(1).max(3),
     weight: z.string().min(1).max(3),
@@ -215,6 +217,7 @@ const CWDComponent = ({
     domicile_city: z.string().optional(),
     domicile_district: z.string().optional(),
     domicile_address: z.string().optional(),
+    domicile_postal_code: z.string().optional(),
   });
 
   const randomID = nanoid();
@@ -248,12 +251,14 @@ const CWDComponent = ({
     domicile_city: domicile.city || "",
     domicile_district: domicile.district || "",
     domicile_address: domicile.address || "",
+    domicile_postal_code: domicile.postal_code || "",
   };
 
   function parseDomicile(raw: unknown): {
     city?: string;
     district?: string;
     address?: string;
+    postal_code?: string;
   } {
     if (!raw) return {};
 
@@ -272,6 +277,8 @@ const CWDComponent = ({
         city: typeof obj.city === "string" ? obj.city : undefined,
         district: typeof obj.district === "string" ? obj.district : undefined,
         address: typeof obj.address === "string" ? obj.address : undefined,
+        postal_code:
+          typeof obj.postal_code === "string" ? obj.postal_code : undefined,
       };
     }
 
@@ -301,136 +308,57 @@ const CWDComponent = ({
 
     // console.log("Password Akun: ", pass);
 
-    if (accounts?.id) {
-      const res = await fetch(`${baseUrl}/api/schedule-consult`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_session: data.chat_session,
-          phone_number: data.phone_number,
-          email: data.email,
-          fullname: data.fullname,
-          complaint: data.complaint,
-          date_of_birth: toUtcMidnightFromLocalDate(data.date_of_birth),
-          height: data.height,
-          weight: data.weight,
-          gender: data.gender,
-          scheduled_datetime: data.scheduled_datetime,
-          reference_image: data.reference_image,
-          location: {
-            city: data.domicile_city?.trim() || "",
-            district: data.domicile_district?.trim() || "",
-            address: data.domicile_address?.trim() || "",
-          },
-          user_id: accounts?.id,
-        }),
-      });
+    const res = await createConsultation({
+      chat_session: data.chat_session,
+      phone_number: data.phone_number,
+      email: data.email,
+      fullname: data.fullname,
+      complaint: data.complaint,
+      date_of_birth: toUtcMidnightFromLocalDate(data.date_of_birth),
+      height: Number(data.height),
+      weight: Number(data.weight),
+      gender: data.gender,
+      scheduled_datetime: data.scheduled_datetime,
+      reference_image: data.reference_image || [],
+      location: {
+        city: data.domicile_city?.trim() || "",
+        district: data.domicile_district?.trim() || "",
+        address: data.domicile_address?.trim() || "",
+        postal_code: data.domicile_postal_code?.trim() || "",
+      },
+    });
 
-      const json = await res.json();
-
-      if (!res.ok) {
-        return toast.error("Submit failed", { description: json.error });
-      }
-
-      toast.success("Consult Scheduled!", {
-        description: "Your request successfully saved.",
-      });
-
-      form.reset();
+    if (res.error) {
       setLoading(false);
-      router.refresh();
-    } else {
-      const signUp = await signUpAction({
-        email: data.email,
-        password: pass,
-        fullname: data.fullname,
-      });
-
-      if (signUp.error) {
-        toast.error("Gagal Membuat Jadwal Konsultasi", {
-          description: `${signUp.error}`,
+      return toast.error(
+        locale === "id"
+          ? "Gagal Membuat Jadwal Konsultasi"
+          : "Failed to Create Consult Schedule",
+        {
+          description: `${res.error}`,
           duration: 15000,
-        });
-      } else if (signUp.warning) {
-        toast.warning("Gagal Membuat Jadwal Konsultasi", {
-          description: `${signUp.warning}`,
-          duration: 15000,
-        });
-      } else if (signUp.success) {
-        const res = await fetch(`${baseUrl}/api/schedule-consult`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...data,
-            user_id: signUp.user_id,
-          }),
-        });
-
-        const json = await res.json();
-
-        const supabase = await createClient();
-
-        const { data: setToAccount, error: errorSetToAccount } = await supabase
-          .from("accounts")
-          .insert({
-            phone: data.phone_number,
-            gender: data.gender,
-            birthdate: toUtcMidnightFromLocalDate(data.date_of_birth),
-            height: Number(data.height),
-            weight: Number(data.weight),
-            domicile: {
-              city: data.domicile_city?.trim() || "",
-              district: data.domicile_district?.trim() || "",
-              address: data.domicile_address?.trim() || "",
-            },
-          })
-          .eq("id", signUp.user_id)
-          .select("*")
-          .single();
-
-        if (errorSetToAccount) {
-          setLoading(false);
-          console.error("Error updating account details:", errorSetToAccount);
-          toast.error("Gagal Membuat Jadwal Konsultasi", {
-            description: errorSetToAccount.message,
-            duration: 15000,
-          });
         }
-
-        if (!res.ok) {
-          setLoading(false);
-          return toast.error("Gagal Membuat Jadwal Konsultasi", {
-            description: json.error,
-            duration: 15000,
-          });
-        }
-
-        const sendPassMail = await sendMail({
-          email: `Password Akun M HEALTH <auth@m-health.id>`,
-          sendTo: data.email, // ← Sebelumnya "logs@baikfilmfest.com", ubah ke email peserta
-          subject: `Selamat Datang di M HEALTH!`,
-          text: `Halo ${data.fullname}, 
-
-Terima kasih telah bergabung bersama M HEALTH. Saat ini kami sedang melakukan verifikasi data yang anda kirimkan. Berikut adalah password yang diperlukan untuk masuk ke akun anda dan melihat link konsultasi online. Jangan khawatir kami juga mengirimkan link untuk konsultasi ke email dan nomor yang anda daftarkan. Setelah/ sebelum email ini anda terima kami telah mengirimkan link konfirmasi untuk masuk ke akun anda. 
-
-Password Anda : ${pass}
-
-Salam hangat kami, 
-M HEALTH Development Team`,
-        });
-
-        if (sendPassMail?.success) {
-          toast.success("Consult Scheduled!", {
-            description:
-              "Your request successfully saved. You're auto sign up. Check your email to sign in.",
-            duration: 15000,
-          });
-        }
-      }
-      setLoading(false);
-      form.reset();
-      router.refresh();
+      );
     }
+
+    toast.success(
+      locale === "id"
+        ? "Jadwal Konsultasi Berhasil Dibuat"
+        : "Consult Scheduled!",
+      {
+        description:
+          locale === "id"
+            ? "Permintaan Anda berhasil disimpan. Lanjutkan ke halaman pembayaran untuk menyelesaikan jadwal konsultasi."
+            : "Your request successfully saved. Proceed to payment page to complete the consult schedule.",
+        duration: 15000,
+      }
+    );
+
+    form.reset();
+    setLoading(false);
+    router.push(
+      `/${locale}/pay/${uuidv4()}?product=${res.data.id}&type=consultation`
+    );
   }
 
   return (
@@ -469,12 +397,16 @@ M HEALTH Development Team`,
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
                             {!checkSession
-                              ? "ID Konsultasi"
-                              : "ID Sesi Percakapan"}
+                              ? locale === "id"
+                                ? "ID Konsultasi"
+                                : "Consultation ID"
+                              : locale === "id"
+                              ? "ID Sesi Percakapan Anda"
+                              : "Your Chat Session ID"}
                           </FormLabel>
                           <FormControl>
                             {!checkSession ? (
-                              <span className="font-sans text-muted-foreground">
+                              <span className="font-sans text-muted-foreground uppercase">
                                 {field.value}
                               </span>
                             ) : (
@@ -486,15 +418,16 @@ M HEALTH Development Team`,
                                   {...field}
                                   type="text"
                                   readOnly
-                                  className="h-12 cursor-pointer opacity-70"
+                                  className="h-12 cursor-pointer opacity-70 uppercase"
                                 />
                               </Link>
                             )}
                           </FormControl>
                           {checkSession && (
                             <FormDescription>
-                              Sesi percakapan ini akan kami kirimkan kepada
-                              dokter, sebagai salah satu rujukan.
+                              {locale === "id"
+                                ? "Sesi percakapan ini akan kami kirimkan kepada dokter, sebagai salah satu rujukan. Klik pada kolom untuk membuka sesi percakapan anda kembali."
+                                : "This chat session will be sent to the doctor as a reference. Click on the field to open your chat session again."}
                             </FormDescription>
                           )}
 
@@ -509,7 +442,9 @@ M HEALTH Development Team`,
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            Ceritakan Keluhanmu
+                            {locale === "id"
+                              ? "Ceritakan Kondisi Kesehatan Anda"
+                              : "Describe Your Health Condition"}
                           </FormLabel>
 
                           <FormControl>
@@ -530,12 +465,14 @@ M HEALTH Development Team`,
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            Gambar Pendukung{" "}
+                            {locale === "id"
+                              ? "Unggah Gambar Referensi (Opsional)"
+                              : "Upload Reference Images (Optional)"}
                           </FormLabel>
                           <FormDescription>
-                            Opsional. Silahkan tambahkan gambar yang dapat
-                            membantu dokter dalam memberikan penanganan jika
-                            diperlukan.
+                            {locale === "id"
+                              ? "Silahkan tambahkan gambar yang dapat membantu dokter dalam memberikan penanganan jika diperlukan."
+                              : "Please add images that may help the doctor in providing treatment if necessary."}
                           </FormDescription>
                           {referencePreview.length === 0 ? (
                             <FormControl>
@@ -835,15 +772,15 @@ M HEALTH Development Team`,
                         )}
                       />
                     </div>
-                    {/* Normal String */}
-                    {/* Normal String */}
                     <FormField
                       control={form.control}
                       name="domicile_city"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id" ? "Kota" : "City"}
+                            {locale === "id"
+                              ? "Kota/ Provinsi"
+                              : "City/ Province/ State"}
                           </FormLabel>
                           <FormControl>
                             <Input {...field} className="h-12" />
@@ -868,6 +805,21 @@ M HEALTH Development Team`,
                         </FormItem>
                       )}
                     />
+                    <FormField
+                      control={form.control}
+                      name="domicile_postal_code"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary font-semibold!">
+                            {locale === "id" ? "Kode Pos" : "Postal Code"}
+                          </FormLabel>
+                          <FormControl>
+                            <Input {...field} className="h-12" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     <FormField
                       control={form.control}
@@ -880,7 +832,7 @@ M HEALTH Development Team`,
                               : "Full Address"}
                           </FormLabel>
                           <FormControl>
-                            <Input {...field} className="h-12" />
+                            <Textarea {...field} className="min-h-32" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -899,13 +851,15 @@ M HEALTH Development Team`,
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-primary font-semibold!">
-                              Meeting Schedule
+                              {locale === "id"
+                                ? "Jadwal Konsultasi"
+                                : "Consultation Schedule"}
                             </FormLabel>
                             <FormControl>
-                              <CalendarScheduleFull
+                              <ConsultationSchedulePicker
                                 selected={field.value}
                                 onChange={field.onChange}
-                                dateBooked={dateBooked}
+                                locale={locale}
                               />
                             </FormControl>
                             <FormMessage />

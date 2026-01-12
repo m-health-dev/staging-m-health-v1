@@ -75,15 +75,15 @@ const ChatContent = ({
     total,
   } = useChatHistory(user?.id, initialHistory || []);
 
-  console.log({
-    historyLength: Array.isArray(history) ? history.length : 0,
-    initialHistoryLength: Array.isArray(initialHistory)
-      ? initialHistory.length
-      : 0,
-    hasMore,
-    total,
-    displayedCount,
-  });
+  // console.log({
+  //   historyLength: Array.isArray(history) ? history.length : 0,
+  //   initialHistoryLength: Array.isArray(initialHistory)
+  //     ? initialHistory.length
+  //     : 0,
+  //   hasMore,
+  //   total,
+  //   displayedCount,
+  // });
 
   const isShowSidebar = type === "default" || type === "share";
 

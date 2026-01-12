@@ -7,13 +7,14 @@ import { createPostTransaction } from "@/lib/transaction/create-transaction";
 import { usePaymentFlow } from "@/components/pay/PaymentFlowProvider";
 import { Account } from "@/types/account.types";
 import { calculateDiscount, calculateTaxes } from "@/helper/rupiah";
+import { Spinner } from "../ui/spinner";
 
 export type PaymentActionProps = {
   locale: string;
   payID: string;
   productType: string;
   productId: string;
-  discountPrice: number;
+  discountPrice?: number;
   realPrice: number;
   account: Account | null;
 };
@@ -36,11 +37,12 @@ const PaymentActionCard = ({
   const firstName = account?.fullname?.split(" ")[0] || "";
   const lastName = account?.fullname?.split(" ")[1] || "";
 
-  const totalPrice =
-    Number(discountPrice) + calculateTaxes(Number(discountPrice), 11);
+  const taxes = calculateTaxes(
+    Number(discountPrice ? discountPrice : realPrice),
+    11
+  );
 
-  const taxes = calculateTaxes(Number(discountPrice), 11);
-
+  const totalPrice = Number(discountPrice ? discountPrice : realPrice) + taxes;
   const { runBookingSubmit, bookingLoading } = usePaymentFlow();
 
   const handlePay = async () => {
@@ -57,7 +59,7 @@ const PaymentActionCard = ({
 
     try {
       const response = await createPostTransaction({
-        order_id: payID,
+        // order_id: payID,
         user_id: account.id,
         first_name: firstName,
         last_name: lastName,
@@ -92,38 +94,43 @@ const PaymentActionCard = ({
   };
 
   return (
-    <div className="col-span-1 bg-white border rounded-2xl p-5">
+    <>
       <h4 className="font-bold text-primary text-2xl mb-5">
         {locale === "id" ? "Ringkasan Pesanan" : "Order Summary"}
       </h4>
       <div className="space-y-5">
-        <div className="flex w-full justify-between items-center">
-          <p className="text-muted-foreground">Subtotal</p>
-          <p>Rp {realPrice.toLocaleString("id-ID")}</p>
+        <div className="flex w-full justify-between items-end">
+          <p className="text-muted-foreground text-xs!">Subtotal</p>
+          <p>Rp{realPrice.toLocaleString("id-ID")}</p>
         </div>
         <hr />
-        <div className="flex w-full justify-between items-center">
-          <p className="text-muted-foreground">
-            {locale === "id" ? "Potongan Harga" : "Discount"}
-            <span className="text-xs bg-red-50 text-red-500 px-2 py-1 border border-red-500 rounded-full ml-2">
-              {calculateDiscount(realPrice, discountPrice)}
-            </span>
-          </p>
-          <p>Rp {discountPrice.toLocaleString("id-ID")}</p>
-        </div>
-        <hr />
-        <div className="flex w-full justify-between items-center">
-          <p className="text-muted-foreground">
+        {discountPrice !== 0 && discountPrice && (
+          <>
+            <div className="flex w-full justify-between items-end">
+              <p className="text-muted-foreground text-xs!">
+                {locale === "id" ? "Potongan Harga" : "Discount"}
+                <span className="text-xs bg-red-50 text-red-500 px-2 py-1 border border-red-500 rounded-full ml-2">
+                  {calculateDiscount(realPrice, discountPrice)}
+                </span>
+              </p>
+              <p>Rp{discountPrice.toLocaleString("id-ID")}</p>
+            </div>
+            <hr />
+          </>
+        )}
+
+        <div className="flex w-full justify-between items-end">
+          <p className="text-muted-foreground text-xs!">
             {locale === "id" ? "Pajak" : "Tax"}
             <span className="ml-1 text-xs text-muted-foreground">(11%)</span>
           </p>
-          <p>Rp {taxes.toLocaleString("id-ID")}</p>
+          <p>Rp{taxes.toLocaleString("id-ID")}</p>
         </div>
         <hr />
         <div className="flex w-full justify-between items-center">
           <h5 className="font-bold text-primary">Total</h5>
           <h5 className="font-bold text-primary">
-            Rp {totalPrice.toLocaleString("id-ID")}
+            Rp{totalPrice.toLocaleString("id-ID")}
           </h5>
         </div>
         <Button
@@ -131,6 +138,7 @@ const PaymentActionCard = ({
           onClick={handlePay}
           disabled={isLoading || bookingLoading}
         >
+          {(isLoading || bookingLoading) && <Spinner />}
           {isLoading || bookingLoading
             ? locale === "id"
               ? "Memproses..."
@@ -145,7 +153,7 @@ const PaymentActionCard = ({
           </p>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

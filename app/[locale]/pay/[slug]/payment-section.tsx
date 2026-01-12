@@ -10,7 +10,7 @@ export type PaymentSectionProps = {
   payID: string;
   productType: string;
   productId: string;
-  discountPrice: number;
+  discountPrice?: number;
   realPrice: number;
   account: Account | null;
 };

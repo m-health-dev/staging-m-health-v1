@@ -13,11 +13,11 @@ import {
 import { PackageType } from "@/types/packages.types";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Skeleton } from "@/components/ui/skeleton";
-import PackageClientPage from "./euipment-page-client";
+import PackageClientPage from "./equipment-page-client";
 import Wrapper from "@/components/utility/Wrapper";
 import { routing } from "@/i18n/routing";
 import { getAllPublicMedicalEquipment } from "@/lib/medical-equipment/get-medical-equipment";
-import EquipmentClientPage from "./euipment-page-client";
+import EquipmentClientPage from "./equipment-page-client";
 import { Metadata, ResolvingMetadata } from "next";
 
 type Props = {

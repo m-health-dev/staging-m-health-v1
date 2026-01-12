@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   Select,
   SelectTrigger,
@@ -27,6 +27,7 @@ export function LanguageSwitcher({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { locale, setLocale } = useLanguage();
   const [mounted, setMounted] = React.useState(false);
   const [isChanging, setIsChanging] = React.useState(false);
@@ -49,10 +50,16 @@ export function LanguageSwitcher({
     // Simpan preferensi bahasa saat user mengganti bahasa
     localStorage.setItem("mhealth_preferred_language", newLocale);
 
+    // Replace locale in pathname
     const segments = pathname.split("/");
     segments[1] = newLocale;
     const newPath = segments.join("/") || "/";
-    router.push(newPath);
+
+    // Preserve search parameters
+    const searchString = searchParams.toString();
+    const fullPath = searchString ? `${newPath}?${searchString}` : newPath;
+
+    router.push(fullPath);
 
     // Panggil callback jika ada (untuk menutup dialog)
     if (onLanguageChange) {

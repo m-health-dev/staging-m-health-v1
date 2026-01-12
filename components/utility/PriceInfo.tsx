@@ -7,6 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { v4 as uuidv4 } from "uuid";
+import { Spinner } from "../ui/spinner";
 
 type PriceInfoType = {
   labels: any;
@@ -49,9 +50,8 @@ const PriceInfo = ({ labels, product, account, type }: PriceInfoType) => {
   // }
 
   const handleBuy = async () => {
-    router.replace(
-      `/${locale}/pay/${payID}?product=${product?.id}&type=${type}`
-    );
+    setIsLoading(true);
+    router.push(`/${locale}/pay/${payID}?product=${product?.id}&type=${type}`);
   };
 
   // const addressData = account?.domicile?.address;
@@ -135,10 +135,18 @@ const PriceInfo = ({ labels, product, account, type }: PriceInfoType) => {
               </p>
             )} */}
             <Button
-              className="h-12 bg-health hover:bg-health rounded-full w-full"
+              className="h-12 bg-health hover:bg-health rounded-full w-full disabled:opacity-70"
               onClick={() => handleBuy()}
+              disabled={isLoading}
             >
-              {locale === "id" ? "Beli Sekarang" : "Buy Now"}
+              {isLoading && <Spinner />}
+              {isLoading
+                ? locale === "id"
+                  ? "Memproses..."
+                  : "Processing..."
+                : locale === "id"
+                ? "Beli Sekarang"
+                : "Buy Now"}
             </Button>
           </>
         ) : (

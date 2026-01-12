@@ -22,11 +22,6 @@ const OurNewsGrid = ({
   return (
     <div className="grid 3xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-7 *:lg:last:grid *:3xl:last:grid">
       {data.map((n) => {
-        // Ambil hanya topic yang disetujui
-        // const approvedTopics = Object.entries(n.topic || {})
-        //   .filter(([_, value]: any) => value.status === "approved")
-        //   .map(([key]) => key);
-
         return <ArticleCard n={n} locale={locale} key={n.id} onHome />;
       })}
     </div>

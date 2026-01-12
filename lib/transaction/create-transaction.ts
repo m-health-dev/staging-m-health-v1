@@ -14,7 +14,7 @@ const apiBaseUrl =
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
 export async function createPostTransaction(payload: {
-  order_id: string;
+  // order_id: string;
   user_id: string;
   first_name: string;
   last_name: string;

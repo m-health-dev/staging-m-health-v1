@@ -16,7 +16,7 @@ const AvatarUserDetail = ({ id }: { id: string }) => {
     fetch();
   }, []);
 
-  console.log(data);
+  // console.log(data);
 
   return data?.avatar_url || data?.google_avatar ? (
     <Image

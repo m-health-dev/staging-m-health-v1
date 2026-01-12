@@ -7,7 +7,7 @@ import { getImagePackageDetail } from "@/lib/unsplashImage";
 import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
 import React from "react";
-import EquipmentClientPage from "../euipment-page-client";
+import EquipmentClientPage from "../equipment-page-client";
 import EquipmentDetailClient from "@/components/equipment/EquipmentDetailClient";
 import { MedicalEquipmentType } from "@/types/medical-equipment.types";
 import type { Metadata, ResolvingMetadata } from "next";
