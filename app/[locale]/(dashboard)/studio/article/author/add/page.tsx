@@ -202,7 +202,13 @@ const AddArticleAuthorPage = () => {
                       <FormLabel className="text-primary font-semibold!">
                         Profile Image
                       </FormLabel>
-                      {profileImagePreview === null ? (
+                      <FormDescription>
+                        Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
+                        720x720px). Max. 5MB
+                      </FormDescription>
+                      {uploadLoadingProfileImage ? (
+                        <Skeleton className="aspect-square w-1/2 rounded-full mt-3 object-cover border" />
+                      ) : profileImagePreview === null ? (
                         <FormControl>
                           <Dropzone
                             accept={{ "image/*": [] }}
@@ -226,8 +232,6 @@ const AddArticleAuthorPage = () => {
                             <DropzoneContent />
                           </Dropzone>
                         </FormControl>
-                      ) : uploadLoadingProfileImage ? (
-                        <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
                       ) : (
                         profileImagePreview && (
                           <div className="relative">
@@ -236,7 +240,7 @@ const AddArticleAuthorPage = () => {
                               width={320}
                               height={320}
                               alt={profileImagePreview}
-                              className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                              className="aspect-square w-1/2 rounded-full mt-3 object-cover border"
                             />
                             <Button
                               size="sm"

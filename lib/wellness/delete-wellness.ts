@@ -5,6 +5,7 @@ import { success } from "zod";
 import { getWellnessByID } from "./get-wellness";
 import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
 import { createClient } from "@/utils/supabase/client";
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -14,81 +15,29 @@ const apiBaseUrl =
 export async function deleteWellness(id: string) {
   try {
     console.log("Sending wellness/delete to BE:", id);
-    const wellnessData = (await getWellnessByID(id)).data.data;
 
-    if (!wellnessData)
-      return { error: "Error wellness/read in wellness/delete ID:", id };
+    const accessToken = await getAccessToken();
 
-    const filesToDelete: string[] = [];
+    const res = await fetch(`${apiBaseUrl}/api/v1/wellness/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-    // Highlight (array)
-    if (wellnessData.highlight_images?.length > 0) {
-      filesToDelete.push(...wellnessData.highlight_images);
-    }
+    const data = await res.json();
 
-    // Reference images (array)
-    if (wellnessData.reference_images?.length > 0) {
-      filesToDelete.push(...wellnessData.reference_images);
-    }
-
-    if (filesToDelete.length === 1) {
-      const deleteSingle = await deleteSingleFile(filesToDelete[0]);
-      if (!deleteSingle) {
-        return {
-          error:
-            "Error wellness/read in wellness/delete ID" +
-            id +
-            " when delete single images:" +
-            filesToDelete,
-        };
-      }
-    } else if (filesToDelete.length > 1) {
-      const deleteMultiple = await deleteMultipleFiles(filesToDelete);
-      if (!deleteMultiple) {
-        return {
-          error:
-            "Error wellness/read in wellness/delete ID" +
-            id +
-            " when delete multiple images:" +
-            filesToDelete,
-        };
-      }
-    }
-
-    const supabase = await createClient();
-
-    const {
-      data: deleteWellness,
-      count,
-      error: errorDeleteWellness,
-    } = await supabase.from("wellness").delete({ count: "exact" }).eq("id", id);
-
-    // const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
-    //   method: "DELETE",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-
-    // const data = await res.json();
-
-    // if (res.status !== 200) {
-    //   return {
-    //     success: false,
-    //     error: `Failed to sent vendor/delete data. Cause : ${res.status} - ${data.message}`,
-    //   };
-    // }
-
-    if (errorDeleteWellness) {
+    if (res.status !== 200) {
       return {
-        error: errorDeleteWellness.message,
+        success: false,
+        error: `Failed to sent wellness/delete data. Cause : ${res.status} - ${data.message}`,
       };
     }
 
     return {
-      deleteWellness,
-      count,
       success: true,
+      message: "Wellness deleted successfully!",
     };
   } catch (error) {
     console.error("Sent wellness/delete Error:", error);

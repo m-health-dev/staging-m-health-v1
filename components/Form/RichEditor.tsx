@@ -135,7 +135,7 @@ export const RichEditor = React.forwardRef<HTMLDivElement, RichEditorProps>(
         )}
       >
         {/* Toolbar */}
-        <div className="sticky top-22 z-99">
+        <div className="sticky top-28 z-99">
           <div className="border-b border-input bg-muted p-2 flex flex-wrap gap-1">
             {/* Headings */}
             <div className="flex gap-1 border-r border-input pr-2">

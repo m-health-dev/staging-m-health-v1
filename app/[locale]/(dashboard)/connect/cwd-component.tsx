@@ -474,7 +474,11 @@ const CWDComponent = ({
                               ? "Silahkan tambahkan gambar yang dapat membantu dokter dalam memberikan penanganan jika diperlukan."
                               : "Please add images that may help the doctor in providing treatment if necessary."}
                           </FormDescription>
-                          {referencePreview.length === 0 ? (
+                          {uploadLoadingRFImage ? (
+                            <div className="flex flex-col gap-5 mb-3">
+                              <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
+                            </div>
+                          ) : referencePreview.length === 0 ? (
                             <FormControl>
                               <Dropzone
                                 accept={{ "image/*": [] }}
@@ -504,10 +508,6 @@ const CWDComponent = ({
                                 <DropzoneContent />
                               </Dropzone>
                             </FormControl>
-                          ) : uploadLoadingRFImage ? (
-                            <div className="flex flex-col gap-5 mb-3">
-                              <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
-                            </div>
                           ) : (
                             referencePreview && (
                               <div className="flex flex-col gap-5 mb-3">

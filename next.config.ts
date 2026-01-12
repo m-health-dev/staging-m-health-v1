@@ -3,6 +3,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 import { withBotId } from "botid/next/config";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   async redirects() {
     return [
       {
@@ -14,6 +15,7 @@ const nextConfig: NextConfig = {
   },
   allowedDevOrigins: ["192.168.18.252", "192.168.18.253", "*.m-health.id"],
   images: {
+    // unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -34,10 +36,12 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "hoocfkzapbmnldwmedrq.supabase.co",
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "irtyvkfjzojdkmtnstmd.supabase.co",
+        pathname: "/**",
       },
       {
         protocol: "https",

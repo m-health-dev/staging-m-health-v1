@@ -15,6 +15,7 @@ import Avatar from "boring-avatars";
 import AvatarAuthor from "@/components/utility/AvatarAuthor";
 import ArticleCard from "@/components/article/article-card";
 import SearchArea from "@/components/utility/SearchArea";
+import FailedGetDataNotice from "@/components/utility/FailedGetDataNotice";
 
 const ArticlePageClient = ({
   articles,
@@ -34,16 +35,23 @@ const ArticlePageClient = ({
 
   const router = useRouter();
 
+  if (!Array.isArray(articles) || articles.length <= 0) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center w-full">
+        <FailedGetDataNotice />
+      </div>
+    );
+  }
   console.log({ articles });
   return (
     <div className="mb-[10vh]">
-      {articles.length === 0 && (
+      {/* {articles.length === 0 && (
         <p className="text-center text-muted-foreground my-10">
           {locale === routing.defaultLocale
             ? "Tidak ada artikel."
             : "No articles available."}
         </p>
-      )}
+      )} */}
       <div className="grid 3xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-7 *:3xl:last:grid">
         {articles.map((n) => {
           return <ArticleCard n={n} locale={locale} key={n.id} />;

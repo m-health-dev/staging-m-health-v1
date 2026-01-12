@@ -45,6 +45,7 @@ import { baseUrl } from "@/helper/baseUrl";
 import { ArticleAuthorType } from "@/types/articles.types";
 import { updateArticleAuthor } from "@/lib/article-author/post-patch-article-author";
 import { ComboBoxArticleAuthorJob } from "@/components/Form/ComboBoxArticleAuthorJob";
+import { deleteArticleAuthor } from "@/lib/article-author/delete-article-author";
 
 type UpdateForm = {
   id: string;
@@ -222,7 +223,7 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
         </div>
         <Studio1DeleteCopyFunction
           id={id}
-          deleteAction={deleteEvent}
+          deleteAction={deleteArticleAuthor}
           name={data.name}
           locale={locale}
           resourceLabel="Author"
@@ -244,7 +245,13 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
                       <FormLabel className="text-primary font-semibold!">
                         Profile Image
                       </FormLabel>
-                      {profileImagePreview === null ? (
+                      <FormDescription>
+                        Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
+                        720x720px). Max. 5MB
+                      </FormDescription>
+                      {uploadLoadingProfileImage ? (
+                        <Skeleton className="aspect-square w-1/2 rounded-full mt-3 object-cover border" />
+                      ) : profileImagePreview === null ? (
                         <FormControl>
                           <Dropzone
                             accept={{ "image/*": [] }}
@@ -268,8 +275,6 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
                             <DropzoneContent />
                           </Dropzone>
                         </FormControl>
-                      ) : uploadLoadingProfileImage ? (
-                        <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
                       ) : (
                         profileImagePreview && (
                           <div className="relative">
@@ -278,7 +283,7 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
                               width={320}
                               height={320}
                               alt={profileImagePreview}
-                              className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                              className="aspect-square w-1/2 rounded-full mt-3 object-cover border"
                             />
                             <Button
                               size="sm"

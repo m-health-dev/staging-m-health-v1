@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import SimplePagination from "@/components/utility/simple-pagination";
 import EventCard from "@/components/events/event-card";
 import SearchArea from "@/components/utility/SearchArea";
+import FailedGetDataNotice from "@/components/utility/FailedGetDataNotice";
 
 const EventPageClient = ({
   event,
@@ -30,6 +31,14 @@ const EventPageClient = ({
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
   const router = useRouter();
+
+  if (!Array.isArray(event) || event.length <= 0) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center w-full">
+        <FailedGetDataNotice />
+      </div>
+    );
+  }
   return (
     <div className="mb-[10vh]">
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">

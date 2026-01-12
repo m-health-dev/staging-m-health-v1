@@ -48,3 +48,49 @@ export async function getPaymentsByOrderID(order_id: string) {
     };
   }
 }
+
+export async function getPaymentsByUser(
+  user_id: string,
+  page: number = 1,
+  per_page: number = 10
+) {
+  try {
+    const accessToken = await getAccessToken();
+    const res = await fetch(
+      `${apiBaseUrl}/api/v1/payments/by-user/${user_id}?page=${page}&per_page=${per_page}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "X-API-Key": apiSecretKey,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const json = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: null,
+        error: `Failed to receive all transactions/read by user_id data. Cause : ${json.message}`,
+      };
+    }
+
+    // console.log(json.links);
+    return {
+      data: json.data,
+      links: json.links,
+      meta: json.meta,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive all transactions/read by user_id Error:", error);
+    return {
+      success: false,
+      data: null,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}

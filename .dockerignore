@@ -1,0 +1,16 @@
+// prettier-ignore
+Dockerfile
+// prettier-ignore
+.dockerignore
+// prettier-ignore
+node_modules
+// prettier-ignore
+npm-debug.log
+// prettier-ignore
+README.md
+// prettier-ignore
+.next
+// prettier-ignore
+.git
+// prettier-ignore
+.env.local

@@ -27,7 +27,7 @@ const data = {
   navMain: [
     {
       name: "Riwayat Transaksi",
-      url: "/dashboard/order-list",
+      url: "/dashboard/transactions",
       icon: ScanBarcode,
     },
   ],
@@ -53,7 +53,7 @@ const data = {
   schedules: [
     {
       name: "Booking Data",
-      url: "/studio/booking",
+      url: "/dashboard/booking",
       icon: ClipboardClock,
     },
   ],
@@ -73,16 +73,18 @@ export function DashboardSidebar({
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Image
-              src={
-                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/icon_mhealth_logo.PNG"
-              }
-              width={100}
-              height={100}
-              unoptimized
-              alt="icon-m-health"
-              className="object-contain w-8 h-8 mx-2 my-3"
-            />
+            <Link href={"/home"}>
+              <Image
+                src={
+                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/icon_mhealth_logo.PNG"
+                }
+                width={100}
+                height={100}
+                unoptimized
+                alt="icon-m-health"
+                className="object-contain w-8 h-8 mx-2 my-3"
+              />
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -95,7 +97,7 @@ export function DashboardSidebar({
         <NavMenu title="Chat Bot" items={data.chatbot} />
         <NavMenu title="Schedules" items={data.schedules} />
 
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
     </Sidebar>
   );

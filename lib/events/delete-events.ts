@@ -5,6 +5,7 @@ import { success } from "zod";
 import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
 import { createClient } from "@/utils/supabase/client";
 import { getEventByID } from "./get-events";
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -14,81 +15,29 @@ const apiBaseUrl =
 export async function deleteEvent(id: string) {
   try {
     console.log("Sending event/delete to BE:", id);
-    const EventData = (await getEventByID(id)).data.data;
 
-    if (!EventData)
-      return { error: "Error event/read in event/delete ID:", id };
+    const accessToken = await getAccessToken();
 
-    const filesToDelete: string[] = [];
+    const res = await fetch(`${apiBaseUrl}/api/v1/events/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-    // Highlight (array)
-    if (EventData.highlight_images?.length > 0) {
-      filesToDelete.push(...EventData.highlight_images);
-    }
+    const data = await res.json();
 
-    // Reference images (array)
-    if (EventData.reference_images?.length > 0) {
-      filesToDelete.push(...EventData.reference_images);
-    }
-
-    if (filesToDelete.length === 1) {
-      const deleteSingle = await deleteSingleFile(filesToDelete[0]);
-      if (!deleteSingle) {
-        return {
-          error:
-            "Error event/read in event/delete ID" +
-            id +
-            " when delete single images:" +
-            filesToDelete,
-        };
-      }
-    } else if (filesToDelete.length > 1) {
-      const deleteMultiple = await deleteMultipleFiles(filesToDelete);
-      if (!deleteMultiple) {
-        return {
-          error:
-            "Error event/read in event/delete ID" +
-            id +
-            " when delete multiple images:" +
-            filesToDelete,
-        };
-      }
-    }
-
-    const supabase = await createClient();
-
-    const {
-      data: deleteEvent,
-      count,
-      error: errorDeleteEvent,
-    } = await supabase.from("events").delete({ count: "exact" }).eq("id", id);
-
-    // const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
-    //   method: "DELETE",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-
-    // const data = await res.json();
-
-    // if (res.status !== 200) {
-    //   return {
-    //     success: false,
-    //     error: `Failed to sent vendor/delete data. Cause : ${res.status} - ${data.message}`,
-    //   };
-    // }
-
-    if (errorDeleteEvent) {
+    if (res.status !== 200) {
       return {
-        error: errorDeleteEvent.message,
+        success: false,
+        error: `Failed to sent event/delete data. Cause : ${res.status} - ${data.message}`,
       };
     }
 
     return {
-      deleteEvent,
-      count,
       success: true,
+      message: "Event deleted successfully!",
     };
   } catch (error) {
     console.error("Sent event/delete Error:", error);

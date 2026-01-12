@@ -199,7 +199,7 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
                       Hero Image
                     </FormLabel>
                     {uploadLoadingImage ? (
-                      <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
+                      <Skeleton className="aspect-20/7 w-full rounded-2xl mt-3 object-cover border" />
                     ) : imagePreview === null ? (
                       <FormControl>
                         <Dropzone
@@ -227,10 +227,10 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
                         <div className="relative">
                           <Image
                             src={imagePreview}
-                            width={320}
-                            height={320}
+                            width={720}
+                            height={720}
                             alt={imagePreview}
-                            className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                            className="aspect-20/7 w-full rounded-2xl mt-3 object-cover border"
                           />
                           <Button
                             size="sm"

@@ -258,6 +258,10 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
                     <FormLabel className="text-primary font-semibold!">
                       Highlight Image
                     </FormLabel>
+                    <FormDescription>
+                      Rekomendasi: Aspek Rasio 16:9. (Ex. 1920x1080px /
+                      720x403px). Max. 5MB
+                    </FormDescription>
                     {uploadLoadingHLImage ? (
                       <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
                     ) : highlightPreview === null ? (

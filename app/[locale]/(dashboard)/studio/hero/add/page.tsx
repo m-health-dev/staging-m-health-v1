@@ -197,7 +197,9 @@ const AddHero = () => {
                     <FormLabel className="text-primary font-semibold!">
                       Hero Image
                     </FormLabel>
-                    {imagePreview === null ? (
+                    {uploadLoadingImage ? (
+                      <Skeleton className="aspect-20/7 w-full rounded-2xl mt-3 object-cover border" />
+                    ) : imagePreview === null ? (
                       <FormControl>
                         <Dropzone
                           accept={{ "image/*": [] }}
@@ -219,17 +221,15 @@ const AddHero = () => {
                           <DropzoneContent />
                         </Dropzone>
                       </FormControl>
-                    ) : uploadLoadingImage ? (
-                      <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
                     ) : (
                       imagePreview && (
                         <div className="relative">
                           <Image
                             src={imagePreview}
-                            width={320}
-                            height={320}
+                            width={720}
+                            height={720}
                             alt={imagePreview}
-                            className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                            className="aspect-20/7 w-full rounded-2xl mt-3 object-cover border"
                           />
                           <Button
                             size="sm"

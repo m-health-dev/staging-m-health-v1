@@ -16,57 +16,6 @@ const apiBaseUrl =
 export async function deleteVendor(id: string) {
   try {
     console.log("Sending vendor/delete to BE:", id);
-    const vendorData = (await getVendorByID(id)).data;
-
-    if (!vendorData)
-      return { error: "Error vendor/read in vendor/delete ID:", id };
-
-    const filesToDelete: string[] = [];
-
-    // // Logo
-    // if (vendorData.logo) filesToDelete.push(vendorData.logo);
-
-    // // Highlight (array)
-    // if (vendorData.highlight_images?.length > 0) {
-    //   filesToDelete.push(...vendorData.highlight_images);
-    // }
-
-    // // Reference images (array)
-    // if (vendorData.reference_images?.length > 0) {
-    //   filesToDelete.push(...vendorData.reference_images);
-    // }
-
-    // if (filesToDelete.length === 1) {
-    //   const deleteSingle = await deleteSingleFile(filesToDelete[0]);
-    //   if (!deleteSingle) {
-    //     return {
-    //       error:
-    //         "Error vendor/read in vendor/delete ID" +
-    //         id +
-    //         " when delete single images:" +
-    //         filesToDelete,
-    //     };
-    //   }
-    // } else if (filesToDelete.length > 1) {
-    //   const deleteMultiple = await deleteMultipleFiles(filesToDelete);
-    //   if (!deleteMultiple) {
-    //     return {
-    //       error:
-    //         "Error vendor/read in vendor/delete ID" +
-    //         id +
-    //         " when delete multiple images:" +
-    //         filesToDelete,
-    //     };
-    //   }
-    // }
-
-    // const supabase = await createClientAdmin();
-
-    // const {
-    //   data: deleteVendor,
-    //   count,
-    //   error: errorDeleteVendor,
-    // } = await supabase.from("vendor").delete({ count: "exact" }).eq("id", id);
 
     const accessToken = await getAccessToken();
 
@@ -87,15 +36,9 @@ export async function deleteVendor(id: string) {
       };
     }
 
-    // if (errorDeleteVendor) {
-    //   return {
-    //     error: errorDeleteVendor.message,
-    //   };
-    // }
-
     return {
-      deleteVendor,
       success: true,
+      message: "Vendor deleted successfully!",
     };
   } catch (error) {
     console.error("Sent vendor/delete Error:", error);

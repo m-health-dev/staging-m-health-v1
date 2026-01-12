@@ -5,6 +5,7 @@ import { success } from "zod";
 import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
 import { createClient } from "@/utils/supabase/client";
 import { getPackageByID } from "./get-packages";
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -14,81 +15,29 @@ const apiBaseUrl =
 export async function deletePackage(id: string) {
   try {
     console.log("Sending package/delete to BE:", id);
-    const packageData = (await getPackageByID(id)).data.data;
 
-    if (!packageData)
-      return { error: "Error package/read in package/delete ID:", id };
+    const accessToken = await getAccessToken();
 
-    const filesToDelete: string[] = [];
+    const res = await fetch(`${apiBaseUrl}/api/v1/packages/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-    // Highlight (array)
-    if (packageData.highlight_images?.length > 0) {
-      filesToDelete.push(...packageData.highlight_images);
-    }
+    const data = await res.json();
 
-    // Reference images (array)
-    if (packageData.reference_images?.length > 0) {
-      filesToDelete.push(...packageData.reference_images);
-    }
-
-    if (filesToDelete.length === 1) {
-      const deleteSingle = await deleteSingleFile(filesToDelete[0]);
-      if (!deleteSingle) {
-        return {
-          error:
-            "Error package/read in package/delete ID" +
-            id +
-            " when delete single images:" +
-            filesToDelete,
-        };
-      }
-    } else if (filesToDelete.length > 1) {
-      const deleteMultiple = await deleteMultipleFiles(filesToDelete);
-      if (!deleteMultiple) {
-        return {
-          error:
-            "Error package/read in package/delete ID" +
-            id +
-            " when delete multiple images:" +
-            filesToDelete,
-        };
-      }
-    }
-
-    const supabase = await createClient();
-
-    const {
-      data: deletePackage,
-      count,
-      error: errorDeletePackage,
-    } = await supabase.from("packages").delete({ count: "exact" }).eq("id", id);
-
-    // const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
-    //   method: "DELETE",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-
-    // const data = await res.json();
-
-    // if (res.status !== 200) {
-    //   return {
-    //     success: false,
-    //     error: `Failed to sent vendor/delete data. Cause : ${res.status} - ${data.message}`,
-    //   };
-    // }
-
-    if (errorDeletePackage) {
+    if (res.status !== 200) {
       return {
-        error: errorDeletePackage.message,
+        success: false,
+        error: `Failed to sent package/delete data. Cause : ${res.status} - ${data.message}`,
       };
     }
 
     return {
-      deletePackage,
-      count,
       success: true,
+      message: "Package deleted successfully!",
     };
   } catch (error) {
     console.error("Sent package/delete Error:", error);

@@ -18,68 +18,29 @@ export async function deleteArticles(id: string) {
   }
   try {
     console.log("Sending articles/delete to BE:", id);
-    const articlesData = (await getArticlesByID(id)).data;
 
-    if (!articlesData)
-      return { error: "Error articles/read in articles/delete ID:", id };
+    const accessToken = await getAccessToken();
 
-    const filesToDelete: string[] = [];
+    const res = await fetch(`${apiBaseUrl}/api/v1/articles/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-    // Highlight (array)
-    if (articlesData.highlight_images?.length > 0) {
-      filesToDelete.push(...articlesData.highlight_images);
+    const data = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to sent articles/delete data. Cause : ${res.status} - ${data.message}`,
+      };
     }
-
-    if (filesToDelete.length === 1 && filesToDelete !== null) {
-      const deleteSingle = await deleteSingleFile(filesToDelete[0]);
-      if (!deleteSingle) {
-        return {
-          error:
-            "Error articles/read in articles/delete ID" +
-            id +
-            " when delete single images:" +
-            filesToDelete,
-        };
-      }
-    }
-
-    const supabase = await createClient();
-
-    const {
-      data: deleteArticles,
-      count,
-      error: errorDeleteArticles,
-    } = await supabase.from("article").delete({ count: "exact" }).eq("id", id);
-
-    // const accessToken = await getAccessToken();
-
-    // const res = await fetch(`${apiBaseUrl}/api/v1/articles/${id}`, {
-    //   method: "DELETE",
-    //   headers: {
-    //     Authorization: `Bearer ${accessToken}`,
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-
-    // const data = await res.json();
-
-    // if (res.status !== 200) {
-    //   return {
-    //     success: false,
-    //     error: `Failed to sent vendor/delete data. Cause : ${res.status} - ${data.message}`,
-    //   };
-    // }
-
-    // if (errorDeleteArticles) {
-    //   return {
-    //     error: errorDeleteArticles.message,
-    //   };
-    // }
 
     return {
-      deleteArticles,
-      count,
       success: true,
+      message: "Article deleted successfully!",
     };
   } catch (error) {
     console.error("Sent articles/delete Error:", error);

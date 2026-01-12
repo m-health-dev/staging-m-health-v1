@@ -437,7 +437,13 @@ const UpdatePackageForm = ({
                       <FormLabel className="text-primary font-semibold!">
                         Highlight Image
                       </FormLabel>
-                      {highlightPreview === null ? (
+                      <FormDescription>
+                        Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
+                        720x720px). Max. 5MB
+                      </FormDescription>
+                      {uploadLoadingHLImage ? (
+                        <Skeleton className="aspect-square w-full rounded-2xl mt-3 object-cover border" />
+                      ) : highlightPreview === null ? (
                         <FormControl>
                           <Dropzone
                             accept={{ "image/*": [] }}
@@ -461,8 +467,6 @@ const UpdatePackageForm = ({
                             <DropzoneContent />
                           </Dropzone>
                         </FormControl>
-                      ) : uploadLoadingHLImage ? (
-                        <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
                       ) : (
                         highlightPreview && (
                           <div className="relative">
@@ -471,7 +475,7 @@ const UpdatePackageForm = ({
                               width={320}
                               height={320}
                               alt={highlightPreview}
-                              className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                              className="aspect-square w-full rounded-2xl mt-3 object-cover border"
                             />
                             <Button
                               size="sm"
@@ -507,7 +511,16 @@ const UpdatePackageForm = ({
                       <FormLabel className="text-primary font-semibold!">
                         Reference Images
                       </FormLabel>
-                      {referencePreview.length === 0 ? (
+                      <FormDescription>
+                        Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
+                        720x720px). Max. 5MB
+                      </FormDescription>
+                      {uploadLoadingRFImage ? (
+                        <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mb-3">
+                          <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
+                          <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
+                        </div>
+                      ) : referencePreview.length === 0 ? (
                         <FormControl>
                           <Dropzone
                             accept={{ "image/*": [] }}
@@ -537,11 +550,6 @@ const UpdatePackageForm = ({
                             <DropzoneContent />
                           </Dropzone>
                         </FormControl>
-                      ) : uploadLoadingRFImage ? (
-                        <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mb-3">
-                          <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
-                          <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
-                        </div>
                       ) : (
                         referencePreview && (
                           <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mb-3">
@@ -552,7 +560,7 @@ const UpdatePackageForm = ({
                                   width={320}
                                   height={320}
                                   alt={url}
-                                  className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                                  className="aspect-square w-full rounded-2xl mt-3 object-cover border"
                                 />
                                 <Button
                                   size="sm"

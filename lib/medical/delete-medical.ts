@@ -5,6 +5,7 @@ import { success } from "zod";
 import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
 import { createClient } from "@/utils/supabase/client";
 import { getMedicalByID } from "./get-medical";
+import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -14,81 +15,28 @@ const apiBaseUrl =
 export async function deleteMedical(id: string) {
   try {
     console.log("Sending medical/delete to BE:", id);
-    const medicalData = (await getMedicalByID(id)).data.data;
+    const accessToken = await getAccessToken();
 
-    if (!medicalData)
-      return { error: "Error medical/read in medical/delete ID:", id };
+    const res = await fetch(`${apiBaseUrl}/api/v1/medical/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-    const filesToDelete: string[] = [];
+    const data = await res.json();
 
-    // Highlight (array)
-    if (medicalData.highlight_images?.length > 0) {
-      filesToDelete.push(...medicalData.highlight_images);
-    }
-
-    // Reference images (array)
-    if (medicalData.reference_images?.length > 0) {
-      filesToDelete.push(...medicalData.reference_images);
-    }
-
-    if (filesToDelete.length === 1) {
-      const deleteSingle = await deleteSingleFile(filesToDelete[0]);
-      if (!deleteSingle) {
-        return {
-          error:
-            "Error medical/read in medical/delete ID" +
-            id +
-            " when delete single images:" +
-            filesToDelete,
-        };
-      }
-    } else if (filesToDelete.length > 1) {
-      const deleteMultiple = await deleteMultipleFiles(filesToDelete);
-      if (!deleteMultiple) {
-        return {
-          error:
-            "Error medical/read in medical/delete ID" +
-            id +
-            " when delete multiple images:" +
-            filesToDelete,
-        };
-      }
-    }
-
-    const supabase = await createClient();
-
-    const {
-      data: deleteMedical,
-      count,
-      error: errorDeleteMedical,
-    } = await supabase.from("medical").delete({ count: "exact" }).eq("id", id);
-
-    // const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
-    //   method: "DELETE",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-
-    // const data = await res.json();
-
-    // if (res.status !== 200) {
-    //   return {
-    //     success: false,
-    //     error: `Failed to sent vendor/delete data. Cause : ${res.status} - ${data.message}`,
-    //   };
-    // }
-
-    if (errorDeleteMedical) {
+    if (res.status !== 200) {
       return {
-        error: errorDeleteMedical.message,
+        success: false,
+        error: `Failed to sent medical/delete data. Cause : ${res.status} - ${data.message}`,
       };
     }
 
     return {
-      deleteMedical,
-      count,
       success: true,
+      message: "Medical deleted successfully!",
     };
   } catch (error) {
     console.error("Sent medical/delete Error:", error);
