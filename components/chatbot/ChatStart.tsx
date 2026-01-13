@@ -101,10 +101,12 @@ const ChatStart = ({
     setMessages((prev) => [...prev, botPlaceholder]);
 
     try {
+      const effectiveSessionId = sessionID ?? pendingSessionId ?? null;
+
       const formattedMessages = [...messages, userMsg].map((m) => ({
         sender: m.sender === "bot" ? "assistant" : "user",
         message: m.message,
-        // replyTo: m.replyTo,
+        replyTo: m.replyTo,
         urgent: m.urgent,
       }));
 
@@ -117,7 +119,8 @@ const ChatStart = ({
         },
         public_id: publicID,
         user_id: accounts?.id,
-        session_id: sessionID,
+        session_id: effectiveSessionId,
+        new_session: !effectiveSessionId,
       };
 
       // Call streaming API via client-side route
@@ -140,87 +143,159 @@ const ChatStart = ({
       let isUrgent = false;
       let buffer = "";
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      const processSSEEvent = (eventType: string, eventData: string) => {
+        try {
+          const data = JSON.parse(eventData);
 
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || ""; // Keep incomplete line in buffer
+          switch (eventType) {
+            case "connected":
+              console.log("Stream connected:", data);
+              break;
 
-        let currentEvent = "";
-
-        for (const line of lines) {
-          if (line.startsWith("event: ")) {
-            currentEvent = line.slice(7).trim();
-          } else if (line.startsWith("data: ")) {
-            try {
-              const data = JSON.parse(line.slice(6));
-
-              if (currentEvent === "connected") {
-                // Connected event - do nothing or log
-                console.log("Stream connected:", data);
-              } else if (currentEvent === "complete") {
-                // Complete event - extract metadata
-                sessionId = data.session_id;
-                isUrgent = data.urgent;
-                fullMessage = data.reply;
-
-                // Update message dengan final text
+            case "chunk":
+            case "": // default event type for text chunks
+              if (data.text) {
+                fullMessage += data.text;
                 setMessages((prev) =>
                   prev.map((msg) =>
                     msg.id === botMessageId
-                      ? {
-                          ...msg,
-                          message: fullMessage,
-                          urgent: isUrgent,
-                          isStreaming: false,
-                        }
-                      : msg
-                  )
-                );
-
-                // Update URL when session ID is received
-                if (!session && sessionId) {
-                  const newUrl = `/${locale}/c/${sessionId}`;
-                  setPendingSessionId(sessionId);
-
-                  // Use window.history.replaceState for silent update
-                  window.history.replaceState(
-                    { ...window.history.state, as: newUrl, url: newUrl },
-                    "",
-                    newUrl
-                  );
-
-                  // Dispatch custom event to notify URL change
-                  window.dispatchEvent(new Event("urlchange"));
-                }
-
-                // Trigger history refresh immediately after message complete
-                onNewMessage?.();
-              } else if (data.text) {
-                // Streaming token event
-                fullMessage = data.text;
-                // Update message progressively
-                setMessages((prev) =>
-                  prev.map((msg) =>
-                    msg.id === botMessageId
-                      ? { ...msg, message: fullMessage }
+                      ? { ...msg, message: fullMessage, isStreaming: true }
                       : msg
                   )
                 );
               }
+              break;
 
-              currentEvent = ""; // Reset event
-            } catch (e) {
-              console.error("Error parsing SSE:", e);
+            case "complete":
+              sessionId = data.session_id || sessionId;
+              isUrgent = data.urgent || false;
+              // Use the complete reply if provided, otherwise keep accumulated
+              if (data.reply) {
+                fullMessage = data.reply;
+              }
+
+              setMessages((prev) =>
+                prev.map((msg) =>
+                  msg.id === botMessageId
+                    ? {
+                        ...msg,
+                        message: fullMessage,
+                        urgent: isUrgent,
+                        isStreaming: false,
+                      }
+                    : msg
+                )
+              );
+
+              if (sessionId) {
+                setPendingSessionId(sessionId);
+              }
+              break;
+
+            case "error":
+              console.error("Stream error:", data);
+              setMessages((prev) =>
+                prev.map((msg) =>
+                  msg.id === botMessageId
+                    ? {
+                        ...msg,
+                        message: data.message || "Terjadi kesalahan.",
+                        isStreaming: false,
+                      }
+                    : msg
+                )
+              );
+              break;
+
+            default:
+              // Handle unknown events or raw text
+              if (data.text) {
+                fullMessage += data.text;
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === botMessageId
+                      ? { ...msg, message: fullMessage, isStreaming: true }
+                      : msg
+                  )
+                );
+              }
+          }
+        } catch (e) {
+          // If JSON parse fails, might be plain text
+          console.warn("Failed to parse SSE data:", eventData, e);
+        }
+      };
+      // Parse SSE format properly
+      const parseSSEBuffer = (text: string): string => {
+        // Split by double newline (SSE event separator)
+        const parts = text.split(/\n\n/);
+
+        // Keep the last incomplete part in buffer
+        const incompletePart = parts.pop() || "";
+
+        for (const part of parts) {
+          if (!part.trim()) continue;
+
+          const lines = part.split("\n");
+          let currentEvent = ""; // default event type
+          let currentData = "";
+
+          for (const line of lines) {
+            if (line.startsWith("event:")) {
+              currentEvent = line.slice(6).trim();
+            } else if (line.startsWith("data:")) {
+              // Handle multi-line data by accumulating
+              const dataContent = line.slice(5).trim();
+              currentData += currentData ? "\n" + dataContent : dataContent;
+            } else if (line.startsWith(":")) {
+              // Comment line, ignore (often used for keep-alive)
+              continue;
             }
           }
+
+          if (currentData) {
+            processSSEEvent(currentEvent, currentData);
+          }
+        }
+
+        return incompletePart;
+      };
+
+      // Read stream with proper buffer handling
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (value) {
+          buffer += decoder.decode(value, { stream: true });
+          buffer = parseSSEBuffer(buffer);
+        }
+
+        if (done) {
+          // Process any remaining buffer after stream ends
+          if (buffer.trim()) {
+            // Flush decoder
+            buffer += decoder.decode();
+            parseSSEBuffer(buffer + "\n\n"); // Force parse remaining
+          }
+          break;
         }
       }
 
-      // Trigger history refresh for new session after streaming complete
-      if (!session && sessionId) {
+      // Ensure final state is set correctly
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === botMessageId
+            ? {
+                ...msg,
+                message: fullMessage || msg.message,
+                isStreaming: false,
+              }
+            : msg
+        )
+      );
+
+      // Trigger history refresh for new session
+      if (!sessionID && !pendingSessionId && sessionId) {
         setTimeout(() => onNewMessage?.(), 500);
       }
     } catch (error) {
@@ -231,7 +306,10 @@ const ChatStart = ({
           msg.id === botMessageId
             ? {
                 ...msg,
-                message: "Maaf, terjadi kesalahan. Silakan coba lagi.",
+                message:
+                  locale === routing.defaultLocale
+                    ? "Maaf, terjadi kesalahan. Silakan coba lagi."
+                    : "Sorry, an error occurred. Please try again.",
                 isStreaming: false,
               }
             : msg

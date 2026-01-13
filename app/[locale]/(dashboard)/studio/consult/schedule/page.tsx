@@ -83,7 +83,7 @@ const ConsultScheduleStudio = async ({
         type="consult-schedule"
         deleteAction={deleteConsultation}
       />
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
     </ContainerWrap>
   );
 };

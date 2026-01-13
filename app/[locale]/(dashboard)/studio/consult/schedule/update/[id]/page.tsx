@@ -5,6 +5,9 @@ import { toast } from "sonner";
 import { getHotelByID } from "@/lib/hotel/get-hotel";
 import UpdateHotelForm from "./updateForm";
 import { notFound } from "next/navigation";
+import { getConsultationByID } from "@/lib/consult/get-consultation";
+import UpdateConsultationData from "./updateForm";
+import { getLocale } from "next-intl/server";
 
 const UpdateHotelPage = async ({
   params,
@@ -12,13 +15,21 @@ const UpdateHotelPage = async ({
   params: Promise<{ id: string }>;
 }) => {
   const { id } = await params;
-  const res = await getHotelByID(id);
+  const res = await getConsultationByID(id);
+  const locale = await getLocale();
 
   if (res.error) {
     notFound();
   }
 
-  return <UpdateHotelForm id={id} hotelData={res.data} />;
+  return (
+    <UpdateConsultationData
+      id={id}
+      data={res.data.data}
+      locale={locale}
+      accounts={res.data.data.user}
+    />
+  );
 };
 
 export default UpdateHotelPage;

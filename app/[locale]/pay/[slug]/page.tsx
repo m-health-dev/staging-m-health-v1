@@ -191,27 +191,33 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                     <div>
                       <div className="price mt-3">
                         <div className="text-start">
-                          <div className="inline-flex items-center gap-3">
-                            <p className="text-muted-foreground">
-                              <s>{formatRupiah(data.real_price)}</s>
-                            </p>
-                            <div className="font-semibold text-red-500 bg-red-50 border-red-500 border px-2 py-1 rounded-full inline-flex w-fit">
-                              <p className="inline-flex gap-1 items-center text-xs!">
-                                {/* <Percent className="size-5 text-red-500 bg-white rounded-full p-1" /> */}
-                                {calculateDiscount(
-                                  data.real_price,
-                                  data.discount_price
-                                )}
+                          {data.discount_price >= 1 && (
+                            <div className="inline-flex items-center gap-3">
+                              <p className="text-muted-foreground">
+                                <s>{formatRupiah(data.real_price)}</s>
                               </p>
+                              <div className="font-semibold text-red-500 bg-red-50 border-red-500 border px-2 py-1 rounded-full inline-flex w-fit">
+                                <p className="inline-flex gap-1 items-center text-xs!">
+                                  {/* <Percent className="size-5 text-red-500 bg-white rounded-full p-1" /> */}
+                                  {calculateDiscount(
+                                    data.real_price,
+                                    data.discount_price
+                                  )}
+                                </p>
+                              </div>
                             </div>
-                          </div>
+                          )}
 
                           <div className="flex flex-col items-start mt-2">
                             <p className="text-sm! text-muted-foreground">
                               Subtotal
                             </p>
                             <h5 className="text-primary font-bold">
-                              {formatRupiah(data.discount_price)}
+                              {formatRupiah(
+                                data.discount_price <= 0
+                                  ? data.real_price
+                                  : data.discount_price
+                              )}
                             </h5>
                           </div>
                         </div>

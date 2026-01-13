@@ -16,6 +16,7 @@ const LoadingComponent = ({ className }: { className?: string }) => {
       setDot((prev) => (prev.length >= 3 ? "" : prev + "."));
     }, 500);
 
+    const timer0 = setPhase(0);
     const timer1 = setTimeout(() => setPhase(1), 3000);
     const timer2 = setTimeout(() => setPhase(2), 10000);
 

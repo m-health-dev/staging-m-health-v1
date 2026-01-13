@@ -206,7 +206,9 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
                 <p
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
-                    router.push(`/${locale}/studio/hotel/update/${id}`)
+                    router.push(
+                      `/${locale}/studio/consult/schedule/update/${id}`
+                    )
                   }
                 >
                   <PenSquare />

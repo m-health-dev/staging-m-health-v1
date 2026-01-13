@@ -169,17 +169,19 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5 flex justify-between items-center">
+      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5 flex lg:flex-row flex-col justify-between lg:items-center gap-3">
         <div>
           {name && (
             <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
               Update Article
             </p>
           )}
-          <h4 className="text-primary font-semibold">
+          <h4 className="text-primary font-semibold line-clamp-2">
             {name ? name : "Update Article"}
           </h4>
-          <p className="text-sm! text-muted-foreground">{data.slug}</p>
+          <p className="text-sm! text-muted-foreground line-clamp-2">
+            {data.slug}
+          </p>
         </div>
         <Studio1DeleteCopyFunction
           id={id}

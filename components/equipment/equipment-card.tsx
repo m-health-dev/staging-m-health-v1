@@ -75,24 +75,30 @@ const EquipmentCard = ({
 
             <div className="price mt-5">
               <div className="text-start">
-                <div className="inline-flex items-center gap-3">
-                  <div className="font-semibold text-red-500 bg-red-50 border-red-500 border px-2 py-1 rounded-full inline-flex w-fit">
-                    <p className="inline-flex gap-1 items-center text-xs!">
-                      {/* <Percent className="size-5 text-red-500 bg-white rounded-full p-1" /> */}
-                      {calculateDiscount(
-                        slide.real_price,
-                        slide.discount_price
-                      )}
+                {slide.discount_price >= 1 && (
+                  <div className="inline-flex items-center gap-3">
+                    <div className="font-semibold text-red-500 bg-red-50 border-red-500 border px-2 py-1 rounded-full inline-flex w-fit">
+                      <p className="inline-flex gap-1 items-center text-xs!">
+                        {/* <Percent className="size-5 text-red-500 bg-white rounded-full p-1" /> */}
+                        {calculateDiscount(
+                          slide.real_price,
+                          slide.discount_price
+                        )}
+                      </p>
+                    </div>
+                    <p className="text-muted-foreground">
+                      <s>{formatRupiah(slide.real_price)}</s>
                     </p>
                   </div>
-                  <p className="text-muted-foreground">
-                    <s>{formatRupiah(slide.real_price)}</s>
-                  </p>
-                </div>
+                )}
 
                 <div className="flex justify-between items-end mt-2">
                   <h5 className="text-primary font-bold">
-                    {formatRupiah(slide.discount_price)}
+                    {formatRupiah(
+                      slide.discount_price <= 0
+                        ? slide.real_price
+                        : slide.discount_price
+                    )}
                   </h5>
                 </div>
               </div>

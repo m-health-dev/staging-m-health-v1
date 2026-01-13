@@ -83,13 +83,22 @@ export async function getUser() {
   return user;
 }
 
+const getBaseUrl = (): string => {
+  // Always prioritize environment variable for production
+  if (process.env.NEXT_PUBLIC_BASE_URL) {
+    return process.env.NEXT_PUBLIC_BASE_URL;
+  }
+  // Fallback for development
+  return "http://localhost:3000";
+};
+
 export const signUpAction = async (data: {
   fullname: string;
   email: string;
   password: string;
 }) => {
   const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+  const origin = getBaseUrl();
   const validatedData = AuthSignUpSchema.safeParse(data);
 
   if (!validatedData.success) {
@@ -302,7 +311,7 @@ export const signInAction = async (data: {
 
 export const handleSendMagicLinkAction = async (data: { email: string }) => {
   const supabase = await createClient();
-  const origin = process.env.NEXT_PUBLIC_BASE_URL! as string;
+  const origin = getBaseUrl();
 
   const validatedData = magicSchema.safeParse(data);
 
@@ -460,7 +469,7 @@ export const handleSendMagicLinkAction = async (data: { email: string }) => {
 
 export const signWithGoogle = async (redirectTo?: string) => {
   const supabase = await createClient();
-  const origin = process.env.NEXT_PUBLIC_BASE_URL! as string;
+  const origin = getBaseUrl();
 
   // const redirectTo = (formData.get("redirect") as string) || "/nusa";
 
@@ -516,7 +525,7 @@ export const signWithGoogle = async (redirectTo?: string) => {
 export const forgotPasswordAction = async (data: { email: string }) => {
   const supabase = await createClient();
   const validatedData = ForgotPassSchema.safeParse(data);
-  const origin = process.env.NEXT_PUBLIC_BASE_URL! as string;
+  const origin = getBaseUrl();
   const locale = await getLocale();
   // const callbackUrl = formData.get("callbackUrl")?.toString();
 

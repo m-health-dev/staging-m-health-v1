@@ -85,8 +85,8 @@ export async function updateConsultation(
   payload: {
     fullname?: string;
     complaint?: string;
-    scheduled_datetime?: string;
-    date_of_birth?: string;
+    scheduled_datetime?: Date;
+    date_of_birth?: Date;
     height?: number;
     weight?: number;
     gender?: string;

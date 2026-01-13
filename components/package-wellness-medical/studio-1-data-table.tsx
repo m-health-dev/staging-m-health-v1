@@ -413,6 +413,7 @@ export function Studio1DataTable<TData, TValue>({
                               )}
                             </div>
                           )}
+
                           <div className="mb-2">
                             {new Date(
                               row.getValue("created_at")
@@ -463,6 +464,23 @@ export function Studio1DataTable<TData, TValue>({
                               }`
                             )}
                           </h5>
+                          {type === "consult-schedule" && (
+                            <>
+                              <p className="text-muted-foreground text-sm! mt-0">
+                                {row.getValue("email")}
+                              </p>
+                              <p className="text-health text-sm! mt-0">
+                                {row.getValue("phone_number")}
+                              </p>
+                              <div className="border-l-4 border-l-primary px-4 bg-blue-50 mt-3 py-4">
+                                <p>
+                                  <LocalDateTime
+                                    date={row.getValue("scheduled_datetime")}
+                                  />
+                                </p>
+                              </div>
+                            </>
+                          )}
 
                           {type === "article-category" && (
                             <p className="text-muted-foreground text-sm! mt-2">
