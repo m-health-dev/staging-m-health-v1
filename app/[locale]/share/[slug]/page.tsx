@@ -1,128 +1,168 @@
 import ChatContent from "@/components/chatbot/ChatContent";
-import PrivateChat from "@/components/chatbot/private-chat";
-import UnderConstruction from "@/components/utility/under-construction";
+import ChatContentSkeleton from "@/components/chatbot/ChatContentSkeleton";
+import SnowFall from "@/components/snow-fall";
+import { routing } from "@/i18n/routing";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
-import { GetChatStatus } from "@/lib/chatbot/chat-status";
 import {
   getChatHistory,
   getChatHistoryByUserID,
   getChatSessionBySlug,
-  getShareSlug,
 } from "@/lib/chatbot/getChatActivity";
-import { getAllMedical } from "@/lib/medical/get-medical";
-import { getAllPackages } from "@/lib/packages/get-packages";
-import { getAllWellness } from "@/lib/wellness/get-wellness";
+import { getAllMedical, getAllPublicMedical } from "@/lib/medical/get-medical";
+import {
+  getAllPackages,
+  getAllPublicPackages,
+} from "@/lib/packages/get-packages";
+import {
+  getAllPublicWellness,
+  getAllWellness,
+} from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/server";
+import { Metadata, ResolvingMetadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
+import { Suspense } from "react";
 
-export const dynamic = "force-dynamic";
+// Use ISR with longer revalidation for better performance and caching
+export const revalidate = 300; // Revalidate every 5 minutes instead of 60 seconds
 
-type paramsType = Promise<{ slug: string }>;
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
-export default async function ShareChatPage(props: { params: paramsType }) {
-  const { slug } = await props.params;
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
 
-  const [locale, cookieStore] = await Promise.all([getLocale(), cookies()]);
+  const locale = await getLocale();
 
+  // Cache metadata strings to avoid recomputing
+  const title =
+    locale === routing.defaultLocale
+      ? "Konsultasi dengan AI"
+      : "Consult with AI";
+  const description =
+    locale === routing.defaultLocale
+      ? "M HEALTH adalah platform kesehatan digital yang dirancang untuk membantu Anda mendapatkan informasi medis yang cepat, akurat, dan terpercaya. Kami memahami bahwa mencari solusi kesehatan sering kali terasa membingungkan. Oleh karena itu, kami hadir sebagai `digital front door` — pintu gerbang kesehatan yang memudahkan siapa pun untuk bertanya, berkonsultasi, serta merencanakan perjalanan medis dan wellness secara sederhana, transparan, dan terjangkau."
+      : "M HEALTH is a digital health platform designed to help you access fast, accurate, and reliable medical information. We understand that finding the right health solutions can often feel overwhelming. That's why we act as a `digital front door` — making it easier for anyone to ask questions, consult with professionals, and plan their medical and wellness journey in a simple, transparent, and affordable way.";
+
+  return {
+    title: `${title} - M HEALTH`,
+    description,
+    openGraph: {
+      title: `${title} - M HEALTH`,
+      description,
+      images: [
+        {
+          url: `/api/og?title=${encodeURIComponent(
+            title
+          )}&description=${encodeURIComponent(
+            description
+          )}&path=${encodeURIComponent("m-health.id/home")}`,
+          width: 800,
+          height: 450,
+        },
+      ],
+    },
+  };
+}
+
+// Cache public data fetching to reduce database load
+const getCachedPublicData = unstable_cache(
+  async () => {
+    const [packagesResult, medicalResult, wellnessResult] = await Promise.all([
+      getAllPublicPackages(1, 3),
+      getAllPublicMedical(1, 3),
+      getAllPublicWellness(1, 3),
+    ]);
+
+    return {
+      packages: Array.isArray(packagesResult?.data) ? packagesResult.data : [],
+      medical: Array.isArray(medicalResult?.data) ? medicalResult.data : [],
+      wellness: Array.isArray(wellnessResult?.data) ? wellnessResult.data : [],
+    };
+  },
+  ["public-data-home"],
+  {
+    revalidate: 60, // Cache for 60 seconds
+    tags: ["public-data"],
+  }
+);
+
+export default async function ShareChat({ params }: Props) {
+  const cookieStore = await cookies();
   const publicID = cookieStore.get("mhealth_public_id")?.value;
+
+  const { slug } = await params;
 
   const supabase = await createClient();
 
-  // const { data: chat } = await supabase
-  //   .from("chat_activity")
-  //   .select("id, share_slug, status")
-  //   .eq("share_slug", slug)
-  //   .maybeSingle();
+  // Only fetch critical data for initial render
+  const [
+    {
+      data: { session },
+    },
+    locale,
+    t,
+    sessionChat,
+  ] = await Promise.all([
+    supabase.auth.getSession(),
+    getLocale(),
+    getTranslations("utility"),
+    getChatSessionBySlug(slug),
+  ]);
 
-  const shareSlugData = slug;
-
+  // Get user quickly without waiting for full user info
   const { data: user } = await supabase.auth.getUser();
-
-  const t = await getTranslations("utility");
-
-  const [packagesRes, medical, wellness, sessionChat, shareSlug] =
-    await Promise.all([
-      getAllPackages(1, 3),
-      getAllMedical(1, 3),
-      getAllWellness(1, 3),
-      getChatSessionBySlug(shareSlugData),
-      getShareSlug(shareSlugData),
-    ]);
-
   const checkUser = user.user;
+  const userID = checkUser?.id;
 
-  let userID;
+  // Start fetching user data but don't wait for it
+  const userDataPromise = session?.access_token
+    ? getUserInfo(session.access_token).catch((e) => {
+        console.error("User info fetch failed:", e);
+        return null;
+      })
+    : Promise.resolve(null);
 
-  if (checkUser) {
-    userID = user.user?.id;
-  }
-
-  if (!sessionChat.success && sessionChat.status === 404) {
-    notFound();
-  }
-
-  // console.log(sessionChat.error);
-
-  const historyData = checkUser
-    ? await getChatHistoryByUserID(userID!, 1, 10)
+  // Fetch minimal initial history for instant render (just for showing sidebar has data)
+  // useChatHistory will load full 20 items after mount
+  const historyDataPromise = checkUser
+    ? getChatHistoryByUserID(userID!, 1, 50)
     : publicID
-    ? await getChatHistory(publicID, 1, 10)
-    : { data: [], total: 0 };
+    ? getChatHistory(publicID, 1, 50)
+    : Promise.resolve({ data: [], total: 0 });
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  let userData = null;
-
-  if (session?.access_token) {
-    try {
-      userData = await getUserInfo(session.access_token);
-    } catch (e) {
-      console.error("User info fetch failed:", e);
-    }
-  }
-
-  if (sessionChat.publicStatus !== "public") {
-    return <PrivateChat />;
-  }
-
-  const urgent = sessionChat.urgent;
-  // console.log("Urgent Status: ", urgent);
-
-  console.log({
-    checkUser,
-    session,
-    userID,
-    userData,
-    publicID,
-    historyData,
-    urgent,
-  });
+  // Wait for critical data only
+  const [historyData, userData] = await Promise.all([
+    historyDataPromise,
+    userDataPromise,
+  ]);
 
   return (
     <>
-      <ChatContent
-        packages={packagesRes.data}
-        medical={medical.data}
-        wellness={wellness.data}
-        initialHistory={historyData.data.data || []}
-        sessionID={sessionChat.session}
-        session={sessionChat.data}
-        publicIDFetch={publicID}
-        user={userData}
-        locale={locale}
-        urgent={urgent}
-        status={sessionChat.publicStatus}
-        shareSlug={shareSlug.data}
-        type="share"
-        labels={{
-          delete: t("delete"),
-          cancel: t("cancel"),
-        }}
-      />
+      <Suspense fallback={<ChatContentSkeleton />}>
+        <ChatContent
+          initialHistory={
+            Array.isArray(historyData?.data?.data) ? historyData.data.data : []
+          }
+          publicIDFetch={publicID}
+          session={sessionChat.data}
+          type="share"
+          user={userData}
+          locale={locale}
+          userID={userID}
+          labels={{
+            delete: t("delete"),
+            cancel: t("cancel"),
+          }}
+        />
+      </Suspense>
     </>
   );
 }

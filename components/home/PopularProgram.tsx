@@ -18,11 +18,11 @@ const PopularProgram = async () => {
   return (
     <div className="bg-primary pt-[5vh] pb-[30vh] mt-[7vh] lg:rounded-t-[5rem] rounded-t-4xl">
       <ContainerWrap>
-        <h1 className="font-bold text-white pt-[2vh] pb-[6vh]">
+        <h2 className="font-bold text-white pt-[2vh] pb-[6vh]">
           {locale === routing.defaultLocale
             ? "Program Kebugaran"
             : "Wellness Programs"}
-        </h1>
+        </h2>
         <Suspense fallback={<SkeletonComponent />}>
           <Content />
         </Suspense>

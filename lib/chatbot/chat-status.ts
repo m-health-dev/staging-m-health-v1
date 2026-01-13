@@ -35,13 +35,18 @@ export async function ChangeChatStatus(session_id: string, statusSend: string) {
       if (res.status === 404) {
         return {
           success: false,
-          error: "Gagal Mengubah status chat. Sesi tidak ditemukan.",
+          error: {
+            id: "Gagal Mengubah status chat. Sesi tidak ditemukan.",
+            en: "Failed to Change chat status. Session not found.",
+          },
         };
       } else if (res.status === 401) {
         return {
           success: false,
-          error:
-            "Anda harus masuk untuk mengubah status chat. Unauthorized access.",
+          error: {
+            id: "Gagal Mengubah status chat. Anda harus masuk untuk mengubah status chat ini.",
+            en: "Failed to Change chat status. You must be logged in to change this chat status.",
+          },
         };
       }
 
@@ -50,10 +55,16 @@ export async function ChangeChatStatus(session_id: string, statusSend: string) {
 
     const json = await res.json();
 
-    console.log({ res, json });
+    // console.log({ res, json });
 
     if (!json) {
-      return { success: false, error: "Gagal Mengubah status chat." };
+      return {
+        success: false,
+        error: {
+          id: "Terjadi kesalahan saat mengambil sesi chat.",
+          en: "An error occurred while fetching the chat session.",
+        },
+      };
     }
 
     return {
@@ -63,7 +74,10 @@ export async function ChangeChatStatus(session_id: string, statusSend: string) {
   } catch (error) {
     console.error("Share Chat Session Error:", error);
     return {
-      error: "Terjadi kesalahan saat mengambil sesi chat.",
+      error: {
+        id: "Terjadi kesalahan saat mengubah status chat.",
+        en: "An error occurred while changing the chat status.",
+      },
       data: [],
     };
   }

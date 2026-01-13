@@ -250,7 +250,16 @@ const NavHeader = ({
                         </Button>
                       </Link>
                     )}
-
+                    <div className="bg-gray-50 rounded-4xl border border-primary/10 p-4 mt-5">
+                      <h5 className="text-primary font-bold mb-2">
+                        {locale === routing.defaultLocale
+                          ? "Preferensi"
+                          : "Preferences"}
+                      </h5>
+                      <div className="z-9999">
+                        <LanguageSwitcher />
+                      </div>
+                    </div>
                     {NavigationLinks.map((link, i) => (
                       <Link
                         key={link.path}
@@ -268,17 +277,6 @@ const NavHeader = ({
                         </h5>
                       </Link>
                     ))}
-
-                    <div className="bg-gray-50 rounded-2xl border border-primary/10 p-4 mt-5">
-                      <h5 className="text-primary font-bold mb-2">
-                        {locale === routing.defaultLocale
-                          ? "Preferensi"
-                          : "Preferences"}
-                      </h5>
-                      <div className="z-9999">
-                        <LanguageSwitcher />
-                      </div>
-                    </div>
                   </div>
                 </SheetContent>
               </Sheet>

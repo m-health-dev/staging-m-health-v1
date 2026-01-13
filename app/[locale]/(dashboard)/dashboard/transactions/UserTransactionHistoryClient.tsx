@@ -39,7 +39,10 @@ const UserTransactionHistoryClient = ({
               const id = nanoid();
               return (
                 <div key={id} className="bg-white rounded-2xl border p-4">
-                  <Link href={`/${locale}/c/${h.id}`} target="_blank">
+                  <Link
+                    href={`/${locale}/pay/status?order_id=${h.transaction_id}`}
+                    target="_blank"
+                  >
                     <div className="flex items-center justify-between mb-5">
                       <div className="flex items-center gap-2">
                         <p className="bg-gray-50 text-gray-700 border border-gray-500 px-3 py-1 rounded-full capitalize">

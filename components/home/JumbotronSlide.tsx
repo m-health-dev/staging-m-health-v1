@@ -121,10 +121,10 @@ function SlideImage({ slide }: { slide: any }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <div className="relative w-full aspect-20/7 rounded-2xl overflow-hidden">
+    <div className="relative w-full lg:aspect-20/7 aspect-video overflow-hidden">
       {/* Skeleton Loader */}
       {!isLoaded && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+        <div className="absolute inset-0 bg-gray-200 rounded-2xl animate-pulse" />
       )}
 
       {/* Gambar */}

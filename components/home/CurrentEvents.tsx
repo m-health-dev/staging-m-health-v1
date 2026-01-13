@@ -15,11 +15,11 @@ const CurrentEvents = async () => {
   return (
     <div className="bg-background pt-[5vh] -mt-[25vh] lg:rounded-t-[5rem] pb-[5vh] rounded-t-4xl">
       <ContainerWrap>
-        <h1 className="font-bold text-primary mt-8 mb-20">
+        <h2 className="font-bold text-primary mt-8 mb-20">
           {locale === routing.defaultLocale
             ? "Acara Terbaru"
             : "Current Events"}
-        </h1>
+        </h2>
         <Suspense fallback={<SkeletonComponent />}>
           <Content />
         </Suspense>

@@ -12,6 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import SidebarItemSkeleton from "./SidebarItemSkeleton";
 
 import {
   MessagesSquare,
@@ -50,6 +51,8 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
+import path from "node:path";
 
 const Avatar = dynamic(() => import("boring-avatars"), {
   ssr: false,
@@ -65,6 +68,7 @@ interface ChatbotSidebarProps extends React.ComponentProps<typeof Sidebar> {
   sessionID?: string;
   publicIDFetch: string | null;
   isLoading: boolean;
+  sidebarDataLoading?: boolean; // Loading state for packages/medical/wellness
   locale: string;
   onRefreshHistory?: () => void;
   hasMore?: boolean;
@@ -85,6 +89,7 @@ export function ChatbotSidebar({
   sessionID,
   publicIDFetch,
   isLoading,
+  sidebarDataLoading = false,
   locale,
   onRefreshHistory,
   hasMore,
@@ -98,8 +103,15 @@ export function ChatbotSidebar({
   const router = useRouter();
   const [loadingDelete, setLoadDelete] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [isLoadingNewChat, setIsLoadingNewChat] = React.useState(false);
+  const [createNewChat, setCreateNewChat] = React.useState(false);
   const pathname = usePathname();
-  // const t = useTranslations("utility");
+
+  // React.useEffect(() => {
+  //   if (pathname === `/${locale}` || pathname === `/${locale}/`) {
+  //     setCreateNewChat(false);
+  //   }
+  // }, [pathname]);
 
   const handleDeleteChatSession = async (sessionID: string) => {
     setLoadDelete(true);
@@ -150,6 +162,20 @@ export function ChatbotSidebar({
       setDialogOpen(false);
     }
   };
+
+  const handleCreateNewChat = async () => {
+    setIsLoadingNewChat(true);
+
+    try {
+      // kasih delay sebelum redirect
+      setTimeout(() => {
+        window.location.replace(`/${locale}`);
+      }, 300);
+    } catch (error) {
+      console.error("Error creating new chat:", error);
+    }
+  };
+
   return (
     <Sidebar className="p-0!" collapsible="offcanvas" {...props}>
       <SidebarHeader className="-mb-5 p-3! bg-white">
@@ -176,19 +202,27 @@ export function ChatbotSidebar({
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem className="px-0 cursor-pointer">
-            <Link href={`/${locale}`}>
-              <button
-                className="flex gap-3 w-full rounded-full items-center text-primary hover:bg-muted py-2 hover:outline px-3 cursor-pointer"
-                type="button"
-              >
+            <button
+              className={cn(
+                "flex gap-3 w-full rounded-full items-center text-primary hover:bg-muted py-2 hover:outline px-3 cursor-pointer",
+                isLoading && "opacity-50 pointer-events-none"
+              )}
+              type="button"
+              disabled={isLoading}
+              onClick={() => handleCreateNewChat()}
+            >
+              {isLoadingNewChat ? (
+                <Spinner />
+              ) : (
                 <MessagesSquare className="size-5" />
-                <p>
-                  {locale === routing.defaultLocale
-                    ? "Percakapan Baru"
-                    : "New Chat"}
-                </p>
-              </button>
-            </Link>
+              )}
+
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Percakapan Baru"
+                  : "New Chat"}
+              </p>
+            </button>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -241,7 +275,10 @@ export function ChatbotSidebar({
                 </div>
               </Link>
             ))}
-            {packages.length === 0 && <FailedGetDataNotice size="sm" />}
+            {sidebarDataLoading && <SidebarItemSkeleton count={3} />}
+            {!sidebarDataLoading && packages.length === 0 && (
+              <FailedGetDataNotice size="sm" />
+            )}
           </div>
         </div>
 
@@ -294,7 +331,10 @@ export function ChatbotSidebar({
                 </div>
               </Link>
             ))}
-            {wellness.length === 0 && <FailedGetDataNotice size="sm" />}
+            {sidebarDataLoading && <SidebarItemSkeleton count={3} />}
+            {!sidebarDataLoading && wellness.length === 0 && (
+              <FailedGetDataNotice size="sm" />
+            )}
           </div>
         </div>
 
@@ -347,7 +387,10 @@ export function ChatbotSidebar({
                 </div>
               </Link>
             ))}
-            {medical.length === 0 && <FailedGetDataNotice size="sm" />}
+            {sidebarDataLoading && <SidebarItemSkeleton count={3} />}
+            {!sidebarDataLoading && medical.length === 0 && (
+              <FailedGetDataNotice size="sm" />
+            )}
           </div>
         </div>
 

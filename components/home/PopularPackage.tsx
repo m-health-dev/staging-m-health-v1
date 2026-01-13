@@ -18,11 +18,11 @@ const PopularPackage = async () => {
   return (
     <div className="mt-[10vh]">
       <ContainerWrap>
-        <h1 className="font-bold text-primary mt-10">
+        <h2 className="font-bold text-primary mt-10">
           {locale === routing.defaultLocale
             ? "Paket Kebugaran & Medis"
             : "Wellness & Medical Packages"}
-        </h1>
+        </h2>
       </ContainerWrap>
       <Suspense fallback={<SkeletonComponent />}>
         <Content />

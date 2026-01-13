@@ -3,14 +3,18 @@
 import React from "react";
 import ContainerWrap from "../utility/ContainerWrap";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import {
   Activity,
   CalendarHeart,
   Camera,
   HeartPlus,
+  HouseHeart,
   MessageCircleHeart,
   Newspaper,
+  Package,
   Search,
+  Stethoscope,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -23,17 +27,22 @@ import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { ro } from "date-fns/locale";
 import { Spinner } from "../ui/spinner";
+import { cn } from "@/lib/utils";
 
 const QuickAction = ({
   includeSearchBar,
   withoutQuickLinks,
   query,
   target,
+  className,
+  forPhone,
 }: {
   includeSearchBar?: boolean;
   withoutQuickLinks?: boolean;
   query?: string;
   target?: string;
+  className?: string;
+  forPhone?: boolean;
 }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -144,24 +153,22 @@ const QuickAction = ({
       id: 2,
       href: `/${locale}/package`,
       label: `${locale === routing.defaultLocale ? "Paket" : "Our Packages"}`,
-      icon: <Activity />,
+      icon: <HouseHeart />,
     },
-    // {
-    //   id: 3,
-    //   href: `/${locale}/wellness`,
-    //   label: `${
-    //     locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness"
-    //   }`,
-    //   icon: <HeartPlus />,
-    // },
-    // {
-    //   id: 4,
-    //   href: `/${locale}/wellness`,
-    //   label: `${
-    //     locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness"
-    //   }`,
-    //   icon: <HeartPlus />,
-    // },
+    {
+      id: 3,
+      href: `/${locale}/wellness`,
+      label: `${
+        locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness"
+      }`,
+      icon: <HeartPlus />,
+    },
+    {
+      id: 4,
+      href: `/${locale}/medical`,
+      label: `${locale === routing.defaultLocale ? "Paket Medis" : "Medical"}`,
+      icon: <Stethoscope />,
+    },
     {
       id: 5,
       href: `/${locale}/event`,
@@ -180,7 +187,10 @@ const QuickAction = ({
     },
   ];
 
-  const check = pathname === `/${locale}` || pathname === `/${locale}/`;
+  const check =
+    pathname === `/${locale}` ||
+    pathname === `/${locale}/` ||
+    pathname.startsWith(`/${locale}/share`);
 
   // Jika check = true, hilangkan item dengan id = 1
   const visibleLinks = check
@@ -218,7 +228,7 @@ const QuickAction = ({
 
   return (
     <div className="flex w-full justify-center">
-      <div className="lg:max-w-2xl max-w-full w-full">
+      <div className={cn("max-w-full w-full", className)}>
         {/* Search Bar */}
         {includeSearchBar && (
           <div className="search_anything mb-4">
@@ -230,12 +240,12 @@ const QuickAction = ({
                 value={searchQuery}
                 onChange={handleInputChange}
                 placeholder="Search anything"
-                className="h-14 rounded-full bg-white px-5 placeholder:text-primary/50 lg:text-[18px] text-base w-full focus-visible:border-muted-foreground/20 focus-visible:ring-0! outline-0!"
+                className="h-14 rounded-full bg-white border border-primary hover:outline-0! hover:ring-0! px-5 placeholder:text-primary/50 lg:text-[18px] text-base w-full  focus-visible:ring-0! outline-0!"
               />
               <button
                 type="submit"
                 disabled={loadingSearch}
-                className="absolute bg-white text-primary w-14 h-14 inline-flex items-center justify-center rounded-full border border-border shadow group-hover:bg-primary group-hover:text-background group-focus:bg-primary group-focus:text-background transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute right-0 border border-primary bg-white text-primary w-14 h-14 inline-flex items-center justify-center rounded-full shadow group-hover:bg-primary group-hover:text-background group-focus:bg-primary group-focus:text-background transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loadingSearch ? <Spinner /> : <Search />}
               </button>
@@ -243,15 +253,32 @@ const QuickAction = ({
           </div>
         )}
 
-        {!withoutQuickLinks && (
-          <div className="flex w-full overflow-x-auto lg:overflow-x-visible hide-scroll pb-2 gap-4 items-center justify-start lg:justify-center no-scrollbar cursor-grab lg:flex-nowrap md:flex-wrap max-w-full">
+        {!withoutQuickLinks && !forPhone && (
+          <div className="flex hide-scroll pb-2 lg:gap-4 gap-2 items-center lg:justify-center justify-start no-scrollbar cursor-grab flex-wrap">
             {visibleLinks.map(({ id, href, label, icon }) => (
               <Link key={href} href={href} className="group shrink-0">
-                <button className="cursor-pointer bg-white py-1.5 pl-2 pr-5 border rounded-full inline-flex gap-3 items-center shadow-sm group-hover:bg-primary transition-all duration-300">
-                  <div className="bg-background w-10 h-10 rounded-full flex items-center justify-center text-primary">
+                <button className="cursor-pointer bg-white py-1.5 pl-2 pr-5 rounded-full inline-flex gap-1 items-center group-hover:bg-primary transition-all duration-300 border">
+                  <div className="lg:w-8 lg:h-8 w-6 h-6 p-1 rounded-full flex items-center justify-center text-primary group-hover:text-white transition-all duration-300 ">
                     {icon}
                   </div>
-                  <p className="text-primary font-medium group-hover:text-white transition-all duration-300 whitespace-nowrap">
+                  <p className="text-primary lg:text-base! text-sm! font-medium group-hover:text-white transition-all duration-300 whitespace-nowrap">
+                    {label}
+                  </p>
+                </button>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {forPhone && (
+          <div className="flex flex-row flex-nowrap gap-3 overflow-x-auto hide-scroll pb-2 items-center justify-start no-scrollbar cursor-grab">
+            {visibleLinks.map(({ href, label, icon }) => (
+              <Link key={href} href={href} className="group shrink-0">
+                <button className="cursor-pointer bg-white py-1.5 pl-2 pr-5 rounded-full inline-flex gap-1 items-center group-hover:bg-primary transition-all duration-300 border w-full">
+                  <div className="w-8 h-8 p-1 rounded-full flex items-center justify-center text-primary group-hover:text-white transition-all duration-300 ">
+                    {icon}
+                  </div>
+                  <p className="text-primary lg:text-base! text-sm! font-medium group-hover:text-white transition-all duration-300 whitespace-nowrap">
                     {label}
                   </p>
                 </button>

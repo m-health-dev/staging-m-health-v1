@@ -246,90 +246,110 @@ const TransactionStatusClient = ({
                 </div>
               )}
 
-            {productType === "consultation" ? (
-              <div className="bg-white rounded-2xl p-5 border my-10">
-                <h5 className="font-bold text-primary text-lg">
-                  <Stethoscope className="inline-block mr-2 size-5" />
-                  {locale === "id"
-                    ? "Konsultasi dengan Dokter"
-                    : "Consultation with Doctor"}
-                </h5>
-                <div className="mt-5">
-                  <p className="text-sm! text-muted-foreground">
+            {dataProduct ? (
+              productType === "consultation" ? (
+                <div className="bg-white rounded-2xl p-5 border my-10">
+                  <h5 className="font-bold text-primary text-lg">
+                    <Stethoscope className="inline-block mr-2 size-5" />
                     {locale === "id"
-                      ? "Jadwal Konsultasi Anda"
-                      : "Your Consultation Schedule"}
-                  </p>
-                  <p>
-                    <LocalDateTime date={dataProduct.scheduled_datetime} />
-                  </p>
-                </div>
-                {dataProduct.complaint && (
+                      ? "Konsultasi dengan Dokter"
+                      : "Consultation with Doctor"}
+                  </h5>
                   <div className="mt-5">
                     <p className="text-sm! text-muted-foreground">
                       {locale === "id"
-                        ? "Kondisi/ Keluhan Kesehatan Anda"
-                        : "Your Health Condition"}
+                        ? "Jadwal Konsultasi Anda"
+                        : "Your Consultation Schedule"}
                     </p>
                     <p>
-                      {locale === "id"
-                        ? `${stripHtml(dataProduct.complaint)}`
-                        : `${stripHtml(dataProduct.complaint)}`}
+                      <LocalDateTime date={dataProduct.scheduled_datetime} />
                     </p>
                   </div>
-                )}
-              </div>
-            ) : (
-              <div className="bg-white rounded-2xl p-5 border grid lg:grid-cols-4 grid-cols-1 gap-5 w-full my-10">
-                <div className="lg:col-span-1 w-full">
-                  <Image
-                    src={dataProduct.highlight_image}
-                    alt="Product Image"
-                    width={300}
-                    height={300}
-                    className="w-full h-auto aspect-square rounded-2xl object-center object-cover"
-                  />
+                  {dataProduct.complaint && (
+                    <div className="mt-5">
+                      <p className="text-sm! text-muted-foreground">
+                        {locale === "id"
+                          ? "Kondisi/ Keluhan Kesehatan Anda"
+                          : "Your Health Condition"}
+                      </p>
+                      <p>
+                        {locale === "id"
+                          ? `${stripHtml(dataProduct.complaint)}`
+                          : `${stripHtml(dataProduct.complaint)}`}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <div className="lg:col-span-3 w-full">
-                  <div className="mb-2">
-                    {dataProduct.spesific_gender === "male" ? (
-                      <div className="inline-flex items-center gap-2 bg-blue-100 px-3 py-1 rounded-full border border-primary">
-                        <Mars className="size-4 text-primary" />
-                        <p className="text-primary text-sm!">{labels.male}</p>
-                      </div>
-                    ) : dataProduct.spesific_gender === "female" ? (
-                      <div className="inline-flex items-center gap-2 bg-pink-100 px-3 py-1 rounded-full border border-pink-400">
-                        <Venus className="size-4 text-pink-500" />
-                        <p className="text-pink-500 text-sm!">
-                          {labels.female}
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="inline-flex items-center gap-2 bg-health/10 px-3 py-1 rounded-full border border-health">
-                        <VenusAndMars className="size-4 text-health" />
-                        <p className="text-health text-sm!">{labels.unisex}</p>
-                      </div>
-                    )}
-                  </div>
-                  <h5 className="font-bold text-primary text-lg">
-                    {locale === "id"
-                      ? dataProduct.id_title
-                      : dataProduct.en_title}
-                  </h5>
-                  <p>
-                    {locale === "id"
-                      ? dataProduct.id_tagline
-                      : dataProduct.en_tagline}
-                  </p>
-                  <div className="mt-4">
-                    <AvatarVendorHotel
-                      size="sm"
-                      type="vendor"
-                      vendor_id={dataProduct.vendor_id}
-                      locale={locale}
+              ) : (
+                <div className="bg-white rounded-2xl p-5 border grid lg:grid-cols-4 grid-cols-1 gap-5 w-full my-10">
+                  <div className="lg:col-span-1 w-full">
+                    <Image
+                      src={
+                        dataProduct.highlight_image ||
+                        "https://placehold.co/300x300.png?text=IMAGE+NOT+FOUND"
+                      }
+                      alt="Product Image"
+                      width={300}
+                      height={300}
+                      className="w-full h-auto aspect-square rounded-2xl object-center object-cover"
                     />
                   </div>
+                  <div className="lg:col-span-3 w-full">
+                    <div className="mb-2">
+                      {dataProduct.spesific_gender === "male" ? (
+                        <div className="inline-flex items-center gap-2 bg-blue-100 px-3 py-1 rounded-full border border-primary">
+                          <Mars className="size-4 text-primary" />
+                          <p className="text-primary text-sm!">{labels.male}</p>
+                        </div>
+                      ) : dataProduct.spesific_gender === "female" ? (
+                        <div className="inline-flex items-center gap-2 bg-pink-100 px-3 py-1 rounded-full border border-pink-400">
+                          <Venus className="size-4 text-pink-500" />
+                          <p className="text-pink-500 text-sm!">
+                            {labels.female}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="inline-flex items-center gap-2 bg-health/10 px-3 py-1 rounded-full border border-health">
+                          <VenusAndMars className="size-4 text-health" />
+                          <p className="text-health text-sm!">
+                            {labels.unisex}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    <h5 className="font-bold text-primary text-lg">
+                      {locale === "id"
+                        ? dataProduct.id_title
+                        : dataProduct.en_title}
+                    </h5>
+                    <p>
+                      {locale === "id"
+                        ? dataProduct.id_tagline
+                        : dataProduct.en_tagline}
+                    </p>
+                    <div className="mt-4">
+                      <AvatarVendorHotel
+                        size="sm"
+                        type="vendor"
+                        vendor_id={dataProduct.vendor_id}
+                        locale={locale}
+                      />
+                    </div>
+                  </div>
                 </div>
+              )
+            ) : (
+              <div className="text-start p-5 bg-yellow-50 rounded-2xl border border-yellow-200 my-10">
+                <h5 className="text-lg font-semibold text-yellow-600 mb-2">
+                  {locale === "id"
+                    ? "Produk Tidak Ditemukan"
+                    : "Product Not Found"}
+                </h5>
+                <p className="text-yellow-500">
+                  {locale === "id"
+                    ? "Maaf, produk yang Anda beli tidak dapat ditemukan. Silakan hubungi layanan pelanggan untuk bantuan lebih lanjut."
+                    : "Sorry, the product you purchased cannot be found. Please contact customer service for further assistance."}
+                </p>
               </div>
             )}
 

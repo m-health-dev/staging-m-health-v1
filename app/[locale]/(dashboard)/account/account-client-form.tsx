@@ -34,6 +34,7 @@ import { toast } from "sonner";
 import z from "zod";
 import Image from "next/image";
 import { routing } from "@/i18n/routing";
+import { Textarea } from "@/components/ui/textarea";
 
 const accountFormSchema = z.object({
   email: z.email("Invalid email address"),
@@ -47,12 +48,14 @@ const accountFormSchema = z.object({
   domicile_city: z.string().optional(),
   domicile_district: z.string().optional(),
   domicile_address: z.string().optional(),
+  domicile_postal_code: z.string().optional(),
 });
 
 function parseDomicile(raw: unknown): {
   city?: string;
   district?: string;
   address?: string;
+  postal_code?: string;
 } {
   if (!raw) return {};
 
@@ -71,6 +74,8 @@ function parseDomicile(raw: unknown): {
       city: typeof obj.city === "string" ? obj.city : undefined,
       district: typeof obj.district === "string" ? obj.district : undefined,
       address: typeof obj.address === "string" ? obj.address : undefined,
+      postal_code:
+        typeof obj.postal_code === "string" ? obj.postal_code : undefined,
     };
   }
 
@@ -185,6 +190,7 @@ const AccountClientForm = ({
       domicile_city: domicile.city || "",
       domicile_district: domicile.district || "",
       domicile_address: domicile.address || "",
+      domicile_postal_code: domicile.postal_code || "",
     },
   });
 
@@ -207,6 +213,7 @@ const AccountClientForm = ({
           city: data.domicile_city?.trim() || "",
           district: data.domicile_district?.trim() || "",
           address: data.domicile_address?.trim() || "",
+          postal_code: data.domicile_postal_code?.trim() || "",
         },
       });
     } else {
@@ -224,6 +231,7 @@ const AccountClientForm = ({
             city: data.domicile_city?.trim() || "",
             district: data.domicile_district?.trim() || "",
             address: data.domicile_address?.trim() || "",
+            postal_code: data.domicile_postal_code?.trim() || "",
           },
         },
         { id: account.id }
@@ -514,23 +522,23 @@ const AccountClientForm = ({
               />
             </div>
             {/* Normal String */}
-            <FormField
-              control={form.control}
-              name="domicile_city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-primary font-semibold!">
-                    {locale === "id" ? "Kota" : "City"}
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} className="h-12" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            <div className="lg:grid grid-cols-2 flex flex-col gap-5">
+            <div className="lg:grid grid-cols-2 flex flex-col items-start gap-5">
+              <FormField
+                control={form.control}
+                name="domicile_city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-primary font-semibold!">
+                      {locale === "id" ? "Provinsi/ Kota" : "Province/ City"}
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} className="h-12" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="domicile_district"
@@ -546,7 +554,21 @@ const AccountClientForm = ({
                   </FormItem>
                 )}
               />
-
+              <FormField
+                control={form.control}
+                name="domicile_postal_code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-primary font-semibold!">
+                      {locale === "id" ? "Kode Pos" : "Postal Code"}
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} type="number" className="h-12" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="domicile_address"
@@ -556,7 +578,7 @@ const AccountClientForm = ({
                       {locale === "id" ? "Alamat Lengkap" : "Full Address"}
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} className="h-12" />
+                      <Textarea {...field} className="min-h-32" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

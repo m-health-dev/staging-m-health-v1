@@ -64,13 +64,14 @@ const ChatNavHeader = ({
   sessionId,
   shareSlug,
   type = "default",
+  locale,
 }: {
+  locale: string;
   status?: string;
   sessionId?: string;
   shareSlug?: string;
   type?: "preview" | "share" | "default";
 }) => {
-  const locale = useLocale();
   const path = usePathname();
   const [openPublic, setOpenPublic] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -110,16 +111,33 @@ const ChatNavHeader = ({
       console.log({ setPublic });
 
       if (setPublic.error) {
-        toast.warning("Failed to change chat session to Open to Public", {
-          description: `${setPublic.error}`,
-        });
+        toast.warning(
+          locale === routing.defaultLocale
+            ? "Gagal mengatur sesi chat menjadi terbuka untuk umum."
+            : "Failed to set chat session to open to public.",
+          {
+            description: `${
+              locale === routing.defaultLocale
+                ? typeof setPublic.error === "string"
+                  ? setPublic.error
+                  : setPublic.error.id
+                : typeof setPublic.error === "string"
+                ? setPublic.error
+                : setPublic.error.en
+            }`,
+          }
+        );
         setLoading(false);
       } else {
         toast.success(
-          "This chat can now be viewed and modified by the public.",
+          locale === routing.defaultLocale
+            ? "Obrolan ini sekarang dapat dilihat dan dimodifikasi oleh publik."
+            : "This chat can now be viewed and modified by the public.",
           {
             description:
-              "Please share with caution. You can also set this chat back to private.",
+              locale === routing.defaultLocale
+                ? "Silahkan bagikan tautan di bawah ini dengan hati-hati."
+                : "Please share the link below with caution.",
           }
         );
         setLoading(false);
@@ -145,12 +163,29 @@ const ChatNavHeader = ({
       console.log({ setPrivate });
 
       if (setPrivate.error) {
-        toast.warning("Failed to set up private chat session.", {
-          description: `${setPrivate.error}`,
-        });
+        toast.warning(
+          locale === routing.defaultLocale
+            ? "Gagal mengatur sesi chat menjadi pribadi."
+            : "Failed to set up private chat session.",
+          {
+            description: `${
+              locale === routing.defaultLocale
+                ? typeof setPrivate.error === "string"
+                  ? setPrivate.error
+                  : setPrivate.error.id
+                : typeof setPrivate.error === "string"
+                ? setPrivate.error
+                : setPrivate.error.en
+            }`,
+          }
+        );
         setLoading(false);
       } else {
-        toast.success("This chat is now visible only to you.");
+        toast.success(
+          locale === routing.defaultLocale
+            ? "Obrolan ini sekarang hanya dapat dilihat oleh Anda."
+            : "This chat is now visible only to you."
+        );
         setOpenPublic(false);
         setInitialStatus("private");
         setLoading(false);
@@ -233,102 +268,108 @@ const ChatNavHeader = ({
                   </p>
                 </button>
               </DialogTrigger>
-              <DialogContent className="bg-white flex flex-col items-start rounded-2xl">
-                <DialogHeader>
-                  <DialogTitle>
-                    <div className="flex w-full items-center gap-3 text-muted-foreground">
-                      <Share2 className="-ml-0.5 size-5" />
-                      <p>
-                        {locale === routing.defaultLocale ? "Bagikan" : "Share"}
+              <DialogContent className="bg-white flex flex-col w-full items-start rounded-2xl">
+                <DialogHeader className="hidden" />
+                <DialogTitle className="hidden" />
+
+                <div className="flex w-full items-center gap-3 text-muted-foreground">
+                  <Share2 className="-ml-0.5 size-5" />
+                  <p>
+                    {locale === routing.defaultLocale ? "Bagikan" : "Share"}
+                  </p>
+                </div>
+                <div className="mt-5 w-full">
+                  {initialStatus === "public" && (
+                    <div className="">
+                      <p className="mb-1 font-medium text-primary">
+                        {locale === routing.defaultLocale
+                          ? "Obrolan ini sekarang dapat dilihat oleh publik."
+                          : "This chat can now be viewed by the public."}
                       </p>
-                    </div>
-                  </DialogTitle>
-                  <DialogDescription asChild>
-                    <div>
-                      {initialStatus === "public" && (
-                        <div>
-                          <p className="mb-1 font-medium text-primary">
-                            {locale === routing.defaultLocale
-                              ? "Obrolan ini sekarang dapat dilihat oleh publik."
-                              : "This chat can now be viewed by the public."}
-                          </p>
-                          <p className="text-sm! text-muted-foreground">
-                            {locale === routing.defaultLocale
-                              ? "Harap bagikan dengan hati-hati. Anda juga dapat mengatur obrolan ini kembali menjadi pribadi."
-                              : "Please share with caution. You can also set this chat back to private."}
-                          </p>
-                          <div className="flex items-center gap-2 w-full mt-4">
-                            <div className="p-4 bg-accent rounded-2xl flex w-full">
-                              <p className="text-sm! text-wrap w-full">{`https://staging.m-health.id/share/${shareLink}`}</p>
-                            </div>
-                            <button
-                              onClick={() => handleCopyName()}
-                              className="bg-accent p-4 rounded-2xl"
-                            >
-                              {copied ? <Check /> : <Copy />}
-                            </button>
-                          </div>
+
+                      <p className="text-sm text-muted-foreground">
+                        {locale === routing.defaultLocale
+                          ? "Harap bagikan dengan hati-hati. Anda juga dapat mengatur obrolan ini kembali menjadi pribadi."
+                          : "Please share with caution. You can also set this chat back to private."}
+                      </p>
+
+                      <div className="relative overflow-hidden truncate bg-accent px-4 py-2 text-muted-foreground rounded-2xl h-12 flex items-center mt-4">
+                        <div className="absolute w-2/6 h-12 bg-linear-to-l from-background via-background  to-transparent right-0 z-5" />
+                        <p className="text-base">
+                          {`https://m-health.id/share/${shareLink}`}
+                        </p>
+                        <div className="absolute flex h-12 items-center right-0 z-10">
+                          <button
+                            onClick={() => handleCopyName()}
+                            className="bg-background  w-12 h-12 rounded-xl flex justify-center items-center hover:bg-primary transition-colors hover:text-white"
+                          >
+                            {copied ? <Check /> : <Copy />}
+                          </button>
                         </div>
-                      )}
-                      <div className="flex w-full justify-end">
-                        {initialStatus === "private" ? (
-                          <div className="mt-0">
-                            <p className="mb-2 text-primary">
-                              {locale === routing.defaultLocale
-                                ? "Obrolan ini sekarang hanya dapat dilihat oleh Anda."
-                                : "This chat is now visible only to you."}
-                            </p>
-                            <p className="text-sm! text-muted-foreground mb-4">
-                              {locale === routing.defaultLocale
-                                ? "Untuk mengizinkan publik melihat obrolan ini, silahkan klik tombol dibawah ini untuk merubah obrolan menjadi dapat dilihat oleh publik."
-                                : "To allow the public to view this chat, please click the button below to change the chat visibility."}
-                            </p>
-                            <Button onClick={() => handleSetPublic()}>
-                              {loading ? (
-                                <>
-                                  <Spinner />
-                                  <p>Loading</p>
-                                </>
-                              ) : (
-                                <>
-                                  <Eye />
-                                  <p>
-                                    {locale === routing.defaultLocale
-                                      ? "Bagikan"
-                                      : "Set to Public Chat"}
-                                  </p>
-                                </>
-                              )}
-                            </Button>
-                          </div>
-                        ) : (
-                          <div className="mt-5">
-                            <Button
-                              variant={"outline"}
-                              onClick={() => handleSetPrivate()}
-                            >
-                              {loading ? (
-                                <>
-                                  <Spinner />
-                                  <p>Loading</p>
-                                </>
-                              ) : (
-                                <>
-                                  <EyeOff />
-                                  <p>
-                                    {locale === routing.defaultLocale
-                                      ? "Kembalikan ke Obrolan Pribadi"
-                                      : "Set to Private Chat"}
-                                  </p>
-                                </>
-                              )}
-                            </Button>
-                          </div>
-                        )}
                       </div>
                     </div>
-                  </DialogDescription>
-                </DialogHeader>
+                  )}
+                  <div className="flex w-full justify-end">
+                    {initialStatus === "private" ? (
+                      <div className="mt-0">
+                        <p className="mb-2 text-primary">
+                          {locale === routing.defaultLocale
+                            ? "Obrolan ini sekarang hanya dapat dilihat oleh Anda."
+                            : "This chat is now visible only to you."}
+                        </p>
+                        <p className="text-sm! text-muted-foreground mb-4">
+                          {locale === routing.defaultLocale
+                            ? "Untuk mengizinkan publik melihat obrolan ini, silahkan klik tombol dibawah ini untuk merubah obrolan menjadi dapat dilihat oleh publik."
+                            : "To allow the public to view this chat, please click the button below to change the chat visibility."}
+                        </p>
+                        <Button
+                          className="h-12"
+                          onClick={() => handleSetPublic()}
+                        >
+                          {loading ? (
+                            <>
+                              <Spinner />
+                              <p>Loading</p>
+                            </>
+                          ) : (
+                            <>
+                              <Eye />
+                              <p>
+                                {locale === routing.defaultLocale
+                                  ? "Bagikan"
+                                  : "Set to Public Chat"}
+                              </p>
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="mt-5 w-full">
+                        <Button
+                          className=" lg:h-12 h-14 inline-flex"
+                          variant={"outline"}
+                          onClick={() => handleSetPrivate()}
+                        >
+                          {loading ? (
+                            <>
+                              <Spinner />
+                              <p>Loading</p>
+                            </>
+                          ) : (
+                            <>
+                              <EyeOff />
+                              <p className="text-wrap text-start ">
+                                {locale === routing.defaultLocale
+                                  ? "Kembalikan ke Obrolan Pribadi"
+                                  : "Set to Private Chat"}
+                              </p>
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </DialogContent>
             </Dialog>
           )}
@@ -392,6 +433,16 @@ const ChatNavHeader = ({
                       </Button>
                     </Link>
                   )}
+                  <div className="bg-gray-50 rounded-4xl border border-primary/10 mt-5 p-4">
+                    <h5 className="text-primary font-bold mb-2">
+                      {locale === routing.defaultLocale
+                        ? "Preferensi"
+                        : "Preferences"}
+                    </h5>
+                    <div className="z-9999">
+                      <LanguageSwitcher />
+                    </div>
+                  </div>
                   {NavigationLinks.map((link, i) => (
                     <Link
                       key={link.path}
@@ -409,17 +460,6 @@ const ChatNavHeader = ({
                       </h5>
                     </Link>
                   ))}
-
-                  <div className="bg-gray-50 rounded-2xl border border-primary/10 mt-5 p-4">
-                    <h5 className="text-primary font-bold mb-2">
-                      {locale === routing.defaultLocale
-                        ? "Preferensi"
-                        : "Preferences"}
-                    </h5>
-                    <div className="z-9999">
-                      <LanguageSwitcher />
-                    </div>
-                  </div>
                 </div>
               </SheetContent>
             </Sheet>

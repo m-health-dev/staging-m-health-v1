@@ -52,8 +52,8 @@ const data = {
   ],
   schedules: [
     {
-      name: "Booking Data",
-      url: "/dashboard/booking",
+      name: "Consult Schedules",
+      url: "/dashboard/consult/schedule",
       icon: ClipboardClock,
     },
   ],

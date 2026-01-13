@@ -47,7 +47,7 @@ export default function LocalDateTime({
     formattedDate = dayjs(date)
       .tz("UTC")
       .locale("en")
-      .format(specificFormat || "dddd,DD MMMM YYYY - HH:mm UTC");
+      .format(specificFormat || "dddd, DD MMMM YYYY - HH:mm UTC");
   }
 
   return <span suppressHydrationWarning>{formattedDate}</span>;

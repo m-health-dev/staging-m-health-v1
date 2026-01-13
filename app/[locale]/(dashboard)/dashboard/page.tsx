@@ -35,17 +35,21 @@ const DashboardPage = async () => {
         <div className="flex items-center gap-5">
           {role === "admin" && (
             <Link href={"/std"}>
-              <Button variant={"outline"} className="rounded-2xl">
+              <Button variant={"outline"} className="rounded-full h-12">
                 Studio
               </Button>
             </Link>
           )}
           <Link href={"/sign-out"}>
-            <Button variant={"destructive"} className="rounded-2xl">
+            <Button variant={"destructive"} className="rounded-full h-12">
               Sign Out
             </Button>
           </Link>
         </div>
+      </div>
+
+      <div className="my-10">
+        <UnderConstruction element />
       </div>
 
       <div className="bg-white p-4 border rounded-2xl mt-10">
@@ -53,17 +57,6 @@ const DashboardPage = async () => {
         <pre className="text-wrap wrap-anywhere text-sm!">
           {JSON.stringify(accessToken, null, 2)}
         </pre>
-      </div>
-
-      <div className="bg-white p-4 border rounded-2xl mt-10">
-        <p className="text-sm! text-primary mb-1">Your User Data</p>
-        <pre className="text-wrap wrap-anywhere text-sm!">
-          {JSON.stringify(userData, null, 2)}
-        </pre>
-      </div>
-
-      <div className="my-10">
-        <UnderConstruction element />
       </div>
 
       {/* <pre className="text-wrap wrap-anywhere">

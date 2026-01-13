@@ -40,10 +40,16 @@ const accountFormSchema = z.object({
   email: z.email("Invalid email address"),
   phone_number: z.string().min(10, "Phone number must be at least 10 digits"),
   fullname: z.string().min(2, "Full name must be at least 2 characters"),
-  domicile_city: z.string().optional(),
-  domicile_district: z.string().optional(),
-  domicile_address: z.string().optional(),
-  domicile_postal_code: z.string().optional(),
+  domicile_city: z
+    .string()
+    .min(3, "Province/ City must be at least 3 characters"),
+  domicile_district: z
+    .string()
+    .min(3, "District must be at least 3 characters"),
+  domicile_address: z.string().min(3, "Address must be at least 3 characters"),
+  domicile_postal_code: z
+    .string()
+    .min(3, "Postal code must be at least 3 characters"),
 });
 
 function parseDomicile(raw: unknown): {

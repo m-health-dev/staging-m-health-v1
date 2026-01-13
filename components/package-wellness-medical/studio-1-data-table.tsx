@@ -66,6 +66,7 @@ interface DataTableProps<TData, TValue> {
     | "authors"
     | "hero"
     | "legal"
+    | "consult-schedule"
     | "default";
   deleteAction?: (id: string) => Promise<{ error?: string }>;
 }
@@ -187,6 +188,8 @@ export function Studio1DataTable<TData, TValue>({
                           ? "id_category"
                           : type === "hero"
                           ? "title"
+                          : type === "consult-schedule"
+                          ? "fullname"
                           : "id_title"
                       }`
                     )
@@ -204,6 +207,8 @@ export function Studio1DataTable<TData, TValue>({
                           ? "id_category"
                           : type === "hero"
                           ? "title"
+                          : type === "consult-schedule"
+                          ? "fullname"
                           : "id_title"
                       }`
                     )
@@ -434,7 +439,8 @@ export function Studio1DataTable<TData, TValue>({
                             type !== "users" &&
                             type !== "authors" &&
                             type !== "article-category" &&
-                            type !== "hero" && (
+                            type !== "hero" &&
+                            type !== "consult-schedule" && (
                               <p className="text-muted-foreground text-sm! mt-2">
                                 {row.getValue("en_title")}
                               </p>
@@ -451,6 +457,8 @@ export function Studio1DataTable<TData, TValue>({
                                   ? "id_category"
                                   : type === "hero"
                                   ? "title"
+                                  : type === "consult-schedule"
+                                  ? "fullname"
                                   : "id_title"
                               }`
                             )}
@@ -500,7 +508,8 @@ export function Studio1DataTable<TData, TValue>({
                         {type !== "users" &&
                           type !== "authors" &&
                           type !== "article-category" &&
-                          type !== "hero" && (
+                          type !== "hero" &&
+                          type !== "consult-schedule" && (
                             <div className="flex justify-end mt-2 absolute bottom-4 right-4">
                               <StatusBadge status={row.getValue("status")} />
                             </div>

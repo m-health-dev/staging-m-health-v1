@@ -10,6 +10,7 @@ import AvatarAuthor from "../utility/AvatarAuthor";
 import { Skeleton } from "../ui/skeleton";
 import { Spinner } from "../ui/spinner";
 import { cn } from "@/lib/utils";
+import { stripHtml } from "@/helper/removeHTMLTag";
 
 const ArticleCard = ({
   n,
@@ -85,13 +86,11 @@ const ArticleCard = ({
           <h5 className="capitalize text-primary group-hover:text-white transition-all duration-300 font-bold line-clamp-3">
             {locale === routing.defaultLocale ? n.id_title : n.en_title}
           </h5>
-          <div
-            className="line-clamp-2 text-muted-foreground group-hover:text-white/50 transition-all duration-300 my-2"
-            dangerouslySetInnerHTML={{
-              __html:
-                locale === routing.defaultLocale ? n.id_content : n.en_content,
-            }}
-          />
+          <div className="line-clamp-2 text-muted-foreground group-hover:text-white/50 transition-all duration-300 my-2 font-sans">
+            {locale === routing.defaultLocale
+              ? stripHtml(n.id_content)
+              : stripHtml(n.en_content)}
+          </div>
 
           <div className="inline-flex gap-2 items-center mt-2">
             <AvatarAuthor author={n.author[0]} locale={locale} asCard />

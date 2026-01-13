@@ -25,6 +25,7 @@ import { routing } from "@/i18n/routing";
 import { deleteMedicalEquipment } from "@/lib/medical-equipment/delete-medical-equipment";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { deletePackage } from "@/lib/packages/delete-packages";
+import { MedicalEquipmentType } from "@/types/medical-equipment.types";
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Avatar from "boring-avatars";
@@ -42,7 +43,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export const columns: ColumnDef<VendorType>[] = [
+export const columns: ColumnDef<MedicalEquipmentType>[] = [
   //   {
   //     id: "number",
   //     cell: ({ row }) => {

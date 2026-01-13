@@ -3,7 +3,9 @@
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
+import { da } from "date-fns/locale";
 import { success } from "zod";
+import { meta } from "zod/v4/core";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -114,148 +116,141 @@ export async function getConsultationPrice() {
   }
 }
 
-// export async function getAllArticles(page: number = 1, per_page: number = 10) {
-//   try {
-//     const res = await fetch(
-//       `${apiBaseUrl}/api/v1/articles?page=${page}&per_page=${per_page}`,
-//       {
-//         method: "GET",
-//         headers: {
-//           "X-API-Key": apiSecretKey,
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
+export async function getMyConsultations(
+  page: number = 1,
+  per_page: number = 10
+) {
+  try {
+    const accessToken = await getAccessToken();
+    const res = await fetch(
+      `${apiBaseUrl}/api/v1/consultations/my?page=${page}&per_page=${per_page}`,
+      {
+        method: "GET",
+        headers: {
+          "X-API-Key": apiSecretKey,
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-//     const json = await res.json();
+    const json = await res.json();
 
-//     if (res.status !== 200) {
-//       return {
-//         success: false,
-//         error: `Failed to receive articles data. Cause : ${json.message}`,
-//       };
-//     }
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: [],
+        meta: null,
+        links: null,
+        error: `Failed to receive my consultation data. Cause : ${json.message}`,
+      };
+    }
 
-//     // console.log(json.links);
-//     return {
-//       data: json.data,
-//       links: json.links,
-//       meta: json.meta,
-//       success: true,
-//     };
-//   } catch (error) {
-//     console.error("Receive articles/read Error:", error);
-//     return {
-//       success: false,
-//       message: "Terjadi kesalahan saat terhubung ke server.",
-//     };
-//   }
-// }
+    // console.log({ json });
+    return {
+      data: json.data,
+      meta: json.meta,
+      links: json.links,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive my consultation data Error:", error);
+    return {
+      success: false,
+      data: [],
+      meta: null,
+      links: null,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
 
-// export async function getAllPublicArticles(
-//   page: number = 1,
-//   per_page: number = 10
-// ) {
-//   try {
-//     const res = await fetch(
-//       `${apiBaseUrl}/api/v1/articles?status=published&page=${page}&per_page=${per_page}`,
-//       {
-//         next: { revalidate: 60 },
-//         method: "GET",
-//         headers: {
-//           "X-API-Key": apiSecretKey,
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
+export async function getMyConsultationsByID(id: string) {
+  try {
+    const accessToken = await getAccessToken();
+    const res = await fetch(`${apiBaseUrl}/api/v1/consultations/${id}`, {
+      method: "GET",
+      headers: {
+        "X-API-Key": apiSecretKey,
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-//     const json = await res.json();
+    const json = await res.json();
 
-//     if (res.status !== 200) {
-//       return {
-//         success: false,
-//         error: `Failed to receive articles/read data. Cause : ${json.message}`,
-//       };
-//     }
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: [],
+        error: `Failed to receive my consultation by id data. Cause : ${json.message}`,
+      };
+    }
 
-//     // console.log(json.links);
-//     return {
-//       data: json.data,
-//       links: json.links,
-//       meta: json.meta,
-//       total: json.meta.total,
-//       success: true,
-//     };
-//   } catch (error) {
-//     console.error("Receive articles/read Error:", error);
-//     return {
-//       success: false,
-//       message: "Terjadi kesalahan saat terhubung ke server.",
-//     };
-//   }
-// }
+    // console.log({ json });
+    return {
+      data: json.data,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive my consultation by id data Error:", error);
+    return {
+      success: false,
+      data: [],
+      meta: null,
+      links: null,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
 
-// export async function getArticlesByID(id: string) {
-//   try {
-//     const res = await fetch(`${apiBaseUrl}/api/v1/articles/${id}`, {
-//       method: "GET",
-//       headers: {
-//         "X-API-Key": apiSecretKey,
-//         "Content-Type": "application/json",
-//       },
-//     });
+export async function getAllConsultations(
+  page: number = 1,
+  per_page: number = 10
+) {
+  try {
+    const accessToken = await getAccessToken();
+    const res = await fetch(
+      `${apiBaseUrl}/api/v1/consultations?page=${page}&per_page=${per_page}`,
+      {
+        method: "GET",
+        headers: {
+          "X-API-Key": apiSecretKey,
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-//     const json = await res.json();
-//     // console.log({ json });
+    const json = await res.json();
 
-//     if (res.status !== 200) {
-//       return {
-//         success: false,
-//         error: `Failed to receive articles by ID ${id}. Cause : ${res.status} - ${json.message}`,
-//       };
-//     }
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: [],
+        meta: null,
+        links: null,
+        total: 0,
+        error: `Failed to receive All consultation data. Cause : ${json.message}`,
+      };
+    }
 
-//     return {
-//       data: json.data,
-//       success: true,
-//     };
-//   } catch (error) {
-//     console.error(`Receive articles/id:${id} Error:`, error);
-//     return {
-//       success: false,
-//       message: "Terjadi kesalahan saat terhubung ke server.",
-//     };
-//   }
-// }
-
-// export async function getArticlesBySlug(slug: string) {
-//   try {
-//     const res = await fetch(`${apiBaseUrl}/api/v1/articles/${slug}`, {
-//       method: "GET",
-//       headers: {
-//         "X-API-Key": apiSecretKey,
-//         "Content-Type": "application/json",
-//       },
-//     });
-
-//     const data = await res.json();
-
-//     if (res.status !== 200) {
-//       return {
-//         success: false,
-//         error: `Failed to receive articles by slug ${slug}. Cause : ${res.status} - ${data.message}`,
-//       };
-//     }
-
-//     return {
-//       data,
-//       success: true,
-//     };
-//   } catch (error) {
-//     console.error(`Receive articles/slug:${slug} Error:`, error);
-//     return {
-//       success: false,
-//       message: "Terjadi kesalahan saat terhubung ke server.",
-//     };
-//   }
-// }
+    // console.log({ json });
+    return {
+      data: json.data,
+      meta: json.meta,
+      links: json.links,
+      total: json.meta?.total || 0,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive All consultation data Error:", error);
+    return {
+      success: false,
+      data: [],
+      meta: null,
+      links: null,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}

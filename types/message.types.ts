@@ -14,4 +14,5 @@ export type Message = {
 
   session_id?: string;
   urgent?: boolean;
+  isStreaming?: boolean;
 };

@@ -37,7 +37,7 @@ export async function generateMetadata(
   const locale = await getLocale();
 
   const { data, all } = await getChatSession(slug);
-  console.log({ data, all });
+  // console.log({ data, all });
 
   return {
     title: `${all.data.title}`,
@@ -73,15 +73,11 @@ export default async function SessionPage({ params }: Props) {
 
   const t = await getTranslations("utility");
 
-  const [packagesRes, medical, wellness, sessionChat, shareSlug, supabase] =
-    await Promise.all([
-      getAllPackages(1, 3),
-      getAllMedical(1, 3),
-      getAllWellness(1, 3),
-      getChatSession(sessionID),
-      getShareSlug(sessionID),
-      createClient(),
-    ]);
+  const [sessionChat, shareSlug, supabase] = await Promise.all([
+    getChatSession(sessionID),
+    getShareSlug(sessionID),
+    createClient(),
+  ]);
 
   const { data: user, error } = await supabase.auth.getUser();
 
@@ -101,9 +97,9 @@ export default async function SessionPage({ params }: Props) {
   }
 
   const historyData = checkUser
-    ? await getChatHistoryByUserID(userID!, 1, 10)
+    ? await getChatHistoryByUserID(userID!, 1, 50)
     : publicID
-    ? await getChatHistory(publicID, 1, 10)
+    ? await getChatHistory(publicID, 1, 50)
     : { data: [], total: 0 };
   // console.log("History: ", historyData);
   const {
@@ -123,11 +119,11 @@ export default async function SessionPage({ params }: Props) {
 
   // console.log("Session Chat Data: ", sessionChat);
 
-  console.log("Is Same User: ", userID === sessionChat.all.data.user_id);
-  console.log(
-    "Is Same Public ID: ",
-    publicID === sessionChat.all.data.public_id
-  );
+  // console.log("Is Same User: ", userID === sessionChat.all.data.user_id);
+  // console.log(
+  //   "Is Same Public ID: ",
+  //   publicID === sessionChat.all.data.public_id
+  // );
 
   const isPublicMatch =
     Boolean(publicID) && publicID === sessionChat.all.data.public_id;
@@ -141,22 +137,19 @@ export default async function SessionPage({ params }: Props) {
 
   const urgent = sessionChat.urgent;
 
-  console.log({
-    checkUser,
-    session,
-    userID,
-    userData,
-    publicID,
-    historyData,
-    urgent,
-  });
+  // console.log({
+  //   checkUser,
+  //   session,
+  //   userID,
+  //   userData,
+  //   publicID,
+  //   historyData,
+  //   urgent,
+  // });
 
   return (
     <>
       <ChatContent
-        packages={packagesRes.data}
-        medical={medical.data}
-        wellness={wellness.data}
         initialHistory={historyData.data.data || []}
         sessionID={sessionID}
         session={sessionChat.data}

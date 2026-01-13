@@ -2,17 +2,19 @@
 
 import type React from "react";
 
-import { useEffect, useRef, useState, useTransition } from "react";
-import { ArrowUp } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowUp, ChevronDown, Plus, SlidersHorizontal } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import ChatWindow from "./ChatWindow";
 import { chatGemini } from "@/lib/chatbot/geminiAPI";
 import QuickAction from "../home/QuickAction";
-import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import type { Account } from "@/types/account.types";
-import type { Message } from "@/types/message.types"; // Assuming Message is declared in message.types
+import type { Message } from "@/types/message.types";
+import { useRouter } from "next/navigation";
+import { Spinner } from "../ui/spinner";
+import { Button } from "../ui/button";
 
 const ChatStart = ({
   chat,
@@ -20,7 +22,7 @@ const ChatStart = ({
   publicID,
   sessionID,
   accounts,
-  type = "default",
+  type,
   onNewMessage, // Add callback to refresh history when new message is sent
   status,
   urgent,
@@ -37,16 +39,15 @@ const ChatStart = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const router = useRouter();
 
   const [messages, setMessages] = useState<Message[]>(chat);
   const [isLoading, setIsLoading] = useState(false);
   const [hasChat, setHasChat] = useState(chat.length > 0);
   const [text, setText] = useState("");
-  const [isPending, startTransition] = useTransition();
   const [pendingSessionId, setPendingSessionId] = useState<string | null>(null);
 
   const locale = useLocale();
+  const router = useRouter();
 
   useEffect(() => {
     setMessages(chat);
@@ -87,15 +88,27 @@ const ChatStart = ({
     setHasChat(true);
     setText("");
 
+    // Create bot message placeholder for streaming
+    const botMessageId = (Date.now() + 1).toString();
+    const botPlaceholder: Message = {
+      id: botMessageId,
+      message: "",
+      sender: "bot",
+      timestamp: new Date().toISOString(),
+      isStreaming: true,
+    };
+
+    setMessages((prev) => [...prev, botPlaceholder]);
+
     try {
       const formattedMessages = [...messages, userMsg].map((m) => ({
         sender: m.sender === "bot" ? "assistant" : "user",
         message: m.message,
-        replyTo: m.replyTo,
+        // replyTo: m.replyTo,
         urgent: m.urgent,
       }));
 
-      const data = await chatGemini({
+      const payload = {
         messages: formattedMessages,
         prompt: userMessage,
         replyTo: {
@@ -105,51 +118,125 @@ const ChatStart = ({
         public_id: publicID,
         user_id: accounts?.id,
         session_id: sessionID,
-      });
-
-      if (!session && data.session_id) {
-        setPendingSessionId(data.session_id);
-        setIsLoading(true);
-
-        startTransition(() => {
-          router.replace(`/${locale}/c/${data.session_id}`, {
-            scroll: false,
-          });
-          setIsLoading(true);
-        });
-        setIsLoading(false);
-
-        return;
-      }
-
-      // 🟢 JIKA SESSION SUDAH ADA
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        message:
-          typeof data.message === "string"
-            ? data.message
-            : data.message?.content ||
-              "Maaf, saya tidak dapat memproses pertanyaan Anda.",
-        sender: "bot",
-        timestamp: new Date().toISOString(),
-        urgent: data.urgent,
       };
 
-      setMessages((prev) => [...prev, botResponse]);
+      // Call streaming API via client-side route
+      const response = await fetch("/api/chat/stream", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-      onNewMessage?.();
+      if (!response.ok || !response.body) {
+        throw new Error("Streaming response failed");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullMessage = "";
+      let sessionId = "";
+      let isUrgent = false;
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || ""; // Keep incomplete line in buffer
+
+        let currentEvent = "";
+
+        for (const line of lines) {
+          if (line.startsWith("event: ")) {
+            currentEvent = line.slice(7).trim();
+          } else if (line.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(line.slice(6));
+
+              if (currentEvent === "connected") {
+                // Connected event - do nothing or log
+                console.log("Stream connected:", data);
+              } else if (currentEvent === "complete") {
+                // Complete event - extract metadata
+                sessionId = data.session_id;
+                isUrgent = data.urgent;
+                fullMessage = data.reply;
+
+                // Update message dengan final text
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === botMessageId
+                      ? {
+                          ...msg,
+                          message: fullMessage,
+                          urgent: isUrgent,
+                          isStreaming: false,
+                        }
+                      : msg
+                  )
+                );
+
+                // Update URL when session ID is received
+                if (!session && sessionId) {
+                  const newUrl = `/${locale}/c/${sessionId}`;
+                  setPendingSessionId(sessionId);
+
+                  // Use window.history.replaceState for silent update
+                  window.history.replaceState(
+                    { ...window.history.state, as: newUrl, url: newUrl },
+                    "",
+                    newUrl
+                  );
+
+                  // Dispatch custom event to notify URL change
+                  window.dispatchEvent(new Event("urlchange"));
+                }
+
+                // Trigger history refresh immediately after message complete
+                onNewMessage?.();
+              } else if (data.text) {
+                // Streaming token event
+                fullMessage = data.text;
+                // Update message progressively
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === botMessageId
+                      ? { ...msg, message: fullMessage }
+                      : msg
+                  )
+                );
+              }
+
+              currentEvent = ""; // Reset event
+            } catch (e) {
+              console.error("Error parsing SSE:", e);
+            }
+          }
+        }
+      }
+
+      // Trigger history refresh for new session after streaming complete
+      if (!session && sessionId) {
+        setTimeout(() => onNewMessage?.(), 500);
+      }
     } catch (error) {
       console.error("Error sending message:", error);
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          message: "Maaf, terjadi kesalahan. Silakan coba lagi.",
-          sender: "bot",
-          timestamp: new Date().toISOString(),
-        },
-      ]);
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === botMessageId
+            ? {
+                ...msg,
+                message: "Maaf, terjadi kesalahan. Silakan coba lagi.",
+                isStreaming: false,
+              }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
@@ -225,9 +312,9 @@ const ChatStart = ({
 
   return (
     <div className="justify-center items-center lg:max-h-[calc(100vh-15vh)] lg:min-h-[calc(100vh-15vh)] max-h-[calc(100vh-25vh)] min-h-[calc(100vh-25vh)] lg:mt-0 mt-[8vh] flex px-4">
-      <div className="flex flex-col lg:items-center max-w-full">
-        <div className="start_conversation mb-10 lg:text-center text-start">
-          <h2 className="text-primary font-extrabold mb-2">
+      <div className="flex flex-col lg:items-center items-start max-w-2xl">
+        <div className="start_conversation lg:mb-7 mb-5 lg:text-center text-start">
+          <h3 className="text-primary font-extrabold mb-2">
             {accounts?.fullname
               ? locale === routing.defaultLocale
                 ? `Halo, ${accounts.fullname.split(" ")[0]}! 👋`
@@ -235,57 +322,60 @@ const ChatStart = ({
               : locale === routing.defaultLocale
               ? `Halo! Senang bertemu denganmu!`
               : `Hi! Nice to meet you!`}
-          </h2>
-          <h3 className="text-primary">
+          </h3>
+          <h4 className="text-primary">
             {locale === routing.defaultLocale
               ? "Tanyakan apapun tentang kesehatanmu."
               : "Ask me anything about your health."}
-          </h3>
+          </h4>
         </div>
 
-        <div className="mb-2">
-          <QuickAction />
-        </div>
-
-        <div className="input_conversation lg:w-3xl w-full lg:mt-0 mt-10">
-          <div className="flex w-full justify-center">
-            <div
-              className={`flex w-full max-w-3xl bg-white border border-border shadow-sm transform-content ${
-                isExpanded
-                  ? "flex-col rounded-2xl px-2 pt-2 pb-2 items-end"
-                  : "lg:flex-row flex-col lg:rounded-full px-2 py-2 lg:max-h-16 lg:min-h-16 min-h-32 rounded-2xl lg:items-center items-end"
-              }`}
-            >
+        <div className="input_conversation w-full">
+          <div className="flex w-full">
+            <div className="w-full rounded-3xl border border-primary bg-white shadow px-2 pt-2 pb-1">
               <Textarea
                 ref={textareaRef}
                 placeholder={
                   locale === routing.defaultLocale
-                    ? "Ceritakan kesehatanmu disini..."
-                    : "Describe your health here..."
+                    ? "Ketik pertanyaanmu di sini..."
+                    : "Type your question here..."
                 }
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={isLoading}
-                className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed h-auto ${
-                  isExpanded
-                    ? "max-h-52 py-2 text-base"
-                    : "min-h-12 text-base py-3"
+                className={`min-h-[56px] resize-none border-0 bg-transparent shadow-none px-4 py-3 text-gray-800 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:border-0 rounded-2xl hide-scroll transition-all duration-200 leading-relaxed ${
+                  isExpanded ? "max-h-52" : "max-h-40"
                 }`}
               />
-              <button
-                onClick={() => handleSendMessage(text)}
-                disabled={isLoading || !text.trim()}
-                className={`ml-2 mr-1 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
-                  isLoading || !text.trim()
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-primary text-white hover:bg-primary/90"
-                } ${isExpanded ? "w-11 h-11" : "w-11 h-11"}`}
-              >
-                <ArrowUp className="size-5" />
-              </button>
+
+              <div className="flex items-center justify-end px-1 pb-1">
+                <div className="flex items-center gap-1">
+                  <Button
+                    onClick={() => handleSendMessage(text)}
+                    disabled={isLoading || !text.trim()}
+                    size="icon"
+                    className={`rounded-full ${
+                      isLoading || !text.trim()
+                        ? "bg-background text-primary"
+                        : "bg-primary text-white hover:bg-primary/90"
+                    }`}
+                    aria-label="Send message"
+                  >
+                    {isLoading ? (
+                      <Spinner className="size-5" />
+                    ) : (
+                      <ArrowUp className="size-5" />
+                    )}
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div className="lg:mt-7 mt-5 w-full">
+          <QuickAction />
         </div>
       </div>
     </div>

@@ -22,11 +22,11 @@ const PopularMedical = async () => {
   return (
     <div className="bg-health pt-[5vh] pb-[30vh] -mt-[20vh] lg:rounded-t-[5rem] rounded-t-4xl">
       <ContainerWrap>
-        <h1 className="font-bold text-white pt-[2vh] pb-[2vh]">
+        <h2 className="font-bold text-white pt-[2vh] pb-[2vh]">
           {locale === routing.defaultLocale
             ? "Paket Medis"
             : "Medical Packages"}
-        </h1>
+        </h2>
       </ContainerWrap>
       <Suspense fallback={<SkeletonComponent />}>
         <Content />

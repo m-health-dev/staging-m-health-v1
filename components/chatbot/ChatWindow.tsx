@@ -1,9 +1,19 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
-import { ArrowUp, Eye, EyeClosed, ScanEye, Stethoscope } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronDown,
+  Eye,
+  EyeClosed,
+  Plus,
+  ScanEye,
+  SlidersHorizontal,
+  Stethoscope,
+} from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Spinner } from "../ui/spinner";
 import { useLocale } from "next-intl";
@@ -26,7 +36,6 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import SignInClient from "@/app/[locale]/(auth)/sign-in/SignIn-Client";
-import { set } from "zod";
 
 export interface Message {
   id: string;
@@ -38,6 +47,7 @@ export interface Message {
     sender?: string | null;
   };
   urgent?: boolean;
+  isStreaming?: boolean;
 }
 
 interface ChatWindowProps {
@@ -68,23 +78,17 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const [replyMessage, setReplyMessage] = useState<string | null>(null);
   const [dialogSignIn, setDialogSignIn] = useState(false);
   const [hasSignedIn, setHasSignedIn] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   // const [isExpanded, setIsExpanded] = useState(false);
   // const [isRouting, setIsRouting] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const path = usePathname();
-
-  const isRouting = useMemo(() => {
-    if (!pendingSessionId) return false;
-
-    const expectedPath = `/${locale}/c/${pendingSessionId}`;
-    return path !== expectedPath;
-  }, [pendingSessionId, path, locale]);
-
-  const showLoading = isLoading || isRouting;
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -121,16 +125,47 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     }
   }, [accounts, hasSignedIn, messages.length, type, isNotRedirect]);
 
+  // Scroll to start of new message - hanya saat message baru, bukan saat content update
   useEffect(() => {
+    if (messages.length === 0) return;
+
     const timer = setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
+      if (lastMessageRef.current) {
+        // Scroll ke start of message, tetap di posisi awal
+        lastMessageRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
     }, 100);
 
     return () => clearTimeout(timer);
+  }, [messages.length]); // Hanya trigger saat jumlah message berubah, bukan content
+
+  // Track scroll position for scroll to bottom button
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!chatContainerRef.current) return;
+
+      const { scrollTop, scrollHeight, clientHeight } =
+        document.documentElement;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 500;
+
+      setShowScrollButton(!isNearBottom && messages.length > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Check initial state
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [messages.length]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  };
 
   const handleSend = () => {
     if (inputValue.trim() && !isLoading) {
@@ -198,7 +233,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const isShowInput = type === "preview" || type === "share";
 
   return (
-    <div className="relative flex flex-col min-h-screen">
+    <div className="relative flex flex-col min-h-screen" ref={chatContainerRef}>
+      {/* Scroll to Bottom Button */}
+
       <Dialog open={dialogSignIn}>
         <DialogContent
           className="bg-white rounded-2xl px-5 lg:min-w-4xl lg:max-w-4xl max-w-sm"
@@ -294,38 +331,45 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     </div>
                   </div>
                 )}
-                {messages.map((msg) => (
-                  <ChatMessage
+                {messages.map((msg, index) => (
+                  <div
                     key={msg.id}
-                    id={msg.id}
-                    message={msg.message}
-                    sender={msg.sender}
-                    timestamp={msg.timestamp}
-                    onReply={handleReply}
-                    replyTo={msg.replyTo}
-                    sessionId={sessionId}
-                    urgent={msg.urgent}
-                  />
-                ))}
-                {showLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-white rounded-2xl rounded-bl-none px-4 py-3">
-                      <div className="flex gap-1">
-                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce" />
-                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:0.6s]" />
-                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:0.9s]" />
-                      </div>
-                    </div>
+                    ref={index === messages.length - 1 ? lastMessageRef : null}
+                  >
+                    <ChatMessage
+                      id={msg.id}
+                      message={msg.message}
+                      sender={msg.sender}
+                      timestamp={msg.timestamp}
+                      onReply={handleReply}
+                      replyTo={msg.replyTo}
+                      sessionId={sessionId}
+                      urgent={msg.urgent}
+                      isStreaming={msg.isStreaming}
+                    />
                   </div>
-                )}
+                ))}
                 <div ref={messagesEndRef} className="h-[50vh]" />
               </div>
             )}
           </div>
         </div>
       </div>
-
-      <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm z-20">
+      <div className="mx-auto sticky bottom-44 ">
+        <button
+          onClick={scrollToBottom}
+          className={cn(
+            "z-30 bg-white text-primary rounded-full p-2 transition-all duration-500  flex items-center gap-2 border border-primary -translate-y-20",
+            showScrollButton
+              ? "opacity-100 animate-in fade-in translate-y-0"
+              : "opacity-0 animate-in fade-in translate-y-20"
+          )}
+          aria-label="Scroll to bottom"
+        >
+          <ArrowDown className="size-5" />
+        </button>
+      </div>
+      <div className="sticky bottom-0 bg-linear-to-t from-background via-background to-background/20 z-20">
         <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
           <div className="py-3">
             {!isShowInput && (
@@ -352,13 +396,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                 )}
 
                 <div className="flex w-full">
-                  <div
-                    className={`flex w-full bg-white border border-border shadow-sm transition-all duration-200 ${
-                      isExpanded
-                        ? "flex-col rounded-2xl px-2 pt-2 pb-2 items-end"
-                        : "flex-row rounded-2xl pl-2 pr-3 py-2 max-h-16 items-center"
-                    }`}
-                  >
+                  <div className="w-full rounded-3xl border border-primary bg-white shadow px-2 pt-2 pb-1">
                     <Textarea
                       ref={textareaRef}
                       placeholder={
@@ -370,27 +408,32 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyDown={handleKeyDown}
                       disabled={isLoading}
-                      className={`flex-1 resize-none border-0 shadow-none rounded-none wrap-anywhere bg-transparent text-primary placeholder:text-primary/50 focus-visible:ring-0 focus:outline-none hide-scroll transition-all duration-300 leading-relaxed h-auto ${
-                        isExpanded
-                          ? "max-h-52 py-2 text-base"
-                          : "min-h-12 text-base py-3"
+                      className={`min-h-[56px] resize-none border-0 bg-transparent shadow-none px-4 py-3 text-gray-800 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:border-0 rounded-2xl hide-scroll transition-all duration-200 leading-relaxed ${
+                        isExpanded ? "max-h-52" : "max-h-40"
                       }`}
                     />
-                    <button
-                      onClick={handleSend}
-                      disabled={showLoading || !inputValue.trim()}
-                      className={`ml-2 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
-                        showLoading || !inputValue.trim()
-                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : "bg-primary text-white hover:bg-primary/90 active:scale-95"
-                      } w-11 h-11`}
-                    >
-                      {showLoading ? (
-                        <Spinner className="size-5" />
-                      ) : (
-                        <ArrowUp className="size-5" />
-                      )}
-                    </button>
+
+                    <div className="flex items-center justify-end px-1 pb-1">
+                      <div className="flex items-center gap-1">
+                        <Button
+                          onClick={handleSend}
+                          disabled={isLoading || !inputValue.trim()}
+                          size="icon"
+                          className={`rounded-full ${
+                            isLoading || !inputValue.trim()
+                              ? "bg-background text-primary"
+                              : "bg-primary text-white hover:bg-primary/90"
+                          }`}
+                          aria-label="Send message"
+                        >
+                          {isLoading ? (
+                            <Spinner className="size-5" />
+                          ) : (
+                            <ArrowUp className="size-5" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </>

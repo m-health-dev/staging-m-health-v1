@@ -8,10 +8,19 @@ import { getAllActiveHero } from "@/lib/hero/get-hero";
 const Jumbotron = async () => {
   const { data } = await getAllActiveHero();
   return (
-    <ContainerWrap size="xl">
-      <JumbotronSlide data={data} />
-      <QuickAction includeSearchBar />
-    </ContainerWrap>
+    <>
+      <ContainerWrap size="xl">
+        <JumbotronSlide data={data} />
+        <div className="flex w-full justify-center">
+          <div className="max-w-3xl md:block hidden">
+            <QuickAction includeSearchBar />
+          </div>
+          <div className="w-full md:hidden block">
+            <QuickAction forPhone includeSearchBar />
+          </div>
+        </div>
+      </ContainerWrap>
+    </>
   );
 };
 

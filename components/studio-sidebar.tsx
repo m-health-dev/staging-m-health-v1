@@ -52,6 +52,7 @@ import {
   Package,
   PartyPopper,
   ShieldCheck,
+  Stethoscope,
   UserCog,
   UserPen,
   Users,
@@ -178,6 +179,11 @@ const data = {
       url: "/studio/hotel",
       icon: Hotel,
     },
+    {
+      name: "Doctor",
+      url: "/studio/doctor",
+      icon: Stethoscope,
+    },
   ],
   chatbot: [
     {
@@ -205,8 +211,8 @@ const data = {
   ],
   schedules: [
     {
-      name: "Booking Data",
-      url: "/studio/booking",
+      name: "Consultation Schedules",
+      url: "/studio/consult/schedule",
       icon: ClipboardClock,
     },
   ],

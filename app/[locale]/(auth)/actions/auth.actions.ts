@@ -302,7 +302,7 @@ export const signInAction = async (data: {
 
 export const handleSendMagicLinkAction = async (data: { email: string }) => {
   const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+  const origin = process.env.NEXT_PUBLIC_BASE_URL! as string;
 
   const validatedData = magicSchema.safeParse(data);
 
@@ -460,7 +460,7 @@ export const handleSendMagicLinkAction = async (data: { email: string }) => {
 
 export const signWithGoogle = async (redirectTo?: string) => {
   const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+  const origin = process.env.NEXT_PUBLIC_BASE_URL! as string;
 
   // const redirectTo = (formData.get("redirect") as string) || "/nusa";
 
@@ -516,7 +516,7 @@ export const signWithGoogle = async (redirectTo?: string) => {
 export const forgotPasswordAction = async (data: { email: string }) => {
   const supabase = await createClient();
   const validatedData = ForgotPassSchema.safeParse(data);
-  const origin = (await headers()).get("origin");
+  const origin = process.env.NEXT_PUBLIC_BASE_URL! as string;
   const locale = await getLocale();
   // const callbackUrl = formData.get("callbackUrl")?.toString();
 

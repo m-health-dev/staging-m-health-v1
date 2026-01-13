@@ -12,6 +12,9 @@ import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import dynamic from "next/dynamic";
 import { Skeleton } from "../ui/skeleton";
+import { Spinner } from "../ui/spinner";
+import { cn } from "@/lib/utils";
+import LoadingChat from "../utility/loading-chat";
 
 const ReactMarkdown = dynamic(() => import("react-markdown"), {
   ssr: false,
@@ -29,6 +32,7 @@ interface ChatMessageProps {
   };
   sessionId?: string;
   urgent?: boolean;
+  isStreaming?: boolean;
 }
 
 function flattenListChildren(children: ReactNode): ReactNode {
@@ -51,6 +55,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   replyTo,
   sessionId,
   urgent,
+  isStreaming = false,
 }) => {
   const isUser = sender === "user";
   const [copied, setCopied] = useState(false);
@@ -135,10 +140,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     >
       <div>
         <div
-          className={`relative rounded-2xl transition-all text-wrap wrap-anywhere ${
+          className={`relative rounded-2xl transition-all duration-300 text-wrap wrap-anywhere ${
             isUser
-              ? "bg-primary text-primary-foreground rounded-br-none max-w-xs lg:max-w-md px-3 pt-3 pb-1"
-              : "bg-white text-foreground rounded-bl-none max-w-full px-3 pt-3 pb-1"
+              ? "bg-primary text-primary-foreground rounded-br-none max-w-xs lg:max-w-md lg:px-5 px-3 lg:pt-5 pt-3 lg:pb-3 pb-0.5"
+              : `${
+                  message ? "bg-white" : "bg-transparent"
+                } text-foreground rounded-bl-none max-w-full lg:px-5 px-3 lg:pt-5 pt-3 lg:pb-3 pb-0.5`
           }`}
         >
           {!replyTo?.message ? (
@@ -253,6 +260,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             {cleanMessage}
           </ReactMarkdown>
 
+          {/* Streaming indicator - hanya muncul saat belum ada message */}
+          {isStreaming && !isUser && !message.trim() && (
+            <div className="mb-2">
+              <LoadingChat />
+            </div>
+          )}
+
           {!isUser && urgent && (
             <div className="mt-3 mb-5 bg-white py-10 px-3 rounded-2xl border w-full">
               <Link
@@ -291,9 +305,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           )} */}
         </div>
         <div
-          className={`flex ${
-            isUser ? "justify-end" : "justify-start"
-          } mt-2 group`}
+          className={cn(
+            `flex mt-2 group transition-all duration-500`,
+            isUser ? "justify-end" : "justify-start",
+            !isStreaming ? "opacity-100" : "opacity-0"
+          )}
         >
           <div
             className={`action_button  inline-flex gap-0.5 bg-white  px-2 py-1.5 shadow-sm ${

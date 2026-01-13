@@ -49,28 +49,38 @@ const SuccessPayment = async ({ searchParams }: Props) => {
     return notFound();
   }
 
-  if (productType === "package") {
-    dataProduct = (await getPackageByID(productId as string)).data;
-    productTypeTitle = locale === "id" ? "Paket" : "Package";
-  } else if (productType === "medical_equipment") {
-    dataProduct = (await getMedicalEquipmentByID(productId as string)).data
-      .data;
-    productTypeTitle =
-      locale === "id" ? "Peralatan Medis" : "Medical Equipment";
-  } else if (productType === "medical") {
-    dataProduct = (await getMedicalByID(productId as string)).data.data;
-    productTypeTitle = locale === "id" ? "Paket Medis" : "Medical Package";
-  } else if (productType === "wellness") {
-    dataProduct = (await getWellnessByID(productId as string)).data.data;
-    productTypeTitle = locale === "id" ? "Paket Kebugaran" : "Wellness Package";
-  } else if (productType === "consultation") {
-    dataProduct = (await getConsultationByID(productId as string)).data;
-    productTypeTitle = locale === "id" ? "Konsultasi" : "Consultation";
+  try {
+    if (productType === "package") {
+      const res = await getPackageByID(productId as string);
+      dataProduct = res?.data ?? null;
+      productTypeTitle = locale === "id" ? "Paket" : "Package";
+    } else if (productType === "medical_equipment") {
+      const res = await getMedicalEquipmentByID(productId as string);
+      dataProduct = res?.data?.data ?? null;
+      productTypeTitle =
+        locale === "id" ? "Peralatan Medis" : "Medical Equipment";
+    } else if (productType === "medical") {
+      const res = await getMedicalByID(productId as string);
+      dataProduct = res?.data?.data ?? null;
+      productTypeTitle = locale === "id" ? "Paket Medis" : "Medical Package";
+    } else if (productType === "wellness") {
+      const res = await getWellnessByID(productId as string);
+      dataProduct = res?.data?.data ?? null;
+      productTypeTitle =
+        locale === "id" ? "Paket Kebugaran" : "Wellness Package";
+    } else if (productType === "consultation") {
+      const res = await getConsultationByID(productId as string);
+      dataProduct = res?.data ?? null;
+      productTypeTitle = locale === "id" ? "Konsultasi" : "Consultation";
+    }
+  } catch (err) {
+    // API error → tetap aman tanpa 500
+    dataProduct = null;
   }
 
-  if (!dataProduct) {
-    return notFound();
-  }
+  // if (!dataProduct) {
+  //   return notFound();
+  // }
   return (
     <Wrapper>
       <TransactionStatusClient

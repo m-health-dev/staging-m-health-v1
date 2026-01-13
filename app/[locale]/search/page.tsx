@@ -80,13 +80,16 @@ const SearchPage = async ({ searchParams }: Props) => {
             {query}"
           </p>
 
-          <div className="mt-5">
-            <QuickAction
-              includeSearchBar
-              withoutQuickLinks
-              query={query}
-              target={target}
-            />
+          <div className="flex w-full justify-center">
+            <div className="mt-5 w-full">
+              <QuickAction
+                includeSearchBar
+                withoutQuickLinks
+                query={query}
+                target={target}
+                className="max-w-2xl"
+              />
+            </div>
           </div>
         </ContainerWrap>
       </div>

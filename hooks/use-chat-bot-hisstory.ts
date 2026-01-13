@@ -6,12 +6,25 @@ import useSWR from "swr";
 
 export function useChatHistory(userID?: string, initialData: any[] = []) {
   const PER_PAGE = 10;
+  const INITIAL_LOAD = 20; // Load 20 items on first load
 
-  const [page, setPage] = useState(1);
-  // const [history, setHistory] = useState(initialData);
+  const [page, setPage] = useState(2); // Start at page 2 since we load 20 initially
   const [allHistory, setAllHistory] = useState<any[]>(initialData);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
-  const key = userID ? ["chat-history", userID, page] : null;
+  // Initial load of 20 items
+  const initialKey =
+    userID && isFirstLoad ? ["chat-history-initial", userID] : null;
+  const { data: initialLoadData } = useSWR(
+    initialKey,
+    () => getChatHistoryByUserID(userID!, 1, INITIAL_LOAD),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
+
+  const key = userID && !isFirstLoad ? ["chat-history", userID, page] : null;
 
   const { data, error, isLoading } = useSWR(
     key,
@@ -22,11 +35,22 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
     }
   );
 
-  const total = data?.meta.total ?? 0;
+  const total = data?.meta.total ?? initialLoadData?.meta.total ?? 0;
   const pageData = data?.data?.data ?? [];
+  const initialPageData = initialLoadData?.data?.data ?? [];
 
+  // Handle initial load of 20 items
   useEffect(() => {
-    if (!pageData.length) return;
+    if (initialPageData.length > 0 && isFirstLoad) {
+      // Replace all with fresh 20 items (not append to initialData)
+      setAllHistory(initialPageData);
+      setIsFirstLoad(false);
+    }
+  }, [initialPageData, isFirstLoad]);
+
+  // Handle subsequent pagination loads
+  useEffect(() => {
+    if (!pageData.length || isFirstLoad) return;
 
     setAllHistory((prev) => {
       // 🔒 dedupe by id
@@ -46,18 +70,19 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
     });
   }, [pageData]);
 
-  const hasMore = page * PER_PAGE < total;
+  const hasMore = allHistory.length < total;
 
   const loadMore = () => {
-    if (!isLoading && hasMore) {
+    if (!isLoading && hasMore && !isFirstLoad) {
       setPage((prev) => prev + 1);
     }
   };
 
   const refresh = () => {
     if (!userID) return;
-    setPage(1);
+    setPage(2);
     setAllHistory([]);
+    setIsFirstLoad(true);
   };
 
   return {

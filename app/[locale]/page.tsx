@@ -1,4 +1,5 @@
 import ChatContent from "@/components/chatbot/ChatContent";
+import ChatContentSkeleton from "@/components/chatbot/ChatContentSkeleton";
 import SnowFall from "@/components/snow-fall";
 import { routing } from "@/i18n/routing";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
@@ -21,9 +22,10 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
+import { Suspense } from "react";
 
-// Use ISR with revalidation instead of force-dynamic for better performance
-export const revalidate = 60; // Revalidate every 60 seconds
+// Use ISR with longer revalidation for better performance and caching
+export const revalidate = 300; // Revalidate every 5 minutes instead of 60 seconds
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -97,58 +99,63 @@ export default async function Home() {
 
   const supabase = await createClient();
 
-  // Fetch all initial data in parallel, including cached public data
+  // Only fetch critical data for initial render
   const [
     {
       data: { session },
     },
-    { packages, medical, wellness },
     locale,
     t,
   ] = await Promise.all([
     supabase.auth.getSession(),
-    getCachedPublicData(),
     getLocale(),
     getTranslations("utility"),
   ]);
 
-  // Get user info in parallel with chat history
+  // Get user quickly without waiting for full user info
   const { data: user } = await supabase.auth.getUser();
   const checkUser = user.user;
   const userID = checkUser?.id;
 
-  // Fetch user-specific data in parallel
+  // Start fetching user data but don't wait for it
+  const userDataPromise = session?.access_token
+    ? getUserInfo(session.access_token).catch((e) => {
+        console.error("User info fetch failed:", e);
+        return null;
+      })
+    : Promise.resolve(null);
+
+  // Fetch minimal initial history for instant render (just for showing sidebar has data)
+  // useChatHistory will load full 20 items after mount
+  const historyDataPromise = checkUser
+    ? getChatHistoryByUserID(userID!, 1, 50)
+    : publicID
+    ? getChatHistory(publicID, 1, 50)
+    : Promise.resolve({ data: [], total: 0 });
+
+  // Wait for critical data only
   const [historyData, userData] = await Promise.all([
-    checkUser
-      ? getChatHistoryByUserID(userID!, 1, 10)
-      : publicID
-      ? getChatHistory(publicID, 1, 10)
-      : Promise.resolve({ data: [], total: 0 }),
-    session?.access_token
-      ? getUserInfo(session.access_token).catch((e) => {
-          console.error("User info fetch failed:", e);
-          return null;
-        })
-      : Promise.resolve(null),
+    historyDataPromise,
+    userDataPromise,
   ]);
 
   return (
     <>
-      <ChatContent
-        packages={packages}
-        medical={medical}
-        wellness={wellness}
-        initialHistory={
-          Array.isArray(historyData?.data?.data) ? historyData.data.data : []
-        }
-        publicIDFetch={publicID}
-        user={userData}
-        locale={locale}
-        labels={{
-          delete: t("delete"),
-          cancel: t("cancel"),
-        }}
-      />
+      <Suspense fallback={<ChatContentSkeleton />}>
+        <ChatContent
+          initialHistory={
+            Array.isArray(historyData?.data?.data) ? historyData.data.data : []
+          }
+          publicIDFetch={publicID}
+          user={userData}
+          locale={locale}
+          userID={userID}
+          labels={{
+            delete: t("delete"),
+            cancel: t("cancel"),
+          }}
+        />
+      </Suspense>
     </>
   );
 }

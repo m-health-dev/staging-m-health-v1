@@ -16,9 +16,9 @@ const OurNews = async () => {
   return (
     <div className="mt-[5vh] bg-white border-t lg:rounded-t-[5rem] rounded-t-4xl">
       <ContainerWrap className="py-[5vh]">
-        <h1 className="font-bold text-primary mt-5 mb-16 text-center">
+        <h2 className="font-bold text-primary mt-5 mb-16 text-center">
           {locale === routing.defaultLocale ? "Artikel Terbaru" : "Our News"}
-        </h1>
+        </h2>
         <Suspense fallback={<SkeletonComponent />}>
           <Content />
         </Suspense>
