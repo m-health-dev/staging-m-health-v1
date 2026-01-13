@@ -83,13 +83,13 @@ export async function getUser() {
   return user;
 }
 
-export const getBaseUrl = (): string => {
+const getBaseUrl = (): string => {
   // Always prioritize environment variable for production
   if (process.env.NEXT_PUBLIC_BASE_URL) {
     return process.env.NEXT_PUBLIC_BASE_URL;
   }
   // Fallback for development
-  return "http://localhost:3000";
+  return "http://localhost:3030";
 };
 
 export const signUpAction = async (data: {
@@ -669,7 +669,8 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   // }
 
   return {
-    success: {
+    success: true,
+    message: {
       id: "Silahkan cek email kamu, Kami telah mengirimkan tautan untuk Reset Password.",
       en: "Please check your email, we have sent a link to Reset Password.",
     },

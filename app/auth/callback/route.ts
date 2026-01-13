@@ -1,6 +1,14 @@
-import { getBaseUrl } from "@/app/[locale]/(auth)/actions/auth.actions";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
+
+const getBaseUrl = (): string => {
+  // Always prioritize environment variable for production
+  if (process.env.NEXT_PUBLIC_BASE_URL) {
+    return process.env.NEXT_PUBLIC_BASE_URL;
+  }
+  // Fallback for development
+  return "http://localhost:3030";
+};
 
 export async function GET(request: Request) {
   // The `/auth/callback` route is required for the server-side auth flow implemented

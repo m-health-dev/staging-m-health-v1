@@ -56,9 +56,11 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
     } else if (response?.error) {
       setLoading(false);
       setError(locale === "id" ? response.error.id : response.error.en);
-    } else if (response?.success) {
+    } else if (response?.success && response?.message) {
       setLoading(false);
-      setSuccess(`${response.success}`);
+      setSuccess(
+        `${locale === "id" ? response.message.id : response.message.en}`
+      );
     }
     setLoading(false);
   }
