@@ -83,7 +83,7 @@ export async function getUser() {
   return user;
 }
 
-const getBaseUrl = (): string => {
+export const getBaseUrl = (): string => {
   // Always prioritize environment variable for production
   if (process.env.NEXT_PUBLIC_BASE_URL) {
     return process.env.NEXT_PUBLIC_BASE_URL;
