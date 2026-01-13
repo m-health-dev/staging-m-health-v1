@@ -187,7 +187,22 @@ const ChatStart = ({
                 )
               );
 
-              if (sessionId) {
+              // Update URL silently when new session is created
+              if (!sessionID && !pendingSessionId && sessionId) {
+                const newUrl = `/${locale}/c/${sessionId}`;
+                setPendingSessionId(sessionId);
+
+                // Use window.history.replaceState for silent update
+                window.history.replaceState(
+                  { ...window.history.state, as: newUrl, url: newUrl },
+                  "",
+                  newUrl
+                );
+
+                // Dispatch custom event to notify URL change
+                window.dispatchEvent(new Event("urlchange"));
+              } else if (sessionId) {
+                // Just update pendingSessionId if already have session
                 setPendingSessionId(sessionId);
               }
               break;
