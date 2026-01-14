@@ -219,7 +219,7 @@ const data = {
   payment: [
     {
       name: "Payment Records",
-      url: "/studio/payment",
+      url: "/studio/payment/records",
       icon: CreditCard,
     },
   ],

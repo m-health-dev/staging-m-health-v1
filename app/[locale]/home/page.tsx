@@ -1,4 +1,5 @@
 import CurrentEvents from "@/components/home/CurrentEvents";
+import HomeLazySections from "@/components/home/HomeLazySections";
 import Jumbotron from "@/components/home/Jumbotron";
 import OurNews from "@/components/home/OurNews";
 import PopularMedical from "@/components/home/PopularMedical";
@@ -8,7 +9,6 @@ import CallToAction from "@/components/utility/CallToAction";
 import Wrapper from "@/components/utility/Wrapper";
 import { routing } from "@/i18n/routing";
 import { Metadata, ResolvingMetadata } from "next";
-import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 
 // Add revalidation for better performance
@@ -65,13 +65,22 @@ export async function generateMetadata(
 const HomePage = async () => {
   return (
     <Wrapper>
+      {/* Jumbotron tetap load langsung karena above the fold */}
       <Jumbotron />
-      <PopularPackage />
-      <PopularProgram />
-      <PopularMedical />
-      <CurrentEvents />
-      <OurNews />
-      <CallToAction />
+
+      {/* <PopularPackageSkeleton />
+      <PopularMedicalSkeleton />
+      <PopularProgramSkeleton />
+      <CurrentEventsSkeleton />
+      <OurNewsSkeleton /> */}
+      <HomeLazySections
+        popularPackage={<PopularPackage />}
+        popularProgram={<PopularProgram />}
+        popularMedical={<PopularMedical />}
+        currentEvents={<CurrentEvents />}
+        ourNews={<OurNews />}
+        callToAction={<CallToAction />}
+      />
     </Wrapper>
   );
 };

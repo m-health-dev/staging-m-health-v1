@@ -131,10 +131,17 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
     const timer = setTimeout(() => {
       if (lastMessageRef.current) {
-        // Scroll ke start of message, tetap di posisi awal
-        lastMessageRef.current.scrollIntoView({
+        // Dapatkan posisi element relatif terhadap viewport
+        const elementRect = lastMessageRef.current.getBoundingClientRect();
+        const elementTop = elementRect.top + window.scrollY;
+
+        // Hitung offset 10vh dari atas viewport
+        const offset = window.innerHeight * 0.1;
+
+        // Scroll ke posisi element dikurangi offset agar muncul lebih kebawah
+        window.scrollTo({
+          top: elementTop - offset,
           behavior: "smooth",
-          block: "start",
         });
       }
     }, 100);
@@ -369,7 +376,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           <ArrowDown className="size-5" />
         </button>
       </div>
-      <div className="sticky bottom-0 bg-linear-to-t from-background via-background to-background/20 z-20">
+      <div className="sticky bottom-0 bg-linear-to-t from-background via-background to-transparent z-20">
         <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
           <div className="py-3">
             {!isShowInput && (

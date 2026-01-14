@@ -306,7 +306,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         </div>
         <div
           className={cn(
-            `flex mt-2 group transition-all duration-500`,
+            `flex mt-2 group transition-all duration-300`,
             isUser ? "justify-end" : "justify-start",
             !isStreaming ? "opacity-100" : "opacity-0"
           )}

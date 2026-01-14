@@ -33,7 +33,7 @@ export default OurNews;
 const SkeletonComponent = () => {
   return (
     <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5">
-      {[...Array(3)].map((_, i) => (
+      {[...Array(4)].map((_, i) => (
         <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
       ))}
     </div>

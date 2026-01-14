@@ -152,6 +152,7 @@ const ChatWithSidebar: React.FC<ChatWithSidebarProps> = ({
           onNewMessage={onRefreshHistory}
           status={status}
           urgent={urgent}
+          locale={locale}
           type={type}
         />
       </SidebarInset>

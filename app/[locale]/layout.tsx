@@ -22,6 +22,7 @@ import OneTapComponent from "@/components/utility/GoogleOneTap";
 import SnowFall from "@/components/snow-fall";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DialogSwitchLang from "@/components/utility/lang/DialogSwitchLang";
+import PageTransition from "@/components/utility/PageTransition";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -94,7 +95,7 @@ export default async function RootLayout({ children, params }: Props) {
             <SpeedInsights />
             <DialogSwitchLang />
 
-            {children}
+            <PageTransition>{children}</PageTransition>
             <OneTapComponent />
           </NextIntlClientProvider>
         </LanguageProvider>

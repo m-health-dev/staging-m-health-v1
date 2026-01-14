@@ -11,6 +11,58 @@ const apiBaseUrl =
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
+export async function getAllPaymentsRecord(
+  page: number = 1,
+  per_page: number = 10
+) {
+  try {
+    const accessToken = await getAccessToken();
+    const res = await fetch(
+      `${apiBaseUrl}/api/v1/payments?page=${page}&per_page=${per_page}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "X-API-Key": apiSecretKey,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const json = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: [],
+        meta: null,
+        links: null,
+        total: 0,
+        error: `Failed to receive all transactions/read data. Cause : ${json.message}`,
+      };
+    }
+
+    // console.log(json.links);
+    return {
+      data: json.data,
+      links: json.links,
+      meta: json.meta,
+      total: json.meta.total,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive all transactions/read Error:", error);
+    return {
+      success: false,
+      data: [],
+      meta: null,
+      links: null,
+      total: 0,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
+
 export async function getPaymentsByOrderID(order_id: string) {
   try {
     const res = await fetch(

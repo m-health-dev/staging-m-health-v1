@@ -26,3 +26,19 @@ export type ConsultScheduleType = {
   reservation_expires_at: string;
   user: Account;
 };
+
+export type DoctorType = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  name: string;
+  email: string;
+  phone: string;
+  license_number: string;
+  specialty: string[];
+  en_bio: string;
+  id_bio: string;
+  photo_url: string;
+  is_available: boolean;
+  status: string;
+};

@@ -68,6 +68,7 @@ const ChatPreviewMode: React.FC<ChatPreviewModeProps> = ({
         sessionID={sessionID}
         publicID={publicID}
         accounts={user}
+        locale={locale}
         onNewMessage={onNewMessage}
       />
     </>

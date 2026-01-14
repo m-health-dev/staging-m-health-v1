@@ -26,6 +26,7 @@ const ChatStart = ({
   onNewMessage, // Add callback to refresh history when new message is sent
   status,
   urgent,
+  locale,
 }: {
   chat: Message[];
   session?: any[];
@@ -36,6 +37,7 @@ const ChatStart = ({
   onNewMessage?: () => void;
   status?: string;
   urgent?: boolean;
+  locale?: string;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -46,7 +48,6 @@ const ChatStart = ({
   const [text, setText] = useState("");
   const [pendingSessionId, setPendingSessionId] = useState<string | null>(null);
 
-  const locale = useLocale();
   const router = useRouter();
 
   useEffect(() => {

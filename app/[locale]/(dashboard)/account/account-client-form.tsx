@@ -523,7 +523,7 @@ const AccountClientForm = ({
             </div>
             {/* Normal String */}
 
-            <div className="lg:grid grid-cols-2 flex flex-col items-start gap-5">
+            <div className="grid lg:grid-cols-2 grid-cols-1 w-full items-start gap-5">
               <FormField
                 control={form.control}
                 name="domicile_city"

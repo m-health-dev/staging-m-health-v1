@@ -48,6 +48,8 @@ import Avatar from "boring-avatars";
 
 import { nanoid } from "nanoid";
 import { Skeleton } from "../ui/skeleton";
+import { routing } from "@/i18n/routing";
+import { formatRupiah } from "@/helper/rupiah";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[] | null | undefined;
@@ -67,6 +69,7 @@ interface DataTableProps<TData, TValue> {
     | "hero"
     | "legal"
     | "consult-schedule"
+    | "payment-records"
     | "default";
   deleteAction?: (id: string) => Promise<{ error?: string }>;
 }
@@ -190,6 +193,8 @@ export function Studio1DataTable<TData, TValue>({
                           ? "title"
                           : type === "consult-schedule"
                           ? "fullname"
+                          : type === "payment-records"
+                          ? "transaction_id"
                           : "id_title"
                       }`
                     )
@@ -209,6 +214,8 @@ export function Studio1DataTable<TData, TValue>({
                           ? "title"
                           : type === "consult-schedule"
                           ? "fullname"
+                          : type === "payment-records"
+                          ? "transaction_id"
                           : "id_title"
                       }`
                     )
@@ -338,9 +345,9 @@ export function Studio1DataTable<TData, TValue>({
                     // >
                     <div
                       key={id}
-                      className="rounded-xl border p-4  bg-white relative"
+                      className="rounded-xl border p-4  bg-white relative w-full"
                     >
-                      <div className="flex flex-col gap-3 items-start relative">
+                      <div className="flex flex-col gap-3 items-start relative w-full">
                         {actionCell && (
                           <div className="absolute top-1 right-1 z-10">
                             {flexRender(
@@ -441,7 +448,8 @@ export function Studio1DataTable<TData, TValue>({
                             type !== "authors" &&
                             type !== "article-category" &&
                             type !== "hero" &&
-                            type !== "consult-schedule" && (
+                            type !== "consult-schedule" &&
+                            type !== "payment-records" && (
                               <p className="text-muted-foreground text-sm! mt-2">
                                 {row.getValue("en_title")}
                               </p>
@@ -460,10 +468,41 @@ export function Studio1DataTable<TData, TValue>({
                                   ? "title"
                                   : type === "consult-schedule"
                                   ? "fullname"
+                                  : type === "payment-records"
+                                  ? "fullname"
                                   : "id_title"
                               }`
                             )}
                           </h5>
+
+                          {type === "payment-records" && (
+                            <div className="flex flex-col w-full">
+                              <div className="flex items-center mb-5 mt-5">
+                                <div className="flex items-center gap-2">
+                                  <p className="bg-gray-50 text-gray-700 border border-gray-500 px-3 py-1 rounded-full capitalize">
+                                    {row.getValue("payment_status")}
+                                  </p>
+                                </div>
+                              </div>
+                              <p className="text-health text-sm! w-full">
+                                {row.getValue("transaction_id")}
+                              </p>
+                              <h5 className="text-primary font-semibold mb-4 w-full">
+                                {row.getValue("product_name")}
+                              </h5>
+
+                              <div className="mb-5 border-l-4 border-l-primary bg-blue-50 p-4 flex flex-col w-full">
+                                <p className="text-sm! text-muted-foreground">
+                                  {locale === routing.defaultLocale
+                                    ? "Total Pembayaran"
+                                    : "Total Payment"}
+                                </p>
+                                <h6 className="text-primary font-bold">
+                                  {formatRupiah(row.getValue("payment_total"))}
+                                </h6>
+                              </div>
+                            </div>
+                          )}
                           {type === "consult-schedule" && (
                             <>
                               <p className="text-muted-foreground text-sm! mt-0">
@@ -506,7 +545,7 @@ export function Studio1DataTable<TData, TValue>({
                           )}
                         </div>
                       </div>
-                      <div className="space-y-2 mt-3">
+                      <div className="space-y-2 mt-3 w-full">
                         <div>
                           <p className="text-xs! text-muted-foreground">
                             Created at

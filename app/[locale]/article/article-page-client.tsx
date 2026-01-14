@@ -42,7 +42,7 @@ const ArticlePageClient = ({
       </div>
     );
   }
-  console.log({ articles });
+  // console.log({ articles });
   return (
     <div className="mb-[10vh]">
       {/* {articles.length === 0 && (

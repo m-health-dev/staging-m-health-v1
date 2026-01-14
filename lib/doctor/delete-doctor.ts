@@ -1,45 +1,41 @@
 "use server";
 
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
-import { apiSecretKey } from "@/helper/api-secret-key";
-import { error } from "console";
-import { da } from "date-fns/locale";
-import { success } from "zod";
-import { meta } from "zod/v4/core";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
-export async function deleteConsultation(id: string) {
+export async function deleteDoctor(id: string) {
   try {
+    console.log("Sending doctor/delete to BE:", id);
+
     const accessToken = await getAccessToken();
-    const res = await fetch(`${apiBaseUrl}/api/v1/consultations/${id}`, {
+
+    const res = await fetch(`${apiBaseUrl}/api/v1/doctors/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
     });
 
-    const json = await res.json();
+    const data = await res.json();
 
     if (res.status !== 200) {
       return {
         success: false,
-        error: `Failed to delete consultation data. Cause : ${json.message}`,
+        error: `Failed to sent doctor/delete data. Cause : ${res.status} - ${data.message}`,
       };
     }
 
-    // console.log({ json });
     return {
-      message: "Consultation deleted successfully.",
       success: true,
+      message: "Doctor deleted successfully!",
     };
   } catch (error) {
-    console.error("Delete consultation data Error:", error);
+    console.error("Sent doctor/delete Error:", error);
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",

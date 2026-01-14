@@ -34,6 +34,7 @@ import {
   CopyCheck,
   MoreHorizontal,
   PenSquare,
+  Stethoscope,
   Trash2,
 } from "lucide-react";
 import { useLocale } from "next-intl";
@@ -202,6 +203,18 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <p
+                  className="text-sm! text-muted-foreground"
+                  onClick={() =>
+                    router.push(`/${locale}/studio/consult/assign-doctor/${id}`)
+                  }
+                >
+                  <Stethoscope />
+                  Assign Doctor
+                </p>
+              </DropdownMenuItem>
+
               <DropdownMenuItem asChild>
                 <p
                   className="text-sm! text-muted-foreground"
