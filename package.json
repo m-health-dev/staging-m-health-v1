@@ -101,7 +101,7 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/crypto-js": "^4.2.2",
     "@types/google-one-tap": "^1.2.7",
     "@types/midtrans-client": "^1.4.0",
