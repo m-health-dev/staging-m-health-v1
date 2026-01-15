@@ -73,7 +73,19 @@ export const columns: ColumnDef<TransactionType>[] = [
     ),
     cell: ({ row }) => {
       const payment_status: string = row.getValue("payment_status");
-      return <span className="uppercase">{payment_status}</span>;
+      return payment_status === "settlement" ? (
+        <span className="text-green-600 font-medium capitalize bg-green-50 px-2 py-1 rounded-full border border-green-500">
+          {payment_status}
+        </span>
+      ) : payment_status === "canceled" ? (
+        <span className="text-red-600 font-medium capitalize bg-red-50 px-2 py-1 rounded-full border border-red-500">
+          {payment_status}
+        </span>
+      ) : (
+        <span className="text-yellow-600 font-medium capitalize bg-yellow-50 px-2 py-1 rounded-full border border-yellow-500">
+          {payment_status}
+        </span>
+      );
     },
   },
   {

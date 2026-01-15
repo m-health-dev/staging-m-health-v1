@@ -19,12 +19,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
+import StatusBadge from "@/components/utility/status-badge";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
-import { deleteConsultation } from "@/lib/consult/delete-consultation";
-import { deleteHotel } from "@/lib/hotel/delete-hotel";
-import { deleteVendor } from "@/lib/vendors/delete-vendor";
-import { ConsultScheduleType } from "@/types/consult.types";
+import { deleteDoctor } from "@/lib/doctor/delete-doctor";
+import { deleteEvent } from "@/lib/events/delete-events";
+import { deleteMedical } from "@/lib/medical/delete-medical";
+import { deletePackage } from "@/lib/packages/delete-packages";
+import { cn } from "@/lib/utils";
+import { DoctorType } from "@/types/doctor.types";
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Avatar from "boring-avatars";
@@ -34,7 +37,6 @@ import {
   CopyCheck,
   MoreHorizontal,
   PenSquare,
-  Stethoscope,
   Trash2,
 } from "lucide-react";
 import { useLocale } from "next-intl";
@@ -43,7 +45,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export const columns: ColumnDef<ConsultScheduleType>[] = [
+export const columns: ColumnDef<DoctorType>[] = [
+  //   {
+  //     id: "number",
+  //     cell: ({ row }) => {
+  //       return row.index + 1;
+  //     },
+  //   },
+
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -55,12 +64,50 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
     },
   },
   {
-    accessorKey: "fullname",
+    accessorKey: "photo_url",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="fullname" />
+      <DataTableColumnHeader column={column} title="Photo" />
+    ),
+
+    cell: ({ row }) => {
+      const photo_url: string = row.getValue("photo_url");
+      const name: string = row.getValue("name");
+
+      const [error, setError] = useState(false);
+
+      // Jika tidak ada photo_url atau sudah error → tampilkan avatar
+      if (!photo_url || error) {
+        return (
+          <Avatar
+            name={name || "User Avatar"}
+            className="w-10! h-10! border rounded-full"
+            colors={["#3e77ab", "#22b26e", "#f2f26f", "#fff7bd", "#95cfb7"]}
+            variant="beam"
+            size={20}
+          />
+        );
+      }
+
+      return (
+        <Image
+          src={photo_url}
+          alt={name || "User Avatar"}
+          width={40}
+          height={40}
+          className="object-cover w-10 h-10 rounded-full border"
+          onError={() => setError(true)}
+        />
+      );
+    },
+  },
+  {
+    accessorKey: "name",
+    enableHiding: false,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      const fullname: string = row.getValue("fullname");
+      const name: string = row.getValue("name");
       const createdAt: Date = new Date(row.getValue("created_at"));
       const now = new Date();
 
@@ -78,61 +125,45 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
               New
             </span>
           )}
-          {fullname}
+          {name}
         </span>
       );
     },
   },
   {
-    accessorKey: "scheduled_datetime",
+    accessorKey: "specialty",
+    enableHiding: true,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Scheduled DateTime" />
+      <DataTableColumnHeader column={column} title="Speciality" />
     ),
     cell: ({ row }) => {
-      const scheduled_datetime: string = row.getValue("scheduled_datetime");
-      return <LocalDateTime date={scheduled_datetime} />;
-    },
-  },
-  {
-    accessorKey: "payment_status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Payment Status" />
-    ),
-    cell: ({ row }) => {
-      const payment_status: string = row.getValue("payment_status");
-      return payment_status === "success" ? (
-        <span className="text-green-600 font-medium capitalize bg-green-50 px-2 py-1 rounded-full border border-green-500">
-          {payment_status}
-        </span>
-      ) : payment_status === "failed" ? (
-        <span className="text-red-600 font-medium capitalize bg-red-50 px-2 py-1 rounded-full border border-red-500">
-          {payment_status}
-        </span>
-      ) : (
-        <span className="text-yellow-600 font-medium capitalize bg-yellow-50 px-2 py-1 rounded-full border border-yellow-500">
-          {payment_status}
+      const specialty: string[] = row.getValue("specialty");
+      return (
+        <span className="capitalize">
+          {specialty.slice(0, 2).map((spec) => spec + ", ")}...
         </span>
       );
     },
   },
   {
-    accessorKey: "email",
+    accessorKey: "is_available",
+    enableHiding: true,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
+      <DataTableColumnHeader column={column} title="Available" />
     ),
     cell: ({ row }) => {
-      const email: string = row.getValue("email");
-      return <span>{email}</span>;
-    },
-  },
-  {
-    accessorKey: "phone_number",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="phone_number" />
-    ),
-    cell: ({ row }) => {
-      const phone_number: string = row.getValue("phone_number");
-      return <span>{phone_number}</span>;
+      const is_available: string = row.getValue("is_available");
+      return (
+        <span
+          className={cn(
+            is_available
+              ? "text-green-600 bg-green-50 border border-green-600 rounded-full px-2 py-1 text-xs"
+              : "text-red-600 bg-red-50 border border-red-600 rounded-full px-2 py-1 text-xs"
+          )}
+        >
+          {is_available ? "Available" : "Not Available"}
+        </span>
+      );
     },
   },
   {
@@ -155,12 +186,13 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
       return <LocalDateTime date={updated_at} />;
     },
   },
+
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       const id: string = row.getValue("id");
-      const fullname: string = row.getValue("fullname");
+      const name: string = row.getValue("name");
 
       const [copied, setCopied] = useState(false);
       const [openConfirm, setOpenConfirm] = useState(false);
@@ -183,7 +215,7 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
 
       const handleCopyName = async () => {
         try {
-          await navigator.clipboard.writeText(fullname);
+          await navigator.clipboard.writeText(name);
           setCopied(true);
           setTimeout(() => setCopied(false), 2000);
         } catch (err) {
@@ -191,16 +223,16 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
         }
       };
 
-      const handleDeleteConsultation = async () => {
+      const handleDeleteDoctor = async () => {
         try {
           setLoading(true);
-          const res = await deleteConsultation(id);
+          const res = await deleteDoctor(id);
           if (!res.error) {
-            toast.success("Success to Delete Consultation", {
-              description: `${id.slice(0, 8).toUpperCase()} - ${fullname}`,
+            toast.success("Success to Delete Doctor", {
+              description: `${id.slice(0, 8).toUpperCase()} - ${name}`,
             });
           } else if (res.error) {
-            toast.error("Failed to Delete Consultation", {
+            toast.error("Failed to Delete Doctor", {
               description: `${res.error}`,
             });
           }
@@ -208,9 +240,7 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
           router.refresh();
         } catch (err) {
           setLoading(false);
-          toast.warning("Failed to Delete Consultation", {
-            description: `${err}`,
-          });
+          toast.warning("Failed to Event", { description: `${err}` });
         }
       };
 
@@ -229,21 +259,7 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
                 <p
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
-                    router.push(`/${locale}/studio/consult/assign-doctor/${id}`)
-                  }
-                >
-                  <Stethoscope />
-                  Assign Doctor
-                </p>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem asChild>
-                <p
-                  className="text-sm! text-muted-foreground"
-                  onClick={() =>
-                    router.push(
-                      `/${locale}/studio/consult/schedule/update/${id}`
-                    )
+                    router.push(`/${locale}/studio/doctor/update/${id}`)
                   }
                 >
                   <PenSquare />
@@ -314,19 +330,19 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
                 <DialogTitle asChild>
                   <h6 className="text-red-500">
                     {locale === routing.defaultLocale
-                      ? "Konfirmasi Penghapusan Konsultasi"
-                      : "Delete Consultation Confirmation"}
+                      ? "Konfirmasi Penghapusan Doctor"
+                      : "Delete Doctor Confirmation"}
                   </h6>
                 </DialogTitle>
                 <p className="text-muted-foreground">
                   {locale === routing.defaultLocale
-                    ? "Untuk menghapus konsultasi ini, silahkan ketik nama lengkap pemesan:"
-                    : "To delete this consultation, please type the full name of the booker:"}{" "}
+                    ? "Untuk menghapus Doctor ini, silahkan ketik nama Doctor:"
+                    : "To delete this Doctor, please type the Doctor name:"}{" "}
                   <span
                     className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
                     onClick={handleCopyName}
                   >
-                    {fullname}{" "}
+                    {name}{" "}
                     {!copied ? (
                       <Copy className="size-4" />
                     ) : (
@@ -344,8 +360,8 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
                 className="w-full border px-3 py-2 h-12 rounded-2xl"
                 placeholder={
                   locale === routing.defaultLocale
-                    ? "Tulis nama lengkap pemesan di sini"
-                    : "Write full name of the booker here"
+                    ? "Tulis nama Doctor di sini"
+                    : "Write Doctor name here"
                 }
               />
               <p className="text-xs! text-red-500">
@@ -370,9 +386,9 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== fullname}
+                  disabled={inputName !== name}
                   onClick={async () => {
-                    await handleDeleteConsultation();
+                    await handleDeleteDoctor();
                     setOpenConfirm(false);
                   }}
                 >

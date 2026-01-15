@@ -15,7 +15,7 @@ const apiBaseUrl =
 export async function deleteConsultation(id: string) {
   try {
     const accessToken = await getAccessToken();
-    const res = await fetch(`${apiBaseUrl}/api/v1/consultations/${id}`, {
+    const res = await fetch(`${apiBaseUrl}/api/v1/admin/consultations/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${accessToken}`,

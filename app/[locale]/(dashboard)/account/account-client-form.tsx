@@ -125,9 +125,63 @@ const AccountClientForm = ({
       console.log("Uploaded:", data);
 
       if (data.url) {
-        toast.success("Image uploaded!", {
-          description: `${data.url}`,
-        });
+        // Auto-save avatar to database
+        let patchRes;
+        if (!admin) {
+          patchRes = await patchAccount({
+            email: form.getValues("email"),
+            fullname: form.getValues("fullname"),
+            phone: form.getValues("phone_number"),
+            gender: form.getValues("gender"),
+            height: form.getValues("height"),
+            weight: form.getValues("weight"),
+            birthdate: toUtcMidnightFromLocalDate(form.getValues("birthdate")),
+            avatar_url: data.url,
+            domicile: {
+              city: form.getValues("domicile_city")?.trim() || "",
+              district: form.getValues("domicile_district")?.trim() || "",
+              address: form.getValues("domicile_address")?.trim() || "",
+              postal_code: form.getValues("domicile_postal_code")?.trim() || "",
+            },
+          });
+        } else {
+          patchRes = await patchAccountByAdmin(
+            {
+              email: form.getValues("email"),
+              fullname: form.getValues("fullname"),
+              phone: form.getValues("phone_number"),
+              gender: form.getValues("gender"),
+              height: form.getValues("height"),
+              weight: form.getValues("weight"),
+              birthdate: toUtcMidnightFromLocalDate(
+                form.getValues("birthdate")
+              ),
+              avatar_url: data.url,
+              domicile: {
+                city: form.getValues("domicile_city")?.trim() || "",
+                district: form.getValues("domicile_district")?.trim() || "",
+                address: form.getValues("domicile_address")?.trim() || "",
+                postal_code:
+                  form.getValues("domicile_postal_code")?.trim() || "",
+              },
+            },
+            { id: account.id }
+          );
+        }
+
+        if (patchRes.success) {
+          toast.success("Avatar uploaded & saved!", {
+            description:
+              locale === "id"
+                ? "Avatar berhasil diperbarui"
+                : "Avatar successfully updated",
+          });
+          router.refresh();
+        } else {
+          toast.error(
+            locale === "id" ? patchRes.error?.id : patchRes.error?.en
+          );
+        }
       }
 
       return data.url;
@@ -157,12 +211,67 @@ const AccountClientForm = ({
     const data = await res.json();
 
     if (data.message) {
-      setLoading(false);
       if (field === "avatar") {
-        setAvatarPreview(null);
-        form.setValue("avatar_url", "");
-        toast.success("Image Avatar Deleted!");
+        // Auto-save empty avatar to database
+        let patchRes;
+        if (!admin) {
+          patchRes = await patchAccount({
+            email: form.getValues("email"),
+            fullname: form.getValues("fullname"),
+            phone: form.getValues("phone_number"),
+            gender: form.getValues("gender"),
+            height: form.getValues("height"),
+            weight: form.getValues("weight"),
+            birthdate: toUtcMidnightFromLocalDate(form.getValues("birthdate")),
+            avatar_url: "",
+            domicile: {
+              city: form.getValues("domicile_city")?.trim() || "",
+              district: form.getValues("domicile_district")?.trim() || "",
+              address: form.getValues("domicile_address")?.trim() || "",
+              postal_code: form.getValues("domicile_postal_code")?.trim() || "",
+            },
+          });
+        } else {
+          patchRes = await patchAccountByAdmin(
+            {
+              email: form.getValues("email"),
+              fullname: form.getValues("fullname"),
+              phone: form.getValues("phone_number"),
+              gender: form.getValues("gender"),
+              height: form.getValues("height"),
+              weight: form.getValues("weight"),
+              birthdate: toUtcMidnightFromLocalDate(
+                form.getValues("birthdate")
+              ),
+              avatar_url: "",
+              domicile: {
+                city: form.getValues("domicile_city")?.trim() || "",
+                district: form.getValues("domicile_district")?.trim() || "",
+                address: form.getValues("domicile_address")?.trim() || "",
+                postal_code:
+                  form.getValues("domicile_postal_code")?.trim() || "",
+              },
+            },
+            { id: account.id }
+          );
+        }
+
+        if (patchRes.success) {
+          setAvatarPreview(null);
+          form.setValue("avatar_url", "");
+          toast.success(
+            locale === "id"
+              ? "Avatar berhasil dihapus!"
+              : "Avatar deleted successfully!"
+          );
+          router.refresh();
+        } else {
+          toast.error(
+            locale === "id" ? patchRes.error?.id : patchRes.error?.en
+          );
+        }
       }
+      setLoading(false);
     } else {
       setLoading(false);
       toast.error(data.error || "Failed to delete");

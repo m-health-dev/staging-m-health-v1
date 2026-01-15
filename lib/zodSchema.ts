@@ -234,3 +234,16 @@ export const contactSchema = z.object({
   message: z.string().min(3, "Message is required"),
   subject: z.string().min(1, "Subject is required"),
 });
+
+export const DoctorSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  phone: z.string().min(5),
+  license_number: z.string().min(1),
+  specialty: z.array(z.string().min(1)),
+  en_bio: z.string().min(1),
+  id_bio: z.string().min(1),
+  photo_url: z.string().min(1),
+  is_available: z.boolean(),
+  status: z.string(),
+});

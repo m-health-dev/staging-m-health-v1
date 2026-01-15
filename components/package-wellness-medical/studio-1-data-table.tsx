@@ -70,6 +70,7 @@ interface DataTableProps<TData, TValue> {
     | "legal"
     | "consult-schedule"
     | "payment-records"
+    | "doctor"
     | "default";
   deleteAction?: (id: string) => Promise<{ error?: string }>;
 }
@@ -165,9 +166,9 @@ export function Studio1DataTable<TData, TValue>({
   const now = new Date();
   const filteredRows = table?.getFilteredRowModel()?.rows ?? [];
 
-  console.log("columns:", columns);
-  console.log("safeColumns:", safeColumns);
-  console.log("data:", data);
+  // console.log("columns:", columns);
+  // console.log("safeColumns:", safeColumns);
+  // console.log("data:", data);
 
   return (
     <>
@@ -195,6 +196,8 @@ export function Studio1DataTable<TData, TValue>({
                           ? "fullname"
                           : type === "payment-records"
                           ? "transaction_id"
+                          : type === "doctor"
+                          ? "name"
                           : "id_title"
                       }`
                     )
@@ -216,6 +219,8 @@ export function Studio1DataTable<TData, TValue>({
                           ? "fullname"
                           : type === "payment-records"
                           ? "transaction_id"
+                          : type === "doctor"
+                          ? "name"
                           : "id_title"
                       }`
                     )
@@ -439,6 +444,25 @@ export function Studio1DataTable<TData, TValue>({
                             {String(row.getValue("id")).slice(0, 8)}
                           </p>
 
+                          {type === "consult-schedule" && (
+                            <div className="inline-flex w-fit mb-2">
+                              {row.getValue("payment_status") === "success" ? (
+                                <p className="text-green-600 font-medium capitalize bg-green-50 px-2 py-1 rounded-full border border-green-500">
+                                  Payment {row.getValue("payment_status")}
+                                </p>
+                              ) : row.getValue("payment_status") ===
+                                "failed" ? (
+                                <p className="text-red-600 font-medium capitalize bg-red-50 px-2 py-1 rounded-full border border-red-500">
+                                  Payment {row.getValue("payment_status")}
+                                </p>
+                              ) : (
+                                <p className="text-yellow-600 font-medium capitalize bg-yellow-50 px-2 py-1 rounded-full border border-yellow-500">
+                                  Payment {row.getValue("payment_status")}
+                                </p>
+                              )}
+                            </div>
+                          )}
+
                           {type === "legal" ? (
                             <h5 className="font-semibold text-primary text-lg">
                               {row.getValue("version")}
@@ -470,20 +494,33 @@ export function Studio1DataTable<TData, TValue>({
                                   ? "fullname"
                                   : type === "payment-records"
                                   ? "fullname"
+                                  : type === "doctor"
+                                  ? "name"
                                   : "id_title"
                               }`
                             )}
                           </h5>
 
+                          {type === "doctor" &&
+                            Array.isArray(row.getValue("specialty")) && (
+                              <p className="text-sm! text-muted-foreground mt-2">
+                                {(row.getValue("specialty") as string[]).map(
+                                  (
+                                    spec: string,
+                                    index: number,
+                                    arr: string[]
+                                  ) => (
+                                    <span key={index}>
+                                      {spec}
+                                      {index < arr.length - 1 ? ", " : ""}
+                                    </span>
+                                  )
+                                )}
+                              </p>
+                            )}
+
                           {type === "payment-records" && (
-                            <div className="flex flex-col w-full">
-                              <div className="flex items-center mb-5 mt-5">
-                                <div className="flex items-center gap-2">
-                                  <p className="bg-gray-50 text-gray-700 border border-gray-500 px-3 py-1 rounded-full capitalize">
-                                    {row.getValue("payment_status")}
-                                  </p>
-                                </div>
-                              </div>
+                            <div className="flex grow flex-col w-full">
                               <p className="text-health text-sm! w-full">
                                 {row.getValue("transaction_id")}
                               </p>
@@ -500,6 +537,23 @@ export function Studio1DataTable<TData, TValue>({
                                 <h6 className="text-primary font-bold">
                                   {formatRupiah(row.getValue("payment_total"))}
                                 </h6>
+                              </div>
+                              <div className="inline-flex w-fit mb-2">
+                                {row.getValue("payment_status") ===
+                                "settlement" ? (
+                                  <p className="text-green-600 font-medium capitalize bg-green-50 px-2 py-1 rounded-full border border-green-500">
+                                    Payment {row.getValue("payment_status")}
+                                  </p>
+                                ) : row.getValue("payment_status") ===
+                                  "canceled" ? (
+                                  <p className="text-red-600 font-medium capitalize bg-red-50 px-2 py-1 rounded-full border border-red-500">
+                                    Payment {row.getValue("payment_status")}
+                                  </p>
+                                ) : (
+                                  <p className="text-yellow-600 font-medium capitalize bg-yellow-50 px-2 py-1 rounded-full border border-yellow-500">
+                                    Payment {row.getValue("payment_status")}
+                                  </p>
+                                )}
                               </div>
                             </div>
                           )}
