@@ -3,8 +3,16 @@ import React from "react";
 import { notFound } from "next/navigation";
 import { getUserByID } from "@/lib/users/get-users";
 import AccountClientForm from "@/app/[locale]/(dashboard)/account/account-client-form";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import ContainerWrap from "@/components/utility/ContainerWrap";
+import Image from "next/image";
+import { Account } from "@/types/account.types";
+import { cn } from "@/lib/utils";
+import Avatar from "boring-avatars";
+import Link from "next/link";
+import { Mars, Venus, VenusAndMars } from "lucide-react";
+import UnderConstruction from "@/components/utility/under-construction";
+import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 
 const UserDetailPage = async ({
   params,
@@ -14,18 +22,139 @@ const UserDetailPage = async ({
   const { id } = await params;
   const res = await getUserByID(id);
 
+  const t = await getTranslations("utility");
+
   const locale = await getLocale();
 
   if (res.error) {
     notFound();
   }
 
+  const c: Account = res.data;
+
   return (
     <ContainerWrap>
       <h2 className="my-20 text-start text-primary font-bold">
         {locale === "id" ? "Data Pengguna" : "Users Data"}
       </h2>
-      <pre>{JSON.stringify(res.data, null, 2)}</pre>
+      <div className="grid lg:grid-cols-3 grid-cols-1 w-full gap-10 mb-[20vh]">
+        <div className="space-y-5 lg:col-span-2 w-full">
+          {c.avatar_url ? (
+            <Image
+              src={c.avatar_url}
+              height={300}
+              width={300}
+              alt={c.fullname}
+              className="aspect-square object-cover w-32 h-32 rounded-full"
+            />
+          ) : c.google_avatar ? (
+            <Image
+              src={c.google_avatar}
+              height={300}
+              width={300}
+              alt={c.fullname}
+              className="aspect-square object-cover w-32 h-32 rounded-full"
+            />
+          ) : (
+            <Avatar
+              name={c.fullname}
+              className="w-32! h-32!"
+              colors={["#3e77ab", "#22b26e", "#f2f26f", "#fff7bd", "#95cfb7"]}
+              variant="beam"
+              size={32}
+            />
+          )}
+          <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
+            <div>
+              <Link href={`mailto:${c.email}`}>
+                <p className="text-muted-foreground">Email</p>
+                <p>{c.email}</p>
+              </Link>
+            </div>
+            <div>
+              <Link
+                href={`whatsapp://send?phone=${String(c.phone).replaceAll(
+                  "+",
+                  ""
+                )}`}
+              >
+                <p className="text-muted-foreground">Phone Number</p>
+                <p>{c.phone}</p>
+              </Link>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
+            <div>
+              <p className="text-muted-foreground">Created at</p>
+              <p>
+                <LocalDateTime date={c.created_at} />
+              </p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Updated at</p>
+              <p>
+                <LocalDateTime date={c.updated_at} />
+              </p>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
+            <div>
+              <p className="text-muted-foreground">Fullname</p>
+              <p>{c.fullname}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Weight</p>
+              <p>{c.weight}kg</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Height</p>
+              <p>{c.height}cm</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Gender</p>
+              {c.gender === "male" ? (
+                <div className="inline-flex items-center gap-2 bg-blue-100 px-3 py-1 rounded-full border border-primary">
+                  <Mars className="size-4 text-primary" />
+                  <p className="text-primary text-sm!">{t("male")}</p>
+                </div>
+              ) : c.gender === "female" ? (
+                <div className="inline-flex items-center gap-2 bg-pink-100 px-3 py-1 rounded-full border border-pink-400">
+                  <Venus className="size-4 text-pink-500" />
+                  <p className="text-pink-500 text-sm!">{t("female")}</p>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-2 bg-health/10 px-3 py-1 rounded-full border border-health">
+                  <VenusAndMars className="size-4 text-health" />
+                  <p className="text-health text-sm!">{t("unisex")}</p>
+                </div>
+              )}
+            </div>
+            <div>
+              <p className="text-muted-foreground">Domicile/ Location</p>
+              <div>
+                <p>{c.domicile.address}</p>
+                <p>{c.domicile.district}</p>
+                <p>{c.domicile.city}</p>
+                <p>{c.domicile.postal_code}</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Birthdate</p>
+              <p>
+                <LocalDateTime date={c.birthdate} />
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h6 className="text-primary font-semibold">Actions</h6>
+          <div className="w-full h-32 border bg-white rounded-2xl mt-5" />
+        </div>
+      </div>
+      {/* <div className="text-wrap break-anywhere">
+        <pre>{JSON.stringify(res.data, null, 2)}</pre>
+      </div> */}
     </ContainerWrap>
   );
 };

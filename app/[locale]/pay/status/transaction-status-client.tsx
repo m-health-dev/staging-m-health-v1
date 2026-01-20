@@ -18,7 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 
 type Props = {
   order_id: string;
-  status_code: string;
+  status_code?: string;
   transaction_status: string;
   locale: string;
   dataProduct?: any;
@@ -188,12 +188,12 @@ const TransactionStatusClient = ({
             </p>
           )}
 
-          <p className="text-muted-foreground mt-10">
+          {/* <p className="text-muted-foreground mt-10">
             {locale === "id" ? "Total Pembayaran" : "Total Payment"}
           </p>
           <h4 className="text-primary font-bold">
             {formatRupiah(data.product_data.total)}
-          </h4>
+          </h4> */}
 
           {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
 

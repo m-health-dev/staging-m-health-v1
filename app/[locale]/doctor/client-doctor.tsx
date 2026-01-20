@@ -39,7 +39,7 @@ const ClientDoctorPublic = ({
               return (
                 <div
                   key={i}
-                  className="flex items-center group/vendor-card rounded-2xl transition-all duration-200 bg-white border hover:shadow-lg hover:outline-2 hover:outline-primary hover:scale-101 relative overflow-hidden"
+                  className="flex items-center group/vendor-card rounded-2xl transition-all duration-200 h-full bg-white border hover:shadow-lg hover:outline-2 hover:outline-primary hover:scale-101 relative overflow-hidden"
                 >
                   <Link href={`/${locale}/doctor/${v.slug}`}>
                     <div className="flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-2 p-4 z-10">

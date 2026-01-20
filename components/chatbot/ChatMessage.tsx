@@ -1,6 +1,14 @@
 "use client";
 
-import React, { useState, ReactNode, ReactElement, Suspense, act } from "react";
+import React, {
+  useState,
+  ReactNode,
+  ReactElement,
+  Suspense,
+  act,
+  useRef,
+  useEffect,
+} from "react";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeSanitize from "rehype-sanitize";
@@ -17,6 +25,11 @@ import { cn } from "@/lib/utils";
 import LoadingChat from "../utility/loading-chat";
 import VendorCard from "../vendor-hotel/vendor-card";
 import VendorCardSlide from "../vendor-hotel/vendor-card-slide";
+import MedicalCardSlide from "../medical/medical-card-slide";
+import PackageCardSlide from "../package/package-card-slide";
+import WellnessCardSlide from "../wellness/wellness-card-slide";
+import HotelCardSlide from "../vendor-hotel/hotel-card-slide";
+import DoctorCardSlide from "../doctor/doctor-card-slide";
 
 const ReactMarkdown = dynamic(() => import("react-markdown"), {
   ssr: false,
@@ -38,7 +51,7 @@ interface ChatMessageProps {
   actions?: {
     type: string;
     ids: any[];
-  };
+  }[];
 }
 
 function flattenListChildren(children: ReactNode): ReactNode {
@@ -134,6 +147,48 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       console.error("Gagal menyalin pesan:", err);
     }
   };
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    startX.current = e.pageX - (scrollRef.current?.offsetLeft || 0);
+    scrollLeft.current = scrollRef.current?.scrollLeft || 0;
+    scrollRef.current?.style.setProperty("cursor", "grabbing");
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - (scrollRef.current.offsetLeft || 0);
+    const walk = (x - startX.current) * 2; // Kecepatan scroll
+    scrollRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    scrollRef.current?.style.removeProperty("cursor");
+  };
+
+  // Efek untuk mouse leave dan wheel
+  useEffect(() => {
+    const ref = scrollRef.current;
+    if (!ref) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (e.deltaY === 0) {
+        // Horizontal wheel
+        e.preventDefault();
+        ref.scrollBy({ left: e.deltaX * 2, behavior: "smooth" });
+      }
+    };
+
+    ref.addEventListener("wheel", handleWheel, { passive: false });
+    return () => ref.removeEventListener("wheel", handleWheel);
+  }, []);
 
   // console.log("reply to message:", replyTo);
 
@@ -274,14 +329,217 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             </div>
           )}
 
-          {actions && <pre>{JSON.stringify(actions, null, 2)}</pre>}
+          {/* {actions && (
+            <pre className="mb-5">{JSON.stringify(actions, null, 2)}</pre>
+          )} */}
+          {actions && (
+            <div
+              className={cn(
+                "space-y-5 ",
+                actions.map((a, i) =>
+                  a.type === "consultation" ? "" : "border-t mt-5 pt-5 mb-3"
+                )
+              )}
+            >
+              {actions?.map((action, actionIndex) => (
+                <div key={actionIndex}>
+                  {action.type === "packages" && action.ids.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-primary mb-5">
+                        {locale === routing.defaultLocale
+                          ? "Paket Terkait"
+                          : "Related Packages"}
+                      </h4>
+                      <div
+                        key={actionIndex}
+                        ref={scrollRef}
+                        className={cn(
+                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
+                        )}
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                      >
+                        {action.ids.map((item: any, index: number) => (
+                          <div key={index} className="w-4/10 h-auto shrink-0">
+                            <PackageCardSlide
+                              key={index}
+                              id={item}
+                              locale={locale}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-          {actions &&
+                  {action.type === "medical" && action.ids.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-primary mb-5">
+                        {locale === routing.defaultLocale
+                          ? "Layanan Medis Terkait"
+                          : "Related Medical Services"}
+                      </h4>
+                      <div
+                        key={actionIndex}
+                        ref={scrollRef}
+                        className={cn(
+                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
+                        )}
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                      >
+                        {action.ids.map((item: any, index: number) => (
+                          <div key={index} className="w-4/10 h-auto shrink-0">
+                            <MedicalCardSlide
+                              key={index}
+                              id={item}
+                              locale={locale}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {action.type === "wellness" && action.ids.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-primary mb-5 -mt-5">
+                        {locale === routing.defaultLocale
+                          ? "Paket Kebugaran Terkait"
+                          : "Related Wellness Packages"}
+                      </h4>
+                      <div
+                        key={actionIndex}
+                        ref={scrollRef}
+                        className={cn(
+                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
+                        )}
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                      >
+                        {action.ids.map((item: any, index: number) => (
+                          <div key={index} className="w-4/10 h-auto shrink-0">
+                            <WellnessCardSlide
+                              key={index}
+                              id={item}
+                              locale={locale}
+                              index={index}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {action.type === "vendors" && action.ids.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-primary mb-5">
+                        {locale === routing.defaultLocale
+                          ? "Rumah Sakit/ Penyedia Terkait"
+                          : "Related Hospitals/ Providers"}
+                      </h4>
+                      <div
+                        key={actionIndex}
+                        ref={scrollRef}
+                        className={cn(
+                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
+                        )}
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                      >
+                        {action.ids.map((item: any, index: number) => (
+                          <div key={index} className="w-3/6 h-auto shrink-0">
+                            <VendorCardSlide
+                              key={index}
+                              id={item}
+                              locale={locale}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {action.type === "hotels" && action.ids.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-primary mb-5 -mt-5">
+                        {locale === routing.defaultLocale
+                          ? "Hotel Terkait"
+                          : "Related Hotels"}
+                      </h4>
+                      <div
+                        key={actionIndex}
+                        ref={scrollRef}
+                        className={cn(
+                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
+                        )}
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                      >
+                        {action.ids.map((item: any, index: number) => (
+                          <div key={index} className="w-3/6 h-auto shrink-0">
+                            <HotelCardSlide
+                              key={index}
+                              id={item}
+                              locale={locale}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {action.type === "doctors" && action.ids.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-primary mb-5">
+                        {locale === routing.defaultLocale
+                          ? "Dokter Terkait"
+                          : "Related Doctors"}
+                      </h4>
+                      <div
+                        key={actionIndex}
+                        ref={scrollRef}
+                        className={cn(
+                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
+                        )}
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                      >
+                        {action.ids.map((item: any, index: number) => (
+                          <div key={index} className="w-3/6 h-auto shrink-0">
+                            <DoctorCardSlide
+                              key={index}
+                              id={item}
+                              locale={locale}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          {/* 
+          {actions && actions
             actions.type === "vendors" &&
             actions.ids.length > 0 &&
             actions.ids.map((item: any, index: number) => (
               <VendorCardSlide key={index} id={item} locale={locale} />
-            ))}
+            ))} */}
 
           {!isUser && urgent && (
             <div className="mt-3 mb-5 bg-white py-10 px-3 rounded-2xl border w-full">

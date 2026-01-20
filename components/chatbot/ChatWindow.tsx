@@ -51,7 +51,7 @@ export interface Message {
   actions?: {
     type: string;
     ids: any[];
-  };
+  }[];
 }
 
 interface ChatWindowProps {

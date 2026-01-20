@@ -21,7 +21,7 @@ export async function GET(
       );
     }
 
-    const { data } = await getPaymentsByOrderID(order_id);
+    const { data } = (await getPaymentsByOrderID(order_id)).data;
 
     return NextResponse.json({ success: true, data: data }, { status: 200 });
   } catch (error) {

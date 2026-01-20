@@ -7,18 +7,28 @@ import Avatar from "boring-avatars";
 import { getVendorByID } from "@/lib/vendors/get-vendor";
 import { Skeleton } from "../ui/skeleton";
 
-const VendorCardSlide = async ({
-  id,
-  locale,
-}: {
-  id: string;
-  locale: string;
-}) => {
-  const data = await getVendorByID(id);
-  const v: VendorType = data.data;
+const VendorCardSlide = ({ id, locale }: { id: string; locale: string }) => {
+  const [data, setData] = React.useState<VendorType | null>(null);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const fetchData = async () => {
+      const result = await getVendorByID(id);
+      if (isMounted) {
+        setData(result.data);
+      }
+    };
+    fetchData();
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+  if (!data) {
+    return <SkeletonContent />;
+  }
   return (
     <Suspense fallback={<SkeletonContent />}>
-      <Content v={v} locale={locale} />
+      <Content v={data} locale={locale} />
     </Suspense>
   );
 };
@@ -26,7 +36,7 @@ const VendorCardSlide = async ({
 export default VendorCardSlide;
 
 const SkeletonContent = () => {
-  return <Skeleton className="w-full h-32" />;
+  return <Skeleton className="w-full h-auto aspect-video rounded-2xl" />;
 };
 
 const Content = ({ v, locale }: { v: VendorType; locale: string }) => {
