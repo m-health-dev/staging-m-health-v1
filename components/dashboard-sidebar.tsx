@@ -22,6 +22,7 @@ import { BotMessageSquare, ClipboardClock, ScanBarcode } from "lucide-react";
 import { IconHelp, IconSettings } from "@tabler/icons-react";
 import { Account } from "@/types/account.types";
 import { useLocale } from "next-intl";
+import { LanguageSwitcher } from "./utility/lang/LanguageSwitcher";
 
 const data = {
   navMain: [
@@ -92,6 +93,10 @@ export function DashboardSidebar({
       <SidebarContent className="hide-scroll mt-5">
         <p className="text-xs! px-4">Accounts</p>
         <NavUser user={accounts} locale={locale} type="side" />
+
+        <div className="px-4">
+          <LanguageSwitcher />
+        </div>
 
         <NavMenu title="Transaksi" items={data.navMain} />
         <NavMenu title="Chat Bot" items={data.chatbot} />

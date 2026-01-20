@@ -48,6 +48,10 @@ export interface Message {
   };
   urgent?: boolean;
   isStreaming?: boolean;
+  actions?: {
+    type: string;
+    ids: any[];
+  };
 }
 
 interface ChatWindowProps {
@@ -353,6 +357,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                       sessionId={sessionId}
                       urgent={msg.urgent}
                       isStreaming={msg.isStreaming}
+                      actions={msg.actions}
                     />
                   </div>
                 ))}

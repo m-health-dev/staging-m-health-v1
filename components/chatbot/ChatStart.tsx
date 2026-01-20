@@ -140,6 +140,7 @@ const ChatStart = ({
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let fullMessage = "";
+      let actions: any[] = [];
       let sessionId = "";
       let isUrgent = false;
       let buffer = "";
@@ -151,6 +152,16 @@ const ChatStart = ({
           switch (eventType) {
             case "connected":
               console.log("Stream connected:", data);
+              if (data.text) {
+                fullMessage += data.text;
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === botMessageId
+                      ? { ...msg, message: fullMessage, isStreaming: true }
+                      : msg
+                  )
+                );
+              }
               break;
 
             case "chunk":
@@ -175,6 +186,10 @@ const ChatStart = ({
                 fullMessage = data.reply;
               }
 
+              if (data.actions) {
+                actions = data.actions;
+              }
+
               setMessages((prev) =>
                 prev.map((msg) =>
                   msg.id === botMessageId
@@ -183,6 +198,7 @@ const ChatStart = ({
                         message: fullMessage,
                         urgent: isUrgent,
                         isStreaming: false,
+                        actions: actions,
                       }
                     : msg
                 )
@@ -304,6 +320,8 @@ const ChatStart = ({
             ? {
                 ...msg,
                 message: fullMessage || msg.message,
+                urgent: isUrgent,
+                actions: actions,
                 isStreaming: false,
               }
             : msg

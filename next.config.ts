@@ -13,9 +13,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  allowedDevOrigins: ["192.168.18.252", "192.168.18.253", "*.m-health.id"],
+  allowedDevOrigins: [
+    "192.168.18.252",
+    "192.168.18.253",
+    "0.0.0.0:2026",
+    "192.168.18.34:3030",
+    "*.m-health.id",
+  ],
   images: {
-    // unoptimized: true,
+    // dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {
         protocol: "https",

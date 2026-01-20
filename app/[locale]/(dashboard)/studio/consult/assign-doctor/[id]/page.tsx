@@ -9,6 +9,7 @@ import React from "react";
 import Image from "next/image";
 import Avatar from "boring-avatars";
 import AssignDoctorForm from "./assign-doctor-form";
+import { ConsultScheduleType } from "@/types/consult.types";
 
 const AssignDoctorPage = async ({
   params,
@@ -18,7 +19,7 @@ const AssignDoctorPage = async ({
   const { id } = await params;
   const { data } = await getConsultationByID(id);
   const t = await getTranslations("utility");
-  const c = data.data;
+  const c: ConsultScheduleType = data.data;
   const locale = await getLocale();
   return (
     <div className="mb-20">
@@ -57,6 +58,24 @@ const AssignDoctorPage = async ({
                 size={32}
               />
             )}
+            <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
+              <div>
+                <p className="text-muted-foreground">Email Sent to User</p>
+                <p>{c.user_email_status}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Email Sent to Doctor</p>
+                <p>{c.doctor_email_status}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">WhatsApp Sent to User</p>
+                <p>{c.user_wa_status}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">WhatsApp Sent to Doctor</p>
+                <p>{c.doctor_wa_status}</p>
+              </div>
+            </div>
             <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
               <div>
                 <Link href={`mailto:${c.email}`}>
@@ -177,6 +196,9 @@ const AssignDoctorPage = async ({
               </p>
             </div>
           </div>
+        </div>
+        <div className="bg-white max-h-52 overflow-y-auto text-wrap break-anywhere p-4 rounded-2xl mt-10 border">
+          <pre>{JSON.stringify(data, null, 2)}</pre>
         </div>
       </ContainerWrap>
     </div>

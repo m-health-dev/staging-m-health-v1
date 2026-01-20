@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ReactNode, ReactElement, Suspense } from "react";
+import React, { useState, ReactNode, ReactElement, Suspense, act } from "react";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeSanitize from "rehype-sanitize";
@@ -15,6 +15,8 @@ import { Skeleton } from "../ui/skeleton";
 import { Spinner } from "../ui/spinner";
 import { cn } from "@/lib/utils";
 import LoadingChat from "../utility/loading-chat";
+import VendorCard from "../vendor-hotel/vendor-card";
+import VendorCardSlide from "../vendor-hotel/vendor-card-slide";
 
 const ReactMarkdown = dynamic(() => import("react-markdown"), {
   ssr: false,
@@ -33,6 +35,10 @@ interface ChatMessageProps {
   sessionId?: string;
   urgent?: boolean;
   isStreaming?: boolean;
+  actions?: {
+    type: string;
+    ids: any[];
+  };
 }
 
 function flattenListChildren(children: ReactNode): ReactNode {
@@ -56,6 +62,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   sessionId,
   urgent,
   isStreaming = false,
+  actions,
 }) => {
   const isUser = sender === "user";
   const [copied, setCopied] = useState(false);
@@ -266,6 +273,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               <LoadingChat />
             </div>
           )}
+
+          {actions && <pre>{JSON.stringify(actions, null, 2)}</pre>}
+
+          {actions &&
+            actions.type === "vendors" &&
+            actions.ids.length > 0 &&
+            actions.ids.map((item: any, index: number) => (
+              <VendorCardSlide key={index} id={item} locale={locale} />
+            ))}
 
           {!isUser && urgent && (
             <div className="mt-3 mb-5 bg-white py-10 px-3 rounded-2xl border w-full">

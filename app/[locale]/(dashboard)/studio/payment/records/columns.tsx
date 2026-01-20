@@ -34,6 +34,7 @@ import {
   Check,
   Copy,
   CopyCheck,
+  Eye,
   MoreHorizontal,
   PenSquare,
   Stethoscope,
@@ -232,12 +233,10 @@ export const columns: ColumnDef<TransactionType>[] = [
                 <p
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
-                    router.push(
-                      `/${locale}/pay/status?order_id=${transaction_id}`
-                    )
+                    router.push(`/${locale}/studio/payment/${transaction_id}`)
                   }
                 >
-                  <PenSquare />
+                  <Eye />
                   View Data
                 </p>
               </DropdownMenuItem>

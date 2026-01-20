@@ -25,6 +25,12 @@ export type ConsultScheduleType = {
   };
   reservation_expires_at: string;
   user: Account;
+  doctor_id: string;
+  user_email_status: string;
+  user_wa_status: string;
+  doctor_email_status: string;
+  doctor_wa_status: string;
+  meeting_link: string;
 };
 
 export type DoctorType = {

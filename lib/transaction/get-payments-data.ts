@@ -101,6 +101,41 @@ export async function getPaymentsByOrderID(order_id: string) {
   }
 }
 
+export async function getPaymentsByOrderIDAdmin(order_id: string) {
+  try {
+    const res = await fetch(`${apiBaseUrl}/api/v1/payments/${order_id}`, {
+      method: "GET",
+      headers: {
+        "X-API-Key": apiSecretKey,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const json = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: null,
+        error: `Failed to receive all transactions/read by order_id data. Cause : ${json.message}`,
+      };
+    }
+
+    // console.log(json.links);
+    return {
+      data: json,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive all transactions/read by order_id Error:", error);
+    return {
+      success: false,
+      data: null,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
+
 export async function getPaymentsByUser(
   user_id: string,
   page: number = 1,

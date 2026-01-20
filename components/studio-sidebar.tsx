@@ -59,6 +59,7 @@ import {
 } from "lucide-react";
 import { Account } from "@/types/account.types";
 import { useLocale } from "next-intl";
+import { LanguageSwitcher } from "./utility/lang/LanguageSwitcher";
 
 const data = {
   user: {
@@ -288,6 +289,10 @@ export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
       <SidebarContent className="hide-scroll">
         <p className="text-xs! px-4">Accounts</p>
         {accounts && <NavUser user={accounts} locale={locale} type="side" />}
+
+        <div className="px-4">
+          <LanguageSwitcher />
+        </div>
 
         <NavMain items={data.navMain} />
         <NavMenu title="Type" items={data.type} />
