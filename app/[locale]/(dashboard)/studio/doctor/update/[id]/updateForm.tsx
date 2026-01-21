@@ -62,8 +62,11 @@ const optionsActiveStatus = [
 
 const UpdateDoctorForm = ({ id, data }: { id: string; data: DoctorType }) => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(
-    data.photo_url || null
+    data.photo_url || null,
   );
+
+  // Error state untuk gambar yang gagal dimuat
+  const [photoError, setPhotoError] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [uploadLoadingPhoto, setUploadLoadingPhoto] = useState(false);
@@ -125,7 +128,7 @@ const UpdateDoctorForm = ({ id, data }: { id: string; data: DoctorType }) => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -147,7 +150,7 @@ const UpdateDoctorForm = ({ id, data }: { id: string; data: DoctorType }) => {
   async function handleDelete(
     url: string,
     field: "photo" | "default",
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -312,29 +315,36 @@ const UpdateDoctorForm = ({ id, data }: { id: string; data: DoctorType }) => {
 
                       {uploadLoadingPhoto ? (
                         <Skeleton className="aspect-square w-2/6 rounded-full mt-3 object-cover border" />
-                      ) : !photoPreview ? (
+                      ) : !photoPreview || photoError ? (
                         <FormControl>
-                          <Dropzone
-                            accept={{ "image/*": [] }}
-                            maxSize={1024 * 1024 * 5}
-                            onDrop={async (acceptedFiles) => {
-                              setUploadLoadingPhoto(true);
-                              const url = await handleImageUpload(
-                                acceptedFiles
-                              );
+                          <div>
+                            {photoError && (
+                              <div className="text-red-500 text-sm mb-2">
+                                Gambar gagal dimuat. Silakan upload ulang.
+                              </div>
+                            )}
+                            <Dropzone
+                              accept={{ "image/*": [] }}
+                              maxSize={1024 * 1024 * 5}
+                              onDrop={async (acceptedFiles) => {
+                                setUploadLoadingPhoto(true);
+                                setPhotoError(false);
+                                const url =
+                                  await handleImageUpload(acceptedFiles);
 
-                              if (url) {
-                                form.setValue("photo_url", url);
-                                setPhotoPreview(url); // tampilkan preview
-                                setUploadLoadingPhoto(false);
-                              }
-                            }}
-                            onError={console.error}
-                            className="hover:bg-muted bg-white rounded-2xl"
-                          >
-                            <DropzoneEmptyState />
-                            <DropzoneContent />
-                          </Dropzone>
+                                if (url) {
+                                  form.setValue("photo_url", url);
+                                  setPhotoPreview(url); // tampilkan preview
+                                  setUploadLoadingPhoto(false);
+                                }
+                              }}
+                              onError={console.error}
+                              className="hover:bg-muted bg-white rounded-2xl"
+                            >
+                              <DropzoneEmptyState />
+                              <DropzoneContent />
+                            </Dropzone>
+                          </div>
                         </FormControl>
                       ) : (
                         photoPreview && (
@@ -345,6 +355,7 @@ const UpdateDoctorForm = ({ id, data }: { id: string; data: DoctorType }) => {
                               height={320}
                               alt={photoPreview}
                               className="aspect-square w-42 h-42 rounded-full mt-3 object-cover border"
+                              onError={() => setPhotoError(true)}
                             />
                             <Button
                               size="sm"
@@ -355,9 +366,9 @@ const UpdateDoctorForm = ({ id, data }: { id: string; data: DoctorType }) => {
                                   photoPreview.replace(
                                     process.env
                                       .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                    ""
+                                    "",
                                   ),
-                                  "photo"
+                                  "photo",
                                 )
                               }
                               className="absolute w-10 h-10 top-5 right-0 rounded-full shadow-2xl"
@@ -436,12 +447,12 @@ const UpdateDoctorForm = ({ id, data }: { id: string; data: DoctorType }) => {
                               field.value === "inactive" &&
                                 "text-amber-500 font-semibold hover:text-amber-500 bg-amber-50",
                               field.value === "active" &&
-                                "text-green-600 font-semibold hover:text-green-600 bg-green-50"
+                                "text-green-600 font-semibold hover:text-green-600 bg-green-50",
                             )}
                           >
                             {field.value
                               ? optionsActiveStatus.find(
-                                  (o) => o.value === field.value
+                                  (o) => o.value === field.value,
                                 )?.label
                               : "Pilih Status"}
                           </Button>
@@ -463,7 +474,7 @@ const UpdateDoctorForm = ({ id, data }: { id: string; data: DoctorType }) => {
                                       o.value === "active" &&
                                         "bg-green-50! text-green-500! hover:bg-green-100! hover:ring ring-inset hover:ring-green-500",
                                       o.value === "inactive" &&
-                                        "bg-amber-50! text-amber-500! hover:bg-amber-100! hover:ring ring-inset hover:ring-amber-500"
+                                        "bg-amber-50! text-amber-500! hover:bg-amber-100! hover:ring ring-inset hover:ring-amber-500",
                                     )}
                                     onSelect={() => {
                                       form.setValue("status", o.value);

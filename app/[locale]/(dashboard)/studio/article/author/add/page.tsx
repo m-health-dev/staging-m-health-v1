@@ -41,8 +41,11 @@ import { ComboBoxArticleAuthorJob } from "@/components/Form/ComboBoxArticleAutho
 
 const AddArticleAuthorPage = () => {
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
-    null
+    null,
   );
+
+  // Error state untuk gambar yang gagal dimuat
+  const [profileImageError, setProfileImageError] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [uploadLoadingProfileImage, setUploadLoadingProfileImage] =
@@ -74,7 +77,7 @@ const AddArticleAuthorPage = () => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -126,7 +129,7 @@ const AddArticleAuthorPage = () => {
   async function handleDelete(
     url: string,
     field: "profile_image" | "reference",
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -208,29 +211,36 @@ const AddArticleAuthorPage = () => {
                       </FormDescription>
                       {uploadLoadingProfileImage ? (
                         <Skeleton className="aspect-square w-1/2 rounded-full mt-3 object-cover border" />
-                      ) : profileImagePreview === null ? (
+                      ) : profileImagePreview === null || profileImageError ? (
                         <FormControl>
-                          <Dropzone
-                            accept={{ "image/*": [] }}
-                            maxSize={1024 * 1024 * 5}
-                            onDrop={async (acceptedFiles) => {
-                              setUploadLoadingProfileImage(true);
-                              const url = await handleImageUpload(
-                                acceptedFiles
-                              );
+                          <div>
+                            {profileImageError && (
+                              <div className="text-red-500 text-sm mb-2">
+                                Gambar gagal dimuat. Silakan upload ulang.
+                              </div>
+                            )}
+                            <Dropzone
+                              accept={{ "image/*": [] }}
+                              maxSize={1024 * 1024 * 5}
+                              onDrop={async (acceptedFiles) => {
+                                setUploadLoadingProfileImage(true);
+                                setProfileImageError(false);
+                                const url =
+                                  await handleImageUpload(acceptedFiles);
 
-                              if (url) {
-                                form.setValue("profile_image", url);
-                                setProfileImagePreview(url);
-                                setUploadLoadingProfileImage(false);
-                              }
-                            }}
-                            onError={console.error}
-                            className="hover:bg-muted bg-white rounded-2xl"
-                          >
-                            <DropzoneEmptyState />
-                            <DropzoneContent />
-                          </Dropzone>
+                                if (url) {
+                                  form.setValue("profile_image", url);
+                                  setProfileImagePreview(url);
+                                  setUploadLoadingProfileImage(false);
+                                }
+                              }}
+                              onError={console.error}
+                              className="hover:bg-muted bg-white rounded-2xl"
+                            >
+                              <DropzoneEmptyState />
+                              <DropzoneContent />
+                            </Dropzone>
+                          </div>
                         </FormControl>
                       ) : (
                         profileImagePreview && (
@@ -241,6 +251,7 @@ const AddArticleAuthorPage = () => {
                               height={320}
                               alt={profileImagePreview}
                               className="aspect-square w-1/2 rounded-full mt-3 object-cover border"
+                              onError={() => setProfileImageError(true)}
                             />
                             <Button
                               size="sm"
@@ -251,9 +262,9 @@ const AddArticleAuthorPage = () => {
                                   profileImagePreview.replace(
                                     process.env
                                       .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                    ""
+                                    "",
                                   ),
-                                  "profile_image"
+                                  "profile_image",
                                 )
                               }
                               className="absolute w-10 h-10 top-5 right-2 rounded-full"

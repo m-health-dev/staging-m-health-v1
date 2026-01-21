@@ -83,7 +83,7 @@ const NavHeader = ({
   const [shareLink, setShareLink] = useState(shareSlug);
 
   const [dashButton, setDashButton] = useState<"admin" | "user" | "default">(
-    "default"
+    "default",
   );
 
   const [loadingAccessButton, setLoadingAccessButton] = useState(true);
@@ -266,7 +266,7 @@ const NavHeader = ({
                         href={`/${locale}/${link.path}`}
                         className={cn(
                           "group transition-all duration-300",
-                          i === 0 && "mt-5"
+                          i === 0 && "mt-5",
                         )}
                         data-cursor-clickable
                       >
@@ -353,7 +353,7 @@ const NavHeader = ({
                   {" "}
                   {locale === routing.defaultLocale
                     ? "Alat Kesehatan"
-                    : "Medical Equipment"}
+                    : "Medical Products"}
                 </p>
               </Link>
               <Link

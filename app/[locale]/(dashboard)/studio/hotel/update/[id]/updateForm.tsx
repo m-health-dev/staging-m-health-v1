@@ -47,11 +47,18 @@ const UpdateHotelForm = ({
 }) => {
   const [logoPreview, setLogoPreview] = useState<string | null>(hotelData.logo);
   const [highlightPreview, setHighlightPreview] = useState<string | null>(
-    hotelData.highlight_image
+    hotelData.highlight_image,
   );
   const [referencePreview, setReferencePreview] = useState<string[]>(
-    hotelData.reference_image
+    hotelData.reference_image,
   );
+
+  // Error states untuk gambar yang gagal dimuat
+  const [logoError, setLogoError] = useState(false);
+  const [highlightError, setHighlightError] = useState(false);
+  const [referenceErrors, setReferenceErrors] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   const [loading, setLoading] = useState(false);
   const [uploadLoadingLogo, setUploadLoadingLogo] = useState(false);
@@ -89,7 +96,7 @@ const UpdateHotelForm = ({
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -117,7 +124,7 @@ const UpdateHotelForm = ({
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -138,7 +145,7 @@ const UpdateHotelForm = ({
   async function handleDelete(
     url: string,
     field: "logo" | "highlight" | "reference",
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -298,16 +305,16 @@ const UpdateHotelForm = ({
 
                       {uploadLoadingLogo ? (
                         <Skeleton className="aspect-square w-2/6 rounded-full mt-3 object-cover border" />
-                      ) : !logoPreview ? (
+                      ) : !logoPreview || logoError ? (
                         <FormControl>
                           <Dropzone
                             accept={{ "image/*": [] }}
                             maxSize={1024 * 1024 * 5}
                             onDrop={async (acceptedFiles) => {
                               setUploadLoadingLogo(true);
-                              const url = await handleImageUpload(
-                                acceptedFiles
-                              );
+                              setLogoError(false);
+                              const url =
+                                await handleImageUpload(acceptedFiles);
 
                               if (url) {
                                 form.setValue("logo", url);
@@ -320,6 +327,11 @@ const UpdateHotelForm = ({
                           >
                             <DropzoneEmptyState />
                             <DropzoneContent />
+                            {logoError && (
+                              <div className="text-red-500 text-sm mt-2">
+                                Gambar gagal dimuat. Silakan upload ulang.
+                              </div>
+                            )}
                           </Dropzone>
                         </FormControl>
                       ) : (
@@ -331,6 +343,7 @@ const UpdateHotelForm = ({
                               height={320}
                               alt={logoPreview}
                               className="aspect-square w-42 h-42 rounded-full mt-3 object-cover border"
+                              onError={() => setLogoError(true)}
                             />
                             <Button
                               size="sm"
@@ -341,9 +354,9 @@ const UpdateHotelForm = ({
                                   logoPreview.replace(
                                     process.env
                                       .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                    ""
+                                    "",
                                   ),
-                                  "logo"
+                                  "logo",
                                 )
                               }
                               className="absolute w-10 h-10 top-5 right-0 rounded-full shadow-2xl"
@@ -373,16 +386,16 @@ const UpdateHotelForm = ({
                       </FormDescription>
                       {uploadLoadingHLImage ? (
                         <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
-                      ) : highlightPreview === null ? (
+                      ) : highlightPreview === null || highlightError ? (
                         <FormControl>
                           <Dropzone
                             accept={{ "image/*": [] }}
                             maxSize={1024 * 1024 * 5}
                             onDrop={async (acceptedFiles) => {
                               setUploadLoadingHLImage(true);
-                              const url = await handleImageUpload(
-                                acceptedFiles
-                              );
+                              setHighlightError(false);
+                              const url =
+                                await handleImageUpload(acceptedFiles);
 
                               if (url) {
                                 form.setValue("highlight_image", url);
@@ -395,6 +408,11 @@ const UpdateHotelForm = ({
                           >
                             <DropzoneEmptyState />
                             <DropzoneContent />
+                            {highlightError && (
+                              <div className="text-red-500 text-sm mt-2">
+                                Gambar gagal dimuat. Silakan upload ulang.
+                              </div>
+                            )}
                           </Dropzone>
                         </FormControl>
                       ) : (
@@ -406,6 +424,7 @@ const UpdateHotelForm = ({
                               height={320}
                               alt={highlightPreview}
                               className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                              onError={() => setHighlightError(true)}
                             />
                             <Button
                               size="sm"
@@ -416,9 +435,9 @@ const UpdateHotelForm = ({
                                   highlightPreview.replace(
                                     process.env
                                       .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                    ""
+                                    "",
                                   ),
-                                  "highlight"
+                                  "highlight",
                                 )
                               }
                               className="absolute w-10 h-10 top-5 right-2 rounded-full"
@@ -498,9 +517,8 @@ const UpdateHotelForm = ({
                           onDrop={async (acceptedFiles) => {
                             setUploadLoadingRFImage(true);
 
-                            const urls = await handleBatchImageUpload(
-                              acceptedFiles
-                            );
+                            const urls =
+                              await handleBatchImageUpload(acceptedFiles);
 
                             if (urls) {
                               const oldImages =
@@ -521,36 +539,84 @@ const UpdateHotelForm = ({
                     ) : (
                       referencePreview && (
                         <div className="lg:grid flex flex-col grid-cols-3 gap-5 mb-3">
-                          {referencePreview.map((url, i) => (
-                            <div key={url} className="relative">
-                              <Image
-                                src={url}
-                                width={320}
-                                height={320}
-                                alt={url}
-                                className="aspect-video w-full rounded-2xl mt-3 object-cover border"
-                              />
-                              <Button
-                                size="sm"
-                                type="button"
-                                variant={"destructive_outline"}
-                                onClick={() =>
-                                  handleDelete(
-                                    url.replace(
-                                      process.env
-                                        .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                      ""
-                                    ),
-                                    "reference",
-                                    i
-                                  )
-                                }
-                                className="absolute w-10 h-10 top-5 right-2 rounded-full"
-                              >
-                                {loading ? <Spinner /> : <Trash />}
-                              </Button>
-                            </div>
-                          ))}
+                          {referencePreview.map((url, i) =>
+                            referenceErrors[i] ? (
+                              <div key={url} className="relative">
+                                <Dropzone
+                                  accept={{ "image/*": [] }}
+                                  maxSize={1024 * 1024 * 5}
+                                  maxFiles={1}
+                                  onDrop={async (acceptedFiles) => {
+                                    setUploadLoadingRFImage(true);
+                                    const urls =
+                                      await handleBatchImageUpload(
+                                        acceptedFiles,
+                                      );
+
+                                    if (urls && urls.length > 0) {
+                                      const newReferencePreview = [
+                                        ...referencePreview,
+                                      ];
+                                      newReferencePreview[i] = urls[0];
+                                      form.setValue(
+                                        "reference_image",
+                                        newReferencePreview,
+                                      );
+                                      setReferencePreview(newReferencePreview);
+                                      setReferenceErrors((prev) => ({
+                                        ...prev,
+                                        [i]: false,
+                                      }));
+                                      setUploadLoadingRFImage(false);
+                                    }
+                                  }}
+                                  onError={console.error}
+                                  className="hover:bg-muted bg-white rounded-2xl aspect-video"
+                                >
+                                  <DropzoneEmptyState />
+                                  <DropzoneContent />
+                                  <div className="text-red-500 text-sm mt-2">
+                                    Gambar gagal dimuat. Silakan upload ulang.
+                                  </div>
+                                </Dropzone>
+                              </div>
+                            ) : (
+                              <div key={url} className="relative">
+                                <Image
+                                  src={url}
+                                  width={320}
+                                  height={320}
+                                  alt={url}
+                                  className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                                  onError={() =>
+                                    setReferenceErrors((prev) => ({
+                                      ...prev,
+                                      [i]: true,
+                                    }))
+                                  }
+                                />
+                                <Button
+                                  size="sm"
+                                  type="button"
+                                  variant={"destructive_outline"}
+                                  onClick={() =>
+                                    handleDelete(
+                                      url.replace(
+                                        process.env
+                                          .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
+                                        "",
+                                      ),
+                                      "reference",
+                                      i,
+                                    )
+                                  }
+                                  className="absolute w-10 h-10 top-5 right-2 rounded-full"
+                                >
+                                  {loading ? <Spinner /> : <Trash />}
+                                </Button>
+                              </div>
+                            ),
+                          )}
                           {referencePreview.length !== 5 && (
                             <FormControl>
                               <Dropzone
@@ -561,9 +627,8 @@ const UpdateHotelForm = ({
                                 onDrop={async (acceptedFiles) => {
                                   setUploadLoadingRFImage(true);
 
-                                  const urls = await handleBatchImageUpload(
-                                    acceptedFiles
-                                  );
+                                  const urls =
+                                    await handleBatchImageUpload(acceptedFiles);
 
                                   if (urls) {
                                     const oldImages =

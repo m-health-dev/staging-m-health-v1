@@ -17,57 +17,61 @@ const StudioDashboard = async () => {
   const user = await getUser();
   const accessToken = await getAccessToken();
 
-  const { data: accounts } = await supabase
-    .from("accounts")
-    .select("*")
-    .eq("id", user?.id)
-    .maybeSingle();
+  // Jalankan semua query secara paralel untuk load lebih cepat
+  const [
+    { data: accounts },
+    { count: AccountTotal },
+    { count: ChatSession },
+    { count: Packages },
+    { count: Wellness },
+    { count: Medical },
+    { count: Vendor },
+    { count: Doctor },
+    { count: Hotel },
+    { count: Events },
+    { count: Equipment },
+    { count: Article },
+    { count: ArticleAuthor },
+    { count: ArticleCategory },
+    { count: Hero },
+    { count: Consultation },
+    { count: Payment },
+    { count: TOS },
+    { count: Privacy },
+  ] = await Promise.all([
+    supabase.from("accounts").select("*").eq("id", user?.id).maybeSingle(),
+    supabase.from("accounts").select("id", { count: "exact", head: true }),
+    supabase.from("chat_activity").select("id", { count: "exact", head: true }),
+    supabase.from("packages").select("id", { count: "exact", head: true }),
+    supabase.from("wellness").select("id", { count: "exact", head: true }),
+    supabase.from("medical").select("id", { count: "exact", head: true }),
+    supabase.from("vendor").select("id", { count: "exact", head: true }),
+    supabase.from("doctors").select("id", { count: "exact", head: true }),
+    supabase.from("hotel").select("id", { count: "exact", head: true }),
+    supabase.from("events").select("id", { count: "exact", head: true }),
+    supabase
+      .from("medical_equipment")
+      .select("id", { count: "exact", head: true }),
+    supabase.from("article").select("id", { count: "exact", head: true }),
+    supabase.from("author").select("id", { count: "exact", head: true }),
+    supabase
+      .from("article_category")
+      .select("id", { count: "exact", head: true }),
+    supabase.from("hero_section").select("id", { count: "exact", head: true }),
+    supabase
+      .from("consult_schedule")
+      .select("id", { count: "exact", head: true }),
+    supabase
+      .from("payment_records")
+      .select("id", { count: "exact", head: true }),
+    supabase
+      .from("terms_of_service")
+      .select("id", { count: "exact", head: true }),
+    supabase
+      .from("privacy_policy")
+      .select("id", { count: "exact", head: true }),
+  ]);
 
-  const { count: AccountTotal } = await supabase
-    .from("accounts")
-    .select("id", { count: "exact" });
-  const { count: ChatSession } = await supabase
-    .from("chat_activity")
-    .select("id", { count: "exact" });
-  const { count: Packages } = await supabase
-    .from("packages")
-    .select("id", { count: "exact" });
-  const { count: Wellness } = await supabase
-    .from("wellness")
-    .select("id", { count: "exact" });
-  const { count: Medical } = await supabase
-    .from("medical")
-    .select("id", { count: "exact" });
-  const { count: Vendor } = await supabase
-    .from("vendor")
-    .select("id", { count: "exact" });
-  const { count: Hotel } = await supabase
-    .from("hotel")
-    .select("id", { count: "exact" });
-  const { count: Events } = await supabase
-    .from("events")
-    .select("id", { count: "exact" });
-  const { count: Equipment } = await supabase
-    .from("medical_equipment")
-    .select("id", { count: "exact" });
-  const { count: Article } = await supabase
-    .from("article")
-    .select("id", { count: "exact" });
-  const { count: ArticleAuthor } = await supabase
-    .from("author")
-    .select("id", { count: "exact" });
-  const { count: ArticleCategory } = await supabase
-    .from("article_category")
-    .select("id", { count: "exact" });
-  const { count: Hero } = await supabase
-    .from("hero_section")
-    .select("id", { count: "exact" });
-  const { count: TOS } = await supabase
-    .from("terms_of_service")
-    .select("id", { count: "exact" });
-  const { count: Privacy } = await supabase
-    .from("privacy_policy")
-    .select("id", { count: "exact" });
   return (
     <ContainerWrap>
       <div className="my-10">
@@ -103,10 +107,30 @@ const StudioDashboard = async () => {
         <div className="group/stats">
           <div className="bg-white rounded-2xl overflow-hidden relative border">
             <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+              <h3 className="text-primary font-semibold">{Consultation}</h3>
+            </div>
+            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+              <p>Consultation Scheduled</p>
+            </div>
+          </div>
+        </div>
+        <div className="group/stats">
+          <div className="bg-white rounded-2xl overflow-hidden relative border">
+            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+              <h3 className="text-primary font-semibold">{Payment}</h3>
+            </div>
+            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+              <p>Transaction Recorded</p>
+            </div>
+          </div>
+        </div>
+        <div className="group/stats">
+          <div className="bg-white rounded-2xl overflow-hidden relative border">
+            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
               <h3 className="text-primary font-semibold">{Packages}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Packages</p>
+              <p>Programs</p>
             </div>
           </div>
         </div>
@@ -143,6 +167,16 @@ const StudioDashboard = async () => {
         <div className="group/stats">
           <div className="bg-white rounded-2xl overflow-hidden relative border">
             <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+              <h3 className="text-primary font-semibold">{Doctor}</h3>
+            </div>
+            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+              <p>Doctor</p>
+            </div>
+          </div>
+        </div>
+        <div className="group/stats">
+          <div className="bg-white rounded-2xl overflow-hidden relative border">
+            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
               <h3 className="text-primary font-semibold">{Hotel}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
@@ -156,7 +190,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Equipment}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Medical Equipment</p>
+              <p>Medical Products</p>
             </div>
           </div>
         </div>

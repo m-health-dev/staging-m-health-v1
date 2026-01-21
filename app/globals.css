@@ -125,8 +125,6 @@
 /* Track */
 ::-webkit-scrollbar-track {
   background: transparent;
-  -webkit-box-shadow: inset 0px 0px 31px 9px rgba(255, 255, 255, 0.34);
-  box-shadow: inset 0px 0px 31px 9px rgba(255, 255, 255, 0.34);
 }
 
 /* Handle */

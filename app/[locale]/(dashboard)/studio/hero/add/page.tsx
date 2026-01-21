@@ -38,6 +38,9 @@ import { Switch } from "@/components/ui/switch";
 const AddHero = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+  // Error state untuk gambar yang gagal dimuat
+  const [imageError, setImageError] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [uploadLoadingImage, setUploadLoadingImage] = useState(false);
   const [deletedImages, setDeletedImages] = useState<string[]>([]);
@@ -69,7 +72,7 @@ const AddHero = () => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -199,27 +202,36 @@ const AddHero = () => {
                     </FormLabel>
                     {uploadLoadingImage ? (
                       <Skeleton className="aspect-20/7 w-full rounded-2xl mt-3 object-cover border" />
-                    ) : imagePreview === null ? (
+                    ) : imagePreview === null || imageError ? (
                       <FormControl>
-                        <Dropzone
-                          accept={{ "image/*": [] }}
-                          maxSize={1024 * 1024 * 5}
-                          onDrop={async (acceptedFiles) => {
-                            setUploadLoadingImage(true);
-                            const url = await handleImageUpload(acceptedFiles);
+                        <div>
+                          {imageError && (
+                            <div className="text-red-500 text-sm mb-2">
+                              Gagal memuat gambar. Silakan upload ulang.
+                            </div>
+                          )}
+                          <Dropzone
+                            accept={{ "image/*": [] }}
+                            maxSize={1024 * 1024 * 5}
+                            onDrop={async (acceptedFiles) => {
+                              setUploadLoadingImage(true);
+                              setImageError(false);
+                              const url =
+                                await handleImageUpload(acceptedFiles);
 
-                            if (url) {
-                              form.setValue("image", url);
-                              setImagePreview(url);
-                              setUploadLoadingImage(false);
-                            }
-                          }}
-                          onError={console.error}
-                          className="hover:bg-muted bg-white rounded-2xl"
-                        >
-                          <DropzoneEmptyState />
-                          <DropzoneContent />
-                        </Dropzone>
+                              if (url) {
+                                form.setValue("image", url);
+                                setImagePreview(url);
+                                setUploadLoadingImage(false);
+                              }
+                            }}
+                            onError={console.error}
+                            className="hover:bg-muted bg-white rounded-2xl"
+                          >
+                            <DropzoneEmptyState />
+                            <DropzoneContent />
+                          </Dropzone>
+                        </div>
                       </FormControl>
                     ) : (
                       imagePreview && (
@@ -230,6 +242,7 @@ const AddHero = () => {
                             height={720}
                             alt={imagePreview}
                             className="aspect-20/7 w-full rounded-2xl mt-3 object-cover border"
+                            onError={() => setImageError(true)}
                           />
                           <Button
                             size="sm"
@@ -239,9 +252,9 @@ const AddHero = () => {
                               handleDelete(
                                 imagePreview.replace(
                                   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                  ""
+                                  "",
                                 ),
-                                "image"
+                                "image",
                               )
                             }
                             className="absolute w-10 h-10 top-5 right-2 rounded-full"

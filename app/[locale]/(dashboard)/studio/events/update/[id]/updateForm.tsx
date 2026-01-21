@@ -50,14 +50,21 @@ type UpdateForm = {
 
 const UpdateEventForm = ({ id, data }: UpdateForm) => {
   const [logoPreview, setLogoPreview] = useState<string | null>(
-    data.organized_image
+    data.organized_image,
   );
   const [highlightPreview, setHighlightPreview] = useState<string | null>(
-    data.highlight_image
+    data.highlight_image,
   );
   const [referencePreview, setReferencePreview] = useState<string[]>(
-    data.reference_image
+    data.reference_image,
   );
+
+  // Error states untuk gambar yang gagal dimuat
+  const [logoError, setLogoError] = useState(false);
+  const [highlightError, setHighlightError] = useState(false);
+  const [referenceErrors, setReferenceErrors] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   const [loading, setLoading] = useState(false);
   const [uploadLoadingLogo, setUploadLoadingLogo] = useState(false);
@@ -119,7 +126,7 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -149,7 +156,7 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -171,7 +178,7 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
   async function handleDelete(
     url: string,
     field: "logo" | "highlight" | "reference",
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -350,29 +357,36 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
 
                       {uploadLoadingLogo ? (
                         <Skeleton className="aspect-square w-2/6 rounded-full mt-3 object-cover border" />
-                      ) : !logoPreview ? (
+                      ) : !logoPreview || logoError ? (
                         <FormControl>
-                          <Dropzone
-                            accept={{ "image/*": [] }}
-                            maxSize={1024 * 1024 * 5}
-                            onDrop={async (acceptedFiles) => {
-                              setUploadLoadingLogo(true);
-                              const url = await handleImageUpload(
-                                acceptedFiles
-                              );
+                          <div>
+                            {logoError && (
+                              <div className="text-sm text-red-500 mb-2">
+                                Gambar gagal dimuat. Silakan upload ulang.
+                              </div>
+                            )}
+                            <Dropzone
+                              accept={{ "image/*": [] }}
+                              maxSize={1024 * 1024 * 5}
+                              onDrop={async (acceptedFiles) => {
+                                setUploadLoadingLogo(true);
+                                setLogoError(false);
+                                const url =
+                                  await handleImageUpload(acceptedFiles);
 
-                              if (url) {
-                                form.setValue("organized_image", url);
-                                setLogoPreview(url); // tampilkan preview
-                                setUploadLoadingLogo(false);
-                              }
-                            }}
-                            onError={console.error}
-                            className="hover:bg-muted bg-white rounded-2xl"
-                          >
-                            <DropzoneEmptyState />
-                            <DropzoneContent />
-                          </Dropzone>
+                                if (url) {
+                                  form.setValue("organized_image", url);
+                                  setLogoPreview(url); // tampilkan preview
+                                  setUploadLoadingLogo(false);
+                                }
+                              }}
+                              onError={console.error}
+                              className="hover:bg-muted bg-white rounded-2xl"
+                            >
+                              <DropzoneEmptyState />
+                              <DropzoneContent />
+                            </Dropzone>
+                          </div>
                         </FormControl>
                       ) : (
                         logoPreview && (
@@ -383,6 +397,7 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
                               height={320}
                               alt={logoPreview}
                               className="aspect-square w-42 h-42 rounded-full mt-3 object-cover border"
+                              onError={() => setLogoError(true)}
                             />
                             <Button
                               size="sm"
@@ -393,9 +408,9 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
                                   logoPreview.replace(
                                     process.env
                                       .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                    ""
+                                    "",
                                   ),
-                                  "logo"
+                                  "logo",
                                 )
                               }
                               className="absolute w-10 h-10 top-5 right-0 rounded-full shadow-2xl"
@@ -450,29 +465,36 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
                       </FormDescription>
                       {uploadLoadingHLImage ? (
                         <Skeleton className="aspect-square w-full rounded-2xl mt-3 object-cover border" />
-                      ) : highlightPreview === null ? (
+                      ) : highlightPreview === null || highlightError ? (
                         <FormControl>
-                          <Dropzone
-                            accept={{ "image/*": [] }}
-                            maxSize={1024 * 1024 * 5}
-                            onDrop={async (acceptedFiles) => {
-                              setUploadLoadingHLImage(true);
-                              const url = await handleImageUpload(
-                                acceptedFiles
-                              );
+                          <div>
+                            {highlightError && (
+                              <div className="text-sm text-red-500 mb-2">
+                                Gambar gagal dimuat. Silakan upload ulang.
+                              </div>
+                            )}
+                            <Dropzone
+                              accept={{ "image/*": [] }}
+                              maxSize={1024 * 1024 * 5}
+                              onDrop={async (acceptedFiles) => {
+                                setUploadLoadingHLImage(true);
+                                setHighlightError(false);
+                                const url =
+                                  await handleImageUpload(acceptedFiles);
 
-                              if (url) {
-                                form.setValue("highlight_image", url);
-                                setHighlightPreview(url);
-                                setUploadLoadingHLImage(false);
-                              }
-                            }}
-                            onError={console.error}
-                            className="hover:bg-muted bg-white rounded-2xl"
-                          >
-                            <DropzoneEmptyState />
-                            <DropzoneContent />
-                          </Dropzone>
+                                if (url) {
+                                  form.setValue("highlight_image", url);
+                                  setHighlightPreview(url);
+                                  setUploadLoadingHLImage(false);
+                                }
+                              }}
+                              onError={console.error}
+                              className="hover:bg-muted bg-white rounded-2xl"
+                            >
+                              <DropzoneEmptyState />
+                              <DropzoneContent />
+                            </Dropzone>
+                          </div>
                         </FormControl>
                       ) : (
                         highlightPreview && (
@@ -483,6 +505,7 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
                               height={320}
                               alt={highlightPreview}
                               className="aspect-square w-full rounded-2xl mt-3 object-cover border"
+                              onError={() => setHighlightError(true)}
                             />
                             <Button
                               size="sm"
@@ -493,9 +516,9 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
                                   highlightPreview.replace(
                                     process.env
                                       .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                    ""
+                                    "",
                                   ),
-                                  "highlight"
+                                  "highlight",
                                 )
                               }
                               className="absolute w-10 h-10 top-5 right-2 rounded-full"
@@ -537,9 +560,8 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
                             onDrop={async (acceptedFiles) => {
                               setUploadLoadingRFImage(true);
 
-                              const urls = await handleBatchImageUpload(
-                                acceptedFiles
-                              );
+                              const urls =
+                                await handleBatchImageUpload(acceptedFiles);
 
                               if (urls) {
                                 const oldImages =
@@ -562,32 +584,82 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
                           <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mb-3 mt-3">
                             {referencePreview.map((url, i) => (
                               <div key={i} className="relative">
-                                <Image
-                                  src={url}
-                                  width={320}
-                                  height={320}
-                                  alt={url}
-                                  className="aspect-square w-full rounded-2xl object-cover border"
-                                />
-                                <Button
-                                  size="sm"
-                                  type="button"
-                                  variant={"destructive_outline"}
-                                  onClick={() =>
-                                    handleDelete(
-                                      url.replace(
-                                        process.env
-                                          .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                        ""
-                                      ),
-                                      "reference",
-                                      i
-                                    )
-                                  }
-                                  className="absolute w-10 h-10 top-3 right-2 rounded-full"
-                                >
-                                  {loading ? <Spinner /> : <Trash />}
-                                </Button>
+                                {referenceErrors[i] ? (
+                                  <div>
+                                    <div className="text-sm text-red-500 mb-2">
+                                      Gambar gagal dimuat. Silakan upload ulang.
+                                    </div>
+                                    <Dropzone
+                                      accept={{ "image/*": [] }}
+                                      maxSize={1024 * 1024 * 5}
+                                      onDrop={async (acceptedFiles) => {
+                                        setUploadLoadingRFImage(true);
+                                        const uploadedUrl =
+                                          await handleImageUpload(
+                                            acceptedFiles,
+                                          );
+
+                                        if (uploadedUrl) {
+                                          const newPreviews = [
+                                            ...referencePreview,
+                                          ];
+                                          newPreviews[i] = uploadedUrl;
+                                          setReferencePreview(newPreviews);
+                                          form.setValue(
+                                            "reference_image",
+                                            newPreviews,
+                                          );
+                                          setReferenceErrors((prev) => {
+                                            const newErrors = { ...prev };
+                                            delete newErrors[i];
+                                            return newErrors;
+                                          });
+                                          setUploadLoadingRFImage(false);
+                                        }
+                                      }}
+                                      onError={console.error}
+                                      className="hover:bg-muted bg-white rounded-2xl w-full aspect-square"
+                                    >
+                                      <DropzoneEmptyState />
+                                      <DropzoneContent />
+                                    </Dropzone>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <Image
+                                      src={url}
+                                      width={320}
+                                      height={320}
+                                      alt={url}
+                                      className="aspect-square w-full rounded-2xl object-cover border"
+                                      onError={() =>
+                                        setReferenceErrors((prev) => ({
+                                          ...prev,
+                                          [i]: true,
+                                        }))
+                                      }
+                                    />
+                                    <Button
+                                      size="sm"
+                                      type="button"
+                                      variant={"destructive_outline"}
+                                      onClick={() =>
+                                        handleDelete(
+                                          url.replace(
+                                            process.env
+                                              .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
+                                            "",
+                                          ),
+                                          "reference",
+                                          i,
+                                        )
+                                      }
+                                      className="absolute w-10 h-10 top-3 right-2 rounded-full"
+                                    >
+                                      {loading ? <Spinner /> : <Trash />}
+                                    </Button>
+                                  </>
+                                )}
                               </div>
                             ))}
                             {referencePreview.length !== 5 && (
@@ -600,9 +672,10 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
                                   onDrop={async (acceptedFiles) => {
                                     setUploadLoadingRFImage(true);
 
-                                    const urls = await handleBatchImageUpload(
-                                      acceptedFiles
-                                    );
+                                    const urls =
+                                      await handleBatchImageUpload(
+                                        acceptedFiles,
+                                      );
 
                                     if (urls) {
                                       const oldImages =

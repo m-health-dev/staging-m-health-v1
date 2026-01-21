@@ -133,7 +133,7 @@ const SearchPageClient = ({
           <h4 className="text-primary font-bold mb-10">
             {locale === routing.defaultLocale
               ? "Peralatan Medis"
-              : "Medical Equipment"}
+              : "Medical Products"}
           </h4>
 
           <div className="grid lg:grid-cols-4 grid-cols-1 gap-5">

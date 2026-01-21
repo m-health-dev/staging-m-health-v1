@@ -57,8 +57,11 @@ import { CategoryMultiSelectField } from "../../ComboBoxCategory";
 
 const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
   const [highlightPreview, setHighlightPreview] = useState<string | null>(
-    data.highlight_image
+    data.highlight_image,
   );
+
+  // Error state untuk gambar yang gagal dimuat
+  const [highlightError, setHighlightError] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [uploadLoadingHLImage, setUploadLoadingHLImage] = useState(false);
@@ -70,10 +73,10 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
   const locale = useLocale();
 
   const authorIds = (data.author ?? []).map((a: any) =>
-    typeof a === "string" ? a : a?.id
+    typeof a === "string" ? a : a?.id,
   );
   const categoryIds = (data.category ?? []).map((c: any) =>
-    typeof c === "string" ? c : c?.id
+    typeof c === "string" ? c : c?.id,
   );
 
   const form = useForm<z.infer<typeof ArticleSchema>>({
@@ -102,7 +105,7 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -124,7 +127,7 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
   async function handleDelete(
     url: string,
     field: "highlight" | "reference",
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -266,27 +269,36 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
                     </FormDescription>
                     {uploadLoadingHLImage ? (
                       <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
-                    ) : highlightPreview === null ? (
+                    ) : highlightPreview === null || highlightError ? (
                       <FormControl>
-                        <Dropzone
-                          accept={{ "image/*": [] }}
-                          maxSize={1024 * 1024 * 5}
-                          onDrop={async (acceptedFiles) => {
-                            setUploadLoadingHLImage(true);
-                            const url = await handleImageUpload(acceptedFiles);
+                        <div>
+                          {highlightError && (
+                            <div className="text-sm text-red-500 mb-2">
+                              Gambar gagal dimuat. Silakan upload ulang.
+                            </div>
+                          )}
+                          <Dropzone
+                            accept={{ "image/*": [] }}
+                            maxSize={1024 * 1024 * 5}
+                            onDrop={async (acceptedFiles) => {
+                              setUploadLoadingHLImage(true);
+                              setHighlightError(false);
+                              const url =
+                                await handleImageUpload(acceptedFiles);
 
-                            if (url) {
-                              form.setValue("highlight_image", url);
-                              setHighlightPreview(url);
-                              setUploadLoadingHLImage(false);
-                            }
-                          }}
-                          onError={console.error}
-                          className="hover:bg-muted bg-white rounded-2xl"
-                        >
-                          <DropzoneEmptyState />
-                          <DropzoneContent />
-                        </Dropzone>
+                              if (url) {
+                                form.setValue("highlight_image", url);
+                                setHighlightPreview(url);
+                                setUploadLoadingHLImage(false);
+                              }
+                            }}
+                            onError={console.error}
+                            className="hover:bg-muted bg-white rounded-2xl"
+                          >
+                            <DropzoneEmptyState />
+                            <DropzoneContent />
+                          </Dropzone>
+                        </div>
                       </FormControl>
                     ) : (
                       highlightPreview && (
@@ -297,6 +309,7 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
                             height={1080}
                             alt={highlightPreview}
                             className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                            onError={() => setHighlightError(true)}
                           />
                           <Button
                             size="sm"
@@ -306,9 +319,9 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
                               handleDelete(
                                 highlightPreview.replace(
                                   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                  ""
+                                  "",
                                 ),
-                                "highlight"
+                                "highlight",
                               )
                             }
                             className="absolute w-10 h-10 top-5 right-2 rounded-full"

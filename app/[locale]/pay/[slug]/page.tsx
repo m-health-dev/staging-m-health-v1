@@ -55,8 +55,7 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
     productTypeTitle = locale === "id" ? "Paket" : "Package";
   } else if (productType === "medical_equipment") {
     data = (await getMedicalEquipmentByID(productId as string)).data.data;
-    productTypeTitle =
-      locale === "id" ? "Peralatan Medis" : "Medical Equipment";
+    productTypeTitle = locale === "id" ? "Peralatan Medis" : "Medical Products";
   } else if (productType === "medical") {
     data = (await getMedicalByID(productId as string)).data.data;
     productTypeTitle = locale === "id" ? "Paket Medis" : "Medical Package";
@@ -201,7 +200,7 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                                   {/* <Percent className="size-5 text-red-500 bg-white rounded-full p-1" /> */}
                                   {calculateDiscount(
                                     data.real_price,
-                                    data.discount_price
+                                    data.discount_price,
                                   )}
                                 </p>
                               </div>
@@ -216,7 +215,7 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                               {formatRupiah(
                                 data.discount_price <= 0
                                   ? data.real_price
-                                  : data.discount_price
+                                  : data.discount_price,
                               )}
                             </h5>
                           </div>
@@ -239,12 +238,12 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                 productType={productType}
                 productId={productId}
                 discountPrice={Number(
-                  productType === "consultation" ? 0 : data.discount_price
+                  productType === "consultation" ? 0 : data.discount_price,
                 )}
                 realPrice={Number(
                   productType === "consultation"
                     ? priceConsultation
-                    : data.real_price
+                    : data.real_price,
                 )}
                 account={account}
               />

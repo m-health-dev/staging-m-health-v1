@@ -27,7 +27,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -35,34 +35,32 @@ export async function generateMetadata(
 
   return {
     title: `${
-      locale === routing.defaultLocale ? "Alat Kesehatan" : "Medical Equipment"
+      locale === routing.defaultLocale ? "Alat Kesehatan" : "Medical Products"
     } - M HEALTH`,
     description: `${
       locale === routing.defaultLocale
         ? "Informasi mengenai berbagai alat kesehatan yang tersedia."
-        : "Information about various available medical equipment."
+        : "Information about various available medical products."
     }`,
     openGraph: {
       title: `${
-        locale === routing.defaultLocale
-          ? "Alat Kesehatan"
-          : "Medical Equipment"
+        locale === routing.defaultLocale ? "Alat Kesehatan" : "Medical Products"
       } - M HEALTH`,
       description: `${
         locale === routing.defaultLocale
           ? "Informasi mengenai berbagai alat kesehatan yang tersedia."
-          : "Information about various available medical equipment."
+          : "Information about various available medical products."
       }`,
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "Alat Kesehatan"
-              : "Medical Equipment"
+              : "Medical Products",
           )}&description=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "Informasi mengenai berbagai alat kesehatan yang tersedia."
-              : "Information about various available medical equipment."
+              : "Information about various available medical products.",
           )}&path=${encodeURIComponent(`m-health.id/equipment`)}`,
           width: 800,
           height: 450,
@@ -85,7 +83,7 @@ const EquipmentPage = async ({ searchParams }: Props) => {
           <h1>
             {locale === routing.defaultLocale
               ? "Alat Kesehatan"
-              : "Health Equipment"}
+              : "Medical Products"}
           </h1>
         </ContainerWrap>
       </div>{" "}
@@ -128,7 +126,7 @@ const Content = async ({
 }) => {
   const { data, total, links, meta } = await getAllPublicMedicalEquipment(
     page,
-    per_page
+    per_page,
   ); // nanti page bisa dynamic
 
   const equipment = Array.isArray(data) ? data : [];

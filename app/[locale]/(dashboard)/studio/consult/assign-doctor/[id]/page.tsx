@@ -1,7 +1,7 @@
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { getConsultationByID } from "@/lib/consult/get-consultation";
-import { Mars, Venus, VenusAndMars } from "lucide-react";
+import { Check, Mars, Venus, VenusAndMars, X } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { get } from "node:http";
@@ -10,6 +10,25 @@ import Image from "next/image";
 import Avatar from "boring-avatars";
 import AssignDoctorForm from "./assign-doctor-form";
 import { ConsultScheduleType } from "@/types/consult.types";
+import { cn } from "@/lib/utils";
+import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
+import { getAgeDetail } from "@/helper/getAge";
+import { routing } from "@/i18n/routing";
+import AvatarDoctor from "@/components/utility/AvatarDoctor";
+
+const formatDOBStringToISO = (dateString?: string) => {
+  if (!dateString) return null;
+
+  const parts = dateString.split("-");
+  if (parts.length !== 3) return null;
+
+  const [day, month, year] = parts;
+
+  // pastikan numeric
+  if (!day || !month || !year) return null;
+
+  return new Date(`${year}-${month}-${day}T00:00:00Z`).toISOString();
+};
 
 const AssignDoctorPage = async ({
   params,
@@ -21,15 +40,16 @@ const AssignDoctorPage = async ({
   const t = await getTranslations("utility");
   const c: ConsultScheduleType = data.data;
   const locale = await getLocale();
+
+  const dobISO = formatDOBStringToISO(c.date_of_birth);
+  const ageDetail = dobISO ? getAgeDetail(new Date(dobISO)) : null;
+
   return (
     <div className="mb-20">
       <ContainerWrap>
         <div className="my-10">
           <h3 className="text-primary font-bold">Assign Doctor</h3>
           <p className="text-muted-foreground mt-2">Consult ID: {id}</p>
-          <p>
-            Created at : <LocalDateTime date={c.created_at} />
-          </p>
         </div>
         <div className="grid lg:grid-cols-3 grid-cols-1 w-full gap-10">
           <div className="space-y-5 lg:col-span-2 w-full">
@@ -58,24 +78,45 @@ const AssignDoctorPage = async ({
                 size={32}
               />
             )}
-            <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
-              <div>
-                <p className="text-muted-foreground">Email Sent to User</p>
-                <p>{c.user_email_status}</p>
+            {c.doctor_id && c.meeting_link && (
+              <div className="border-l-4 border-l-primary p-4 bg-white space-y-3">
+                <div>
+                  <p className="text-muted-foreground mb-1">
+                    {locale === "id" ? "Dokter Ditugaskan" : "Doctor Assigned"}
+                  </p>
+                  {c.doctor_id ? (
+                    <AvatarDoctor
+                      doctor={c.doctor_id}
+                      locale={locale}
+                      size="md"
+                    />
+                  ) : (
+                    <p className="text-muted-foreground">
+                      {locale === "id"
+                        ? "Tidak ada dokter yang ditugaskan."
+                        : "No doctor assigned."}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-muted-foreground mb-1">
+                    {locale === "id" ? "Link Pertemuan" : "Meeting Link"}
+                  </p>
+                  {c.meeting_link ? (
+                    <Link href={c.meeting_link} target="_blank">
+                      <p className="text-primary underline">{c.meeting_link}</p>
+                    </Link>
+                  ) : (
+                    <p className="text-muted-foreground">
+                      {locale === "id"
+                        ? "Tidak ada link pertemuan yang disediakan."
+                        : "No meeting link provided."}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div>
-                <p className="text-muted-foreground">Email Sent to Doctor</p>
-                <p>{c.doctor_email_status}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">WhatsApp Sent to User</p>
-                <p>{c.user_wa_status}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">WhatsApp Sent to Doctor</p>
-                <p>{c.doctor_wa_status}</p>
-              </div>
-            </div>
+            )}
+
             <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
               <div>
                 <Link href={`mailto:${c.email}`}>
@@ -87,29 +128,64 @@ const AssignDoctorPage = async ({
                 <Link
                   href={`whatsapp://send?phone=${c.phone_number.replaceAll(
                     "+",
-                    ""
+                    "",
                   )}`}
                 >
-                  <p className="text-muted-foreground">Phone Number</p>
+                  <p className="text-muted-foreground">
+                    {locale === routing.defaultLocale
+                      ? "Nomor Telepon"
+                      : "Phone Number"}
+                  </p>
                   <p>{c.phone_number}</p>
                 </Link>
               </div>
             </div>
             <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
               <div>
-                <p className="text-muted-foreground">Fullname</p>
+                <p className="text-muted-foreground">
+                  {locale === routing.defaultLocale
+                    ? "Nama Lengkap"
+                    : "Fullname"}
+                </p>
                 <p>{c.fullname}</p>
               </div>
               <div>
-                <p className="text-muted-foreground">Weight</p>
+                <p className="text-muted-foreground">
+                  {locale === routing.defaultLocale
+                    ? "Tanggal Lahir"
+                    : "Date of Birth"}
+                </p>
+                <p className="inline-flex gap-2 items-center">
+                  <span>{c.date_of_birth}</span>
+                  {ageDetail && (
+                    <span className="bg-gray-50 border border-gray-500 px-3 font-sans text-sm! py-1 rounded-full inline-flex w-fit text-muted-foreground">
+                      {ageDetail.years}{" "}
+                      {locale === routing.defaultLocale ? "Tahun" : "Years"}{" "}
+                      {ageDetail.months}{" "}
+                      {locale === routing.defaultLocale ? "Bulan" : "Months"}
+                    </span>
+                  )}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-muted-foreground">
+                  {locale === routing.defaultLocale ? "Berat Badan" : "Weight"}
+                </p>
                 <p>{c.weight}kg</p>
               </div>
               <div>
-                <p className="text-muted-foreground">Height</p>
+                <p className="text-muted-foreground">
+                  {locale === routing.defaultLocale ? "Tinggi Badan" : "Height"}
+                </p>
                 <p>{c.height}cm</p>
               </div>
               <div>
-                <p className="text-muted-foreground">Gender</p>
+                <p className="text-muted-foreground">
+                  {locale === routing.defaultLocale
+                    ? "Jenis Kelamin"
+                    : "Gender"}
+                </p>
                 {c.gender === "male" ? (
                   <div className="inline-flex items-center gap-2 bg-blue-100 px-3 py-1 rounded-full border border-primary">
                     <Mars className="size-4 text-primary" />
@@ -128,7 +204,11 @@ const AssignDoctorPage = async ({
                 )}
               </div>
               <div>
-                <p className="text-muted-foreground">Domicile/ Location</p>
+                <p className="text-muted-foreground">
+                  {locale === routing.defaultLocale
+                    ? "Domisili/ Lokasi"
+                    : "Domicile/ Location"}
+                </p>
                 <div>
                   <p>{c.location.address}</p>
                   <p>{c.location.district}</p>
@@ -137,8 +217,122 @@ const AssignDoctorPage = async ({
                 </div>
               </div>
             </div>
+            <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5 bg-white p-4 rounded-2xl border">
+              <div>
+                <p className="text-muted-foreground mb-1">
+                  {locale === routing.defaultLocale
+                    ? "Dibuat pada"
+                    : "Created at"}
+                </p>
+                <p>
+                  <LocalDateTime date={c.created_at} />
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground mb-1">
+                  {locale === routing.defaultLocale
+                    ? "Diperbarui pada"
+                    : "Updated at"}
+                </p>
+                <p>
+                  <LocalDateTime date={c.updated_at} />
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground mb-1">
+                  {locale === routing.defaultLocale
+                    ? "Email Terkirim ke Pengguna"
+                    : "Email Sent to User"}
+                </p>
+                <p
+                  className={cn(
+                    "inline-flex items-center gap-1 text-sm!",
+                    c.user_email_status === "sent"
+                      ? "bg-green-50 border-green-500 text-green-500 border rounded-full px-3 py-1"
+                      : "bg-amber-50 border-amber-500 text-amber-500 border rounded-full px-3 py-1",
+                  )}
+                >
+                  {c.user_email_status === "sent" ? (
+                    <Check className="size-5" />
+                  ) : (
+                    <X className="size-5" />
+                  )}
+                  {c.user_email_status === "sent" ? "Sent" : "Not Sent"}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground mb-1">
+                  {locale === routing.defaultLocale
+                    ? "Email Terkirim ke Dokter"
+                    : "Email Sent to Doctor"}
+                </p>
+                <p
+                  className={cn(
+                    "inline-flex items-center gap-1 text-sm!",
+                    c.doctor_email_status === "sent"
+                      ? "bg-green-50 border-green-500 text-green-500 border rounded-full px-3 py-1"
+                      : "bg-amber-50 border-amber-500 text-amber-500 border rounded-full px-3 py-1",
+                  )}
+                >
+                  {c.doctor_email_status === "sent" ? (
+                    <Check className="size-5" />
+                  ) : (
+                    <X className="size-5" />
+                  )}
+                  {c.doctor_email_status === "sent" ? "Sent" : "Not Sent"}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground mb-1">
+                  {locale === routing.defaultLocale
+                    ? "WhatsApp Terkirim ke Pengguna"
+                    : "WhatsApp Sent to User"}
+                </p>
+                <p
+                  className={cn(
+                    "inline-flex items-center gap-1 text-sm!",
+                    c.user_wa_status === "sent"
+                      ? "bg-green-50 border-green-500 text-green-500 border rounded-full px-3 py-1"
+                      : "bg-amber-50 border-amber-500 text-amber-500 border rounded-full px-3 py-1",
+                  )}
+                >
+                  {c.user_wa_status === "sent" ? (
+                    <Check className="size-5" />
+                  ) : (
+                    <X className="size-5" />
+                  )}
+                  {c.user_wa_status === "sent" ? "Sent" : "Not Sent"}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground mb-1">
+                  {locale === routing.defaultLocale
+                    ? "WhatsApp Terkirim ke Dokter"
+                    : "WhatsApp Sent to Doctor"}
+                </p>
+                <p
+                  className={cn(
+                    "inline-flex items-center gap-1 text-sm!",
+                    c.doctor_wa_status === "sent"
+                      ? "bg-green-50 border-green-500 text-green-500 border rounded-full px-3 py-1"
+                      : "bg-amber-50 border-amber-500 text-amber-500 border rounded-full px-3 py-1",
+                  )}
+                >
+                  {c.doctor_wa_status === "sent" ? (
+                    <Check className="size-5" />
+                  ) : (
+                    <X className="size-5" />
+                  )}
+                  {c.doctor_wa_status === "sent" ? "Sent" : "Not Sent"}
+                </p>
+              </div>
+            </div>
             <div className="border-l-4 border-l-gray-400 px-4 bg-gray-50 py-3">
-              <p className="text-muted-foreground">Payment Status</p>
+              <p className="text-muted-foreground mb-1">
+                {locale === routing.defaultLocale
+                  ? "Status Pembayaran"
+                  : "Payment Status"}
+              </p>
               {c.payment_status === "success" ? (
                 <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full">
                   {c.payment_status}
@@ -154,14 +348,20 @@ const AssignDoctorPage = async ({
               )}
             </div>
             <div className="border-l-4 border-l-health px-4 bg-green-50 py-3">
-              <p className="text-muted-foreground">Scheduled Datetime</p>
-              <h6 className="text-health bg-white py-2 px-4 border rounded-full inline-flex font-semibold">
+              <p className="text-muted-foreground mb-1">
+                {locale === routing.defaultLocale
+                  ? "Jadwal Waktu"
+                  : "Scheduled Datetime"}
+              </p>
+              <p className="text-health bg-white py-2 px-4 border rounded-full inline-flex font-semibold">
                 <LocalDateTime date={c.scheduled_datetime} />
-              </h6>
+              </p>
             </div>
             <div>
-              <p className="text-muted-foreground">
-                Consulation/ Conversation Session
+              <p className="text-muted-foreground mb-1">
+                {locale === routing.defaultLocale
+                  ? "ID Sesi Konsultasi/ Chat"
+                  : "Consultation/ Chat Session ID"}
               </p>
               {c.chat_session.length >= 22 ? (
                 <Link
@@ -174,10 +374,43 @@ const AssignDoctorPage = async ({
               )}
             </div>
             <div>
-              <p className="text-muted-foreground">Complaint</p>
+              <p className="text-muted-foreground mb-1">
+                {locale === routing.defaultLocale
+                  ? "Kondisi Kesehatan"
+                  : "Health Condition"}
+              </p>
               <div className=" bg-white py-2 px-3 min-h-12 flex items-center text-gray-800 border rounded-2xl text-wrap">
                 <p>{c.complaint}</p>
               </div>
+            </div>
+            <div>
+              <p className="text-muted-foreground mb-1">
+                {locale === routing.defaultLocale
+                  ? "Gambar Referensi"
+                  : "Reference Images"}
+              </p>
+              {c.reference_image && c.reference_image.length > 0 ? (
+                <div className="grid grid-cols-3 gap-4">
+                  {c.reference_image.map((img: string, index: number) => (
+                    <ImageZoom key={index}>
+                      <Image
+                        key={index}
+                        src={img}
+                        alt={`Reference Image ${index + 1}`}
+                        width={300}
+                        height={300}
+                        className="w-full h-48 object-cover rounded-2xl border"
+                      />
+                    </ImageZoom>
+                  ))}
+                </div>
+              ) : (
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Tidak ada gambar referensi."
+                    : "No reference images available."}
+                </p>
+              )}
             </div>
 
             {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
@@ -190,16 +423,16 @@ const AssignDoctorPage = async ({
             />
             <div className="border-l-4 border-l-red-500 bg-red-50 px-4 py-3 mt-4">
               <p className="text-red-600 text-sm!">
-                *Assigning a new doctor will override the previous doctor. After
-                button to assign is clicked, the doctor and user will be
-                notified and the consultation session will be updated.
+                {locale === routing.defaultLocale
+                  ? "Perhatian: Dengan menugaskan dokter, sistem akan secara otomatis mengirimkan email dan WhatsApp kepada dokter dan pengguna mengenai detail konsultasi. Jika terdapat pergantian dokter, mohon pastikan untuk menginformasikan kepada kedua belah pihak secara manual."
+                  : "Attention: By assigning a doctor, the system will automatically send emails and WhatsApp messages to both the doctor and the user regarding the consultation details. If there is a change of doctor, please ensure to inform both parties manually."}
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-white max-h-52 overflow-y-auto text-wrap break-anywhere p-4 rounded-2xl mt-10 border">
+        {/* <div className="bg-white max-h-52 overflow-y-auto text-wrap break-anywhere p-4 rounded-2xl mt-10 border">
           <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
+        </div> */}
       </ContainerWrap>
     </div>
   );

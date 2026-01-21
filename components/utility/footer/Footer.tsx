@@ -141,7 +141,7 @@ const Footer = () => {
                 <Link href={"/equipment"}>
                   {locale === routing.defaultLocale
                     ? "Alat Kesehatan"
-                    : "Medical Equipment"}
+                    : "Medical Products"}
                 </Link>
               </p>
 

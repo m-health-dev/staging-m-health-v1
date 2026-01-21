@@ -37,8 +37,11 @@ import { Switch } from "@/components/ui/switch";
 
 const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
   const [imagePreview, setImagePreview] = useState<string | null>(
-    hero.image || null
+    hero.image || null,
   );
+
+  // Error state untuk gambar yang gagal dimuat
+  const [imageError, setImageError] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [uploadLoadingImage, setUploadLoadingImage] = useState(false);
@@ -70,7 +73,7 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -200,13 +203,14 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
                     </FormLabel>
                     {uploadLoadingImage ? (
                       <Skeleton className="aspect-20/7 w-full rounded-2xl mt-3 object-cover border" />
-                    ) : imagePreview === null ? (
+                    ) : !imagePreview || imageError ? (
                       <FormControl>
                         <Dropzone
                           accept={{ "image/*": [] }}
                           maxSize={1024 * 1024 * 5}
                           onDrop={async (acceptedFiles) => {
                             setUploadLoadingImage(true);
+                            setImageError(false);
                             const url = await handleImageUpload(acceptedFiles);
 
                             if (url) {
@@ -220,6 +224,11 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
                         >
                           <DropzoneEmptyState />
                           <DropzoneContent />
+                          {imageError && (
+                            <div className="text-red-500 text-sm mt-2">
+                              Gambar gagal dimuat. Silakan upload ulang.
+                            </div>
+                          )}
                         </Dropzone>
                       </FormControl>
                     ) : (
@@ -231,6 +240,7 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
                             height={720}
                             alt={imagePreview}
                             className="aspect-20/7 w-full rounded-2xl mt-3 object-cover border"
+                            onError={() => setImageError(true)}
                           />
                           <Button
                             size="sm"
@@ -240,9 +250,9 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
                               handleDelete(
                                 imagePreview.replace(
                                   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                  ""
+                                  "",
                                 ),
-                                "image"
+                                "image",
                               )
                             }
                             className="absolute w-10 h-10 top-5 right-2 rounded-full"

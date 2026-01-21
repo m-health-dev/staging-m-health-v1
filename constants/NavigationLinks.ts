@@ -38,7 +38,7 @@ export const NavigationLinks = [
     path: "equipment",
     label: {
       id: "Alat Kesehatan",
-      en: "Medical Equipment",
+      en: "Medical Products",
     },
   },
   {

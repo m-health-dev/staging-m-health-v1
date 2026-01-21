@@ -13,6 +13,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 import TransactionStatusClientAdmin from "./transaction-client-admin";
 import { formatRupiah } from "@/helper/rupiah";
+import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -45,7 +46,7 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
       const res = await getMedicalEquipmentByID(productId as string);
       dataProduct = res?.data?.data ?? null;
       productTypeTitle =
-        locale === "id" ? "Peralatan Medis" : "Medical Equipment";
+        locale === "id" ? "Peralatan Medis" : "Medical Products";
     } else if (productType === "medical") {
       const res = await getMedicalByID(productId as string);
       dataProduct = res?.data?.data ?? null;
@@ -91,15 +92,60 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
         </div>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-5 mb-[20vh]">
         <div>
-          <p className="text-muted-foreground text-sm! mb-2">
+          <p className="text-muted-foreground text-sm! mb-1">
             {locale === routing.defaultLocale ? "Pembeli" : "Buyer"}
           </p>
           <AvatarUser user={data.user.id} locale={locale} size="md" />
         </div>
         <div>
-          <p className="text-muted-foreground mb-2">
+          <p className="text-muted-foreground mb-1">
+            {locale === "id" ? "Dibuat pada" : "Created at"}
+          </p>
+          <p>
+            <LocalDateTime date={data.created_at} />
+          </p>
+        </div>
+        <div>
+          <p className="text-muted-foreground mb-1">
+            {locale === "id" ? "Diperbarui pada" : "Updated at"}
+          </p>
+          <p>
+            <LocalDateTime date={data.updated_at} />
+          </p>
+        </div>
+        <div>
+          <p className="text-muted-foreground mb-1">
+            {locale === "id" ? "Data Pelanggan" : "Customer Data"}
+          </p>
+          <div className="bg-white grid lg:grid-cols-2 grid-cols-1 w-full gap-5 p-4 rounded-2xl border">
+            <div>
+              <p className="text-muted-foreground mb-1">Email</p>
+              <p>{data.customer.email}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground mb-1">
+                {locale === "id" ? "Telepon" : "Phone"}
+              </p>
+              <p>{data.customer.phone}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground mb-1">
+                {locale === "id" ? "Nama Lengkap" : "Full Name"}
+              </p>
+              <p>{data.customer.fullname}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground mb-1">
+                {locale === "id" ? "Alamat" : "Address"}
+              </p>
+              <p>{data.customer.address}</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p className="text-muted-foreground mb-1">
             {locale === "id" ? "Total Pembayaran" : "Total Payment"}
           </p>
           <h4 className="text-primary font-bold">
@@ -107,7 +153,7 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
           </h4>
         </div>
         <div>
-          <p className="text-muted-foreground text-sm! mb-2">
+          <p className="text-muted-foreground text-sm! mb-1">
             {locale === routing.defaultLocale ? "Data Produk" : "Product Data"}
           </p>
 

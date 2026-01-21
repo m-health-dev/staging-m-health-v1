@@ -10,18 +10,38 @@ import { getMedicalByID } from "@/lib/medical/get-medical";
 import { MedicalType } from "@/types/medical.types";
 import { useTranslations } from "next-intl";
 import AvatarVendorHotel from "../utility/AvatarVendorHotel";
+import FailedGetDataNotice from "../utility/FailedGetDataNotice";
+import { SearchAlert } from "lucide-react";
+import { Button } from "../ui/button";
 
 const MedicalCardSlide = ({ id, locale }: { id: string; locale: string }) => {
   const [data, setData] = React.useState<MedicalType | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [timedOut, setTimedOut] = React.useState(false);
 
   const t = useTranslations("utility");
 
+  // Timeout setelah 15 detik
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        setTimedOut(true);
+        setLoading(false);
+      }
+    }, 30000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   React.useEffect(() => {
     let isMounted = true;
+    setLoading(true);
+    setTimedOut(false);
     const fetchData = async () => {
       const result = await getMedicalByID(id);
       if (isMounted) {
         setData(result.data.data);
+        setLoading(false);
       }
     };
     fetchData();
@@ -29,8 +49,27 @@ const MedicalCardSlide = ({ id, locale }: { id: string; locale: string }) => {
       isMounted = false;
     };
   }, [id]);
-  if (!data) {
+  if (loading) {
     return <SkeletonContent />;
+  }
+  if (!data || timedOut) {
+    return (
+      <div className="bg-gray-50 rounded-2xl border p-4 h-full flex flex-col gap-3 justify-center items-start">
+        <SearchAlert className="w-5 h-5 text-muted-foreground " />
+        <p className="text-muted-foreground">
+          {locale === "id"
+            ? "Gagal memuat data. Mungkin data ini telah diarsipkan atau dihapus."
+            : "Failed to load data. This data may have been archived or deleted."}
+        </p>
+        <Button className="h-10 rounded-full">
+          <Link
+            href={`/${locale}/search?q=${data?.en_title || data?.id_title || "all"}&type=medical`}
+          >
+            {locale === "id" ? "Cari" : "Search"}
+          </Link>
+        </Button>
+      </div>
+    );
   }
   return (
     <Suspense fallback={<SkeletonContent />}>
@@ -62,6 +101,10 @@ const Content = ({
   labels: any;
 }) => {
   const [imageLoaded, setImageLoaded] = React.useState(false);
+
+  // if (!v) {
+  //   return <FailedGetDataNotice />;
+  // }
   return (
     <div
       key={v.id}
@@ -76,7 +119,7 @@ const Content = ({
             className={cn(
               v.duration_by_day !== 0 || v.duration_by_night !== 0
                 ? "absolute bottom-6 left-2 text-muted-foreground bg-white px-4 py-2 rounded-full text-sm! mb-3 z-10 "
-                : "hidden"
+                : "hidden",
             )}
           >
             {v.duration_by_day !== 0 ? v.duration_by_day : ""}{" "}
@@ -87,7 +130,7 @@ const Content = ({
           <Skeleton
             className={cn(
               "absolute inset-0 z-10 rounded-2xl flex w-full justify-center items-center transition-all duration-500",
-              imageLoaded ? "hidden" : "block"
+              imageLoaded ? "hidden" : "block",
             )}
           />
 
@@ -104,7 +147,7 @@ const Content = ({
               loading="lazy"
               className={cn(
                 "relative w-full aspect-square object-center object-cover rounded-2xl transition-all duration-500  group-hover:scale-105",
-                imageLoaded ? "opacity-100" : "opacity-0"
+                imageLoaded ? "opacity-100" : "opacity-0",
               )}
             />
           </div>

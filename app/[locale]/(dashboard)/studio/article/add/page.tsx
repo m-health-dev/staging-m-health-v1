@@ -44,6 +44,9 @@ import { CategoryMultiSelectField } from "../ComboBoxCategory";
 const AddPackage = () => {
   const [highlightPreview, setHighlightPreview] = useState<string | null>(null);
 
+  // Error state untuk gambar yang gagal dimuat
+  const [highlightError, setHighlightError] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [uploadLoadingHLImage, setUploadLoadingHLImage] = useState(false);
   const [deletedImages, setDeletedImages] = useState<string[]>([]);
@@ -78,7 +81,7 @@ const AddPackage = () => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -100,7 +103,7 @@ const AddPackage = () => {
   async function handleDelete(
     url: string,
     field: "highlight" | "reference",
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -227,13 +230,19 @@ const AddPackage = () => {
                     </FormDescription>
                     {uploadLoadingHLImage ? (
                       <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
-                    ) : highlightPreview === null ? (
+                    ) : highlightPreview === null || highlightError ? (
                       <FormControl>
+                        {highlightError && (
+                          <div className="text-red-500 text-sm mb-2">
+                            Gambar gagal dimuat. Silakan upload ulang.
+                          </div>
+                        )}
                         <Dropzone
                           accept={{ "image/*": [] }}
                           maxSize={1024 * 1024 * 5}
                           onDrop={async (acceptedFiles) => {
                             setUploadLoadingHLImage(true);
+                            setHighlightError(false);
                             const url = await handleImageUpload(acceptedFiles);
 
                             if (url) {
@@ -258,6 +267,7 @@ const AddPackage = () => {
                             height={320}
                             alt={highlightPreview}
                             className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                            onError={() => setHighlightError(true)}
                           />
                           <Button
                             size="sm"
@@ -267,9 +277,9 @@ const AddPackage = () => {
                               handleDelete(
                                 highlightPreview.replace(
                                   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                  ""
+                                  "",
                                 ),
-                                "highlight"
+                                "highlight",
                               )
                             }
                             className="absolute w-10 h-10 top-5 right-2 rounded-full"

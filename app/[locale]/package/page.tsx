@@ -25,7 +25,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -34,35 +34,35 @@ export async function generateMetadata(
   return {
     title: `${
       locale === routing.defaultLocale
-        ? "Paket Kebugaran & Medis"
-        : "Wellness & Medical Packages"
+        ? "Program Kebugaran & Medis"
+        : "Wellness & Medical Programs"
     } - M HEALTH`,
     description: `${
       locale === routing.defaultLocale
-        ? "Informasi mengenai berbagai paket kebugaran dan medis yang tersedia."
-        : "Information about various wellness and medical packages available."
+        ? "Informasi mengenai berbagai program kebugaran dan medis yang tersedia."
+        : "Information about various wellness and medical programs available."
     }`,
     openGraph: {
       title: `${
         locale === routing.defaultLocale
-          ? "Paket Kebugaran & Medis"
-          : "Wellness & Medical Packages"
+          ? "Program Kebugaran & Medis"
+          : "Wellness & Medical Programs"
       } - M HEALTH`,
       description: `${
         locale === routing.defaultLocale
-          ? "Informasi mengenai berbagai paket kebugaran dan medis yang tersedia."
-          : "Information about various wellness and medical packages available."
+          ? "Informasi mengenai berbagai program kebugaran dan medis yang tersedia."
+          : "Information about various wellness and medical programs available."
       }`,
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
             locale === routing.defaultLocale
-              ? "Paket Kebugaran & Medis"
-              : "Wellness & Medical Packages"
+              ? "Program Kebugaran & Medis"
+              : "Wellness & Medical Programs",
           )}&description=${encodeURIComponent(
             locale === routing.defaultLocale
-              ? "Informasi mengenai berbagai paket kebugaran dan medis yang tersedia."
-              : "Information about various wellness and medical packages available."
+              ? "Informasi mengenai berbagai program kebugaran dan medis yang tersedia."
+              : "Information about various wellness and medical programs available.",
           )}&path=${encodeURIComponent(`m-health.id/package`)}`,
           width: 800,
           height: 450,
@@ -84,8 +84,8 @@ const PackagePage = async ({ searchParams }: Props) => {
         <ContainerWrap>
           <h1>
             {locale === routing.defaultLocale
-              ? "Paket Kebugaran & Medis"
-              : "Wellness & Medical Packages"}
+              ? "Program Kebugaran & Medis"
+              : "Wellness & Medical Programs"}
           </h1>
         </ContainerWrap>
       </div>{" "}
@@ -128,7 +128,7 @@ const Content = async ({
 }) => {
   const { data, total, links, meta } = await getAllPublicPackages(
     page,
-    per_page
+    per_page,
   ); // nanti page bisa dynamic
 
   const packages = Array.isArray(data) ? data : [];

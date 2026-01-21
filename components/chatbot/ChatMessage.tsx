@@ -30,6 +30,7 @@ import PackageCardSlide from "../package/package-card-slide";
 import WellnessCardSlide from "../wellness/wellness-card-slide";
 import HotelCardSlide from "../vendor-hotel/hotel-card-slide";
 import DoctorCardSlide from "../doctor/doctor-card-slide";
+import LazyActionItem from "./LazyActionItem";
 
 const ReactMarkdown = dynamic(() => import("react-markdown"), {
   ssr: false,
@@ -98,7 +99,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
   cleanMessage = cleanMessage.replaceAll(
     phoneNumber,
-    `[${phoneNumber}](${whatsappLink})`
+    `[${phoneNumber}](${whatsappLink})`,
   );
 
   const fallbackCopy = (text: string) => {
@@ -337,197 +338,257 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               className={cn(
                 "space-y-5 ",
                 actions.map((a, i) =>
-                  a.type === "consultation" ? "" : "border-t mt-5 pt-5 mb-3"
-                )
+                  a.type === "consultation" ? "" : "border-t mt-5 pt-5 mb-3",
+                ),
               )}
             >
               {actions?.map((action, actionIndex) => (
                 <div key={actionIndex}>
                   {action.type === "packages" && action.ids.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-primary mb-5">
-                        {locale === routing.defaultLocale
-                          ? "Paket Terkait"
-                          : "Related Packages"}
-                      </h4>
-                      <div
-                        key={actionIndex}
-                        ref={scrollRef}
-                        className={cn(
-                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
-                        )}
-                        onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUp}
-                        onMouseLeave={handleMouseUp}
-                      >
-                        {action.ids.map((item: any, index: number) => (
-                          <div key={index} className="w-4/10 h-auto shrink-0">
-                            <PackageCardSlide
+                    <LazyActionItem
+                      index={actionIndex}
+                      delay={200}
+                      minHeight="250px"
+                      rootMargin="50px"
+                    >
+                      <div>
+                        <h4 className="font-semibold text-primary mb-5">
+                          {locale === routing.defaultLocale
+                            ? "Paket Terkait"
+                            : "Related Packages"}
+                        </h4>
+                        <div
+                          key={actionIndex}
+                          ref={scrollRef}
+                          className={cn(
+                            "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                          )}
+                          onMouseDown={handleMouseDown}
+                          onMouseMove={handleMouseMove}
+                          onMouseUp={handleMouseUp}
+                          onMouseLeave={handleMouseUp}
+                        >
+                          {action.ids.map((item: any, index: number) => (
+                            <div
                               key={index}
-                              id={item}
-                              locale={locale}
-                            />
-                          </div>
-                        ))}
+                              className="lg:w-4/10 w-9/10 h-auto shrink-0"
+                            >
+                              <PackageCardSlide
+                                key={index}
+                                id={item}
+                                locale={locale}
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    </LazyActionItem>
                   )}
 
                   {action.type === "medical" && action.ids.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-primary mb-5">
-                        {locale === routing.defaultLocale
-                          ? "Layanan Medis Terkait"
-                          : "Related Medical Services"}
-                      </h4>
-                      <div
-                        key={actionIndex}
-                        ref={scrollRef}
-                        className={cn(
-                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
-                        )}
-                        onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUp}
-                        onMouseLeave={handleMouseUp}
-                      >
-                        {action.ids.map((item: any, index: number) => (
-                          <div key={index} className="w-4/10 h-auto shrink-0">
-                            <MedicalCardSlide
+                    <LazyActionItem
+                      index={actionIndex}
+                      delay={200}
+                      minHeight="250px"
+                      rootMargin="50px"
+                    >
+                      <div>
+                        <h4 className="font-semibold text-primary mb-5">
+                          {locale === routing.defaultLocale
+                            ? "Layanan Medis Terkait"
+                            : "Related Medical Services"}
+                        </h4>
+                        <div
+                          key={actionIndex}
+                          ref={scrollRef}
+                          className={cn(
+                            "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                          )}
+                          onMouseDown={handleMouseDown}
+                          onMouseMove={handleMouseMove}
+                          onMouseUp={handleMouseUp}
+                          onMouseLeave={handleMouseUp}
+                        >
+                          {action.ids.map((item: any, index: number) => (
+                            <div
                               key={index}
-                              id={item}
-                              locale={locale}
-                            />
-                          </div>
-                        ))}
+                              className="lg:w-4/10 w-9/10 h-auto shrink-0"
+                            >
+                              <MedicalCardSlide
+                                key={index}
+                                id={item}
+                                locale={locale}
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    </LazyActionItem>
                   )}
 
                   {action.type === "wellness" && action.ids.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-primary mb-5 -mt-5">
-                        {locale === routing.defaultLocale
-                          ? "Paket Kebugaran Terkait"
-                          : "Related Wellness Packages"}
-                      </h4>
-                      <div
-                        key={actionIndex}
-                        ref={scrollRef}
-                        className={cn(
-                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
-                        )}
-                        onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUp}
-                        onMouseLeave={handleMouseUp}
-                      >
-                        {action.ids.map((item: any, index: number) => (
-                          <div key={index} className="w-4/10 h-auto shrink-0">
-                            <WellnessCardSlide
+                    <LazyActionItem
+                      index={actionIndex}
+                      delay={200}
+                      minHeight="250px"
+                      rootMargin="50px"
+                    >
+                      <div>
+                        <h4 className="font-semibold text-primary mb-5 -mt-5">
+                          {locale === routing.defaultLocale
+                            ? "Paket Kebugaran Terkait"
+                            : "Related Wellness Packages"}
+                        </h4>
+                        <div
+                          key={actionIndex}
+                          ref={scrollRef}
+                          className={cn(
+                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                          )}
+                          onMouseDown={handleMouseDown}
+                          onMouseMove={handleMouseMove}
+                          onMouseUp={handleMouseUp}
+                          onMouseLeave={handleMouseUp}
+                        >
+                          {action.ids.map((item: any, index: number) => (
+                            <div
                               key={index}
-                              id={item}
-                              locale={locale}
-                              index={index}
-                            />
-                          </div>
-                        ))}
+                              className="lg:w-4/10 w-9/10 h-auto shrink-0"
+                            >
+                              <WellnessCardSlide
+                                key={index}
+                                id={item}
+                                locale={locale}
+                                index={index}
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    </LazyActionItem>
                   )}
 
                   {action.type === "vendors" && action.ids.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-primary mb-5">
-                        {locale === routing.defaultLocale
-                          ? "Rumah Sakit/ Penyedia Terkait"
-                          : "Related Hospitals/ Providers"}
-                      </h4>
-                      <div
-                        key={actionIndex}
-                        ref={scrollRef}
-                        className={cn(
-                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
-                        )}
-                        onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUp}
-                        onMouseLeave={handleMouseUp}
-                      >
-                        {action.ids.map((item: any, index: number) => (
-                          <div key={index} className="w-3/6 h-auto shrink-0">
-                            <VendorCardSlide
+                    <LazyActionItem
+                      index={actionIndex}
+                      delay={200}
+                      minHeight="250px"
+                      rootMargin="50px"
+                    >
+                      <div>
+                        <h4 className="font-semibold text-primary mb-5">
+                          {locale === routing.defaultLocale
+                            ? "Rumah Sakit/ Penyedia Terkait"
+                            : "Related Hospitals/ Providers"}
+                        </h4>
+                        <div
+                          key={actionIndex}
+                          ref={scrollRef}
+                          className={cn(
+                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                          )}
+                          onMouseDown={handleMouseDown}
+                          onMouseMove={handleMouseMove}
+                          onMouseUp={handleMouseUp}
+                          onMouseLeave={handleMouseUp}
+                        >
+                          {action.ids.map((item: any, index: number) => (
+                            <div
                               key={index}
-                              id={item}
-                              locale={locale}
-                            />
-                          </div>
-                        ))}
+                              className="lg:w-3/6 w-5/6 h-auto shrink-0"
+                            >
+                              <VendorCardSlide
+                                key={index}
+                                id={item}
+                                locale={locale}
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    </LazyActionItem>
                   )}
 
                   {action.type === "hotels" && action.ids.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-primary mb-5 -mt-5">
-                        {locale === routing.defaultLocale
-                          ? "Hotel Terkait"
-                          : "Related Hotels"}
-                      </h4>
-                      <div
-                        key={actionIndex}
-                        ref={scrollRef}
-                        className={cn(
-                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
-                        )}
-                        onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUp}
-                        onMouseLeave={handleMouseUp}
-                      >
-                        {action.ids.map((item: any, index: number) => (
-                          <div key={index} className="w-3/6 h-auto shrink-0">
-                            <HotelCardSlide
+                    <LazyActionItem
+                      index={actionIndex}
+                      delay={200}
+                      minHeight="250px"
+                      rootMargin="50px"
+                    >
+                      <div>
+                        <h4 className="font-semibold text-primary mb-5 -mt-5">
+                          {locale === routing.defaultLocale
+                            ? "Hotel Terkait"
+                            : "Related Hotels"}
+                        </h4>
+                        <div
+                          key={actionIndex}
+                          ref={scrollRef}
+                          className={cn(
+                            "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                          )}
+                          onMouseDown={handleMouseDown}
+                          onMouseMove={handleMouseMove}
+                          onMouseUp={handleMouseUp}
+                          onMouseLeave={handleMouseUp}
+                        >
+                          {action.ids.map((item: any, index: number) => (
+                            <div
                               key={index}
-                              id={item}
-                              locale={locale}
-                            />
-                          </div>
-                        ))}
+                              className="lg:w-3/6 w-5/6 h-auto shrink-0"
+                            >
+                              <HotelCardSlide
+                                key={index}
+                                id={item}
+                                locale={locale}
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    </LazyActionItem>
                   )}
 
                   {action.type === "doctors" && action.ids.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-primary mb-5">
-                        {locale === routing.defaultLocale
-                          ? "Dokter Terkait"
-                          : "Related Doctors"}
-                      </h4>
-                      <div
-                        key={actionIndex}
-                        ref={scrollRef}
-                        className={cn(
-                          "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background"
-                        )}
-                        onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUp}
-                        onMouseLeave={handleMouseUp}
-                      >
-                        {action.ids.map((item: any, index: number) => (
-                          <div key={index} className="w-3/6 h-auto shrink-0">
-                            <DoctorCardSlide
+                    <LazyActionItem
+                      index={actionIndex}
+                      delay={200}
+                      minHeight="250px"
+                      rootMargin="50px"
+                    >
+                      <div>
+                        <h4 className="font-semibold text-primary mb-5 -mt-5">
+                          {locale === routing.defaultLocale
+                            ? "Dokter Terkait"
+                            : "Related Doctors"}
+                        </h4>
+                        <div
+                          key={actionIndex}
+                          ref={scrollRef}
+                          className={cn(
+                            "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                          )}
+                          onMouseDown={handleMouseDown}
+                          onMouseMove={handleMouseMove}
+                          onMouseUp={handleMouseUp}
+                          onMouseLeave={handleMouseUp}
+                        >
+                          {action.ids.map((item: any, index: number) => (
+                            <div
                               key={index}
-                              id={item}
-                              locale={locale}
-                            />
-                          </div>
-                        ))}
+                              className="lg:w-3/6 w-5/6 h-auto shrink-0"
+                            >
+                              <DoctorCardSlide
+                                key={index}
+                                id={item}
+                                locale={locale}
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    </LazyActionItem>
                   )}
                 </div>
               ))}
@@ -582,7 +643,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           className={cn(
             `flex mt-2 group transition-all duration-300`,
             isUser ? "justify-end" : "justify-start",
-            !isStreaming ? "opacity-100" : "opacity-0"
+            !isStreaming ? "opacity-100" : "opacity-0",
           )}
         >
           <div

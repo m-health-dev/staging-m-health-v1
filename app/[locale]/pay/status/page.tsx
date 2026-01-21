@@ -30,7 +30,7 @@ const SuccessPayment = async ({ searchParams }: Props) => {
   const status_code = search.status_code as string;
   const transaction_status = search.transaction_status as string;
 
-  const { data } = await getPaymentsByOrderID(order_id);
+  const { data } = (await getPaymentsByOrderID(order_id)).data;
   const locale = await getLocale();
 
   const t = await getTranslations("utility");
@@ -58,7 +58,7 @@ const SuccessPayment = async ({ searchParams }: Props) => {
       const res = await getMedicalEquipmentByID(productId as string);
       dataProduct = res?.data?.data ?? null;
       productTypeTitle =
-        locale === "id" ? "Peralatan Medis" : "Medical Equipment";
+        locale === "id" ? "Peralatan Medis" : "Medical Products";
     } else if (productType === "medical") {
       const res = await getMedicalByID(productId as string);
       dataProduct = res?.data?.data ?? null;

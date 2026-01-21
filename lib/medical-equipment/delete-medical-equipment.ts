@@ -37,10 +37,10 @@ export async function deleteMedicalEquipment(id: string) {
 
     return {
       success: true,
-      message: "Medical equipment deleted successfully!",
+      message: "Medical medical-products deleted successfully!",
     };
   } catch (error) {
-    console.error("Sent equipment/delete Error:", error);
+    console.error("Sent medical-products/delete Error:", error);
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",

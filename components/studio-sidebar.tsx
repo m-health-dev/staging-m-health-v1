@@ -52,6 +52,7 @@ import {
   Package,
   PartyPopper,
   ShieldCheck,
+  ShieldPlus,
   Stethoscope,
   UserCog,
   UserPen,
@@ -89,7 +90,7 @@ const data = {
       icon: HeartPlus,
     },
     {
-      title: "Medical Equipment",
+      title: "Medical Products",
       url: "/studio/equipment",
       icon: BriefcaseMedical,
     },
@@ -174,6 +175,11 @@ const data = {
       name: "Vendor",
       url: "/studio/vendor",
       icon: GalleryHorizontal,
+    },
+    {
+      name: "Insurance",
+      url: "/studio/insurance",
+      icon: ShieldPlus,
     },
     {
       name: "Hotel",

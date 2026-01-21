@@ -54,8 +54,11 @@ type UpdateForm = {
 
 const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
-    data.profile_image
+    data.profile_image,
   );
+
+  // Error state untuk gambar yang gagal dimuat
+  const [profileImageError, setProfileImageError] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [uploadLoadingProfileImage, setUploadLoadingProfileImage] =
@@ -105,7 +108,7 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -157,7 +160,7 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
   async function handleDelete(
     url: string,
     field: "profile_image" | "reference",
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -251,30 +254,37 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
                       </FormDescription>
                       {uploadLoadingProfileImage ? (
                         <Skeleton className="aspect-square w-1/2 rounded-full mt-3 object-cover border" />
-                      ) : profileImagePreview === null ? (
-                        <FormControl>
-                          <Dropzone
-                            accept={{ "image/*": [] }}
-                            maxSize={1024 * 1024 * 5}
-                            onDrop={async (acceptedFiles) => {
-                              setUploadLoadingProfileImage(true);
-                              const url = await handleImageUpload(
-                                acceptedFiles
-                              );
+                      ) : profileImagePreview === null || profileImageError ? (
+                        <>
+                          {profileImageError && (
+                            <div className="text-sm text-red-500 mb-2">
+                              Gambar gagal dimuat. Silakan upload ulang.
+                            </div>
+                          )}
+                          <FormControl>
+                            <Dropzone
+                              accept={{ "image/*": [] }}
+                              maxSize={1024 * 1024 * 5}
+                              onDrop={async (acceptedFiles) => {
+                                setUploadLoadingProfileImage(true);
+                                setProfileImageError(false);
+                                const url =
+                                  await handleImageUpload(acceptedFiles);
 
-                              if (url) {
-                                form.setValue("profile_image", url);
-                                setProfileImagePreview(url);
-                                setUploadLoadingProfileImage(false);
-                              }
-                            }}
-                            onError={console.error}
-                            className="hover:bg-muted bg-white rounded-2xl"
-                          >
-                            <DropzoneEmptyState />
-                            <DropzoneContent />
-                          </Dropzone>
-                        </FormControl>
+                                if (url) {
+                                  form.setValue("profile_image", url);
+                                  setProfileImagePreview(url);
+                                  setUploadLoadingProfileImage(false);
+                                }
+                              }}
+                              onError={console.error}
+                              className="hover:bg-muted bg-white rounded-2xl"
+                            >
+                              <DropzoneEmptyState />
+                              <DropzoneContent />
+                            </Dropzone>
+                          </FormControl>
+                        </>
                       ) : (
                         profileImagePreview && (
                           <div className="relative">
@@ -284,6 +294,7 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
                               height={320}
                               alt={profileImagePreview}
                               className="aspect-square w-1/2 rounded-full mt-3 object-cover border"
+                              onError={() => setProfileImageError(true)}
                             />
                             <Button
                               size="sm"
@@ -294,9 +305,9 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
                                   profileImagePreview.replace(
                                     process.env
                                       .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                    ""
+                                    "",
                                   ),
-                                  "profile_image"
+                                  "profile_image",
                                 )
                               }
                               className="absolute w-10 h-10 top-5 right-2 rounded-full"

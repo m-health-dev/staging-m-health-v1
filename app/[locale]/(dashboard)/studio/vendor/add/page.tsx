@@ -42,6 +42,13 @@ const AddVendor = () => {
   const [highlightPreview, setHighlightPreview] = useState<string | null>(null);
   const [referencePreview, setReferencePreview] = useState<string[]>([]);
 
+  // Error states untuk gambar yang gagal dimuat
+  const [logoError, setLogoError] = useState(false);
+  const [highlightError, setHighlightError] = useState(false);
+  const [referenceErrors, setReferenceErrors] = useState<{
+    [key: number]: boolean;
+  }>({});
+
   const [loading, setLoading] = useState(false);
   const [uploadLoadingLogo, setUploadLoadingLogo] = useState(false);
   const [uploadLoadingHLImage, setUploadLoadingHLImage] = useState(false);
@@ -80,7 +87,7 @@ const AddVendor = () => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -110,7 +117,7 @@ const AddVendor = () => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -132,7 +139,7 @@ const AddVendor = () => {
   async function handleDelete(
     url: string,
     field: "logo" | "highlight" | "reference",
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -281,29 +288,36 @@ const AddVendor = () => {
 
                       {uploadLoadingLogo ? (
                         <Skeleton className="aspect-square w-2/6 rounded-full mt-3 object-cover border" />
-                      ) : !logoPreview ? (
+                      ) : !logoPreview || logoError ? (
                         <FormControl>
-                          <Dropzone
-                            accept={{ "image/*": [] }}
-                            maxSize={1024 * 1024 * 5}
-                            onDrop={async (acceptedFiles) => {
-                              setUploadLoadingLogo(true);
-                              const url = await handleImageUpload(
-                                acceptedFiles
-                              );
+                          <div>
+                            {logoError && (
+                              <div className="text-red-500 text-sm mb-2">
+                                Gambar gagal dimuat. Silakan upload ulang.
+                              </div>
+                            )}
+                            <Dropzone
+                              accept={{ "image/*": [] }}
+                              maxSize={1024 * 1024 * 5}
+                              onDrop={async (acceptedFiles) => {
+                                setUploadLoadingLogo(true);
+                                setLogoError(false);
+                                const url =
+                                  await handleImageUpload(acceptedFiles);
 
-                              if (url) {
-                                form.setValue("logo", url);
-                                setLogoPreview(url); // tampilkan preview
-                                setUploadLoadingLogo(false);
-                              }
-                            }}
-                            onError={console.error}
-                            className="hover:bg-muted bg-white rounded-2xl"
-                          >
-                            <DropzoneEmptyState />
-                            <DropzoneContent />
-                          </Dropzone>
+                                if (url) {
+                                  form.setValue("logo", url);
+                                  setLogoPreview(url); // tampilkan preview
+                                  setUploadLoadingLogo(false);
+                                }
+                              }}
+                              onError={console.error}
+                              className="hover:bg-muted bg-white rounded-2xl"
+                            >
+                              <DropzoneEmptyState />
+                              <DropzoneContent />
+                            </Dropzone>
+                          </div>
                         </FormControl>
                       ) : (
                         logoPreview && (
@@ -314,6 +328,7 @@ const AddVendor = () => {
                               height={320}
                               alt={logoPreview}
                               className="aspect-square w-42 h-42 rounded-full mt-3 object-cover border"
+                              onError={() => setLogoError(true)}
                             />
                             <Button
                               size="sm"
@@ -324,9 +339,9 @@ const AddVendor = () => {
                                   logoPreview.replace(
                                     process.env
                                       .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                    ""
+                                    "",
                                   ),
-                                  "logo"
+                                  "logo",
                                 )
                               }
                               className="absolute w-10 h-10 top-5 right-0 rounded-full shadow-2xl"
@@ -356,29 +371,36 @@ const AddVendor = () => {
                       </FormDescription>
                       {uploadLoadingHLImage ? (
                         <Skeleton className="aspect-square w-full rounded-2xl mt-3 object-cover border" />
-                      ) : highlightPreview === null ? (
+                      ) : highlightPreview === null || highlightError ? (
                         <FormControl>
-                          <Dropzone
-                            accept={{ "image/*": [] }}
-                            maxSize={1024 * 1024 * 5}
-                            onDrop={async (acceptedFiles) => {
-                              setUploadLoadingHLImage(true);
-                              const url = await handleImageUpload(
-                                acceptedFiles
-                              );
+                          <div>
+                            {highlightError && (
+                              <div className="text-red-500 text-sm mb-2">
+                                Gambar gagal dimuat. Silakan upload ulang.
+                              </div>
+                            )}
+                            <Dropzone
+                              accept={{ "image/*": [] }}
+                              maxSize={1024 * 1024 * 5}
+                              onDrop={async (acceptedFiles) => {
+                                setUploadLoadingHLImage(true);
+                                setHighlightError(false);
+                                const url =
+                                  await handleImageUpload(acceptedFiles);
 
-                              if (url) {
-                                form.setValue("highlight_image", url);
-                                setHighlightPreview(url);
-                                setUploadLoadingHLImage(false);
-                              }
-                            }}
-                            onError={console.error}
-                            className="hover:bg-muted bg-white rounded-2xl"
-                          >
-                            <DropzoneEmptyState />
-                            <DropzoneContent />
-                          </Dropzone>
+                                if (url) {
+                                  form.setValue("highlight_image", url);
+                                  setHighlightPreview(url);
+                                  setUploadLoadingHLImage(false);
+                                }
+                              }}
+                              onError={console.error}
+                              className="hover:bg-muted bg-white rounded-2xl"
+                            >
+                              <DropzoneEmptyState />
+                              <DropzoneContent />
+                            </Dropzone>
+                          </div>
                         </FormControl>
                       ) : (
                         highlightPreview && (
@@ -389,6 +411,7 @@ const AddVendor = () => {
                               height={320}
                               alt={highlightPreview}
                               className="aspect-square w-full rounded-2xl mt-3 object-cover border"
+                              onError={() => setHighlightError(true)}
                             />
                             <Button
                               size="sm"
@@ -399,9 +422,9 @@ const AddVendor = () => {
                                   highlightPreview.replace(
                                     process.env
                                       .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                    ""
+                                    "",
                                   ),
-                                  "highlight"
+                                  "highlight",
                                 )
                               }
                               className="absolute w-10 h-10 top-5 right-2 rounded-full"
@@ -481,9 +504,8 @@ const AddVendor = () => {
                           onDrop={async (acceptedFiles) => {
                             setUploadLoadingRFImage(true);
 
-                            const urls = await handleBatchImageUpload(
-                              acceptedFiles
-                            );
+                            const urls =
+                              await handleBatchImageUpload(acceptedFiles);
 
                             if (urls) {
                               const oldImages =
@@ -506,32 +528,80 @@ const AddVendor = () => {
                         <div className="lg:grid flex flex-col grid-cols-3 gap-5 mb-3">
                           {referencePreview.map((url, i) => (
                             <div key={url} className="relative">
-                              <Image
-                                src={url}
-                                width={320}
-                                height={320}
-                                alt={url}
-                                className="aspect-square w-full rounded-2xl mt-3 object-cover border"
-                              />
-                              <Button
-                                size="sm"
-                                type="button"
-                                variant={"destructive_outline"}
-                                onClick={() =>
-                                  handleDelete(
-                                    url.replace(
-                                      process.env
-                                        .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                      ""
-                                    ),
-                                    "reference",
-                                    i
-                                  )
-                                }
-                                className="absolute w-10 h-10 top-5 right-2 rounded-full"
-                              >
-                                {loading ? <Spinner /> : <Trash />}
-                              </Button>
+                              {referenceErrors[i] ? (
+                                <div>
+                                  <div className="text-red-500 text-sm mb-2">
+                                    Gambar gagal dimuat. Silakan upload ulang.
+                                  </div>
+                                  <Dropzone
+                                    accept={{ "image/*": [] }}
+                                    maxSize={1024 * 1024 * 5}
+                                    onDrop={async (acceptedFiles) => {
+                                      setUploadLoadingRFImage(true);
+                                      const uploadedUrl =
+                                        await handleImageUpload(acceptedFiles);
+
+                                      if (uploadedUrl) {
+                                        const newPreviews = [
+                                          ...referencePreview,
+                                        ];
+                                        newPreviews[i] = uploadedUrl;
+                                        setReferencePreview(newPreviews);
+                                        form.setValue(
+                                          "reference_image",
+                                          newPreviews,
+                                        );
+                                        setReferenceErrors((prev) => {
+                                          const newErrors = { ...prev };
+                                          delete newErrors[i];
+                                          return newErrors;
+                                        });
+                                        setUploadLoadingRFImage(false);
+                                      }
+                                    }}
+                                    onError={console.error}
+                                    className="hover:bg-muted bg-white rounded-2xl"
+                                  >
+                                    <DropzoneEmptyState />
+                                    <DropzoneContent />
+                                  </Dropzone>
+                                </div>
+                              ) : (
+                                <>
+                                  <Image
+                                    src={url}
+                                    width={320}
+                                    height={320}
+                                    alt={url}
+                                    className="aspect-square w-full rounded-2xl mt-3 object-cover border"
+                                    onError={() =>
+                                      setReferenceErrors((prev) => ({
+                                        ...prev,
+                                        [i]: true,
+                                      }))
+                                    }
+                                  />
+                                  <Button
+                                    size="sm"
+                                    type="button"
+                                    variant={"destructive_outline"}
+                                    onClick={() =>
+                                      handleDelete(
+                                        url.replace(
+                                          process.env
+                                            .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
+                                          "",
+                                        ),
+                                        "reference",
+                                        i,
+                                      )
+                                    }
+                                    className="absolute w-10 h-10 top-5 right-2 rounded-full"
+                                  >
+                                    {loading ? <Spinner /> : <Trash />}
+                                  </Button>
+                                </>
+                              )}
                             </div>
                           ))}
                           {referencePreview.length !== 5 && (
@@ -544,9 +614,8 @@ const AddVendor = () => {
                                 onDrop={async (acceptedFiles) => {
                                   setUploadLoadingRFImage(true);
 
-                                  const urls = await handleBatchImageUpload(
-                                    acceptedFiles
-                                  );
+                                  const urls =
+                                    await handleBatchImageUpload(acceptedFiles);
 
                                   if (urls) {
                                     const oldImages =

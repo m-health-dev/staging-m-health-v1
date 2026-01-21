@@ -31,11 +31,11 @@ const EquipmentStudio = async ({
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
-          <h4 className="text-primary font-semibold">Medical Equipment</h4>
+          <h4 className="text-primary font-semibold">Medical Products</h4>
         </div>
         <Link href={`/${locale}/studio/equipment/add`}>
           <Button className="rounded-2xl flex lg:w-fit w-full">
-            <Plus /> <p className="lg:block hidden">Add New Equipment</p>
+            <Plus /> <p className="lg:block hidden">Add New Product</p>
           </Button>
         </Link>
       </div>
