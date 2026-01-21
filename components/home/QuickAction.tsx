@@ -94,7 +94,7 @@ const QuickAction = ({
 
       if (target) {
         fullPath = `/${locale}/search?q=${encodeURIComponent(
-          searchQuery
+          searchQuery,
         )}&target=${target}`;
       } else {
         fullPath = `/${locale}/search?q=${encodeURIComponent(searchQuery)}`;
@@ -152,7 +152,7 @@ const QuickAction = ({
     {
       id: 2,
       href: `/${locale}/package`,
-      label: `${locale === routing.defaultLocale ? "Paket" : "Our Packages"}`,
+      label: `${locale === routing.defaultLocale ? "Program" : "Our Programs"}`,
       icon: <HouseHeart />,
     },
     {

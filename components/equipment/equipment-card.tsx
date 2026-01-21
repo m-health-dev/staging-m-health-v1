@@ -33,7 +33,7 @@ const EquipmentCard = ({
           <Skeleton
             className={cn(
               "absolute inset-0 z-10 rounded-2xl flex w-full justify-center items-center transition-all duration-500",
-              imageLoaded ? "hidden" : "block"
+              imageLoaded ? "hidden" : "block",
             )}
           />
 
@@ -50,7 +50,7 @@ const EquipmentCard = ({
               loading="lazy"
               className={cn(
                 "relative w-full aspect-square object-center object-cover rounded-2xl transition-all duration-500  group-hover:scale-105",
-                imageLoaded ? "opacity-100" : "opacity-0"
+                imageLoaded ? "opacity-100" : "opacity-0",
               )}
             />
           </div>
@@ -82,7 +82,7 @@ const EquipmentCard = ({
                         {/* <Percent className="size-5 text-red-500 bg-white rounded-full p-1" /> */}
                         {calculateDiscount(
                           slide.real_price,
-                          slide.discount_price
+                          slide.discount_price,
                         )}
                       </p>
                     </div>
@@ -97,7 +97,7 @@ const EquipmentCard = ({
                     {formatRupiah(
                       slide.discount_price <= 0
                         ? slide.real_price
-                        : slide.discount_price
+                        : slide.discount_price,
                     )}
                   </h5>
                 </div>

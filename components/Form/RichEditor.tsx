@@ -132,7 +132,7 @@ export const RichEditor = React.forwardRef<HTMLDivElement, RichEditorProps>(
         className={cn("flex flex-col space-y-5 rounded-2xl", className)}
       >
         {/* Toolbar */}
-        <div className="sticky top-18 z-99 bg-white/75 backdrop-blur-md rounded-2xl">
+        <div className="sticky top-5 z-99 bg-white/75 backdrop-blur-md rounded-2xl">
           <div className="border border-input  rounded-2xl p-2 flex flex-wrap items-center lg:justify-start justify-center gap-1 *:text-primary *:bg-white *:rounded-md">
             {/* Headings */}
 
@@ -433,7 +433,7 @@ export const RichEditor = React.forwardRef<HTMLDivElement, RichEditorProps>(
         />
       </div>
     );
-  }
+  },
 );
 
 RichEditor.displayName = "RichEditor";

@@ -20,8 +20,8 @@ const PopularPackage = async () => {
       <ContainerWrap>
         <h2 className="font-bold text-primary mt-10">
           {locale === routing.defaultLocale
-            ? "Paket Kebugaran & Medis"
-            : "Wellness & Medical Packages"}
+            ? "Program Kebugaran & Medis"
+            : "Wellness & Medical Programs"}
         </h2>
       </ContainerWrap>
       <Suspense fallback={<SkeletonComponent />}>
@@ -35,7 +35,7 @@ export default PopularPackage;
 
 const SkeletonComponent = () => {
   return (
-    <ContainerWrap>
+    <ContainerWrap className="mt-10">
       <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5">
         {[...Array(5)].map((_, i) => (
           <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />

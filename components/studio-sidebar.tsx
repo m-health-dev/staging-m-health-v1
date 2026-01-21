@@ -36,6 +36,7 @@ import Link from "next/link";
 import {
   BotMessageSquare,
   BriefcaseMedical,
+  CircleX,
   ClipboardClock,
   CreditCard,
   FileText,
@@ -48,6 +49,7 @@ import {
   Hotel,
   Library,
   ListCheck,
+  MessageCircle,
   Newspaper,
   Package,
   PartyPopper,
@@ -262,6 +264,16 @@ const data = {
       name: "Privacy Consent",
       url: "/studio/legal/privacy",
       icon: ShieldCheck,
+    },
+    {
+      name: "Contact Messages",
+      url: "/studio/contact",
+      icon: MessageCircle,
+    },
+    {
+      name: "Error Logs",
+      url: "/studio/error-logs",
+      icon: CircleX,
     },
   ],
 };

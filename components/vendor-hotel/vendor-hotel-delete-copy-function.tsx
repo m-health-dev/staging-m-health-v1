@@ -36,7 +36,12 @@ export function VendorHotelDeleteCopyFunction({
   const [inputName, setInputName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const resourceLabel = resourceType === "vendor" ? "Vendor" : "Hotel";
+  const resourceLabel =
+    resourceType === "vendor"
+      ? "Vendor"
+      : resourceType === "hotel"
+        ? "Hotel"
+        : "Insurance";
 
   const handleCopyLink = async () => {
     try {

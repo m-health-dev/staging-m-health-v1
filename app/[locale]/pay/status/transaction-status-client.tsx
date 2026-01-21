@@ -107,7 +107,7 @@ const TransactionStatusClient = ({
   const handleBuy = async () => {
     setIsLoading(true);
     router.push(
-      `/${locale}/pay/${payID}?product=${data.product_data.id}&type=${data.product_data.type}`
+      `/${locale}/pay/${payID}?product=${data.product_data.id}&type=${data.product_data.type}`,
     );
   };
 
@@ -147,20 +147,22 @@ const TransactionStatusClient = ({
           <p
             className={cn(
               "mb-2 capitalize  px-3 py-1 border rounded-full w-fit inline-flex",
-              data.payment_status === "settlement"
+              data.payment_status === "settlement" ||
+                data.payment_status === "capture"
                 ? "bg-health/10 text-health border-health"
                 : data.payment_status === "pending"
-                ? "bg-amber-100 text-amber-600 border-amber-500"
-                : "bg-red-100 text-red-600 border-red-500"
+                  ? "bg-amber-100 text-amber-600 border-amber-500"
+                  : "bg-red-100 text-red-600 border-red-500",
             )}
           >
             {data.payment_status}
           </p>
-          {data.payment_status === "settlement" && (
-            <h2 className="text-3xl font-semibold mb-4 text-health">
-              {locale === "id" ? "Pembayaran Berhasil" : "Payment Successful"}
-            </h2>
-          )}
+          {data.payment_status === "settlement" ||
+            (data.payment_status === "capture" && (
+              <h2 className="text-3xl font-semibold mb-4 text-health">
+                {locale === "id" ? "Pembayaran Berhasil" : "Payment Successful"}
+              </h2>
+            ))}
           {data.payment_status === "pending" && (
             <h2 className="text-3xl font-semibold mb-4 text-amber-500">
               {locale === "id" ? "Pembayaran Gagal" : "Payment Failed"}
@@ -180,7 +182,8 @@ const TransactionStatusClient = ({
             {data.order_id}
           </p>
 
-          {data.payment_status === "settlement" && (
+          {(data.payment_status === "settlement" ||
+            data.payment_status === "capture") && (
             <p className="mt-4">
               {locale === "id"
                 ? "Terima kasih telah melakukan pembayaran. Berikut adalah detail pembayaran Anda:"
@@ -198,26 +201,29 @@ const TransactionStatusClient = ({
           {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
 
           <div>
-            {order_id && data.payment_status !== "settlement" && (
-              <div className="mt-5 lg:w-fit w-full">
-                <Button
-                  className="h-12 bg-health hover:bg-health rounded-full w-full disabled:opacity-70"
-                  onClick={() => handleBuy()}
-                  disabled={isLoading}
-                >
-                  {isLoading && <Spinner />}
-                  {isLoading
-                    ? locale === "id"
-                      ? "Memproses..."
-                      : "Processing..."
-                    : locale === "id"
-                    ? "Coba Lagi"
-                    : "Try Again"}
-                </Button>
-              </div>
-            )}
             {order_id &&
-              data.payment_status === "settlement" &&
+              data.payment_status !== "settlement" &&
+              data.payment_status !== "capture" && (
+                <div className="mt-5 lg:w-fit w-full">
+                  <Button
+                    className="h-12 bg-health hover:bg-health rounded-full w-full disabled:opacity-70"
+                    onClick={() => handleBuy()}
+                    disabled={isLoading}
+                  >
+                    {isLoading && <Spinner />}
+                    {isLoading
+                      ? locale === "id"
+                        ? "Memproses..."
+                        : "Processing..."
+                      : locale === "id"
+                        ? "Coba Lagi"
+                        : "Try Again"}
+                  </Button>
+                </div>
+              )}
+            {order_id &&
+              (data.payment_status === "settlement" ||
+                data.payment_status === "capture") &&
               productType !== "consultation" && (
                 <div
                   className="mt-5 border-l-4 border-l-primary bg-primary/5
@@ -232,7 +238,8 @@ const TransactionStatusClient = ({
               )}
 
             {order_id &&
-              data.payment_status === "settlement" &&
+              (data.payment_status === "settlement" ||
+                data.payment_status === "capture") &&
               productType === "consultation" && (
                 <div
                   className="mt-5 border-l-4 border-l-health bg-health/5
@@ -262,21 +269,19 @@ const TransactionStatusClient = ({
                         : "Your Consultation Schedule"}
                     </p>
                     <p>
-                      <LocalDateTime date={dataProduct.scheduled_datetime} />
+                      <LocalDateTime
+                        date={dataProduct.data.scheduled_datetime}
+                      />
                     </p>
                   </div>
-                  {dataProduct.complaint && (
+                  {dataProduct.data.complaint && (
                     <div className="mt-5">
                       <p className="text-sm! text-muted-foreground">
                         {locale === "id"
                           ? "Kondisi/ Keluhan Kesehatan Anda"
                           : "Your Health Condition"}
                       </p>
-                      <p>
-                        {locale === "id"
-                          ? `${stripHtml(dataProduct.complaint)}`
-                          : `${stripHtml(dataProduct.complaint)}`}
-                      </p>
+                      <p>{dataProduct.data.complaint}</p>
                     </div>
                   )}
                 </div>

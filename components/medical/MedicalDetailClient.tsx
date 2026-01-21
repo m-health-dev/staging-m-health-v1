@@ -90,7 +90,7 @@ const MedicalDetailClient = ({
                 <Skeleton
                   className={cn(
                     "absolute inset-0 z-10 rounded-2xl flex w-full justify-center items-center transition-all duration-500",
-                    imageLoaded ? "hidden" : "block"
+                    imageLoaded ? "hidden" : "block",
                   )}
                 />
 
@@ -107,7 +107,7 @@ const MedicalDetailClient = ({
                     loading="lazy"
                     className={cn(
                       "relative w-full aspect-square object-center object-cover rounded-2xl transition-all duration-500  group-hover:scale-105",
-                      imageLoaded ? "opacity-100" : "opacity-0"
+                      imageLoaded ? "opacity-100" : "opacity-0",
                     )}
                   />
                 </div>
@@ -232,22 +232,27 @@ const MedicalDetailClient = ({
             product={p}
           />
         </div>
-        <hr />
         <div className="flex flex-wrap lg:gap-5 gap-3 my-5">
           <div className="bg-white p-4 border inline-flex gap-5 rounded-2xl">
-            <div className="inline-flex items-center gap-2">
-              <Sun className="text-primary size-5" />{" "}
-              <p>
-                {p.duration_by_day} {labels.days}
-              </p>
-            </div>
-            <div className="inline-flex items-center gap-2">
-              <Moon className="text-primary size-5" />{" "}
-              <p>
-                {p.duration_by_night} {labels.night}
-              </p>
-            </div>
+            {p.duration_by_day > 0 && (
+              <div className="inline-flex items-center gap-2">
+                <Sun className="text-primary size-5" />{" "}
+                <p>
+                  {p.duration_by_day} {labels.days}
+                </p>
+              </div>
+            )}
+
+            {p.duration_by_night > 0 && (
+              <div className="inline-flex items-center gap-2">
+                <Moon className="text-primary size-5" />{" "}
+                <p>
+                  {p.duration_by_night} {labels.night}
+                </p>
+              </div>
+            )}
           </div>
+
           {p.included.map((inc, i) => (
             <div
               key={inc}
@@ -259,7 +264,6 @@ const MedicalDetailClient = ({
             </div>
           ))}
         </div>
-        <hr />
 
         <div className="flex flex-col gap-5 mt-5">
           <div className="bg-white p-4 border rounded-2xl">

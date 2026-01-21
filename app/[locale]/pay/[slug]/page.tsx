@@ -111,22 +111,19 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                         ? "Jadwal Konsultasi Anda"
                         : "Your Consultation Schedule"}
                     </p>
+                    {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
                     <p>
-                      <LocalDateTime date={data.scheduled_datetime} />
+                      <LocalDateTime date={data.data.scheduled_datetime} />
                     </p>
                   </div>
-                  {data.complaint && (
+                  {data.data.complaint && (
                     <div className="mt-5">
                       <p className="text-sm! text-muted-foreground">
                         {locale === "id"
                           ? "Kondisi/ Keluhan Kesehatan Anda"
                           : "Your Health Condition"}
                       </p>
-                      <p>
-                        {locale === "id"
-                          ? `${stripHtml(data.complaint)}`
-                          : `${stripHtml(data.complaint)}`}
-                      </p>
+                      <p>{data.data.complaint}</p>
                     </div>
                   )}
 

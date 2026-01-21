@@ -13,4 +13,5 @@ export type VendorType = {
   reference_image: string[];
   location_map: string;
   location: string;
+  insurance_id: string[];
 };

@@ -36,6 +36,7 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import { InsuranceMultiSelectField } from "../ComboBoxInsurance";
 
 const AddVendor = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -72,6 +73,7 @@ const AddVendor = () => {
       reference_image: [],
       location_map: "",
       location: "",
+      insurance_id: [],
     },
   });
 
@@ -194,7 +196,7 @@ const AddVendor = () => {
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
+      <div className="my-10 bg-linear-to-b from-background via-background z-10 w-full py-5">
         {name && (
           <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
             Add Partner & Hospital
@@ -232,7 +234,7 @@ const AddVendor = () => {
                   </FormItem>
                 )}
               />
-              <div className="lg:grid flex flex-col grid-cols-2 gap-5 items-start">
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start">
                 <FormField
                   control={form.control}
                   name="location_map"
@@ -490,9 +492,9 @@ const AddVendor = () => {
                     </FormDescription>
                     {uploadLoadingRFImage ? (
                       <div className="lg:grid flex flex-col grid-cols-3 gap-5 mb-3">
-                        <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
-                        <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
-                        <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
+                        <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
+                        <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
+                        <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
                       </div>
                     ) : referencePreview.length === 0 ? (
                       <FormControl>
@@ -570,10 +572,10 @@ const AddVendor = () => {
                                 <>
                                   <Image
                                     src={url}
-                                    width={320}
-                                    height={320}
+                                    width={720}
+                                    height={403}
                                     alt={url}
-                                    className="aspect-square w-full rounded-2xl mt-3 object-cover border"
+                                    className="aspect-video w-full rounded-2xl mt-3 object-cover border"
                                     onError={() =>
                                       setReferenceErrors((prev) => ({
                                         ...prev,
@@ -642,6 +644,8 @@ const AddVendor = () => {
                   </FormItem>
                 )}
               />
+
+              <InsuranceMultiSelectField />
 
               <div className="lg:col-span-2 col-span-1 flex w-full items-center justify-center mt-5">
                 <Button

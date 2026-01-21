@@ -40,14 +40,22 @@ const PackageCard = ({
           className="flex flex-col w-full h-[calc(100%-20px)] relative rounded-2xl transition-all duration-300"
         >
           <div className="relative">
-            <p className="absolute bottom-6 left-2 text-muted-foreground bg-white px-4 py-2 rounded-full text-sm! mb-3 z-50 ">
-              {slide.duration_by_day} {labels.days} {slide.duration_by_night}{" "}
-              {labels.night}
+            <p
+              className={cn(
+                slide.duration_by_day !== 0 || slide.duration_by_night !== 0
+                  ? "absolute bottom-6 left-2 text-muted-foreground bg-white px-4 py-2 rounded-full text-sm! mb-3 z-10 "
+                  : "hidden",
+              )}
+            >
+              {slide.duration_by_day !== 0 ? slide.duration_by_day : ""}{" "}
+              {slide.duration_by_day !== 0 ? labels.days : ""}{" "}
+              {slide.duration_by_night !== 0 ? slide.duration_by_night : ""}{" "}
+              {slide.duration_by_night !== 0 ? labels.night : ""}
             </p>
             <Skeleton
               className={cn(
                 "absolute inset-0 z-10 rounded-2xl flex w-full justify-center items-center transition-all duration-500",
-                imageLoaded ? "hidden" : "block"
+                imageLoaded ? "hidden" : "block",
               )}
             />
 
@@ -64,7 +72,7 @@ const PackageCard = ({
                 loading="lazy"
                 className={cn(
                   "relative w-full aspect-square object-center object-cover rounded-2xl transition-all duration-500  group-hover:scale-105",
-                  imageLoaded ? "opacity-100" : "opacity-0"
+                  imageLoaded ? "opacity-100" : "opacity-0",
                 )}
               />
             </div>
@@ -106,14 +114,22 @@ const PackageCard = ({
         className="flex flex-col w-full h-[calc(100%-20px)] relative rounded-2xl transition-all duration-300"
       >
         <div className="relative">
-          <p className="absolute bottom-6 left-2 text-muted-foreground bg-white px-4 py-2 rounded-full text-sm! mb-3 z-50 ">
-            {slide.duration_by_day} {labels.days} {slide.duration_by_night}{" "}
-            {labels.night}
+          <p
+            className={cn(
+              slide.duration_by_day !== 0 || slide.duration_by_night !== 0
+                ? "absolute bottom-6 left-2 text-muted-foreground bg-white px-4 py-2 rounded-full text-sm! mb-3 z-10 "
+                : "hidden",
+            )}
+          >
+            {slide.duration_by_day !== 0 ? slide.duration_by_day : ""}{" "}
+            {slide.duration_by_day !== 0 ? labels.days : ""}{" "}
+            {slide.duration_by_night !== 0 ? slide.duration_by_night : ""}{" "}
+            {slide.duration_by_night !== 0 ? labels.night : ""}
           </p>
           <Skeleton
             className={cn(
               "absolute inset-0 z-10 rounded-2xl flex w-full justify-center items-center transition-all duration-500",
-              imageLoaded ? "hidden" : "block"
+              imageLoaded ? "hidden" : "block",
             )}
           />
 
@@ -130,7 +146,7 @@ const PackageCard = ({
               loading="lazy"
               className={cn(
                 "relative w-full aspect-square object-center object-cover rounded-2xl transition-all duration-500  group-hover:scale-105",
-                imageLoaded ? "opacity-100" : "opacity-0"
+                imageLoaded ? "opacity-100" : "opacity-0",
               )}
             />
           </div>

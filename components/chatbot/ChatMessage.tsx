@@ -354,8 +354,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                       <div>
                         <h4 className="font-semibold text-primary mb-5">
                           {locale === routing.defaultLocale
-                            ? "Paket Terkait"
-                            : "Related Packages"}
+                            ? "Program Terkait"
+                            : "Related Programs"}
                         </h4>
                         <div
                           key={actionIndex}

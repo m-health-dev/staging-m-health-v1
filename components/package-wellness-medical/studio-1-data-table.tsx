@@ -71,6 +71,8 @@ interface DataTableProps<TData, TValue> {
     | "consult-schedule"
     | "payment-records"
     | "doctor"
+    | "contact"
+    | "error-logs"
     | "default";
   deleteAction?: (id: string) => Promise<{ error?: string }>;
 }
@@ -95,7 +97,7 @@ export function Studio1DataTable<TData, TValue>({
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
 
   // console.log("Data Received in Table:", data);
@@ -187,19 +189,23 @@ export function Studio1DataTable<TData, TValue>({
                         type === "users"
                           ? "fullname"
                           : type === "authors"
-                          ? "name"
-                          : type === "article-category"
-                          ? "id_category"
-                          : type === "hero"
-                          ? "title"
-                          : type === "consult-schedule"
-                          ? "fullname"
-                          : type === "payment-records"
-                          ? "transaction_id"
-                          : type === "doctor"
-                          ? "name"
-                          : "id_title"
-                      }`
+                            ? "name"
+                            : type === "article-category"
+                              ? "id_category"
+                              : type === "hero"
+                                ? "title"
+                                : type === "consult-schedule"
+                                  ? "fullname"
+                                  : type === "payment-records"
+                                    ? "transaction_id"
+                                    : type === "doctor"
+                                      ? "name"
+                                      : type === "contact"
+                                        ? "id"
+                                        : type === "error-logs"
+                                          ? "ray_id"
+                                          : "id_title"
+                      }`,
                     )
                     ?.getFilterValue() as string) ?? ""
                 }
@@ -210,19 +216,23 @@ export function Studio1DataTable<TData, TValue>({
                         type === "users"
                           ? "fullname"
                           : type === "authors"
-                          ? "name"
-                          : type === "article-category"
-                          ? "id_category"
-                          : type === "hero"
-                          ? "title"
-                          : type === "consult-schedule"
-                          ? "fullname"
-                          : type === "payment-records"
-                          ? "transaction_id"
-                          : type === "doctor"
-                          ? "name"
-                          : "id_title"
-                      }`
+                            ? "name"
+                            : type === "article-category"
+                              ? "id_category"
+                              : type === "hero"
+                                ? "title"
+                                : type === "consult-schedule"
+                                  ? "fullname"
+                                  : type === "payment-records"
+                                    ? "transaction_id"
+                                    : type === "doctor"
+                                      ? "name"
+                                      : type === "contact"
+                                        ? "id"
+                                        : type === "error-logs"
+                                          ? "ray_id"
+                                          : "id_title"
+                      }`,
                     )
                     ?.setFilterValue(event.target.value)
                 }
@@ -357,7 +367,7 @@ export function Studio1DataTable<TData, TValue>({
                           <div className="absolute top-1 right-1 z-10">
                             {flexRender(
                               actionCell.column.columnDef.cell,
-                              actionCell.getContext()
+                              actionCell.getContext(),
                             )}
                           </div>
                         )}
@@ -367,7 +377,7 @@ export function Studio1DataTable<TData, TValue>({
                               {!row.getValue("avatar_url") ? (
                                 <Avatar
                                   name={String(
-                                    row.getValue("fullname") || "User"
+                                    row.getValue("fullname") || "User",
                                   )}
                                   className="w-20! h-20! border rounded-full"
                                   colors={[
@@ -399,7 +409,7 @@ export function Studio1DataTable<TData, TValue>({
                               {!row.getValue("profile_image") ? (
                                 <Avatar
                                   name={String(
-                                    row.getValue("name") || "Author"
+                                    row.getValue("name") || "Author",
                                   )}
                                   className="w-20! h-20! border rounded-full"
                                   colors={[
@@ -426,22 +436,44 @@ export function Studio1DataTable<TData, TValue>({
                             </div>
                           )}
 
-                          <div className="mb-2">
-                            {new Date(
-                              row.getValue("created_at")
-                            ).getFullYear() === now.getFullYear() &&
-                              new Date(
-                                row.getValue("created_at")
-                              ).getMonth() === now.getMonth() &&
-                              new Date(row.getValue("created_at")).getDate() ===
-                                now.getDate() && (
-                                <p className="bg-health px-1.5 py-0.5 rounded-lg text-white text-xs! inline-flex w-fit">
-                                  New
-                                </p>
-                              )}
-                          </div>
+                          {type !== "error-logs" ? (
+                            <div className="mb-2">
+                              {new Date(
+                                row.getValue("created_at"),
+                              ).getFullYear() === now.getFullYear() &&
+                                new Date(
+                                  row.getValue("created_at"),
+                                ).getMonth() === now.getMonth() &&
+                                new Date(
+                                  row.getValue("created_at"),
+                                ).getDate() === now.getDate() && (
+                                  <p className="bg-health px-1.5 py-0.5 rounded-lg text-white text-xs! inline-flex w-fit">
+                                    New
+                                  </p>
+                                )}
+                            </div>
+                          ) : (
+                            <div className="mb-2">
+                              {new Date(
+                                row.getValue("accessed_at"),
+                              ).getFullYear() === now.getFullYear() &&
+                                new Date(
+                                  row.getValue("accessed_at"),
+                                ).getMonth() === now.getMonth() &&
+                                new Date(
+                                  row.getValue("accessed_at"),
+                                ).getDate() === now.getDate() && (
+                                  <p className="bg-health px-1.5 py-0.5 rounded-lg text-white text-xs! inline-flex w-fit">
+                                    New
+                                  </p>
+                                )}
+                            </div>
+                          )}
+
                           <p className="text-sm! text-muted-foreground uppercase mb-5">
-                            {String(row.getValue("id")).slice(0, 8)}
+                            {type !== "error-logs"
+                              ? String(row.getValue("id")).slice(0, 8)
+                              : String(row.getValue("ray_id"))}
                           </p>
 
                           {type === "consult-schedule" && (
@@ -473,7 +505,8 @@ export function Studio1DataTable<TData, TValue>({
                             type !== "article-category" &&
                             type !== "hero" &&
                             type !== "consult-schedule" &&
-                            type !== "payment-records" && (
+                            type !== "payment-records" &&
+                            type !== "contact" && (
                               <p className="text-muted-foreground text-sm! mt-2">
                                 {row.getValue("en_title")}
                               </p>
@@ -485,21 +518,47 @@ export function Studio1DataTable<TData, TValue>({
                                 type === "users"
                                   ? "fullname"
                                   : type === "authors"
-                                  ? "name"
-                                  : type === "article-category"
-                                  ? "id_category"
-                                  : type === "hero"
-                                  ? "title"
-                                  : type === "consult-schedule"
-                                  ? "fullname"
-                                  : type === "payment-records"
-                                  ? "fullname"
-                                  : type === "doctor"
-                                  ? "name"
-                                  : "id_title"
-                              }`
+                                    ? "name"
+                                    : type === "article-category"
+                                      ? "id_category"
+                                      : type === "hero"
+                                        ? "title"
+                                        : type === "consult-schedule"
+                                          ? "fullname"
+                                          : type === "payment-records"
+                                            ? "fullname"
+                                            : type === "doctor"
+                                              ? "name"
+                                              : type === "contact"
+                                                ? "name"
+                                                : type === "error-logs"
+                                                  ? "error_code"
+                                                  : "id_title"
+                              }`,
                             )}
                           </h5>
+
+                          {type === "contact" && (
+                            <div>
+                              <p className="text-sm! text-muted-foreground mt-2">
+                                {row.getValue("email")}
+                              </p>
+                            </div>
+                          )}
+
+                          {type === "error-logs" && (
+                            <div>
+                              <p className="text-sm! text-muted-foreground mt-2">
+                                {row.getValue("ip_address")}
+                              </p>
+                              <p className="text-sm! text-muted-foreground mt-2">
+                                {row.getValue("pathname")}
+                              </p>
+                              <p className="text-sm! text-muted-foreground mt-2">
+                                {row.getValue("error_message")}
+                              </p>
+                            </div>
+                          )}
 
                           {type === "doctor" &&
                             Array.isArray(row.getValue("specialty")) && (
@@ -508,13 +567,13 @@ export function Studio1DataTable<TData, TValue>({
                                   (
                                     spec: string,
                                     index: number,
-                                    arr: string[]
+                                    arr: string[],
                                   ) => (
                                     <span key={index}>
                                       {spec}
                                       {index < arr.length - 1 ? ", " : ""}
                                     </span>
-                                  )
+                                  ),
                                 )}
                               </p>
                             )}
@@ -540,18 +599,19 @@ export function Studio1DataTable<TData, TValue>({
                               </div>
                               <div className="inline-flex w-fit mb-2">
                                 {row.getValue("payment_status") ===
-                                "settlement" ? (
+                                  "settlement" ||
+                                row.getValue("payment_status") === "capture" ? (
                                   <p className="text-green-600 font-medium capitalize bg-green-50 px-2 py-1 rounded-full border border-green-500">
-                                    Payment {row.getValue("payment_status")}
+                                    {row.getValue("payment_status")}
                                   </p>
                                 ) : row.getValue("payment_status") ===
                                   "canceled" ? (
                                   <p className="text-red-600 font-medium capitalize bg-red-50 px-2 py-1 rounded-full border border-red-500">
-                                    Payment {row.getValue("payment_status")}
+                                    {row.getValue("payment_status")}
                                   </p>
                                 ) : (
                                   <p className="text-yellow-600 font-medium capitalize bg-yellow-50 px-2 py-1 rounded-full border border-yellow-500">
-                                    Payment {row.getValue("payment_status")}
+                                    {row.getValue("payment_status")}
                                   </p>
                                 )}
                               </div>
@@ -600,27 +660,50 @@ export function Studio1DataTable<TData, TValue>({
                         </div>
                       </div>
                       <div className="space-y-2 mt-3 w-full">
-                        <div>
-                          <p className="text-xs! text-muted-foreground">
-                            Created at
-                          </p>
-                          <p className="text-sm!">
-                            <LocalDateTime date={row.getValue("created_at")} />
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs! text-muted-foreground">
-                            Updated at
-                          </p>
-                          <p className="text-sm!">
-                            <LocalDateTime date={row.getValue("updated_at")} />
-                          </p>
-                        </div>
+                        {type !== "error-logs" ? (
+                          <div>
+                            <p className="text-xs! text-muted-foreground">
+                              Created at
+                            </p>
+                            <p className="text-sm!">
+                              <LocalDateTime
+                                date={row.getValue("created_at")}
+                              />
+                            </p>
+                          </div>
+                        ) : (
+                          <div>
+                            <p className="text-xs! text-muted-foreground">
+                              Accessed at
+                            </p>
+                            <p className="text-sm!">
+                              <LocalDateTime
+                                date={row.getValue("accessed_at")}
+                              />
+                            </p>
+                          </div>
+                        )}
+
+                        {type !== "contact" && type !== "error-logs" && (
+                          <div>
+                            <p className="text-xs! text-muted-foreground">
+                              Updated at
+                            </p>
+                            <p className="text-sm!">
+                              <LocalDateTime
+                                date={row.getValue("updated_at")}
+                              />
+                            </p>
+                          </div>
+                        )}
+
                         {type !== "users" &&
                           type !== "authors" &&
                           type !== "article-category" &&
                           type !== "hero" &&
-                          type !== "consult-schedule" && (
+                          type !== "consult-schedule" &&
+                          type !== "contact" &&
+                          type !== "error-logs" && (
                             <div className="flex justify-end mt-2 absolute bottom-4 right-4">
                               <StatusBadge status={row.getValue("status")} />
                             </div>
@@ -656,7 +739,7 @@ export function Studio1DataTable<TData, TValue>({
             <div
               className={cn(
                 "overflow-hidden rounded-md border bg-white",
-                open ? "2xl:min-w-full 2xl:max-w-full max-w-6xl" : "w-full"
+                open ? "2xl:min-w-full 2xl:max-w-full max-w-6xl" : "w-full",
               )}
             >
               <Table>
@@ -671,7 +754,7 @@ export function Studio1DataTable<TData, TValue>({
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext()
+                                  header.getContext(),
                                 )}
                           </TableHead>
                         );
@@ -691,7 +774,7 @@ export function Studio1DataTable<TData, TValue>({
                             <p className="text-sm!">
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext()
+                                cell.getContext(),
                               )}
                             </p>
                           </TableCell>

@@ -39,6 +39,7 @@ import { useLocale } from "next-intl";
 import { VendorHotelDeleteCopyFunction } from "@/components/vendor-hotel/vendor-hotel-delete-copy-function";
 import { deleteVendor } from "@/lib/vendors/delete-vendor";
 import { baseUrl } from "@/helper/baseUrl";
+import { InsuranceMultiSelectField } from "../../ComboBoxInsurance";
 
 const UpdateVendorForm = ({
   id,
@@ -89,6 +90,10 @@ const UpdateVendorForm = ({
       location: vendorData?.location || "",
     },
   });
+
+  const insuranceIds = (vendorData.insurance_id ?? []).map((a: any) =>
+    typeof a === "string" ? a : a?.id,
+  );
 
   async function handleImageUpload(files: File[]) {
     const formData = new FormData();
@@ -206,7 +211,7 @@ const UpdateVendorForm = ({
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5 flex justify-between items-center">
+      <div className="my-10 bg-linear-to-b from-background via-background z-10 w-full py-5 flex justify-between items-center">
         <div>
           {name && (
             <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
@@ -256,7 +261,7 @@ const UpdateVendorForm = ({
                   </FormItem>
                 )}
               />
-              <div className="lg:grid flex flex-col grid-cols-2 gap-5 items-start">
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start">
                 <FormField
                   control={form.control}
                   name="location_map"
@@ -514,9 +519,9 @@ const UpdateVendorForm = ({
                     </FormDescription>
                     {uploadLoadingRFImage ? (
                       <div className="lg:grid flex flex-col grid-cols-3 gap-5 mb-3">
-                        <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
-                        <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
-                        <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
+                        <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
+                        <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
+                        <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
                       </div>
                     ) : referencePreview.length === 0 ? (
                       <FormControl>
@@ -553,7 +558,7 @@ const UpdateVendorForm = ({
                           {referencePreview.map((url, i) => (
                             <div key={url} className="relative">
                               {referenceErrors[i] ? (
-                                <div className="aspect-square w-full rounded-2xl mt-3 border bg-red-50 flex flex-col items-center justify-center p-4">
+                                <div className="aspect-video w-full rounded-2xl mt-3 border bg-red-50 flex flex-col items-center justify-center p-4">
                                   <p className="text-sm text-red-600 text-center mb-3">
                                     Gambar gagal dimuat
                                   </p>
@@ -595,8 +600,8 @@ const UpdateVendorForm = ({
                                 <>
                                   <Image
                                     src={url}
-                                    width={320}
-                                    height={320}
+                                    width={720}
+                                    height={403}
                                     alt={url}
                                     onError={() =>
                                       setReferenceErrors((prev) => ({
@@ -604,7 +609,7 @@ const UpdateVendorForm = ({
                                         [i]: true,
                                       }))
                                     }
-                                    className="aspect-square w-full rounded-2xl mt-3 object-cover border"
+                                    className="aspect-video w-full rounded-2xl mt-3 object-cover border"
                                   />
                                   <Button
                                     size="sm"
@@ -666,6 +671,10 @@ const UpdateVendorForm = ({
                     <FormMessage />
                   </FormItem>
                 )}
+              />
+
+              <InsuranceMultiSelectField
+                readInsuranceIds={vendorData.insurance_id}
               />
 
               <div className="lg:col-span-2 col-span-1 flex w-full items-center justify-center mt-5">

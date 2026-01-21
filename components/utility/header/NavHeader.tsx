@@ -309,12 +309,13 @@ const NavHeader = ({
                       <NavigationMenuLink href={`/${locale}/package`}>
                         <p className="text-primary font-bold">
                           {locale === routing.defaultLocale
-                            ? "Paket Kebugaran & Medis"
-                            : "Wellness & Medical Packages"}
+                            ? "Program Kebugaran & Medis"
+                            : "Wellness & Medical Programs"}
                         </p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
-                          Lorem ipsum, dolor sit amet consectetur adipisicing
-                          elit. Eaque ratione mollitia repudiandae odio.
+                          {locale === routing.defaultLocale
+                            ? "Program kebugaran dan medis yang dirancang untuk meningkatkan kesehatan Anda secara menyeluruh."
+                            : "Wellness and medical programs designed to improve your overall health."}
                         </p>
                       </NavigationMenuLink>
                       <NavigationMenuLink href={`/${locale}/wellness`}>
@@ -324,8 +325,9 @@ const NavHeader = ({
                             : "Wellness Package"}
                         </p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
-                          Lorem, ipsum dolor sit amet consectetur adipisicing
-                          elit. Sequi, adipisci?
+                          {locale === routing.defaultLocale
+                            ? "Paket kebugaran yang dirancang untuk meningkatkan kesehatan fisik dan mental Anda."
+                            : "Wellness packages designed to enhance your physical and mental health."}
                         </p>
                       </NavigationMenuLink>
                       <NavigationMenuLink href={`/${locale}/medical`}>
@@ -335,8 +337,9 @@ const NavHeader = ({
                             : "Medical Packages"}
                         </p>
                         <p className="line-clamp-2 text-sm! text-muted-foreground mt-1">
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Officiis atque unde sint!
+                          {locale === routing.defaultLocale
+                            ? "Paket medis yang dirancang untuk memenuhi kebutuhan kesehatan spesifik Anda."
+                            : "Medical packages designed to meet your specific health needs."}
                         </p>
                       </NavigationMenuLink>
                     </NavigationMenuContent>

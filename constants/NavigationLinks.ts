@@ -16,8 +16,8 @@ export const NavigationLinks = [
   {
     path: "package",
     label: {
-      id: "Paket Kebugaran & Medis",
-      en: "Packages",
+      id: "Program",
+      en: "Programs",
     },
   },
   {

@@ -90,196 +90,8 @@ interface DataTableProps<TData, TValue> {
   deleteAction?: (id: string) => Promise<{ error?: string }>;
 
   // resource type
-  resourceType: "vendor" | "hotel";
+  resourceType: "vendor" | "hotel" | "insurance";
 }
-
-// function RowContextMenu<TData>({
-//   row,
-//   children,
-//   locale,
-//   resourceType,
-//   deleteAction,
-//   router,
-// }: {
-//   row: Row<TData>;
-//   children: React.ReactNode;
-//   locale?: string;
-//   resourceType: string;
-//   deleteAction?: (id: string) => Promise<{ error?: string }>;
-//   router: ReturnType<typeof useRouter>;
-// }) {
-//   const [copied, setCopied] = useState(false);
-//   const [openConfirm, setOpenConfirm] = useState(false);
-//   const [inputName, setInputName] = useState("");
-//   const [loading, setLoading] = useState(false);
-
-//   const id = row.getValue("id") as string;
-//   const vendorName = row.getValue("name") as string;
-//   const resourceLabel = resourceType === "vendor" ? "Vendor" : "Hotel";
-
-//   const handleCopyLink = async () => {
-//     try {
-//       await navigator.clipboard.writeText(id);
-//       setCopied(true);
-//       toast.success("Success to Copy", { description: `${id}` });
-//       setTimeout(() => setCopied(false), 2000);
-//     } catch (err) {
-//       toast.warning("Failed to Copy ID", { description: `${err}` });
-//     }
-//   };
-
-//   const handleCopyName = async () => {
-//     try {
-//       await navigator.clipboard.writeText(vendorName);
-//       setCopied(true);
-//       toast.success("Success to Copy Name", { description: vendorName });
-//       setTimeout(() => setCopied(false), 2000);
-//     } catch (err) {
-//       toast.warning("Failed to Copy Name", { description: `${err}` });
-//     }
-//   };
-
-//   const handleUpdate = () => {
-//     router.push(`/${locale}/studio/vendor/update/${id}`);
-//   };
-
-//   const handleDelete = async () => {
-//     if (!deleteAction) {
-//       toast.error("Delete function not available.");
-//       return;
-//     }
-
-//     setLoading(true);
-
-//     try {
-//       const res = await deleteAction(id);
-
-//       if (!res?.error) {
-//         toast.success(`${resourceLabel} deleted successfully`, {
-//           description: `${id.slice(0, 8)} - ${vendorName}`,
-//         });
-//         setOpenConfirm(false);
-//         setInputName("");
-//         router.refresh();
-//       } else {
-//         toast.error(`Failed to delete ${resourceLabel}`, {
-//           description: res.error,
-//         });
-//       }
-//     } catch (err: any) {
-//       toast.error(`Failed to delete ${resourceLabel}`, {
-//         description: err.message || String(err),
-//       });
-//     }
-
-//     setLoading(false);
-//   };
-
-//   return (
-//     <>
-//       <ContextMenu>
-//         <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-//         <ContextMenuContent className="w-48">
-//           <ContextMenuItem onClick={handleUpdate}>
-//             <PenSquare className="size-4" />
-//             Update Data
-//           </ContextMenuItem>
-//           <ContextMenuItem
-//             variant="destructive"
-//             onClick={() => setOpenConfirm(true)}
-//           >
-//             <Trash2 className="size-4" />
-//             Delete Data
-//           </ContextMenuItem>
-//           <ContextMenuSeparator />
-//           <ContextMenuItem onClick={handleCopyLink}>
-//             {!copied ? (
-//               <Copy className="size-4" />
-//             ) : (
-//               <Check className="size-4" />
-//             )}
-//             Copy ID
-//           </ContextMenuItem>
-//           <ContextMenuItem onClick={handleCopyName}>
-//             <Copy className="size-4" />
-//             Copy Name
-//           </ContextMenuItem>
-//         </ContextMenuContent>
-//       </ContextMenu>
-
-//       <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
-//         <DialogContent className="sm:max-w-md bg-white">
-//           <DialogHeader>
-//             <DialogTitle asChild>
-//               <h6 className="text-red-500">
-//                 {locale === routing.defaultLocale
-//                   ? `Konfirmasi Penghapusan ${resourceLabel}`
-//                   : `Delete ${resourceLabel} Confirmation`}
-//               </h6>
-//             </DialogTitle>
-//             <p className="text-muted-foreground">
-//               {locale === routing.defaultLocale
-//                 ? "Untuk menghapus vendor ini, silahkan ketik nama vendor:"
-//                 : "To delete this vendor, please type the vendor name:"}{" "}
-//               <span
-//                 className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
-//                 onClick={handleCopyName}
-//               >
-//                 {vendorName}{" "}
-//                 {!copied ? (
-//                   <Copy className="size-4" />
-//                 ) : (
-//                   <Check className="size-4" />
-//                 )}
-//               </span>
-//             </p>
-//           </DialogHeader>
-
-//           {/* Input Konfirmasi */}
-//           <Input
-//             type="text"
-//             value={inputName}
-//             onChange={(e) => setInputName(e.target.value)}
-//             className="w-full border px-3 py-2 h-12 rounded-2xl"
-//             placeholder={
-//               locale === routing.defaultLocale
-//                 ? `Tulis nama ${resourceLabel.toLowerCase()} di sini`
-//                 : `Write ${resourceLabel.toLowerCase()} name here`
-//             }
-//           />
-//           <p className="text-xs! text-red-500">
-//             {locale === routing.defaultLocale
-//               ? "Tindakan ini tidak dapat dibatalkan. Mohon lakukan dengan hati-hati."
-//               : "This action cannot be undone. Please proceed with caution."}
-//           </p>
-
-//           <DialogFooter className="flex justify-end gap-2 mt-4">
-//             <Button
-//               variant="outline"
-//               className="rounded-2xl"
-//               onClick={() => {
-//                 setOpenConfirm(false);
-//                 setInputName("");
-//               }}
-//             >
-//               Cancel
-//             </Button>
-
-//             <Button
-//               variant="destructive"
-//               className="rounded-2xl"
-//               type="submit"
-//               disabled={inputName !== vendorName}
-//               onClick={handleDelete}
-//             >
-//               {loading ? <Spinner /> : "Delete"}
-//             </Button>
-//           </DialogFooter>
-//         </DialogContent>
-//       </Dialog>
-//     </>
-//   );
-// }
 
 export function VendorHotelDataTable<TData, TValue>({
   columns,
@@ -298,7 +110,7 @@ export function VendorHotelDataTable<TData, TValue>({
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
 
   const { open } = useSidebar();
@@ -505,7 +317,7 @@ export function VendorHotelDataTable<TData, TValue>({
                           <div className="absolute top-1 right-1 z-10">
                             {flexRender(
                               actionCell.column.columnDef.cell,
-                              actionCell.getContext()
+                              actionCell.getContext(),
                             )}
                           </div>
                         )}
@@ -537,10 +349,10 @@ export function VendorHotelDataTable<TData, TValue>({
                         <div>
                           <div className="mb-2">
                             {new Date(
-                              row.getValue("created_at")
+                              row.getValue("created_at"),
                             ).getFullYear() === now.getFullYear() &&
                               new Date(
-                                row.getValue("created_at")
+                                row.getValue("created_at"),
                               ).getMonth() === now.getMonth() &&
                               new Date(row.getValue("created_at")).getDate() ===
                                 now.getDate() && (
@@ -590,7 +402,7 @@ export function VendorHotelDataTable<TData, TValue>({
             <div
               className={cn(
                 "overflow-hidden rounded-md border bg-white",
-                open ? "2xl:min-w-full 2xl:max-w-full max-w-6xl" : "w-full"
+                open ? "2xl:min-w-full 2xl:max-w-full max-w-6xl" : "w-full",
               )}
             >
               <Table>
@@ -604,7 +416,7 @@ export function VendorHotelDataTable<TData, TValue>({
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext()
+                                  header.getContext(),
                                 )}
                           </TableHead>
                         );
@@ -624,7 +436,7 @@ export function VendorHotelDataTable<TData, TValue>({
                             <p className="text-sm!">
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext()
+                                cell.getContext(),
                               )}
                             </p>
                           </TableCell>

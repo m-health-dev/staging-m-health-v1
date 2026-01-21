@@ -1,4 +1,5 @@
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
+import AvatarInsurance from "@/components/utility/AvatarInsurance";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import UnderConstruction from "@/components/utility/under-construction";
 import Wrapper from "@/components/utility/Wrapper";
@@ -8,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { getVendorByID, getVendorBySlug } from "@/lib/vendors/get-vendor";
 import { VendorType } from "@/types/vendor.types";
 import { createClient } from "@/utils/supabase/client";
+import Avatar from "boring-avatars";
 import { MapPin } from "lucide-react";
 import type { Metadata, ResolvingMetadata } from "next";
 import { getLocale } from "next-intl/server";
@@ -22,7 +24,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -45,9 +47,9 @@ export async function generateMetadata(
           url:
             v.highlight_image ||
             `/api/og?title=${encodeURIComponent(
-              v.name
+              v.name,
             )}&description=${encodeURIComponent(
-              plainDescription
+              plainDescription,
             )}&path=${encodeURIComponent(`m-health.id/vendor/${slug}`)}`,
           width: 800,
           height: 450,
@@ -125,10 +127,29 @@ const VendorPublicDetailPage = async ({
             <div
               key={i}
               className={cn(
-                "px-3 py-1 bg-transparent border border-health text-health rounded-full capitalize truncate inline-flex w-fit"
+                "px-3 py-1 bg-transparent border border-health text-health rounded-full capitalize truncate inline-flex w-fit",
               )}
             >
               <p className="text-sm!">{s}</p>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-sm! text-muted-foreground mt-10 mb-2">
+          {locale === routing.defaultLocale ? "Asuransi" : "Insurance"}
+        </p>
+        <div className="flex flex-wrap gap-2 mb-5">
+          {v.insurance_id?.map((s, i) => (
+            <div
+              className="inline-flex bg-white pl-2 pr-4 py-2 rounded-full border border-primary"
+              key={i}
+            >
+              <AvatarInsurance
+                key={i}
+                insurance={s}
+                size="md"
+                locale={locale}
+              />
             </div>
           ))}
         </div>

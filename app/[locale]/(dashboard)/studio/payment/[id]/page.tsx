@@ -76,7 +76,8 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
         </div>
         <h3 className="text-primary font-bold">Transaction Detail</h3>
         <div className="inline-flex mt-2">
-          {data.payment_status === "settlement" ? (
+          {data.payment_status === "settlement" ||
+          data.payment_status === "capture" ? (
             <p className="bg-green-50 border border-green-500 px-3 py-1 rounded-full capitalize text-green-500">
               {data.payment_status}
             </p>

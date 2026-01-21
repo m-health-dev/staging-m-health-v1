@@ -87,7 +87,7 @@ const ErrorContent = ({
           pathname,
           rayId: newRayId,
           error_code: errorCodeNote,
-          error_message: errorMessage,
+          error_message: `${digest} - ${message}`,
           ipAddress,
           browserInfo,
         }),
@@ -103,7 +103,7 @@ const ErrorContent = ({
           const errorData = await response.text();
           console.log(
             "Error inserting data:",
-            errorData ? JSON.parse(errorData) : "No response body"
+            errorData ? JSON.parse(errorData) : "No response body",
           );
         } catch (parseError) {
           console.log("Error parsing error response:", parseError);

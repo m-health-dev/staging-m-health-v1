@@ -80,6 +80,20 @@ export const VendorSchema = z.object({
   reference_image: z.array(z.string()).min(1),
   location_map: z.url().min(1),
   location: z.string().min(1),
+  insurance_id: z.array(z.string()),
+});
+
+export const InsuranceSchema = z.object({
+  name: z.string().min(3),
+  en_description: z.string().min(3),
+  id_description: z.string().min(3),
+  category: z.array(z.string()).min(1),
+  specialist: z.array(z.string()).min(1),
+  logo: z.string().min(1),
+  highlight_image: z.string().min(1),
+  agent_name: z.string().min(1),
+  agent_number: z.string().min(5),
+  agent_photo_url: z.string().min(1),
 });
 
 export const HotelSchema = z.object({
@@ -165,7 +179,7 @@ export const EquipmentSchema = z.object({
   reference_image: z.array(z.string().min(1)),
   en_description: z.string(),
   id_description: z.string(),
-  vendor_id: z.string(),
+  vendor_id: z.string().min(1),
   real_price: z.number(),
   discount_price: z.number(),
   status: z.string(),

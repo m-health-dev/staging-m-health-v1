@@ -116,8 +116,8 @@ const Footer = () => {
               <p>
                 <Link href={"/wellness"}>
                   {locale === routing.defaultLocale
-                    ? "Paket Kebugaran & Medis"
-                    : "All in One Packages"}
+                    ? "Program Kebugaran & Medis"
+                    : "Wellness & Medical Programs"}
                 </Link>
               </p>
 
@@ -169,6 +169,14 @@ const Footer = () => {
                   {locale === routing.defaultLocale
                     ? "Mitra Kolaborasi dan Rumah Sakit"
                     : "Partner & Hospital Partners"}{" "}
+                </Link>
+              </p>
+
+              <p>
+                <Link href={"/insurance"}>
+                  {locale === routing.defaultLocale
+                    ? "Mitra Asuransi"
+                    : "Insurance Partners"}{" "}
                 </Link>
               </p>
 
@@ -234,11 +242,8 @@ const Footer = () => {
         </div>
         <div className="py-[5vh] flex lg:flex-row flex-col justify-between gap-5 lg:items-center">
           <p className="text-muted-foreground text-sm!">
-            &copy; 2025,{" "}
-            {locale === routing.defaultLocale
-              ? "PT. Medika Integrasi Persada."
-              : "Medika Integrasi Persada Ltd."}{" "}
-            M-Health.{" "}
+            &copy; 2025, PT. Medika Integrasi Persada. PT. Medika Integrasi
+            Klinik Indonesia. M-Health.{" "}
             {locale === routing.defaultLocale
               ? "Hak cipta dilindungi oleh undang-undang."
               : "All rights reserved."}

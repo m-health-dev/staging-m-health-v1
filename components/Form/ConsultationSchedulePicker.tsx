@@ -42,7 +42,7 @@ export default function ConsultationSchedulePicker({
         return new Date(
           parsedDate.getFullYear(),
           parsedDate.getMonth(),
-          parsedDate.getDate()
+          parsedDate.getDate(),
         );
       }
     }
@@ -58,10 +58,10 @@ export default function ConsultationSchedulePicker({
   };
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    getInitialDate()
+    getInitialDate(),
   );
   const [selectedTime, setSelectedTime] = useState<string | null>(
-    getInitialTime()
+    getInitialTime(),
   );
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
@@ -135,7 +135,7 @@ export default function ConsultationSchedulePicker({
       const response = await getConsultationSlot(formattedDate);
 
       if (response.success && response.data) {
-        setAvailableSlots(response.data.available_slots || []);
+        setAvailableSlots(response.data.all_slots || []);
         setBookedSlots(response.data.booked_slots || []);
         setShowTimeSlots(true);
 
@@ -224,7 +224,7 @@ export default function ConsultationSchedulePicker({
                   year: "numeric",
                   month: "long",
                   day: "numeric",
-                }
+                },
               )}{" "}
               - {currentSchedule.time}
             </p>
@@ -307,7 +307,7 @@ export default function ConsultationSchedulePicker({
                                 "opacity-50 cursor-not-allowed bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 text-red-400",
                               isCurrent &&
                                 !isSelected &&
-                                "border-amber-400 bg-amber-50 dark:bg-amber-950/30"
+                                "border-amber-400 bg-amber-50 dark:bg-amber-950/30",
                             )}
                             onClick={() => handleTimeSelect(slot)}
                           >
@@ -374,8 +374,8 @@ export default function ConsultationSchedulePicker({
                   ? "Jadwal Baru:"
                   : "New Schedule:"
                 : locale === "id"
-                ? "Jadwal Terpilih:"
-                : "Selected Schedule:"}
+                  ? "Jadwal Terpilih:"
+                  : "Selected Schedule:"}
             </p>
             <p className="text-base font-bold text-primary">
               {selectedDate.toLocaleDateString(
@@ -385,7 +385,7 @@ export default function ConsultationSchedulePicker({
                   year: "numeric",
                   month: "long",
                   day: "numeric",
-                }
+                },
               )}{" "}
               - {selectedTime}
             </p>

@@ -205,7 +205,7 @@ export function ChatbotSidebar({
             <button
               className={cn(
                 "flex gap-3 w-full rounded-full items-center text-primary hover:bg-muted py-2 hover:outline px-3 cursor-pointer",
-                isLoading && "opacity-50 pointer-events-none"
+                isLoading && "opacity-50 pointer-events-none",
               )}
               type="button"
               disabled={isLoading}
@@ -230,7 +230,7 @@ export function ChatbotSidebar({
       <SidebarContent className="hide-scroll mt-5 bg-white!">
         <div className="px-4">
           <p className="font-extrabold text-primary mb-3 px-2">
-            {locale === routing.defaultLocale ? "Paket" : "Packages"}
+            {locale === routing.defaultLocale ? "Program" : "Programs"}
           </p>
           <div className="space-y-5">
             {packages.map((img, i) => (

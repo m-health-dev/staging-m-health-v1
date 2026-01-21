@@ -38,6 +38,7 @@ const StudioDashboard = async () => {
     { count: Payment },
     { count: TOS },
     { count: Privacy },
+    { count: Insurance },
   ] = await Promise.all([
     supabase.from("accounts").select("*").eq("id", user?.id).maybeSingle(),
     supabase.from("accounts").select("id", { count: "exact", head: true }),
@@ -70,6 +71,7 @@ const StudioDashboard = async () => {
     supabase
       .from("privacy_policy")
       .select("id", { count: "exact", head: true }),
+    supabase.from("insurance").select("id", { count: "exact", head: true }),
   ]);
 
   return (
@@ -161,6 +163,16 @@ const StudioDashboard = async () => {
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
               <p>Partner & Hospital</p>
+            </div>
+          </div>
+        </div>
+        <div className="group/stats">
+          <div className="bg-white rounded-2xl overflow-hidden relative border">
+            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+              <h3 className="text-primary font-semibold">{Insurance}</h3>
+            </div>
+            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+              <p>Insurance</p>
             </div>
           </div>
         </div>

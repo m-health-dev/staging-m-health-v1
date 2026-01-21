@@ -74,7 +74,7 @@ export const columns: ColumnDef<TransactionType>[] = [
     ),
     cell: ({ row }) => {
       const payment_status: string = row.getValue("payment_status");
-      return payment_status === "settlement" ? (
+      return payment_status === "settlement" || payment_status === "capture" ? (
         <span className="text-green-600 font-medium capitalize bg-green-50 px-2 py-1 rounded-full border border-green-500">
           {payment_status}
         </span>
