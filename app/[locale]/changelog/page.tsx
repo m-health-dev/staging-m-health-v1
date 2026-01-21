@@ -36,6 +36,9 @@ export default async function Changelog() {
           </div>
           <h2>Deployment Changelog</h2>
         </div>
+        <p className="text-sm! mt-5 font-normal text-health bg-white px-2 py-1 rounded-full border border-health inline-flex">
+          {commits.length} commits
+        </p>
       </div>
       <div className="space-y-4 divide-y divide-primary/20 *:pb-4">
         {commits.map((c) => (
