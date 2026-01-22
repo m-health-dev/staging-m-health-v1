@@ -25,6 +25,7 @@ import { routing } from "@/i18n/routing";
 import { deleteEvent } from "@/lib/events/delete-events";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { deletePackage } from "@/lib/packages/delete-packages";
+import { EventsType } from "@/types/events.types";
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Avatar from "boring-avatars";
@@ -42,7 +43,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export const columns: ColumnDef<VendorType>[] = [
+export const columns: ColumnDef<EventsType>[] = [
   //   {
   //     id: "number",
   //     cell: ({ row }) => {
@@ -306,14 +307,14 @@ export const columns: ColumnDef<VendorType>[] = [
                 <DialogTitle asChild>
                   <h6 className="text-red-500">
                     {locale === routing.defaultLocale
-                      ? "Konfirmasi Penghapusan Package"
-                      : "Delete Package Confirmation"}
+                      ? "Konfirmasi Penghapusan Acara"
+                      : "Delete Event Confirmation"}
                   </h6>
                 </DialogTitle>
                 <p className="text-muted-foreground">
                   {locale === routing.defaultLocale
-                    ? "Untuk menghapus Package ini, silahkan ketik nama Package:"
-                    : "To delete this Package, please type the Package name:"}{" "}
+                    ? "Untuk menghapus Acara ini, silahkan ketik nama Acara:"
+                    : "To delete this Event, please type the Event name:"}{" "}
                   <span
                     className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
                     onClick={handleCopyName}
@@ -336,8 +337,8 @@ export const columns: ColumnDef<VendorType>[] = [
                 className="w-full border px-3 py-2 h-12 rounded-2xl"
                 placeholder={
                   locale === routing.defaultLocale
-                    ? "Tulis nama Package di sini"
-                    : "Write Package name here"
+                    ? "Tulis nama Acara di sini"
+                    : "Write Event name here"
                 }
               />
               <p className="text-xs! text-red-500">

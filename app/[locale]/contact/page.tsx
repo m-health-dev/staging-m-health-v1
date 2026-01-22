@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: `/api/og?title=${encodeURIComponent(
-          "Contact Us"
+          "Contact Us",
         )}&description=${encodeURIComponent(
-          "Pandan St. 11A, Gading Kasri, Klojen District, Malang City, East Java 65115 | info@m-health.id"
+          "Pandan St. 11A, Gading Kasri, Klojen District, Malang City, East Java 65115 | info@m-health.id",
         )}&path=${encodeURIComponent("m-health.id/contact")}`,
         width: 800,
         height: 450,
@@ -55,12 +55,12 @@ const ContactPage = async () => {
                 width={250}
                 height={60}
                 className="object-contain"
-                alt="M-Health Logo"
+                alt="M-HEALTH Logo"
               />
             </Link>
             <div className="mt-10">
               <h6 className="font-bold text-primary">
-                PT. Medika Integrasi Persada
+                PT. Medika Integrasi Persada Indonesia
               </h6>
               <h6 className="font-bold text-primary">
                 PT. Medika Integrasi Klinik Indonesia

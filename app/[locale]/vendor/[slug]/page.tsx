@@ -90,7 +90,7 @@ const VendorPublicDetailPage = async ({
       </ContainerWrap>
       <ContainerWrap size="md" className="mb-20">
         <div className=" flex  items-center lg:-mt-12 -mt-6 w-full z-10">
-          <div className="bg-white flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0 justify-between w-full rounded-2xl p-4">
+          <div className="bg-linear-to-b from-white via-white to-transparent flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0 justify-between w-full rounded-2xl lg:px-6 px-4 py-8">
             <div className="inline-flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0">
               <Image
                 src={v.logo}
@@ -104,7 +104,7 @@ const VendorPublicDetailPage = async ({
             <Link href={v.location_map}>
               <div className="inline-flex items-center gap-1 bg-health text-white lg:px-4 px-2 py-2 lg:w-fit lg:h-fit rounded-full">
                 <MapPin className="size-5" />
-                <p className="block">Location</p>
+                <p className="block">{locale === routing.defaultLocale ? "Lokasi" : "Location"}</p>
               </div>
             </Link>
           </div>
@@ -135,24 +135,28 @@ const VendorPublicDetailPage = async ({
           ))}
         </div>
 
-        <p className="text-sm! text-muted-foreground mt-10 mb-2">
-          {locale === routing.defaultLocale ? "Asuransi" : "Insurance"}
-        </p>
-        <div className="flex flex-wrap gap-2 mb-5">
-          {v.insurance_id?.map((s, i) => (
-            <div
-              className="inline-flex bg-white pl-2 pr-4 py-2 rounded-full border border-primary"
-              key={i}
-            >
-              <AvatarInsurance
-                key={i}
-                insurance={s}
-                size="md"
-                locale={locale}
-              />
+        {v.insurance_id.length > 0 && (
+          <>
+            <p className="text-sm! text-muted-foreground mt-10 mb-2">
+              {locale === routing.defaultLocale ? "Asuransi" : "Insurance"}
+            </p>
+            <div className="flex flex-wrap gap-2 mb-5">
+              {v.insurance_id?.map((s, i) => (
+                <div
+                  className="inline-flex bg-white pl-2 pr-4 py-2 rounded-full border border-primary"
+                  key={i}
+                >
+                  <AvatarInsurance
+                    key={i}
+                    insurance={s}
+                    size="md"
+                    locale={locale}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
 
         <p className="text-sm! text-muted-foreground mt-10 mb-2">
           {locale === routing.defaultLocale ? "Tentang" : "About"}

@@ -12,6 +12,7 @@ import { useTranslations } from "next-intl";
 import AvatarVendorHotel from "../utility/AvatarVendorHotel";
 import { PackageType } from "@/types/packages.types";
 import { getPackageByID } from "@/lib/packages/get-packages";
+import { routing } from "@/i18n/routing";
 
 const PackageCardSlide = ({ id, locale }: { id: string; locale: string }) => {
   const [data, setData] = React.useState<PackageType | null>(null);
@@ -101,7 +102,7 @@ const Content = ({
               } // Ganti dengan v.image_url saat tersedia
               width={720}
               height={403}
-              alt={locale === "id" ? v.id_title : v.en_title}
+              alt={locale === routing.defaultLocale ? v.id_title : v.en_title}
               onLoad={() => setImageLoaded(true)}
               loading="lazy"
               className={cn(
@@ -116,14 +117,14 @@ const Content = ({
           <div className="">
             <div>
               <h5 className="capitalize font-bold text-primary line-clamp-3">
-                {locale === "id" ? v.id_title : v.en_title}
+                {locale === routing.defaultLocale ? v.id_title : v.en_title}
               </h5>
             </div>
           </div>
           <div className="mt-2 ">
             <div>
               <p className="text-muted-foreground line-clamp-2">
-                {locale === "id" ? v.id_tagline : v.en_tagline}
+                {locale === routing.defaultLocale ? v.id_tagline : v.en_tagline}
               </p>
             </div>
           </div>

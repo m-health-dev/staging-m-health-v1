@@ -37,6 +37,7 @@ import PriceInfo from "../utility/PriceInfo";
 import { WellnessType } from "@/types/wellness.types";
 import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
+import { ImageZoom } from "../ui/shadcn-io/image-zoom";
 
 const WellnessDetailClient = ({
   wellness: p,
@@ -93,21 +94,23 @@ const WellnessDetailClient = ({
                 />
 
                 <div className="aspect-square w-full h-auto rounded-2xl overflow-hidden">
-                  <Image
-                    src={
-                      img ||
-                      "https://placehold.co/500x500.png?text=IMAGE+NOT+FOUND"
-                    } // Ganti dengan slide.image_url saat tersedia
-                    width={500}
-                    height={500}
-                    alt={img}
-                    onLoad={() => setImageLoaded(true)}
-                    loading="lazy"
-                    className={cn(
-                      "relative w-full aspect-square object-center object-cover rounded-2xl transition-all duration-500  group-hover:scale-105",
-                      imageLoaded ? "opacity-100" : "opacity-0",
-                    )}
-                  />
+                  <ImageZoom>
+                    <Image
+                      src={
+                        img ||
+                        "https://placehold.co/500x500.png?text=IMAGE+NOT+FOUND"
+                      } // Ganti dengan slide.image_url saat tersedia
+                      width={500}
+                      height={500}
+                      alt={img}
+                      onLoad={() => setImageLoaded(true)}
+                      loading="lazy"
+                      className={cn(
+                        "relative w-full aspect-square object-center object-cover rounded-2xl transition-all duration-500  group-hover:scale-105",
+                        imageLoaded ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                  </ImageZoom>
                 </div>
               </SwiperSlide>
             ))}
@@ -232,25 +235,27 @@ const WellnessDetailClient = ({
         </div>
 
         <div className="flex flex-wrap lg:gap-5 gap-3 my-5">
-          <div className="bg-white p-4 border inline-flex gap-5 rounded-2xl">
-            {p.duration_by_day > 0 && (
-              <div className="inline-flex items-center gap-2">
-                <Sun className="text-primary size-5" />{" "}
-                <p>
-                  {p.duration_by_day} {labels.days}
-                </p>
-              </div>
-            )}
+          {p.duration_by_day > 0 && (
+            <div className="bg-white p-4 border inline-flex gap-5 rounded-2xl">
+              {p.duration_by_day > 0 && (
+                <div className="inline-flex items-center gap-2">
+                  <Sun className="text-primary size-5" />{" "}
+                  <p>
+                    {p.duration_by_day} {labels.days}
+                  </p>
+                </div>
+              )}
 
-            {p.duration_by_night > 0 && (
-              <div className="inline-flex items-center gap-2">
-                <Moon className="text-primary size-5" />{" "}
-                <p>
-                  {p.duration_by_night} {labels.night}
-                </p>
-              </div>
-            )}
-          </div>
+              {p.duration_by_night > 0 && (
+                <div className="inline-flex items-center gap-2">
+                  <Moon className="text-primary size-5" />{" "}
+                  <p>
+                    {p.duration_by_night} {labels.night}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {p.included.map((inc, i) => (
             <div

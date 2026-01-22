@@ -8,12 +8,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { routing } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "./LanguageContext";
 import { usePathname } from "next/navigation";
+import LoadingComponent from "../loading-component";
 
 const DialogSwitchLang = () => {
   const { locale } = useLanguage();
@@ -26,7 +27,7 @@ const DialogSwitchLang = () => {
 
     // Cek apakah user sudah pernah mengatur preferensi bahasa
     const hasPreferredLanguage = localStorage.getItem(
-      "mhealth_preferred_language"
+      "mhealth_preferred_language",
     );
 
     // Jika belum ada preferensi bahasa, tampilkan dialog
@@ -46,7 +47,7 @@ const DialogSwitchLang = () => {
     if (mounted) {
       // Simpan bahasa yang dipilih sebagai preferensi
       const hasPreferredLanguage = localStorage.getItem(
-        "mhealth_preferred_language"
+        "mhealth_preferred_language",
       );
       if (hasPreferredLanguage) {
         localStorage.setItem("mhealth_preferred_language", locale);
@@ -81,10 +82,12 @@ const DialogSwitchLang = () => {
           >
             {locale === routing.defaultLocale ? "Tidak" : "No"}
           </Button>
-          <LanguageSwitcher
-            className="lg:w-fit w-full"
-            onLanguageChange={() => setIsOpen(false)}
-          />
+          <Suspense fallback={<LoadingComponent />}>
+            <LanguageSwitcher
+              className="lg:w-fit w-full"
+              onLanguageChange={() => setIsOpen(false)}
+            />
+          </Suspense>
         </div>
       </DialogContent>
     </Dialog>

@@ -116,12 +116,12 @@ const SignInClient = ({
     if (res?.error) {
       setLoading(false);
       setError(
-        locale === routing.defaultLocale ? res?.error.id : res?.error.en
+        locale === routing.defaultLocale ? res?.error.id : res?.error.en,
       );
     } else if (res?.warning) {
       setLoading(false);
       setWarning(
-        locale === routing.defaultLocale ? res?.warning.id : res?.warning.en
+        locale === routing.defaultLocale ? res?.warning.id : res?.warning.en,
       );
     } else {
       setLoading(false);
@@ -140,7 +140,7 @@ const SignInClient = ({
     <div className={cn("flex flex-col justify-center bg-white ")}>
       <div
         className={cn(
-          "lg:grid lg:grid-cols-2 flex flex-col gap-8 items-start justify-center lg:p-3 p-0"
+          "lg:grid lg:grid-cols-2 flex flex-col gap-8 items-start justify-center lg:p-3 p-0",
         )}
       >
         <div>
@@ -152,14 +152,14 @@ const SignInClient = ({
               width={180}
               height={60}
               className="object-contain mb-8 flex justify-center items-center"
-              alt="M-Health Logo"
+              alt="M-HEALTH Logo"
             />
           </Link>
 
           <h3
             className={cn(
               "font-bold text-primary",
-              SignInToChat ? "mb-4" : "mb-10"
+              SignInToChat ? "mb-4" : "mb-10",
             )}
           >
             {locale === routing.defaultLocale
@@ -259,7 +259,7 @@ const SignInClient = ({
                         form.getValues().email !== ""
                           ? `?email=${form.getValues().email}`
                           : ""
-                      }`
+                      }`,
                     )
                   }
                 >
@@ -348,7 +348,7 @@ const SignInClient = ({
                 width={180}
                 height={60}
                 className="object-contain mb-8 flex justify-center items-center"
-                alt="M-Health Logo"
+                alt="M-HEALTH Logo"
               />
             </Link>
 
@@ -356,7 +356,7 @@ const SignInClient = ({
               <h3
                 className={cn(
                   "font-bold text-primary",
-                  SignInToChat ? "mb-4" : "mb-10"
+                  SignInToChat ? "mb-4" : "mb-10",
                 )}
               >
                 {locale === routing.defaultLocale
@@ -459,7 +459,7 @@ const SignInClient = ({
                             form.getValues().email !== ""
                               ? `?email=${form.getValues().email}`
                               : ""
-                          }`
+                          }`,
                         )
                       }
                     >

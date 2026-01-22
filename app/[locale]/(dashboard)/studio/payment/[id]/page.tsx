@@ -41,25 +41,25 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
     if (productType === "package") {
       const res = await getPackageByID(productId as string);
       dataProduct = res?.data ?? null;
-      productTypeTitle = locale === "id" ? "Paket" : "Package";
+      productTypeTitle = locale === routing.defaultLocale ? "Program" : "Program";
     } else if (productType === "medical_equipment") {
       const res = await getMedicalEquipmentByID(productId as string);
       dataProduct = res?.data?.data ?? null;
       productTypeTitle =
-        locale === "id" ? "Peralatan Medis" : "Medical Products";
+        locale === routing.defaultLocale ? "Peralatan Medis" : "Medical Products";
     } else if (productType === "medical") {
       const res = await getMedicalByID(productId as string);
       dataProduct = res?.data?.data ?? null;
-      productTypeTitle = locale === "id" ? "Paket Medis" : "Medical Package";
+      productTypeTitle = locale === routing.defaultLocale ? "Paket Medis" : "Medical Package";
     } else if (productType === "wellness") {
       const res = await getWellnessByID(productId as string);
       dataProduct = res?.data?.data ?? null;
       productTypeTitle =
-        locale === "id" ? "Paket Kebugaran" : "Wellness Package";
+        locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness Package";
     } else if (productType === "consultation") {
       const res = await getConsultationByID(productId as string);
       dataProduct = res?.data ?? null;
-      productTypeTitle = locale === "id" ? "Konsultasi" : "Consultation";
+      productTypeTitle = locale === routing.defaultLocale ? "Konsultasi" : "Consultation";
     }
   } catch (err) {
     // API error → tetap aman tanpa 500
@@ -102,7 +102,7 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
         </div>
         <div>
           <p className="text-muted-foreground mb-1">
-            {locale === "id" ? "Dibuat pada" : "Created at"}
+            {locale === routing.defaultLocale ? "Dibuat pada" : "Created at"}
           </p>
           <p>
             <LocalDateTime date={data.created_at} />
@@ -110,7 +110,7 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
         </div>
         <div>
           <p className="text-muted-foreground mb-1">
-            {locale === "id" ? "Diperbarui pada" : "Updated at"}
+            {locale === routing.defaultLocale ? "Diperbarui pada" : "Updated at"}
           </p>
           <p>
             <LocalDateTime date={data.updated_at} />
@@ -118,7 +118,7 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
         </div>
         <div>
           <p className="text-muted-foreground mb-1">
-            {locale === "id" ? "Data Pelanggan" : "Customer Data"}
+            {locale === routing.defaultLocale ? "Data Pelanggan" : "Customer Data"}
           </p>
           <div className="bg-white grid lg:grid-cols-2 grid-cols-1 w-full gap-5 p-4 rounded-2xl border">
             <div>
@@ -127,19 +127,19 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
             </div>
             <div>
               <p className="text-muted-foreground mb-1">
-                {locale === "id" ? "Telepon" : "Phone"}
+                {locale === routing.defaultLocale ? "Telepon" : "Phone"}
               </p>
               <p>{data.customer.phone}</p>
             </div>
             <div>
               <p className="text-muted-foreground mb-1">
-                {locale === "id" ? "Nama Lengkap" : "Full Name"}
+                {locale === routing.defaultLocale ? "Nama Lengkap" : "Full Name"}
               </p>
               <p>{data.customer.fullname}</p>
             </div>
             <div>
               <p className="text-muted-foreground mb-1">
-                {locale === "id" ? "Alamat" : "Address"}
+                {locale === routing.defaultLocale ? "Alamat" : "Address"}
               </p>
               <p>{data.customer.address}</p>
             </div>
@@ -147,7 +147,7 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
         </div>
         <div>
           <p className="text-muted-foreground mb-1">
-            {locale === "id" ? "Total Pembayaran" : "Total Payment"}
+            {locale === routing.defaultLocale ? "Total Pembayaran" : "Total Payment"}
           </p>
           <h4 className="text-primary font-bold">
             {formatRupiah(data.product_data.total)}

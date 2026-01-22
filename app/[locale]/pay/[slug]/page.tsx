@@ -17,6 +17,7 @@ import { getPackageByID } from "@/lib/packages/get-packages";
 import { getWellnessByID } from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/server";
 import { getLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Mars, Stethoscope, Venus, VenusAndMars } from "lucide-react";
@@ -52,20 +53,20 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
 
   if (productType === "package") {
     data = (await getPackageByID(productId as string)).data;
-    productTypeTitle = locale === "id" ? "Paket" : "Package";
+    productTypeTitle = locale === routing.defaultLocale ? "Program" : "Program";
   } else if (productType === "medical_equipment") {
     data = (await getMedicalEquipmentByID(productId as string)).data.data;
-    productTypeTitle = locale === "id" ? "Peralatan Medis" : "Medical Products";
+    productTypeTitle = locale === routing.defaultLocale ? "Peralatan Medis" : "Medical Products";
   } else if (productType === "medical") {
     data = (await getMedicalByID(productId as string)).data.data;
-    productTypeTitle = locale === "id" ? "Paket Medis" : "Medical Package";
+    productTypeTitle = locale === routing.defaultLocale ? "Paket Medis" : "Medical Package";
   } else if (productType === "wellness") {
     data = (await getWellnessByID(productId as string)).data.data;
-    productTypeTitle = locale === "id" ? "Paket Kebugaran" : "Wellness Package";
+    productTypeTitle = locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness Package";
   } else if (productType === "consultation") {
     data = (await getConsultationByID(productId as string)).data;
     priceConsultation = (await getConsultationPrice()).data.price;
-    productTypeTitle = locale === "id" ? "Konsultasi" : "Consultation";
+    productTypeTitle = locale === routing.defaultLocale ? "Konsultasi" : "Consultation";
   }
 
   let account = null;
@@ -88,26 +89,26 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
         </pre> */}
         <div className="mb-5">
           <h2 className="font-bold text-primary text-2xl">
-            {locale === "id" ? "Pembayaran" : "Payment"}
+            {locale === routing.defaultLocale ? "Pembayaran" : "Payment"}
           </h2>
           <p className="bg-white px-3 py-1 rounded-full inline-flex text-muted-foreground mt-5 text-sm!">
             {productTypeTitle}
           </p>
         </div>
-        <PaymentFlowProvider>
+        <PaymentFlowProvider locale={locale}>
           <div className="grid lg:grid-cols-3 grid-cols-1 gap-10 items-start">
             <div className="lg:col-span-2 w-full product_information_and_booking_data">
               {productType === "consultation" ? (
                 <div className="bg-white rounded-2xl p-5 border">
                   <h5 className="font-bold text-primary text-lg">
                     <Stethoscope className="inline-block mr-2 size-5" />
-                    {locale === "id"
+                    {locale === routing.defaultLocale
                       ? "Konsultasi dengan Dokter"
                       : "Consultation with Doctor"}
                   </h5>
                   <div className="mt-5">
                     <p className="text-sm! text-muted-foreground">
-                      {locale === "id"
+                      {locale === routing.defaultLocale
                         ? "Jadwal Konsultasi Anda"
                         : "Your Consultation Schedule"}
                     </p>
@@ -119,7 +120,7 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                   {data.data.complaint && (
                     <div className="mt-5">
                       <p className="text-sm! text-muted-foreground">
-                        {locale === "id"
+                        {locale === routing.defaultLocale
                           ? "Kondisi/ Keluhan Kesehatan Anda"
                           : "Your Health Condition"}
                       </p>
@@ -131,7 +132,7 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                     <div className="text-end">
                       <div className="flex flex-col items-end mt-2">
                         <p className="text-sm! text-muted-foreground">
-                          Subtotal
+                          {locale === routing.defaultLocale ? "Subtotal" : "Subtotal"}
                         </p>
                         <h5 className="text-primary font-bold">
                           {formatRupiah(priceConsultation)}
@@ -145,7 +146,7 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                   <div className="md:col-span-1 w-full">
                     <Image
                       src={data.highlight_image}
-                      alt="Product Image"
+                      alt={locale === routing.defaultLocale ? "Gambar Produk" : "Product Image"}
                       width={300}
                       height={300}
                       className="w-full h-auto aspect-square rounded-2xl object-center object-cover"
@@ -173,9 +174,9 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                       )}
                     </div>
                     <h5 className="font-bold text-primary text-lg">
-                      {locale === "id" ? data.id_title : data.en_title}
+                      {locale === routing.defaultLocale ? data.id_title : data.en_title}
                     </h5>
-                    <p>{locale === "id" ? data.id_tagline : data.en_tagline}</p>
+                    <p>{locale === routing.defaultLocale ? data.id_tagline : data.en_tagline}</p>
                     <div className="mt-4">
                       <AvatarVendorHotel
                         size="sm"
@@ -206,7 +207,7 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
 
                           <div className="flex flex-col items-start mt-2">
                             <p className="text-sm! text-muted-foreground">
-                              Subtotal
+                              {locale === routing.defaultLocale ? "Subtotal" : "Subtotal"}
                             </p>
                             <h5 className="text-primary font-bold">
                               {formatRupiah(

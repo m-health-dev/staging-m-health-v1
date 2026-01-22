@@ -63,6 +63,7 @@ const ChatContent = ({
   const {
     history,
     isLoading: historyLoading,
+    isLoadingMore,
     refresh,
     loadMore,
     hasMore,
@@ -93,7 +94,7 @@ const ChatContent = ({
           : "Shared chat session not found.",
         {
           duration: 15000,
-        }
+        },
       );
     }
   }, []);
@@ -131,6 +132,7 @@ const ChatContent = ({
         publicID={publicID}
         publicIDFetch={publicIDFetch}
         isLoading={historyLoading || isPending || sidebarLoading}
+        isLoadingMore={isLoadingMore}
         sidebarDataLoading={sidebarLoading}
         onRefreshHistory={refresh}
         locale={locale}

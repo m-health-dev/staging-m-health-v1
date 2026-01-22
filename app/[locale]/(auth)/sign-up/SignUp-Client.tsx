@@ -29,6 +29,7 @@ import Link from "next/link";
 
 import { useLocale } from "next-intl";
 import { signUpAction, signWithGoogle } from "../actions/auth.actions";
+import { routing } from "@/i18n/routing";
 
 const SignUpClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -79,19 +80,19 @@ const SignUpClient = ({ image }: { image: any }) => {
 
     if (response?.error) {
       setLoading(false);
-      setError(locale === "id" ? response.error.id : response.error.en);
+      setError(locale === routing.defaultLocale ? response.error.id : response.error.en);
       // toast.error(`Registrasi Gagal`, {
       //   description: `${response.error}`,
       // });
     } else if (response?.warning) {
       setLoading(false);
-      setWarning(locale === "id" ? response.warning.id : response.warning.en);
+      setWarning(locale === routing.defaultLocale ? response.warning.id : response.warning.en);
       // toast.warning(`Registrasi Gagal`, {
       //   description: `${response.warning}`,
       // });
     } else if (response?.success) {
       setLoading(false);
-      setSuccess(locale === "id" ? response.success.id : response.success.en);
+      setSuccess(locale === routing.defaultLocale ? response.success.id : response.success.en);
       // toast.success(`Registrasi Berhasil`, {
       //   description: `${response.success}`,
       // });
@@ -112,16 +113,16 @@ const SignUpClient = ({ image }: { image: any }) => {
                 width={180}
                 height={60}
                 className="object-contain mb-8 flex justify-center items-center"
-                alt="M-Health Logo"
+                alt="M-HEALTH Logo"
               />
             </Link>
             <h3 className="font-bold text-primary mb-10">
-              {locale === "id" ? "Buat Akun Baru" : "Create a New Account"}
+              {locale === routing.defaultLocale ? "Buat Akun Baru" : "Create a New Account"}
             </h3>
             {error && (
               <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? "Registrasi Akun Gagal"
                     : "Account Registration Failed"}
                 </p>
@@ -131,7 +132,7 @@ const SignUpClient = ({ image }: { image: any }) => {
             {warning && (
               <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? "Registrasi Akun Gagal"
                     : "Account Registration Failed"}
                 </p>
@@ -141,7 +142,7 @@ const SignUpClient = ({ image }: { image: any }) => {
             {success && (
               <div className="bg-green-50 text-green-500 p-4 border border-green-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? "Registrasi Akun Berhasil"
                     : "Account Registration Successful"}
                 </p>
@@ -159,7 +160,7 @@ const SignUpClient = ({ image }: { image: any }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === "id" ? "Nama Lengkap" : "Full Name"}
+                        {locale === routing.defaultLocale ? "Nama Lengkap" : "Full Name"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} type="text" className="h-12" />
@@ -189,7 +190,7 @@ const SignUpClient = ({ image }: { image: any }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === "id" ? "Kata Sandi" : "Password"}
+                        {locale === routing.defaultLocale ? "Kata Sandi" : "Password"}
                       </FormLabel>
                       <FormControl>
                         <div className="relative w-full h-12">
@@ -219,32 +220,32 @@ const SignUpClient = ({ image }: { image: any }) => {
                 />
                 <div>
                   <p className="text-muted-foreground text-sm!">
-                    {locale === "id"
+                    {locale === routing.defaultLocale
                       ? "Dengan mendaftar, kamu setuju dengan"
                       : "By signing up you agree to our"}{" "}
                     <span
                       className="text-health underline cursor-pointer"
                       onClick={() => router.push("/terms-of-service")}
                     >
-                      {locale === "id" ? "Syarat Layanan" : "Terms of Service"}
+                      {locale === routing.defaultLocale ? "Syarat Layanan" : "Terms of Service"}
                     </span>{" "}
-                    {locale === "id" ? "dan" : "and"}{" "}
+                    {locale === routing.defaultLocale ? "dan" : "and"}{" "}
                     <span
                       className="text-health underline cursor-pointer"
                       onClick={() => router.push("/privacy")}
                     >
-                      {locale === "id"
+                      {locale === routing.defaultLocale
                         ? "Kebijakan Privasi"
                         : "Privacy Policy."}
                     </span>{" "}
-                    {locale === "id" && "kami."}
+                    {locale === routing.defaultLocale && "kami."}
                   </p>
                 </div>
                 <Button type="submit" className="w-full h-12 rounded-full">
                   {loading ? (
                     <Spinner />
                   ) : (
-                    <p>{locale === "id" ? "Daftar" : "Sign Up"}</p>
+                    <p>{locale === routing.defaultLocale ? "Daftar" : "Sign Up"}</p>
                   )}
                 </Button>
               </form>
@@ -252,7 +253,7 @@ const SignUpClient = ({ image }: { image: any }) => {
             <div className="flex justify-center items-center mb-5">
               <div className="border-b border-gray-300 w-full"></div>
               <p className="px-5 text-gray-500">
-                {locale === "id" ? "atau" : "or"}
+                {locale === routing.defaultLocale ? "atau" : "or"}
               </p>
               <div className="border-b border-gray-300 w-full"></div>
             </div>
@@ -265,20 +266,20 @@ const SignUpClient = ({ image }: { image: any }) => {
             >
               <FontAwesomeIcon icon={faGoogle} />{" "}
               <p>
-                {locale === "id"
+                {locale === routing.defaultLocale
                   ? "Daftar dengan Google"
                   : "Sign Up with Google"}
               </p>
             </Button>
             <p className="text-muted-foreground text-sm! mt-5 text-center">
-              {locale === "id"
+              {locale === routing.defaultLocale
                 ? "Sudah punya akun?"
                 : "Already have an account?"}{" "}
               <span
                 onClick={() => router.push(`/${locale}/sign-in`)}
                 className="text-health cursor-pointer underline"
               >
-                {locale === "id" ? "Masuk" : "Sign In"}
+                {locale === routing.defaultLocale ? "Masuk" : "Sign In"}
               </span>
               .
             </p>

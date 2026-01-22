@@ -8,9 +8,22 @@ import { getAccessToken, getUserRole } from "../../(auth)/actions/auth.actions";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import UnderConstruction from "@/components/utility/under-construction";
 import { get } from "http";
+import { getLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import DynamicGreeting from "@/components/utility/DynamicGreeting";
+import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
+import { getCurrentTime } from "@/lib/time/get-current-time";
+
+function getThreeWords(text: string | null): string {
+  if (!text) return "";
+
+  const words = text.trim().split(/\s+/);
+  return words.slice(0, 3).join(" ");
+}
 
 const DashboardPage = async () => {
   const supabase = await createClient();
+  const locale = await getLocale();
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -18,7 +31,9 @@ const DashboardPage = async () => {
   if (!session) {
     return (
       <div className="p-6 text-red-600 font-medium">
-        Failed to get user session
+        {locale === routing.defaultLocale
+          ? "Gagal mendapatkan sesi pengguna"
+          : "Failed to get user session"}
       </div>
     );
   }
@@ -27,11 +42,22 @@ const DashboardPage = async () => {
   const accessToken = await getAccessToken();
 
   const userData = await getUserInfo(session.access_token);
+  const time = await getCurrentTime();
 
   return (
     <>
       <div className="flex flex-wrap justify-between my-20 gap-5">
-        <h3 className="font-bold text-primary">Dashboard</h3>
+        <div>
+          <DynamicGreeting
+            name={getThreeWords(userData?.fullname)}
+            locale={locale}
+          />{" "}
+          <div className="bg-white border border-primary px-3 py-1 inline-flex rounded-full text-sm! text-primary">
+            <p>
+              <LocalDateTime date={time} withSeconds />
+            </p>
+          </div>
+        </div>
         <div className="flex items-center gap-5">
           {role === "admin" && (
             <Link href={"/std"}>
@@ -42,7 +68,7 @@ const DashboardPage = async () => {
           )}
           <Link href={"/sign-out"}>
             <Button variant={"destructive"} className="rounded-full h-12">
-              Sign Out
+              {locale === routing.defaultLocale ? "Keluar" : "Sign Out"}
             </Button>
           </Link>
         </div>
@@ -52,12 +78,16 @@ const DashboardPage = async () => {
         <UnderConstruction element />
       </div>
 
-      <div className="bg-white p-4 border rounded-2xl mt-10">
-        <p className="text-sm! text-primary mb-1">Your Access Token</p>
+      {/* <div className="bg-white p-4 border rounded-2xl mt-10">
+        <p className="text-sm! text-primary mb-1">
+          {locale === routing.defaultLocale
+            ? "Token Akses Anda"
+            : "Your Access Token"}
+        </p>
         <pre className="text-wrap wrap-anywhere text-sm!">
           {JSON.stringify(accessToken, null, 2)}
         </pre>
-      </div>
+      </div> */}
 
       {/* <pre className="text-wrap wrap-anywhere">
         {JSON.stringify(userData, null, 2)}

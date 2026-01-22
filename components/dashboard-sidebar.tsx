@@ -23,42 +23,7 @@ import { IconHelp, IconSettings } from "@tabler/icons-react";
 import { Account } from "@/types/account.types";
 import { useLocale } from "next-intl";
 import { LanguageSwitcher } from "./utility/lang/LanguageSwitcher";
-
-const data = {
-  navMain: [
-    {
-      name: "Riwayat Transaksi",
-      url: "/dashboard/transactions",
-      icon: ScanBarcode,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-  ],
-  chatbot: [
-    {
-      name: "Chat Activity",
-      url: "/dashboard/chat-activity",
-      icon: BotMessageSquare,
-    },
-  ],
-  schedules: [
-    {
-      name: "Consult Schedules",
-      url: "/dashboard/consult/schedule",
-      icon: ClipboardClock,
-    },
-  ],
-};
+import { routing } from "@/i18n/routing";
 
 interface DashboardSidebarProps extends React.ComponentProps<typeof Sidebar> {
   accounts: Account;
@@ -69,6 +34,43 @@ export function DashboardSidebar({
   ...props
 }: DashboardSidebarProps) {
   const locale = useLocale();
+
+  const data = {
+    navMain: [
+      {
+        name: locale === routing.defaultLocale ? "Riwayat Transaksi" : "Transaction History",
+        url: "/dashboard/transactions",
+        icon: ScanBarcode,
+      },
+    ],
+    navSecondary: [
+      {
+        title: locale === routing.defaultLocale ? "Pengaturan" : "Settings",
+        url: "#",
+        icon: IconSettings,
+      },
+      {
+        title: locale === routing.defaultLocale ? "Bantuan" : "Get Help",
+        url: "#",
+        icon: IconHelp,
+      },
+    ],
+    chatbot: [
+      {
+        name: locale === routing.defaultLocale ? "Aktivitas Chat" : "Chat Activity",
+        url: "/dashboard/chat-activity",
+        icon: BotMessageSquare,
+      },
+    ],
+    schedules: [
+      {
+        name: locale === routing.defaultLocale ? "Jadwal Konsultasi" : "Consult Schedules",
+        url: "/dashboard/consult/schedule",
+        icon: ClipboardClock,
+      },
+    ],
+  };
+
   return (
     <Sidebar collapsible="offcanvas" className="p-0" {...props}>
       <SidebarHeader>
@@ -91,16 +93,16 @@ export function DashboardSidebar({
       </SidebarHeader>
 
       <SidebarContent className="hide-scroll mt-5">
-        <p className="text-xs! px-4">Accounts</p>
+        <p className="text-xs! px-4">{locale === routing.defaultLocale ? "Akun" : "Accounts"}</p>
         <NavUser user={accounts} locale={locale} type="side" />
 
         <div className="px-4">
           <LanguageSwitcher />
         </div>
 
-        <NavMenu title="Transaksi" items={data.navMain} />
+        <NavMenu title={locale === routing.defaultLocale ? "Transaksi" : "Transaction"} items={data.navMain} />
         <NavMenu title="Chat Bot" items={data.chatbot} />
-        <NavMenu title="Schedules" items={data.schedules} />
+        <NavMenu title={locale === routing.defaultLocale ? "Jadwal" : "Schedules"} items={data.schedules} />
 
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>

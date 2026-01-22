@@ -25,7 +25,7 @@ import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
 
 // Use ISR with longer revalidation for better performance and caching
-export const revalidate = 300; // Revalidate every 5 minutes instead of 60 seconds
+// export const revalidate = 300; // Revalidate every 5 minutes instead of 60 seconds
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -34,7 +34,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -59,9 +59,9 @@ export async function generateMetadata(
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
-            title
+            title,
           )}&description=${encodeURIComponent(
-            description
+            description,
           )}&path=${encodeURIComponent("m-health.id/home")}`,
           width: 800,
           height: 450,
@@ -90,7 +90,7 @@ const getCachedPublicData = unstable_cache(
   {
     revalidate: 60, // Cache for 60 seconds
     tags: ["public-data"],
-  }
+  },
 );
 
 export default async function Home() {
@@ -130,8 +130,8 @@ export default async function Home() {
   const historyDataPromise = checkUser
     ? getChatHistoryByUserID(userID!, 1, 50)
     : publicID
-    ? getChatHistory(publicID, 1, 50)
-    : Promise.resolve({ data: [], total: 0 });
+      ? getChatHistory(publicID, 1, 50)
+      : Promise.resolve({ data: [], total: 0 });
 
   // Wait for critical data only
   const [historyData, userData] = await Promise.all([

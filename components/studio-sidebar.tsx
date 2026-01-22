@@ -63,8 +63,9 @@ import {
 import { Account } from "@/types/account.types";
 import { useLocale } from "next-intl";
 import { LanguageSwitcher } from "./utility/lang/LanguageSwitcher";
+import { routing } from "@/i18n/routing";
 
-const data = {
+const getNavData = (locale: string) => ({
   user: {
     name: "shadcn",
     email: "m@example.com",
@@ -77,27 +78,27 @@ const data = {
       icon: Library,
     },
     {
-      title: "Packages",
+      title: "Program",
       url: "/studio/packages",
       icon: Package,
     },
     {
-      title: "Wellness",
+      title: locale === routing.defaultLocale ? "Kebugaran" : "Wellness",
       url: "/studio/wellness",
       icon: HeartHandshake,
     },
     {
-      title: "Medical",
+      title: locale === routing.defaultLocale ? "Medis" : "Medical",
       url: "/studio/medical",
       icon: HeartPlus,
     },
     {
-      title: "Medical Products",
+      title: locale === routing.defaultLocale ? "Produk Medis" : "Medical Products",
       url: "/studio/equipment",
       icon: BriefcaseMedical,
     },
     {
-      title: "Events",
+      title: locale === routing.defaultLocale ? "Acara" : "Events",
       url: "/studio/events",
       icon: PartyPopper,
     },
@@ -179,7 +180,7 @@ const data = {
       icon: GalleryHorizontal,
     },
     {
-      name: "Insurance",
+      name: locale === routing.defaultLocale ? "Asuransi" : "Insurance",
       url: "/studio/insurance",
       icon: ShieldPlus,
     },
@@ -189,57 +190,57 @@ const data = {
       icon: Hotel,
     },
     {
-      name: "Doctor",
+      name: locale === routing.defaultLocale ? "Dokter" : "Doctor",
       url: "/studio/doctor",
       icon: Stethoscope,
     },
   ],
   chatbot: [
     {
-      name: "Chat Activity",
+      name: locale === routing.defaultLocale ? "Aktivitas Chat" : "Chat Activity",
       url: "/studio/chat-activity",
       icon: BotMessageSquare,
     },
   ],
   articles: [
     {
-      name: "Articles Data",
+      name: locale === routing.defaultLocale ? "Data Artikel" : "Articles Data",
       url: "/studio/article",
       icon: Newspaper,
     },
     {
-      name: "Author",
+      name: locale === routing.defaultLocale ? "Penulis" : "Author",
       url: "/studio/article/author",
       icon: UserPen,
     },
     {
-      name: "Category",
+      name: locale === routing.defaultLocale ? "Kategori" : "Category",
       url: "/studio/article/category",
       icon: Grid2X2Check,
     },
   ],
   schedules: [
     {
-      name: "Consultation Schedules",
+      name: locale === routing.defaultLocale ? "Jadwal Konsultasi" : "Consultation Schedules",
       url: "/studio/consult/schedule",
       icon: ClipboardClock,
     },
   ],
   payment: [
     {
-      name: "Payment Records",
+      name: locale === routing.defaultLocale ? "Catatan Pembayaran" : "Payment Records",
       url: "/studio/payment/records",
       icon: CreditCard,
     },
   ],
   user_management: [
     {
-      name: "Users Data",
+      name: locale === routing.defaultLocale ? "Data Pengguna" : "Users Data",
       url: "/studio/users",
       icon: Users,
     },
     {
-      name: "Recovery Users",
+      name: locale === routing.defaultLocale ? "Pemulihan Pengguna" : "Recovery Users",
       url: "/studio/users/recovery",
       icon: UserCog,
     },
@@ -256,27 +257,27 @@ const data = {
     //   icon: Focus,
     // },
     {
-      name: "Terms of Service",
+      name: locale === routing.defaultLocale ? "Syarat dan Ketentuan" : "Terms of Service",
       url: "/studio/legal/terms",
       icon: ListCheck,
     },
     {
-      name: "Privacy Consent",
+      name: locale === routing.defaultLocale ? "Kebijakan Privasi" : "Privacy Consent",
       url: "/studio/legal/privacy",
       icon: ShieldCheck,
     },
     {
-      name: "Contact Messages",
+      name: locale === routing.defaultLocale ? "Pesan Kontak" : "Contact Messages",
       url: "/studio/contact",
       icon: MessageCircle,
     },
     {
-      name: "Error Logs",
+      name: locale === routing.defaultLocale ? "Log Kesalahan" : "Error Logs",
       url: "/studio/error-logs",
       icon: CircleX,
     },
   ],
-};
+});
 
 interface StudioSidebarProps extends React.ComponentProps<typeof Sidebar> {
   accounts?: Account;
@@ -284,6 +285,7 @@ interface StudioSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
   const locale = useLocale();
+  const data = getNavData(locale);
   return (
     <Sidebar collapsible="offcanvas" className="p-0" {...props}>
       <SidebarHeader>
@@ -305,7 +307,7 @@ export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="hide-scroll">
-        <p className="text-xs! px-4">Accounts</p>
+        <p className="text-xs! px-4">{locale === routing.defaultLocale ? "Akun" : "Accounts"}</p>
         {accounts && <NavUser user={accounts} locale={locale} type="side" />}
 
         <div className="px-4">
@@ -313,13 +315,13 @@ export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
         </div>
 
         <NavMain items={data.navMain} />
-        <NavMenu title="Type" items={data.type} />
+        <NavMenu title={locale === routing.defaultLocale ? "Tipe" : "Type"} items={data.type} />
         <NavMenu title="Chat Bot" items={data.chatbot} />
-        <NavMenu title="Article" items={data.articles} />
-        <NavMenu title="Schedules" items={data.schedules} />
-        <NavMenu title="Payment" items={data.payment} />
-        <NavMenu title="User Management" items={data.user_management} />
-        <NavMenu title="Website Config" items={data.website_config} />
+        <NavMenu title={locale === routing.defaultLocale ? "Artikel" : "Article"} items={data.articles} />
+        <NavMenu title={locale === routing.defaultLocale ? "Jadwal" : "Schedules"} items={data.schedules} />
+        <NavMenu title={locale === routing.defaultLocale ? "Pembayaran" : "Payment"} items={data.payment} />
+        <NavMenu title={locale === routing.defaultLocale ? "Manajemen Pengguna" : "User Management"} items={data.user_management} />
+        <NavMenu title={locale === routing.defaultLocale ? "Konfigurasi Website" : "Website Config"} items={data.website_config} />
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
         {/* <div className="fixed bottom-0 py-2 bg-linear-to-t from-white via-white px-1">
           {accounts && <NavUser user={accounts} locale={locale} type="side" />}

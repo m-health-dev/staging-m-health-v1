@@ -47,11 +47,11 @@ const ContactPageClient = () => {
     if (res.success) {
       setLoading(false);
       setMessageId(res.message_id!);
-      toast.success(locale === "id" ? res.message?.id : res.message?.en);
+      toast.success(locale === routing.defaultLocale ? res.message?.id : res.message?.en);
       form.reset();
     } else if (res.error) {
       setLoading(false);
-      toast.error(locale === "id" ? res.error.id : res.error.en);
+      toast.error(locale === routing.defaultLocale ? res.error.id : res.error.en);
     }
   }
 
@@ -172,10 +172,10 @@ const ContactPageClient = () => {
             >
               {loading && <Spinner />}
               {loading
-                ? locale === "id"
+                ? locale === routing.defaultLocale
                   ? "Mengirim..."
                   : "Sending..."
-                : locale === "id"
+                : locale === routing.defaultLocale
                 ? "Kirim Pesan"
                 : "Send Message"}
             </Button>

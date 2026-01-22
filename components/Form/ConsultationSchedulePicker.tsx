@@ -8,6 +8,7 @@ import { getConsultationSlot } from "@/lib/consult/get-consultation";
 import { Spinner } from "../ui/spinner";
 import { cn } from "@/lib/utils";
 import { Check, Clock, CalendarDays } from "lucide-react";
+import { routing } from "@/i18n/routing";
 
 interface ConsultationSchedulePickerProps {
   selected?: Date;
@@ -214,11 +215,11 @@ export default function ConsultationSchedulePicker({
           <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
             <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-2">
               <CalendarDays className="size-4" />
-              {locale === "id" ? "Jadwal Saat Ini:" : "Current Schedule:"}
+              {locale === routing.defaultLocale ? "Jadwal Saat Ini:" : "Current Schedule:"}
             </p>
             <p className="text-base font-bold text-amber-800 dark:text-amber-300">
               {new Date(currentSchedule.date).toLocaleDateString(
-                locale === "id" ? "id-ID" : "en-US",
+                locale === routing.defaultLocale ? "id-ID" : "en-US",
                 {
                   weekday: "long",
                   year: "numeric",
@@ -229,7 +230,7 @@ export default function ConsultationSchedulePicker({
               - {currentSchedule.time}
             </p>
             <p className="text-xs text-amber-600 dark:text-amber-500 mt-2">
-              {locale === "id"
+              {locale === routing.defaultLocale
                 ? "Pilih tanggal dan waktu baru untuk mengubah jadwal"
                 : "Select a new date and time to change the schedule"}
             </p>
@@ -239,7 +240,7 @@ export default function ConsultationSchedulePicker({
         {/* Step 1: Date Selection */}
         <div>
           <h6 className="text-lg font-semibold text-primary mb-4">
-            {locale === "id" ? "1. Pilih Tanggal" : "1. Select Date"}
+            {locale === routing.defaultLocale ? "1. Pilih Tanggal" : "1. Select Date"}
           </h6>
           <Calendar
             mode="single"
@@ -249,7 +250,7 @@ export default function ConsultationSchedulePicker({
             className="rounded-md border w-full"
           />
           <p className="text-sm text-muted-foreground mt-2">
-            {locale === "id"
+            {locale === routing.defaultLocale
               ? "Tanggal yang dapat dipilih: Hari ini hingga 30 hari ke depan"
               : "Available dates: Today up to 30 days ahead"}
           </p>
@@ -259,14 +260,14 @@ export default function ConsultationSchedulePicker({
         {selectedDate && (
           <div>
             <h6 className="text-lg font-semibold text-primary mb-4">
-              {locale === "id" ? "2. Pilih Waktu" : "2. Select Time"}
+              {locale === routing.defaultLocale ? "2. Pilih Waktu" : "2. Select Time"}
             </h6>
 
             {loadingSlots ? (
               <div className="flex items-center justify-center py-8">
                 <Spinner />
                 <span className="ml-2 text-muted-foreground">
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? "Memuat slot waktu..."
                     : "Loading time slots..."}
                 </span>
@@ -276,7 +277,7 @@ export default function ConsultationSchedulePicker({
                 {availableSlots.length === 0 ? (
                   <div className="text-center py-8 bg-muted rounded-lg">
                     <p className="text-muted-foreground">
-                      {locale === "id"
+                      {locale === routing.defaultLocale
                         ? "Tidak ada slot waktu tersedia untuk tanggal ini"
                         : "No time slots available for this date"}
                     </p>
@@ -328,7 +329,7 @@ export default function ConsultationSchedulePicker({
                       <div className="flex items-center gap-2">
                         <div className="w-4 h-4 rounded border bg-red-50 dark:bg-red-950/30 border-red-200"></div>
                         <span>
-                          {locale === "id"
+                          {locale === routing.defaultLocale
                             ? "Sudah dibooking"
                             : "Already booked"}
                         </span>
@@ -337,7 +338,7 @@ export default function ConsultationSchedulePicker({
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 rounded border bg-amber-50 dark:bg-amber-950/30 border-amber-400"></div>
                           <span>
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Jadwal saat ini"
                               : "Current schedule"}
                           </span>
@@ -346,7 +347,7 @@ export default function ConsultationSchedulePicker({
                       <div className="flex items-center gap-2">
                         <div className="w-4 h-4 rounded border line-through opacity-50"></div>
                         <span>
-                          {locale === "id" ? "Waktu berlalu" : "Time passed"}
+                          {locale === routing.defaultLocale ? "Waktu berlalu" : "Time passed"}
                         </span>
                       </div>
                     </div>
@@ -355,7 +356,7 @@ export default function ConsultationSchedulePicker({
 
                 {bookedSlots.length > 0 && (
                   <p className="text-sm text-muted-foreground mt-4">
-                    {locale === "id"
+                    {locale === routing.defaultLocale
                       ? `${bookedSlots.length} slot sudah dibooking`
                       : `${bookedSlots.length} slots already booked`}
                   </p>
@@ -370,16 +371,16 @@ export default function ConsultationSchedulePicker({
           <div className="bg-primary/10 p-4 rounded-lg border border-primary">
             <p className="text-sm font-semibold text-primary mb-1">
               {mode === "update"
-                ? locale === "id"
+                ? locale === routing.defaultLocale
                   ? "Jadwal Baru:"
                   : "New Schedule:"
-                : locale === "id"
+                : locale === routing.defaultLocale
                   ? "Jadwal Terpilih:"
                   : "Selected Schedule:"}
             </p>
             <p className="text-base font-bold text-primary">
               {selectedDate.toLocaleDateString(
-                locale === "id" ? "id-ID" : "en-US",
+                locale === routing.defaultLocale ? "id-ID" : "en-US",
                 {
                   weekday: "long",
                   year: "numeric",

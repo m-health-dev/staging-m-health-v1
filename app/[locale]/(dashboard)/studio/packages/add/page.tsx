@@ -215,6 +215,7 @@ const AddPackage = () => {
 
   async function onSubmit(data: z.infer<typeof PackageSchema>) {
     setLoading(true);
+
     const res = await addPackage(data);
 
     if (res.success) {
@@ -229,134 +230,40 @@ const AddPackage = () => {
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
+      <div className="my-10 bg-linear-to-b from-background via-background z-10 w-full py-5">
         {name && (
           <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
-            Add Package
+            Add Program
           </p>
         )}
         <h4 className="text-primary font-semibold">
-          {name ? name : "Add Package"}
+          {name ? name : "Add Program"}
         </h4>
       </div>
 
       <div className="flex flex-col w-full justify-center items-center">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-5xl">
-            <div className="space-y-5">
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Title
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          className="h-12"
-                          onChange={(e) => {
-                            field.onChange(e); // sync ke react-hook-form
-                            setName(e.target.value); // sync ke state untuk <h1>{name}</h1>
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="en_title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Title
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          className="h-12"
-                          onChange={(e) => {
-                            field.onChange(e); // sync ke react-hook-form
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <hr />
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_tagline"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Tagline
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          className="h-12"
-                          onChange={(e) => {
-                            field.onChange(e); // sync ke react-hook-form
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="en_tagline"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Tagline
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          className="h-12"
-                          onChange={(e) => {
-                            field.onChange(e); // sync ke react-hook-form
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <hr />
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <div className="grid grid-cols-2 gap-5 items-start w-full">
+          <fieldset disabled={loading}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-5xl">
+              <div className="space-y-5">
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
                   <FormField
                     control={form.control}
-                    name="duration_by_day"
+                    name="id_title"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-primary font-semibold!">
-                          Duration by Day
+                          Indonesian Title
                         </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
-                            inputMode="numeric"
+                            type="text"
                             className="h-12"
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value || 0))
-                            }
+                            onChange={(e) => {
+                              field.onChange(e); // sync ke react-hook-form
+                              setName(e.target.value); // sync ke state untuk <h1>{name}</h1>
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -365,20 +272,20 @@ const AddPackage = () => {
                   />
                   <FormField
                     control={form.control}
-                    name="duration_by_night"
+                    name="en_title"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-primary font-semibold!">
-                          Duration by Night
+                          English Title
                         </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
-                            inputMode="numeric"
+                            type="text"
                             className="h-12"
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value || 0))
-                            }
+                            onChange={(e) => {
+                              field.onChange(e); // sync ke react-hook-form
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -386,176 +293,345 @@ const AddPackage = () => {
                     )}
                   />
                 </div>
-                <div>
-                  <ComboBoxGender />
-                </div>
-              </div>
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <ComboBoxVendorListOption />
-                <ComboBoxHotelListOption />
-              </div>
-              <hr />
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="highlight_image"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Highlight Image
-                      </FormLabel>
-                      <FormDescription>
-                        Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
-                        720x720px). Max. 5MB
-                      </FormDescription>
-                      {uploadLoadingHLImage ? (
-                        <Skeleton className="aspect-square w-full rounded-2xl mt-3 object-cover border" />
-                      ) : highlightPreview === null || highlightError ? (
+                <hr />
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+                  <FormField
+                    control={form.control}
+                    name="id_tagline"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          Indonesian Tagline
+                        </FormLabel>
                         <FormControl>
-                          <div>
-                            {highlightError && (
-                              <div className="text-red-500 text-sm mb-2">
-                                Gambar gagal dimuat. Silakan upload ulang.
-                              </div>
-                            )}
+                          <Input
+                            {...field}
+                            type="text"
+                            className="h-12"
+                            onChange={(e) => {
+                              field.onChange(e); // sync ke react-hook-form
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="en_tagline"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          English Tagline
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="text"
+                            className="h-12"
+                            onChange={(e) => {
+                              field.onChange(e); // sync ke react-hook-form
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <hr />
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+                  <div className="grid grid-cols-2 gap-5 items-start w-full">
+                    <FormField
+                      control={form.control}
+                      name="duration_by_day"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary font-semibold!">
+                            Duration by Day
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              inputMode="numeric"
+                              className="h-12"
+                              onChange={(e) =>
+                                field.onChange(Number(e.target.value || 0))
+                              }
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="duration_by_night"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary font-semibold!">
+                            Duration by Night
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              inputMode="numeric"
+                              className="h-12"
+                              onChange={(e) =>
+                                field.onChange(Number(e.target.value || 0))
+                              }
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <ComboBoxGender />
+                  </div>
+                </div>
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+                  <ComboBoxVendorListOption />
+                  <ComboBoxHotelListOption />
+                </div>
+                <hr />
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+                  <FormField
+                    control={form.control}
+                    name="highlight_image"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          Highlight Image
+                        </FormLabel>
+                        <FormDescription>
+                          Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
+                          720x720px). Max. 5MB
+                        </FormDescription>
+                        {uploadLoadingHLImage ? (
+                          <Skeleton className="aspect-square w-full rounded-2xl mt-3 object-cover border" />
+                        ) : highlightPreview === null || highlightError ? (
+                          <FormControl>
+                            <div>
+                              {highlightError && (
+                                <div className="text-red-500 text-sm mb-2">
+                                  Gambar gagal dimuat. Silakan upload ulang.
+                                </div>
+                              )}
+                              <Dropzone
+                                accept={{ "image/*": [] }}
+                                maxSize={1024 * 1024 * 5}
+                                onDrop={async (acceptedFiles) => {
+                                  setUploadLoadingHLImage(true);
+                                  setHighlightError(false);
+                                  const url =
+                                    await handleImageUpload(acceptedFiles);
+
+                                  if (url) {
+                                    form.setValue("highlight_image", url);
+                                    setHighlightPreview(url);
+                                    setUploadLoadingHLImage(false);
+                                  }
+                                }}
+                                onError={console.error}
+                                className="hover:bg-muted bg-white rounded-2xl"
+                              >
+                                <DropzoneEmptyState />
+                                <DropzoneContent />
+                              </Dropzone>
+                            </div>
+                          </FormControl>
+                        ) : (
+                          highlightPreview && (
+                            <div className="relative">
+                              <Image
+                                src={highlightPreview}
+                                width={320}
+                                height={320}
+                                alt={highlightPreview}
+                                className="aspect-square w-full rounded-2xl mt-3 object-cover border"
+                                onError={() => setHighlightError(true)}
+                              />
+                              <Button
+                                size="sm"
+                                type="button"
+                                variant={"destructive_outline"}
+                                onClick={() =>
+                                  handleDelete(
+                                    highlightPreview.replace(
+                                      process.env
+                                        .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
+                                      "",
+                                    ),
+                                    "highlight",
+                                  )
+                                }
+                                className="absolute w-10 h-10 top-5 right-2 rounded-full"
+                              >
+                                {loading ? <Spinner /> : <Trash />}
+                              </Button>
+                            </div>
+                          )
+                        )}
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="reference_image"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          Reference Images
+                        </FormLabel>
+                        <FormDescription>
+                          Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
+                          720x720px). Max. 5MB
+                        </FormDescription>
+                        {uploadLoadingRFImage ? (
+                          <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mb-3">
+                            <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
+                            <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
+                          </div>
+                        ) : referencePreview.length === 0 ? (
+                          <FormControl>
                             <Dropzone
                               accept={{ "image/*": [] }}
                               maxSize={1024 * 1024 * 5}
+                              maxFiles={5}
+                              src={[]}
                               onDrop={async (acceptedFiles) => {
-                                setUploadLoadingHLImage(true);
-                                setHighlightError(false);
-                                const url =
-                                  await handleImageUpload(acceptedFiles);
+                                setUploadLoadingRFImage(true);
 
-                                if (url) {
-                                  form.setValue("highlight_image", url);
-                                  setHighlightPreview(url);
-                                  setUploadLoadingHLImage(false);
+                                const urls =
+                                  await handleBatchImageUpload(acceptedFiles);
+
+                                if (urls) {
+                                  const oldImages =
+                                    form.getValues("reference_image") || [];
+                                  const merged = [...oldImages, ...urls];
+                                  form.setValue("reference_image", merged);
+                                  setReferencePreview(merged);
+                                  setUploadLoadingRFImage(false);
                                 }
                               }}
                               onError={console.error}
-                              className="hover:bg-muted bg-white rounded-2xl"
+                              className="hover:bg-muted bg-white rounded-2xl w-full"
                             >
                               <DropzoneEmptyState />
                               <DropzoneContent />
                             </Dropzone>
-                          </div>
-                        </FormControl>
-                      ) : (
-                        highlightPreview && (
-                          <div className="relative">
-                            <Image
-                              src={highlightPreview}
-                              width={320}
-                              height={320}
-                              alt={highlightPreview}
-                              className="aspect-square w-full rounded-2xl mt-3 object-cover border"
-                              onError={() => setHighlightError(true)}
-                            />
-                            <Button
-                              size="sm"
-                              type="button"
-                              variant={"destructive_outline"}
-                              onClick={() =>
-                                handleDelete(
-                                  highlightPreview.replace(
-                                    process.env
-                                      .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                    "",
-                                  ),
-                                  "highlight",
-                                )
-                              }
-                              className="absolute w-10 h-10 top-5 right-2 rounded-full"
-                            >
-                              {loading ? <Spinner /> : <Trash />}
-                            </Button>
-                          </div>
-                        )
-                      )}
+                          </FormControl>
+                        ) : (
+                          referencePreview && (
+                            <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mb-3">
+                              {referencePreview.map((url, i) =>
+                                referenceErrors[i] ? (
+                                  <div key={`error-${i}`} className="relative">
+                                    <div className="text-red-500 text-sm mb-2">
+                                      Gambar gagal dimuat. Silakan upload ulang.
+                                    </div>
+                                    <Dropzone
+                                      accept={{ "image/*": [] }}
+                                      maxSize={1024 * 1024 * 5}
+                                      onDrop={async (acceptedFiles) => {
+                                        setUploadLoadingRFImage(true);
+                                        const uploadedUrl =
+                                          await handleImageUpload(
+                                            acceptedFiles,
+                                          );
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="reference_image"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Reference Images
-                      </FormLabel>
-                      <FormDescription>
-                        Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
-                        720x720px). Max. 5MB
-                      </FormDescription>
-                      {uploadLoadingRFImage ? (
-                        <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mb-3">
-                          <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
-                          <Skeleton className="aspect-square w-full rounded-2xl object-cover border" />
-                        </div>
-                      ) : referencePreview.length === 0 ? (
-                        <FormControl>
-                          <Dropzone
-                            accept={{ "image/*": [] }}
-                            maxSize={1024 * 1024 * 5}
-                            maxFiles={5}
-                            src={[]}
-                            onDrop={async (acceptedFiles) => {
-                              setUploadLoadingRFImage(true);
-
-                              const urls =
-                                await handleBatchImageUpload(acceptedFiles);
-
-                              if (urls) {
-                                const oldImages =
-                                  form.getValues("reference_image") || [];
-                                const merged = [...oldImages, ...urls];
-                                form.setValue("reference_image", merged);
-                                setReferencePreview(merged);
-                                setUploadLoadingRFImage(false);
-                              }
-                            }}
-                            onError={console.error}
-                            className="hover:bg-muted bg-white rounded-2xl w-full"
-                          >
-                            <DropzoneEmptyState />
-                            <DropzoneContent />
-                          </Dropzone>
-                        </FormControl>
-                      ) : (
-                        referencePreview && (
-                          <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 mb-3">
-                            {referencePreview.map((url, i) =>
-                              referenceErrors[i] ? (
-                                <div key={`error-${i}`} className="relative">
-                                  <div className="text-red-500 text-sm mb-2">
-                                    Gambar gagal dimuat. Silakan upload ulang.
+                                        if (uploadedUrl) {
+                                          const newPreviews = [
+                                            ...referencePreview,
+                                          ];
+                                          newPreviews[i] = uploadedUrl;
+                                          setReferencePreview(newPreviews);
+                                          form.setValue(
+                                            "reference_image",
+                                            newPreviews,
+                                          );
+                                          setReferenceErrors((prev) => {
+                                            const newErrors = { ...prev };
+                                            delete newErrors[i];
+                                            return newErrors;
+                                          });
+                                          setUploadLoadingRFImage(false);
+                                        }
+                                      }}
+                                      onError={console.error}
+                                      className="hover:bg-muted bg-white rounded-2xl w-full"
+                                    >
+                                      <DropzoneEmptyState />
+                                      <DropzoneContent />
+                                    </Dropzone>
                                   </div>
+                                ) : (
+                                  <div key={url} className="relative">
+                                    <Image
+                                      src={url}
+                                      width={320}
+                                      height={320}
+                                      alt={url}
+                                      className="aspect-square w-full rounded-2xl mt-3 object-cover border"
+                                      onError={() =>
+                                        setReferenceErrors((prev) => ({
+                                          ...prev,
+                                          [i]: true,
+                                        }))
+                                      }
+                                    />
+                                    <Button
+                                      size="sm"
+                                      type="button"
+                                      variant={"destructive_outline"}
+                                      onClick={() =>
+                                        handleDelete(
+                                          url.replace(
+                                            process.env
+                                              .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
+                                            "",
+                                          ),
+                                          "reference",
+                                          i,
+                                        )
+                                      }
+                                      className="absolute w-10 h-10 top-5 right-2 rounded-full"
+                                    >
+                                      {loading ? <Spinner /> : <Trash />}
+                                    </Button>
+                                  </div>
+                                ),
+                              )}
+                              {referencePreview.length !== 5 && (
+                                <FormControl>
                                   <Dropzone
                                     accept={{ "image/*": [] }}
                                     maxSize={1024 * 1024 * 5}
+                                    maxFiles={5}
+                                    src={[]}
                                     onDrop={async (acceptedFiles) => {
                                       setUploadLoadingRFImage(true);
-                                      const uploadedUrl =
-                                        await handleImageUpload(acceptedFiles);
 
-                                      if (uploadedUrl) {
-                                        const newPreviews = [
-                                          ...referencePreview,
-                                        ];
-                                        newPreviews[i] = uploadedUrl;
-                                        setReferencePreview(newPreviews);
+                                      const urls =
+                                        await handleBatchImageUpload(
+                                          acceptedFiles,
+                                        );
+
+                                      if (urls) {
+                                        const oldImages =
+                                          form.getValues("reference_image") ||
+                                          [];
+                                        const merged = [...oldImages, ...urls];
                                         form.setValue(
                                           "reference_image",
-                                          newPreviews,
+                                          merged,
                                         );
-                                        setReferenceErrors((prev) => {
-                                          const newErrors = { ...prev };
-                                          delete newErrors[i];
-                                          return newErrors;
-                                        });
+                                        setReferencePreview(merged);
                                         setUploadLoadingRFImage(false);
                                       }
                                     }}
@@ -565,234 +641,172 @@ const AddPackage = () => {
                                     <DropzoneEmptyState />
                                     <DropzoneContent />
                                   </Dropzone>
-                                </div>
-                              ) : (
-                                <div key={url} className="relative">
-                                  <Image
-                                    src={url}
-                                    width={320}
-                                    height={320}
-                                    alt={url}
-                                    className="aspect-square w-full rounded-2xl mt-3 object-cover border"
-                                    onError={() =>
-                                      setReferenceErrors((prev) => ({
-                                        ...prev,
-                                        [i]: true,
-                                      }))
-                                    }
-                                  />
-                                  <Button
-                                    size="sm"
-                                    type="button"
-                                    variant={"destructive_outline"}
-                                    onClick={() =>
-                                      handleDelete(
-                                        url.replace(
-                                          process.env
-                                            .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                          "",
-                                        ),
-                                        "reference",
-                                        i,
-                                      )
-                                    }
-                                    className="absolute w-10 h-10 top-5 right-2 rounded-full"
-                                  >
-                                    {loading ? <Spinner /> : <Trash />}
-                                  </Button>
-                                </div>
-                              ),
-                            )}
-                            {referencePreview.length !== 5 && (
-                              <FormControl>
-                                <Dropzone
-                                  accept={{ "image/*": [] }}
-                                  maxSize={1024 * 1024 * 5}
-                                  maxFiles={5}
-                                  src={[]}
-                                  onDrop={async (acceptedFiles) => {
-                                    setUploadLoadingRFImage(true);
+                                </FormControl>
+                              )}
+                            </div>
+                          )
+                        )}
 
-                                    const urls =
-                                      await handleBatchImageUpload(
-                                        acceptedFiles,
-                                      );
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                                    if (urls) {
-                                      const oldImages =
-                                        form.getValues("reference_image") || [];
-                                      const merged = [...oldImages, ...urls];
-                                      form.setValue("reference_image", merged);
-                                      setReferencePreview(merged);
-                                      setUploadLoadingRFImage(false);
-                                    }
-                                  }}
-                                  onError={console.error}
-                                  className="hover:bg-muted bg-white rounded-2xl w-full"
-                                >
-                                  <DropzoneEmptyState />
-                                  <DropzoneContent />
-                                </Dropzone>
-                              </FormControl>
-                            )}
-                          </div>
-                        )
-                      )}
+                <hr />
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                <DynamicInputField
+                  form={form}
+                  name="included"
+                  label="Included"
                 />
+
+                <hr />
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+                  <FormField
+                    control={form.control}
+                    name="id_medical_package_content"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          Indonesian Medical Content
+                        </FormLabel>
+                        <FormControl>
+                          <RichEditor {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="en_medical_package_content"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          English Medical Content
+                        </FormLabel>
+                        <FormControl>
+                          <RichEditor {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <hr />
+
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+                  <FormField
+                    control={form.control}
+                    name="id_wellness_package_content"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          Indonesian Wellness Content
+                        </FormLabel>
+                        <FormControl>
+                          <RichEditor {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="en_wellness_package_content"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          English Wellness Content
+                        </FormLabel>
+                        <FormControl>
+                          <RichEditor {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <hr />
+
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+                  <FormField
+                    control={form.control}
+                    name="id_detail"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          Indonesian Detail Information
+                        </FormLabel>
+                        <FormControl>
+                          <RichEditor {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="en_detail"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-primary font-semibold!">
+                          English Detail Information
+                        </FormLabel>
+                        <FormControl>
+                          <RichEditor {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <hr />
+
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
+                  <RupiahInput
+                    control={form.control}
+                    name="real_price"
+                    label="Real Price"
+                  />
+
+                  <RupiahInput
+                    control={form.control}
+                    name="discount_price"
+                    label="Discount Price"
+                  />
+                </div>
+
+                <div className="font-semibold text-health bg-white px-3 py-1 rounded-full inline-flex w-fit">
+                  <p className="inline-flex gap-1 items-center">
+                    <Percent className="size-5 text-white bg-health rounded-full p-1" />
+                    {percentage > 0 ? `${percentage}%` : "0%"}
+                  </p>
+                </div>
+
+                <hr />
+                <ComboBoxStatus />
+
+                <div className="lg:col-span-2 col-span-1 flex w-full items-center justify-center mt-5">
+                  <Button
+                    type="submit"
+                    size={"lg"}
+                    disabled={loading}
+                    className="rounded-full flex lg:w-fit w-full"
+                  >
+                    {loading ? <Spinner /> : "Submit"}
+                  </Button>
+                </div>
               </div>
-
-              <hr />
-
-              <DynamicInputField form={form} name="included" label="Included" />
-
-              <hr />
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_medical_package_content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Medical Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="en_medical_package_content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Medical Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <hr />
-
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_wellness_package_content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Wellness Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="en_wellness_package_content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Wellness Content
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <hr />
-
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <FormField
-                  control={form.control}
-                  name="id_detail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        Indonesian Detail Information
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="en_detail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-primary font-semibold!">
-                        English Detail Information
-                      </FormLabel>
-                      <FormControl>
-                        <RichEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <hr />
-
-              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start w-full">
-                <RupiahInput
-                  control={form.control}
-                  name="real_price"
-                  label="Real Price"
-                />
-
-                <RupiahInput
-                  control={form.control}
-                  name="discount_price"
-                  label="Discount Price"
-                />
-              </div>
-
-              <div className="font-semibold text-health bg-white px-3 py-1 rounded-full inline-flex w-fit">
-                <p className="inline-flex gap-1 items-center">
-                  <Percent className="size-5 text-white bg-health rounded-full p-1" />
-                  {percentage > 0 ? `${percentage}%` : "0%"}
-                </p>
-              </div>
-
-              <hr />
-              <ComboBoxStatus />
-
-              <div className="lg:col-span-2 col-span-1 flex w-full items-center justify-center mt-5">
-                <Button
-                  type="submit"
-                  size={"lg"}
-                  className="rounded-full flex lg:w-fit w-full"
-                >
-                  {loading ? <Spinner /> : "Submit"}
-                </Button>
-              </div>
-            </div>
-          </form>
+            </form>
+          </fieldset>
         </Form>
       </div>
     </ContainerWrap>

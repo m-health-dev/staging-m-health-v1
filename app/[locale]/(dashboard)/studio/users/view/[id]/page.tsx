@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Mars, Venus, VenusAndMars } from "lucide-react";
 import UnderConstruction from "@/components/utility/under-construction";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
+import { routing } from "@/i18n/routing";
 
 const UserDetailPage = async ({
   params,
@@ -35,7 +36,7 @@ const UserDetailPage = async ({
   return (
     <ContainerWrap>
       <h2 className="my-20 text-start text-primary font-bold">
-        {locale === "id" ? "Data Pengguna" : "Users Data"}
+        {locale === routing.defaultLocale ? "Data Pengguna" : "Users Data"}
       </h2>
       <div className="grid lg:grid-cols-3 grid-cols-1 w-full gap-10 mb-[20vh]">
         <div className="space-y-5 lg:col-span-2 w-full">

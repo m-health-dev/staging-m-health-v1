@@ -72,7 +72,8 @@ const ChatNavHeader = ({
   shareSlug?: string;
   type?: "preview" | "share" | "default";
 }) => {
-  const path = usePathname();
+  const pathname = usePathname();
+  const [path, setPath] = useState(pathname);
   const [openPublic, setOpenPublic] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -80,12 +81,65 @@ const ChatNavHeader = ({
   const [shareLink, setShareLink] = useState(shareSlug);
 
   const [initialStatus, setInitialStatus] = useState(status);
+  
+  // Extract session ID from current path (for when URL changes via replaceState)
+  const [currentSessionId, setCurrentSessionId] = useState(sessionId);
 
   const [dashButton, setDashButton] = useState<"admin" | "user" | "default">(
-    "default"
+    "default",
   );
 
   const [loadingAccessButton, setLoadingAccessButton] = useState(true);
+
+  // Listen for URL changes from window.history.replaceState
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const newPath = window.location.pathname;
+      setPath(newPath);
+      
+      // Extract session ID from path if it's a chat page
+      const chatMatch = newPath.match(/\/c\/([^/]+)/);
+      if (chatMatch && chatMatch[1]) {
+        const newSessionId = chatMatch[1];
+        setCurrentSessionId(newSessionId);
+        // New sessions are always private by default
+        if (!sessionId || sessionId !== newSessionId) {
+          setInitialStatus("private");
+          setShareLink("");
+        }
+      }
+    };
+
+    // Listen for custom urlchange event dispatched from ChatStart
+    window.addEventListener("urlchange", handleUrlChange);
+
+    // Also listen for popstate for browser back/forward
+    window.addEventListener("popstate", handleUrlChange);
+
+    return () => {
+      window.removeEventListener("urlchange", handleUrlChange);
+      window.removeEventListener("popstate", handleUrlChange);
+    };
+  }, [sessionId]);
+
+  // Sync with pathname from Next.js router
+  useEffect(() => {
+    setPath(pathname);
+  }, [pathname]);
+  
+  // Sync sessionId from props when it changes (e.g., on full page navigation)
+  useEffect(() => {
+    if (sessionId) {
+      setCurrentSessionId(sessionId);
+    }
+  }, [sessionId]);
+  
+  // Sync status from props
+  useEffect(() => {
+    if (status) {
+      setInitialStatus(status);
+    }
+  }, [status]);
 
   useEffect(() => {
     if (status === "private") {
@@ -93,9 +147,10 @@ const ChatNavHeader = ({
     } else if (status === "public") {
       setOpenPublic(true);
     }
-  }, []);
+  }, [status]);
 
-  const sessionData = sessionId || "";
+  // Use currentSessionId which updates when URL changes
+  const sessionData = currentSessionId || "";
 
   const pathCheck =
     (path.startsWith(`/${locale}`) && path.endsWith(`/${locale}`)) ||
@@ -122,10 +177,10 @@ const ChatNavHeader = ({
                   ? setPublic.error
                   : setPublic.error.id
                 : typeof setPublic.error === "string"
-                ? setPublic.error
-                : setPublic.error.en
+                  ? setPublic.error
+                  : setPublic.error.en
             }`,
-          }
+          },
         );
         setLoading(false);
       } else {
@@ -138,7 +193,7 @@ const ChatNavHeader = ({
               locale === routing.defaultLocale
                 ? "Silahkan bagikan tautan di bawah ini dengan hati-hati."
                 : "Please share the link below with caution.",
-          }
+          },
         );
         setLoading(false);
         setInitialStatus("public");
@@ -174,17 +229,17 @@ const ChatNavHeader = ({
                   ? setPrivate.error
                   : setPrivate.error.id
                 : typeof setPrivate.error === "string"
-                ? setPrivate.error
-                : setPrivate.error.en
+                  ? setPrivate.error
+                  : setPrivate.error.en
             }`,
-          }
+          },
         );
         setLoading(false);
       } else {
         toast.success(
           locale === routing.defaultLocale
             ? "Obrolan ini sekarang hanya dapat dilihat oleh Anda."
-            : "This chat is now visible only to you."
+            : "This chat is now visible only to you.",
         );
         setOpenPublic(false);
         setInitialStatus("private");
@@ -244,7 +299,7 @@ const ChatNavHeader = ({
             width={150}
             height={40}
             className="object-contain lg:flex hidden"
-            alt="M-Health Logo"
+            alt="M-HEALTH Logo"
           />
           <Image
             src={
@@ -254,7 +309,7 @@ const ChatNavHeader = ({
             width={40}
             height={40}
             className="object-contain lg:hidden flex"
-            alt="M-Health Logo"
+            alt="M-HEALTH Logo"
           />
         </Link>
         <div className="flex items-center gap-5">
@@ -449,7 +504,7 @@ const ChatNavHeader = ({
                       href={`/${locale}/${link.path}`}
                       className={cn(
                         "group transition-all duration-300",
-                        i === 0 && "mt-5"
+                        i === 0 && "mt-5",
                       )}
                       data-cursor-clickable
                     >

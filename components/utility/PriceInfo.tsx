@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { v4 as uuidv4 } from "uuid";
 import { Spinner } from "../ui/spinner";
+import { routing } from "@/i18n/routing";
 
 type PriceInfoType = {
   labels: any;
@@ -151,10 +152,10 @@ const PriceInfo = ({ labels, product, account, type }: PriceInfoType) => {
             >
               {isLoading && <Spinner />}
               {isLoading
-                ? locale === "id"
+                ? locale === routing.defaultLocale
                   ? "Memproses..."
                   : "Processing..."
-                : locale === "id"
+                : locale === routing.defaultLocale
                 ? "Beli Sekarang"
                 : "Buy Now"}
             </Button>
@@ -162,12 +163,12 @@ const PriceInfo = ({ labels, product, account, type }: PriceInfoType) => {
         ) : (
           <div className="bg-background p-4 rounded-2xl">
             <h6 className="text-primary font-bold">
-              {locale === "id"
+              {locale === routing.defaultLocale
                 ? "Anda harus masuk untuk melakukan pembelian."
                 : "You must sign in to make a purchase."}
             </h6>
             <p className="text-muted-foreground mt-1">
-              {locale === "id"
+              {locale === routing.defaultLocale
                 ? "Untuk tujuan keamanan, silakan masuk untuk melanjutkan."
                 : "For security purpose, please sign in to continue."}
             </p>
@@ -175,7 +176,7 @@ const PriceInfo = ({ labels, product, account, type }: PriceInfoType) => {
               <Link
                 href={`/${locale}/sign-in?redirect=${encodeURIComponent(path)}`}
               >
-                {locale === "id" ? "Masuk Sekarang" : "Sign In Now"}
+                {locale === routing.defaultLocale ? "Masuk Sekarang" : "Sign In Now"}
               </Link>
             </Button>
           </div>

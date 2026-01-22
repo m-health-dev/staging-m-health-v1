@@ -62,6 +62,7 @@ import { v4 as uuidv4 } from "uuid";
 import { createClient } from "@/utils/supabase/client";
 import { createConsultation } from "@/lib/consult/post-patch-consultation";
 import { se } from "date-fns/locale";
+import { routing } from "@/i18n/routing";
 
 type Step = 1 | 2 | 3;
 
@@ -331,7 +332,7 @@ const CWDComponent = ({
     if (res.error) {
       setLoading(false);
       return toast.error(
-        locale === "id"
+        locale === routing.defaultLocale
           ? "Gagal Membuat Jadwal Konsultasi"
           : "Failed to Create Consult Schedule",
         {
@@ -342,12 +343,12 @@ const CWDComponent = ({
     }
 
     toast.success(
-      locale === "id"
+      locale === routing.defaultLocale
         ? "Jadwal Konsultasi Berhasil Dibuat"
         : "Consult Scheduled!",
       {
         description:
-          locale === "id"
+          locale === routing.defaultLocale
             ? "Permintaan Anda berhasil disimpan. Lanjutkan ke halaman pembayaran untuk menyelesaikan jadwal konsultasi."
             : "Your request successfully saved. Proceed to payment page to complete the consult schedule.",
         duration: 15000,
@@ -397,10 +398,10 @@ const CWDComponent = ({
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
                             {!checkSession
-                              ? locale === "id"
+                              ? locale === routing.defaultLocale
                                 ? "ID Konsultasi"
                                 : "Consultation ID"
-                              : locale === "id"
+                              : locale === routing.defaultLocale
                               ? "ID Sesi Percakapan Anda"
                               : "Your Chat Session ID"}
                           </FormLabel>
@@ -425,7 +426,7 @@ const CWDComponent = ({
                           </FormControl>
                           {checkSession && (
                             <FormDescription>
-                              {locale === "id"
+                              {locale === routing.defaultLocale
                                 ? "Sesi percakapan ini akan kami kirimkan kepada dokter, sebagai salah satu rujukan. Klik pada kolom untuk membuka sesi percakapan anda kembali."
                                 : "This chat session will be sent to the doctor as a reference. Click on the field to open your chat session again."}
                             </FormDescription>
@@ -442,7 +443,7 @@ const CWDComponent = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Ceritakan Kondisi Kesehatan Anda"
                               : "Describe Your Health Condition"}
                           </FormLabel>
@@ -465,12 +466,12 @@ const CWDComponent = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Unggah Gambar Referensi (Opsional)"
                               : "Upload Reference Images (Optional)"}
                           </FormLabel>
                           <FormDescription>
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Silahkan tambahkan gambar yang dapat membantu dokter dalam memberikan penanganan jika diperlukan."
                               : "Please add images that may help the doctor in providing treatment if necessary."}
                           </FormDescription>
@@ -778,7 +779,7 @@ const CWDComponent = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Kota/ Provinsi"
                               : "City/ Province/ State"}
                           </FormLabel>
@@ -796,7 +797,7 @@ const CWDComponent = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id" ? "Kecamatan" : "District"}
+                            {locale === routing.defaultLocale ? "Kecamatan" : "District"}
                           </FormLabel>
                           <FormControl>
                             <Input {...field} className="h-12" />
@@ -811,7 +812,7 @@ const CWDComponent = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id" ? "Kode Pos" : "Postal Code"}
+                            {locale === routing.defaultLocale ? "Kode Pos" : "Postal Code"}
                           </FormLabel>
                           <FormControl>
                             <Input {...field} className="h-12" />
@@ -827,7 +828,7 @@ const CWDComponent = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Alamat Lengkap"
                               : "Full Address"}
                           </FormLabel>
@@ -851,7 +852,7 @@ const CWDComponent = ({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-primary font-semibold!">
-                              {locale === "id"
+                              {locale === routing.defaultLocale
                                 ? "Jadwal Konsultasi"
                                 : "Consultation Schedule"}
                             </FormLabel>

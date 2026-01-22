@@ -84,7 +84,7 @@ const InsurancePublicDetailPage = async ({
       </ContainerWrap>
       <ContainerWrap size="md" className="mb-20">
         <div className=" flex  items-center lg:-mt-12 -mt-6 w-full z-10">
-          <div className="bg-white flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0 justify-between w-full rounded-2xl p-4">
+          <div className="bg-linear-to-b from-white via-white to-transparent flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0 justify-between w-full rounded-2xl lg:px-6 px-4 py-8">
             <div className="inline-flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0">
               <Image
                 src={v.logo}

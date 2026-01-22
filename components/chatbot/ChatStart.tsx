@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { ArrowUp, ChevronDown, Plus, SlidersHorizontal } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import ChatWindow from "./ChatWindow";
@@ -47,6 +47,7 @@ const ChatStart = ({
   const [hasChat, setHasChat] = useState(chat.length > 0);
   const [text, setText] = useState("");
   const [pendingSessionId, setPendingSessionId] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
 
@@ -68,7 +69,7 @@ const ChatStart = ({
 
   const handleSendMessage = async (
     userMessage: string,
-    replyTo?: string | null
+    replyTo?: string | null,
   ) => {
     if (!userMessage.trim() || isLoading) return;
 
@@ -158,8 +159,8 @@ const ChatStart = ({
                   prev.map((msg) =>
                     msg.id === botMessageId
                       ? { ...msg, message: fullMessage, isStreaming: true }
-                      : msg
-                  )
+                      : msg,
+                  ),
                 );
               }
               break;
@@ -172,8 +173,8 @@ const ChatStart = ({
                   prev.map((msg) =>
                     msg.id === botMessageId
                       ? { ...msg, message: fullMessage, isStreaming: true }
-                      : msg
-                  )
+                      : msg,
+                  ),
                 );
               }
               break;
@@ -200,8 +201,8 @@ const ChatStart = ({
                         isStreaming: false,
                         actions: actions,
                       }
-                    : msg
-                )
+                    : msg,
+                ),
               );
 
               // Update URL silently when new session is created
@@ -213,8 +214,14 @@ const ChatStart = ({
                 window.history.replaceState(
                   { ...window.history.state, as: newUrl, url: newUrl },
                   "",
-                  newUrl
+                  newUrl,
                 );
+
+                // startTransition(() => {
+                //   document.startViewTransition(() => {
+                //     router.replace(`/${locale}/c/${sessionId}`);
+                //   });
+                // });
 
                 // Dispatch custom event to notify URL change
                 window.dispatchEvent(new Event("urlchange"));
@@ -234,8 +241,8 @@ const ChatStart = ({
                         message: data.message || "Terjadi kesalahan.",
                         isStreaming: false,
                       }
-                    : msg
-                )
+                    : msg,
+                ),
               );
               break;
 
@@ -247,8 +254,8 @@ const ChatStart = ({
                   prev.map((msg) =>
                     msg.id === botMessageId
                       ? { ...msg, message: fullMessage, isStreaming: true }
-                      : msg
-                  )
+                      : msg,
+                  ),
                 );
               }
           }
@@ -324,8 +331,8 @@ const ChatStart = ({
                 actions: actions,
                 isStreaming: false,
               }
-            : msg
-        )
+            : msg,
+        ),
       );
 
       // Trigger history refresh for new session
@@ -346,8 +353,8 @@ const ChatStart = ({
                     : "Sorry, an error occurred. Please try again.",
                 isStreaming: false,
               }
-            : msg
-        )
+            : msg,
+        ),
       );
     } finally {
       setIsLoading(false);
@@ -432,8 +439,8 @@ const ChatStart = ({
                 ? `Halo, ${accounts.fullname.split(" ")[0]}! 👋`
                 : `Hi, ${accounts.fullname.split(" ")[0]}! 👋`
               : locale === routing.defaultLocale
-              ? `Halo! Senang bertemu denganmu!`
-              : `Hi! Nice to meet you!`}
+                ? `Halo! Senang bertemu denganmu!`
+                : `Hi! Nice to meet you!`}
           </h3>
           <h4 className="text-primary">
             {locale === routing.defaultLocale

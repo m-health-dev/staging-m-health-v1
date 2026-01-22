@@ -63,6 +63,7 @@ import {
   createConsultation,
   updateConsultation,
 } from "@/lib/consult/post-patch-consultation";
+import { routing } from "@/i18n/routing";
 import { se } from "date-fns/locale";
 
 type Step = 1 | 2 | 3;
@@ -324,7 +325,7 @@ const UpdateConsultationData = ({
     if (res.error) {
       setLoading(false);
       return toast.error(
-        locale === "id"
+        locale === routing.defaultLocale
           ? "Gagal Memperbarui Jadwal Konsultasi"
           : "Failed to Update Consult Schedule",
         {
@@ -335,12 +336,12 @@ const UpdateConsultationData = ({
     }
 
     toast.success(
-      locale === "id"
+      locale === routing.defaultLocale
         ? "Jadwal Konsultasi Berhasil Diperbarui"
         : "Consult Schedule Updated!",
       {
         description:
-          locale === "id"
+          locale === routing.defaultLocale
             ? "Permintaan Anda berhasil disimpan."
             : "Your request successfully saved.",
         duration: 15000,
@@ -402,7 +403,7 @@ const UpdateConsultationData = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "ID Percakapan/ Konsultasi"
                               : "Conversation/ Consultation ID"}
                           </FormLabel>
@@ -427,7 +428,7 @@ const UpdateConsultationData = ({
                           </FormControl>
                           {data.chat_session.length > 21 && (
                             <FormDescription>
-                              {locale === "id"
+                              {locale === routing.defaultLocale
                                 ? "Sesi percakapan ini adalah referensi yang akan dikirimkan kepada dokter, sebagai salah satu rujukan. Klik pada kolom untuk membuka sesi percakapan anda kembali."
                                 : "This chat session will be sent to the doctor as a reference. Click on the field to open your chat session again."}
                             </FormDescription>
@@ -444,7 +445,7 @@ const UpdateConsultationData = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Ceritakan Kondisi Kesehatan Anda"
                               : "Describe Your Health Condition"}
                           </FormLabel>
@@ -467,12 +468,12 @@ const UpdateConsultationData = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Unggah Gambar Referensi (Opsional)"
                               : "Upload Reference Images (Optional)"}
                           </FormLabel>
                           <FormDescription>
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Silahkan tambahkan gambar yang dapat membantu dokter dalam memberikan penanganan jika diperlukan."
                               : "Please add images that may help the doctor in providing treatment if necessary."}
                           </FormDescription>
@@ -780,7 +781,7 @@ const UpdateConsultationData = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Kota/ Provinsi"
                               : "City/ Province/ State"}
                           </FormLabel>
@@ -798,7 +799,7 @@ const UpdateConsultationData = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id" ? "Kecamatan" : "District"}
+                            {locale === routing.defaultLocale ? "Kecamatan" : "District"}
                           </FormLabel>
                           <FormControl>
                             <Input {...field} className="h-12" />
@@ -813,7 +814,7 @@ const UpdateConsultationData = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id" ? "Kode Pos" : "Postal Code"}
+                            {locale === routing.defaultLocale ? "Kode Pos" : "Postal Code"}
                           </FormLabel>
                           <FormControl>
                             <Input {...field} className="h-12" />
@@ -829,7 +830,7 @@ const UpdateConsultationData = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === "id"
+                            {locale === routing.defaultLocale
                               ? "Alamat Lengkap"
                               : "Full Address"}
                           </FormLabel>
@@ -853,7 +854,7 @@ const UpdateConsultationData = ({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-primary font-semibold!">
-                              {locale === "id"
+                              {locale === routing.defaultLocale
                                 ? "Jadwal Konsultasi"
                                 : "Consultation Schedule"}
                             </FormLabel>

@@ -13,6 +13,7 @@ import {
   ScanEye,
   SlidersHorizontal,
   Stethoscope,
+  X,
 } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Spinner } from "../ui/spinner";
@@ -83,6 +84,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const [dialogSignIn, setDialogSignIn] = useState(false);
   const [hasSignedIn, setHasSignedIn] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
+
+  const [showNotice, setShowNotice] = useState(true);
 
   // const [isExpanded, setIsExpanded] = useState(false);
   // const [isRouting, setIsRouting] = useState(false);
@@ -263,7 +266,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               toast.success(
                 locale === routing.defaultLocale
                   ? "Silakan lanjutkan percakapan"
-                  : "You can continue the conversation"
+                  : "You can continue the conversation",
               );
             }}
           />
@@ -282,17 +285,22 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               </div>
             ) : (
               <div className="space-y-5">
-                {urgent && (
+                {urgent && showNotice && (
                   <div className="w-full max-w-4xl mx-auto sticky top-24 z-50">
-                    <div className="bg-green-50 text-green-600 border border-green-600 rounded-2xl p-4 flex flex-row items-center gap-4">
+                    <div className="bg-green-50 text-green-600 border border-green-600 rounded-2xl p-4 flex lg:flex-row flex-col lg:items-center items-start lg:gap-4 gap-2">
                       <div className="w-6! h-6! bg-white rounded-full border border-green-600 text-green-600 flex justify-center items-center">
                         <Stethoscope className="size-3 w-6" />
                       </div>
-                      <p className="text-sm!">
+                      <p className="lg:text-sm! text-xs!">
                         {locale === routing.defaultLocale
-                          ? "Sebagian informasi, dalam percakapan ini AI menyarankan untuk berkonsultasi dengan dokter agar mendapatkan penanganan yang tepat."
+                          ? "Sebagai informasi, dalam percakapan ini AI menyarankan untuk berkonsultasi dengan dokter agar mendapatkan penanganan yang tepat."
                           : "For your information, in this conversation, AI recommends consulting a doctor for appropriate treatment."}
                       </p>
+                      <div className="absolute top-4 right-4 lg:hidden block">
+                        <button onClick={() => setShowNotice(false)}>
+                          <X className="size-5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -367,21 +375,21 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           </div>
         </div>
       </div>
-      <div className="mx-auto sticky bottom-44 ">
+      <div className="mx-auto sticky bottom-42 z-99">
         <button
           onClick={scrollToBottom}
           className={cn(
-            "z-30 bg-white text-primary rounded-full p-2 transition-all duration-500  flex items-center gap-2 border border-primary -translate-y-20",
+            " bg-white text-primary rounded-full p-2 transition-all duration-500  flex items-center gap-2 border border-primary -translate-y-20",
             showScrollButton
               ? "opacity-100 animate-in fade-in translate-y-0"
-              : "opacity-0 animate-in fade-in translate-y-20"
+              : "opacity-0 animate-in fade-in translate-y-20",
           )}
           aria-label="Scroll to bottom"
         >
           <ArrowDown className="size-5" />
         </button>
       </div>
-      <div className="sticky bottom-0 bg-linear-to-t from-background via-background to-transparent z-20">
+      <div className="sticky bottom-0 bg-linear-to-t from-background via-background to-transparent pt-10 z-20">
         <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
           <div className="py-3">
             {!isShowInput && (
@@ -452,7 +460,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             )}
             <p className="text-xs! text-muted-foreground mt-2 text-center">
               {locale === routing.defaultLocale
-                ? "M-Health AI dapat membuat kesalahan. Periksa info penting."
+                ? "M-HEALTH AI dapat membuat kesalahan. Periksa info penting."
                 : "M HEALTH AI can make mistakes. Check important information."}
             </p>
           </div>

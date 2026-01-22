@@ -38,6 +38,7 @@ import { LayoutGrid, ListFilter } from "lucide-react";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 
 import { useLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
 import { useSidebar } from "../ui/sidebar";
 import { cn } from "@/lib/utils";
 import LoadingTableCard from "../utility/loading/loading-table-card";
@@ -152,7 +153,7 @@ export function Studio2DataTable<TData, TValue>({
         <>
           <div className="flex lg:flex-row flex-col lg:items-center items-end justify-center lg:justify-between pb-4 gap-4">
             <Input
-              placeholder="Filter by Name"
+              placeholder={locale === routing.defaultLocale ? "Filter berdasarkan nama" : "Filter by Name"}
               value={
                 (table.getColumn("title")?.getFilterValue() as string) ?? ""
               }
@@ -300,7 +301,7 @@ export function Studio2DataTable<TData, TValue>({
                               new Date(row.getValue("created_at")).getDate() ===
                                 now.getDate() && (
                                 <p className="bg-health px-1.5 py-0.5 rounded-lg text-white text-xs! inline-flex w-fit">
-                                  New
+                                  {locale === routing.defaultLocale ? "Baru" : "New"}
                                 </p>
                               )}
                           </div>
@@ -334,7 +335,7 @@ export function Studio2DataTable<TData, TValue>({
                       <div className="space-y-2 mt-3">
                         <div>
                           <p className="text-xs! text-muted-foreground">
-                            Created at
+                            {locale === routing.defaultLocale ? "Dibuat pada" : "Created at"}
                           </p>
                           <p className="text-sm!">
                             <LocalDateTime date={row.getValue("created_at")} />
@@ -342,7 +343,7 @@ export function Studio2DataTable<TData, TValue>({
                         </div>
                         <div>
                           <p className="text-xs! text-muted-foreground">
-                            Updated at
+                            {locale === routing.defaultLocale ? "Diperbarui pada" : "Updated at"}
                           </p>
                           <p className="text-sm!">
                             <LocalDateTime date={row.getValue("updated_at")} />
@@ -358,7 +359,7 @@ export function Studio2DataTable<TData, TValue>({
                 })
               ) : (
                 <div className="h-24 text-center col-span-3 bg-white border rounded-2xl flex justify-center items-center">
-                  <p className="text-muted-foreground">No results.</p>
+                  <p className="text-muted-foreground">{locale === routing.defaultLocale ? "Tidak ada hasil." : "No results."}</p>
                 </div>
               )}
             </div>
@@ -414,7 +415,7 @@ export function Studio2DataTable<TData, TValue>({
                         colSpan={columns.length}
                         className="h-24 text-center"
                       >
-                        No results.
+                        {locale === routing.defaultLocale ? "Tidak ada hasil." : "No results."}
                       </TableCell>
                     </TableRow>
                   )}

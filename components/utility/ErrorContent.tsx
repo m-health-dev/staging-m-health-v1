@@ -19,18 +19,26 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { nanoid } from "nanoid";
+import { routing } from "@/i18n/routing";
 
 const ErrorContent = ({
   digest,
   message,
   onRetry,
+  locale: localeProp,
 }: {
   digest?: any;
   message?: any;
   onRetry?: () => void;
+  locale?: string;
 }) => {
   const pathname = usePathname();
   const router = useRouter();
+
+  // Detect locale from pathname as fallback when not provided
+  const detectedLocale = pathname?.split("/")[1] || "en";
+  const isValidLocale = routing.locales.includes(detectedLocale as any);
+  const locale = localeProp || (isValidLocale ? detectedLocale : "en");
   const [rayId, setRayId] = useState("");
   const [dataIP, setDataIP] = useState("");
   const [hasLogged, setHasLogged] = useState(false);
@@ -147,11 +155,20 @@ const ErrorContent = ({
               alt="icon-m-health"
               className="object-contain w-12 h-12 mb-3"
             />
-            <h3 className="text-primary font-semibold">500 Server Error</h3>
-            <p className="text-health">Gagal Memuat Data</p>
+            <h3 className="text-primary font-semibold">
+              {locale === routing.defaultLocale
+                ? "500 Kesalahan Server"
+                : "500 Server Error"}
+            </h3>
+            <p className="text-health">
+              {locale === routing.defaultLocale
+                ? "Gagal Memuat Data"
+                : "Failed to Load Data"}
+            </p>
             <p className="text-sm! text-muted-foreground mt-5">
-              Sepertinya terjadi kesalahan pada server kami. Mohon tunggu
-              beberapa saat agar masalah ini dapat kami perbaiki.
+              {locale === routing.defaultLocale
+                ? "Sepertinya terjadi kesalahan pada server kami. Mohon tunggu beberapa saat agar masalah ini dapat kami perbaiki."
+                : "It seems there was an error on our server. Please wait a moment while we fix this issue."}
             </p>
             <div className="flex justify-start items-center gap-3 mt-5">
               <Button
@@ -160,14 +177,14 @@ const ErrorContent = ({
                 onClick={() => router.back()}
               >
                 <ArrowLeft />
-                Back
+                {locale === routing.defaultLocale ? "Kembali" : "Back"}
               </Button>
               <Button
                 className="rounded-2xl"
-                onClick={() => router.replace("/")}
+                onClick={() => router.replace("/home")}
               >
                 <Home />
-                Home
+                {locale === routing.defaultLocale ? "Beranda" : "Home"}
               </Button>
               {onRetry && (
                 <Button
@@ -175,7 +192,8 @@ const ErrorContent = ({
                   variant={"destructive_outline"}
                   className="rounded-full"
                 >
-                  <RefreshCw /> Try again
+                  <RefreshCw />{" "}
+                  {locale === routing.defaultLocale ? "Coba lagi" : "Try again"}
                 </Button>
               )}
             </div>
@@ -186,7 +204,11 @@ const ErrorContent = ({
             className="mt-2 border rounded-3xl p-4 bg-white w-full"
           >
             <CollapsibleTrigger className="flex items-center justify-between text-primary w-full bg-white h-7">
-              <p className="text-sm!">Informasi Teknis</p>
+              <p className="text-sm!">
+                {locale === routing.defaultLocale
+                  ? "Informasi Teknis"
+                  : "Technical Information"}
+              </p>
               {detailsOpen ? (
                 <ChevronUp className="w-4 h-4" />
               ) : (
@@ -194,8 +216,20 @@ const ErrorContent = ({
               )}
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2 text-muted-foreground space-y-1">
-              <p className="text-xs!">Ray ID : {rayId || "Tidak tersedia"}</p>
-              <p className="text-xs!">IP : {dataIP || "Tidak tersedia"}</p>
+              <p className="text-xs!">
+                Ray ID :{" "}
+                {rayId ||
+                  (locale === routing.defaultLocale
+                    ? "Tidak tersedia"
+                    : "Not available")}
+              </p>
+              <p className="text-xs!">
+                IP :{" "}
+                {dataIP ||
+                  (locale === routing.defaultLocale
+                    ? "Tidak tersedia"
+                    : "Not available")}
+              </p>
               <p className="text-xs!">Path : {pathname}</p>
               <p className="text-xs!">
                 Detail : {digest} - {message}

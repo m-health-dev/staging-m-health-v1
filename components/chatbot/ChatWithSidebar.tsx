@@ -25,6 +25,7 @@ interface ChatWithSidebarProps {
   publicID: string | null;
   publicIDFetch?: string;
   isLoading: boolean;
+  isLoadingMore?: boolean;
   sidebarDataLoading: boolean;
   onRefreshHistory: () => void;
   locale: string;
@@ -55,6 +56,7 @@ const ChatWithSidebar: React.FC<ChatWithSidebarProps> = ({
   publicID,
   publicIDFetch,
   isLoading,
+  isLoadingMore,
   sidebarDataLoading,
   onRefreshHistory,
   locale,
@@ -119,6 +121,7 @@ const ChatWithSidebar: React.FC<ChatWithSidebarProps> = ({
         sessionID={sessionID}
         publicIDFetch={publicID || publicIDFetch || null}
         isLoading={isLoading}
+        isLoadingMore={isLoadingMore}
         sidebarDataLoading={sidebarDataLoading}
         onRefreshHistory={onRefreshHistory}
         locale={locale}

@@ -20,14 +20,15 @@ export async function GET(request: Request) {
   const description =
     searchParams.get("description") || "M HEALTH Official Website";
 
-  const path = searchParams.get("path") || "PT. Medika Integrasi Persada";
+  const path =
+    searchParams.get("path") || "PT. Medika Integrasi Persada Indonesia";
 
   const manropeBold = await readFile(
-    join(process.cwd(), "public/fonts/Manrope-Bold.ttf")
+    join(process.cwd(), "public/fonts/Manrope-Bold.ttf"),
   );
 
   const manropeRegular = await readFile(
-    join(process.cwd(), "public/fonts/Manrope-Regular.ttf")
+    join(process.cwd(), "public/fonts/Manrope-Regular.ttf"),
   );
 
   const logoUrl =
@@ -43,73 +44,71 @@ export async function GET(request: Request) {
   const dataUrl = `data:${mime};base64,${base64}`;
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        fontSize: 60,
+        fontWeight: "bold",
+        color: "#3e77ab",
+        background: "white",
+        width: "100%",
+        height: "100%",
+        padding: "60px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+      }}
+    >
       <div
         style={{
-          fontSize: 60,
-          fontWeight: "bold",
-          color: "#3e77ab",
-          background: "white",
-          width: "100%",
-          height: "100%",
-          padding: "60px",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
           alignItems: "flex-start",
+          gap: "10px",
         }}
       >
+        <img
+          src={dataUrl}
+          style={{
+            width: "200px",
+            height: "150px",
+            objectFit: "contain",
+            marginTop: "-20px",
+          }}
+        />
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: "10px",
+            color: "#3e77ab",
+            fontSize: "50px",
+            fontWeight: "extra-bold",
           }}
         >
-          <img
-            src={dataUrl}
-            style={{
-              width: "200px",
-              height: "150px",
-              objectFit: "contain",
-              marginTop: "-20px",
-            }}
-          />
-          <div
-            style={{
-              color: "#3e77ab",
-              fontSize: "50px",
-              fontWeight: "extra-bold",
-            }}
-          >
-            {title}
-          </div>
-          <div
-            style={{
-              marginTop: "40px",
-              color: "#30b878",
-              fontSize: "32px",
-              lineHeight: "1.4",
-              fontWeight: "normal",
-            }}
-          >
-            {description.slice(0, 200)}
-          </div>
+          {title}
         </div>
         <div
           style={{
             marginTop: "40px",
-            color: "gray",
+            color: "#30b878",
             fontSize: "32px",
             lineHeight: "1.4",
             fontWeight: "normal",
           }}
         >
-          {path}
+          {description.slice(0, 200)}
         </div>
       </div>
-    ),
+      <div
+        style={{
+          marginTop: "40px",
+          color: "gray",
+          fontSize: "32px",
+          lineHeight: "1.4",
+          fontWeight: "normal",
+        }}
+      >
+        {path}
+      </div>
+    </div>,
     {
       ...size,
       fonts: [
@@ -126,6 +125,6 @@ export async function GET(request: Request) {
           weight: 400,
         },
       ],
-    }
+    },
   );
 }

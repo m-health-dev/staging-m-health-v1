@@ -9,6 +9,7 @@ import { calculateDiscount } from "../utility/PriceInfo";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
 import { formatRupiah } from "@/helper/rupiah";
+import { routing } from "@/i18n/routing";
 
 const EquipmentCard = ({
   slide,
@@ -45,7 +46,7 @@ const EquipmentCard = ({
               } // Ganti dengan slide.image_url saat tersedia
               width={720}
               height={403}
-              alt={locale === "id" ? slide.id_title : slide.en_title}
+              alt={locale === routing.defaultLocale ? slide.id_title : slide.en_title}
               onLoad={() => setImageLoaded(true)}
               loading="lazy"
               className={cn(
@@ -60,7 +61,7 @@ const EquipmentCard = ({
           <div>
             <div>
               <h5 className="capitalize font-bold text-primary line-clamp-3">
-                {locale === "id" ? slide.id_title : slide.en_title}
+                {locale === routing.defaultLocale ? slide.id_title : slide.en_title}
               </h5>
             </div>
           </div>

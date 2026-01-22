@@ -32,6 +32,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { resetPasswordAction } from "../actions/auth.actions";
 import { locale } from "dayjs";
 import Link from "next/link";
+import { routing } from "@/i18n/routing";
 
 const ResetPassClient = ({ locale }: { locale: string }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -59,10 +60,10 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
 
     if (response?.warning) {
       setLoading(false);
-      setWarning(locale === "id" ? response.warning.id : response.warning.en);
+      setWarning(locale === routing.defaultLocale ? response.warning.id : response.warning.en);
     } else if (response?.error) {
       setLoading(false);
-      setError(locale === "id" ? response.error.id : response.error.en);
+      setError(locale === routing.defaultLocale ? response.error.id : response.error.en);
     } else if (response?.success) {
       setLoading(false);
       setSuccess(`${response.success}`);
@@ -84,23 +85,23 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
                 width={180}
                 height={60}
                 className="object-contain mb-8 flex justify-center items-center"
-                alt="M-Health Logo"
+                alt="M-HEALTH Logo"
               />
             </Link>
             <h3 className="font-bold text-primary mb-2">
-              {locale === "id"
+              {locale === routing.defaultLocale
                 ? "Atur Ulang Kata Sandi Anda"
                 : "Reset Your Password"}
             </h3>
             <p className="mb-8 text-sm! text-muted-foreground">
-              {locale === "id"
+              {locale === routing.defaultLocale
                 ? "Anda hanya memiliki 3 kali percobaan untuk memulihkan akun Anda. Setelah itu, Anda perlu menghubungi dukungan."
                 : "You only have 3 attempts to recover your account. After that, you will need to contact support."}
             </p>
             {error && (
               <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                  {locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
                 </p>
                 <p className="text-sm!">{error}</p>
               </div>
@@ -108,7 +109,7 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
             {warning && (
               <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                  {locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
                 </p>
                 <p className="text-sm!">{warning}</p>
               </div>
@@ -116,7 +117,7 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
             {success && (
               <div className="bg-green-50 text-green-500 p-4 border border-green-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? "Permintaan Berhasil"
                     : "Request Successful"}
                 </p>
@@ -134,7 +135,7 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === "id" ? "Kata Sandi Baru" : "New Password"}
+                        {locale === routing.defaultLocale ? "Kata Sandi Baru" : "New Password"}
                       </FormLabel>
                       <FormControl>
                         <div className="relative w-full h-12">
@@ -169,7 +170,7 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === "id"
+                        {locale === routing.defaultLocale
                           ? "Konfirmasi Kata Sandi"
                           : "Confirm Password"}
                       </FormLabel>
@@ -207,7 +208,7 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
                     <Spinner />
                   ) : (
                     <p>
-                      {locale === "id"
+                      {locale === routing.defaultLocale
                         ? "Atur Ulang Kata Sandi"
                         : "Reset Password"}
                     </p>

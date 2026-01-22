@@ -17,7 +17,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -29,8 +29,8 @@ export async function generateMetadata(
     } - M HEALTH`,
     description: `${
       locale === routing.defaultLocale
-        ? "Pemberitahuan Privasi ini menjelaskan bagaimana kami, PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (selanjutnya disebut “kami”), memperoleh, mengumpulkan, menyimpan, menguasai, menggunakan, mengolah, menganalisis, memperbaiki, melakukan pembaruan, menampilkan, mengumumkan, mentransfer, mengungkapkan, dan melindungi Data Pribadi Anda."
-        : "This Privacy Notice explains how we, PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (hereinafter referred to as “we”), obtain, collect, store, control, use, process, analyze, correct, update, display, announce, transfer, disclose, and protect your Personal Data. "
+        ? "Pemberitahuan Privasi ini menjelaskan bagaimana kami, PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (selanjutnya disebut “kami”), memperoleh, mengumpulkan, menyimpan, menguasai, menggunakan, mengolah, menganalisis, memperbaiki, melakukan pembaruan, menampilkan, mengumumkan, mentransfer, mengungkapkan, dan melindungi Data Pribadi Anda."
+        : "This Privacy Notice explains how we, PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (hereinafter referred to as “we”), obtain, collect, store, control, use, process, analyze, correct, update, display, announce, transfer, disclose, and protect your Personal Data. "
     }`,
     openGraph: {
       title: `${
@@ -40,19 +40,19 @@ export async function generateMetadata(
       } - M HEALTH`,
       description: `${
         locale === routing.defaultLocale
-          ? "Pemberitahuan Privasi ini menjelaskan bagaimana kami, PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (selanjutnya disebut “kami”), memperoleh, mengumpulkan, menyimpan, menguasai, menggunakan, mengolah, menganalisis, memperbaiki, melakukan pembaruan, menampilkan, mengumumkan, mentransfer, mengungkapkan, dan melindungi Data Pribadi Anda."
-          : "This Privacy Notice explains how we, PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (hereinafter referred to as “we”), obtain, collect, store, control, use, process, analyze, correct, update, display, announce, transfer, disclose, and protect your Personal Data. "
+          ? "Pemberitahuan Privasi ini menjelaskan bagaimana kami, PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (selanjutnya disebut “kami”), memperoleh, mengumpulkan, menyimpan, menguasai, menggunakan, mengolah, menganalisis, memperbaiki, melakukan pembaruan, menampilkan, mengumumkan, mentransfer, mengungkapkan, dan melindungi Data Pribadi Anda."
+          : "This Privacy Notice explains how we, PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (hereinafter referred to as “we”), obtain, collect, store, control, use, process, analyze, correct, update, display, announce, transfer, disclose, and protect your Personal Data. "
       }`,
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "Kebijakan Privasi"
-              : "Privacy Policy"
+              : "Privacy Policy",
           )}&description=${encodeURIComponent(
             locale === routing.defaultLocale
-              ? "Pemberitahuan Privasi ini menjelaskan bagaimana kami, PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (selanjutnya disebut “kami”), memperoleh, mengumpulkan, menyimpan, menguasai, menggunakan, mengolah, menganalisis, memperbaiki, melakukan pembaruan, menampilkan, mengumumkan, mentransfer, mengungkapkan, dan melindungi Data Pribadi Anda."
-              : "This Privacy Notice explains how we, PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (hereinafter referred to as “we”), obtain, collect, store, control, use, process, analyze, correct, update, display, announce, transfer, disclose, and protect your Personal Data. "
+              ? "Pemberitahuan Privasi ini menjelaskan bagaimana kami, PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (selanjutnya disebut “kami”), memperoleh, mengumpulkan, menyimpan, menguasai, menggunakan, mengolah, menganalisis, memperbaiki, melakukan pembaruan, menampilkan, mengumumkan, mentransfer, mengungkapkan, dan melindungi Data Pribadi Anda."
+              : "This Privacy Notice explains how we, PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Indonesia (M HEALTH) (hereinafter referred to as “we”), obtain, collect, store, control, use, process, analyze, correct, update, display, announce, transfer, disclose, and protect your Personal Data. ",
           )}&path=${encodeURIComponent("m-health.id/privacy")}`,
           width: 800,
           height: 450,
@@ -69,7 +69,7 @@ const PrivacyPage = async () => {
     <Wrapper>
       <ContainerWrap size="lg" className="py-10">
         <h1 className="text-3xl font-bold text-primary mb-5 mt-10">
-          {locale === "en" ? "Privacy Policy" : "Kebijakan Privasi"}
+          {locale === routing.defaultLocale ? "Kebijakan Privasi" : "Privacy Policy"}
         </h1>
 
         <p className="mb-20 text-muted-foreground">

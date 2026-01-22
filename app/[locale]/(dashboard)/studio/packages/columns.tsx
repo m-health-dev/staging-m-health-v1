@@ -173,11 +173,11 @@ export const columns: ColumnDef<VendorType>[] = [
           setLoading(true);
           const res = await deletePackage(id);
           if (!res.error) {
-            toast.success("Success to Delete Package", {
+            toast.success("Success to Delete Program", {
               description: `${id.slice(0, 8).toUpperCase()} - ${id_title}`,
             });
           } else if (res.error) {
-            toast.error("Failed to Delete Package", {
+            toast.error("Failed to Delete Program", {
               description: `${res.error}`,
             });
           }
@@ -185,7 +185,7 @@ export const columns: ColumnDef<VendorType>[] = [
           router.refresh();
         } catch (err) {
           setLoading(false);
-          toast.warning("Failed to Package", { description: `${err}` });
+          toast.warning("Failed to Program", { description: `${err}` });
         }
       };
 
@@ -275,14 +275,14 @@ export const columns: ColumnDef<VendorType>[] = [
                 <DialogTitle asChild>
                   <h6 className="text-red-500">
                     {locale === routing.defaultLocale
-                      ? "Konfirmasi Penghapusan Package"
-                      : "Delete Package Confirmation"}
+                      ? "Konfirmasi Penghapusan Program"
+                      : "Delete Program Confirmation"}
                   </h6>
                 </DialogTitle>
                 <p className="text-muted-foreground">
                   {locale === routing.defaultLocale
-                    ? "Untuk menghapus Package ini, silahkan ketik nama Package:"
-                    : "To delete this Package, please type the Package name:"}{" "}
+                    ? "Untuk menghapus Program ini, silahkan ketik nama Program:"
+                    : "To delete this Program, please type the Program name:"}{" "}
                   <span
                     className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
                     onClick={handleCopyName}
@@ -305,8 +305,8 @@ export const columns: ColumnDef<VendorType>[] = [
                 className="w-full border px-3 py-2 h-12 rounded-2xl"
                 placeholder={
                   locale === routing.defaultLocale
-                    ? "Tulis nama Package di sini"
-                    : "Write Package name here"
+                    ? "Tulis nama Program di sini"
+                    : "Write Program name here"
                 }
               />
               <p className="text-xs! text-red-500">
@@ -331,7 +331,7 @@ export const columns: ColumnDef<VendorType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== id_title}
+                  disabled={inputName !== id_title || loading}
                   onClick={async () => {
                     await handleDeletePackage();
                     setOpenConfirm(false);

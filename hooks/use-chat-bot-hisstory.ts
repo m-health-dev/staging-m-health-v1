@@ -1,98 +1,153 @@
 "use client";
 
 import { getChatHistoryByUserID } from "@/lib/chatbot/getChatActivity";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useChatHistory(userID?: string, initialData: any[] = []) {
   const PER_PAGE = 10;
-  const INITIAL_LOAD = 20; // Load 20 items on first load
+  const INITIAL_LOAD = 20;
 
-  const [page, setPage] = useState(2); // Start at page 2 since we load 20 initially
+  const [page, setPage] = useState(2);
   const [allHistory, setAllHistory] = useState<any[]>(initialData);
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [total, setTotal] = useState(0);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [error, setError] = useState<any>(null);
+  
+  // Track if initial data was already loaded to prevent re-fetching
+  const initialLoadDone = useRef(false);
+  const isMounted = useRef(true);
 
-  // Initial load of 20 items
-  const initialKey =
-    userID && isFirstLoad ? ["chat-history-initial", userID] : null;
-  const { data: initialLoadData } = useSWR(
-    initialKey,
-    () => getChatHistoryByUserID(userID!, 1, INITIAL_LOAD),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
-
-  const key = userID && !isFirstLoad ? ["chat-history", userID, page] : null;
-
-  const { data, error, isLoading } = useSWR(
-    key,
-    () => getChatHistoryByUserID(userID!, page, PER_PAGE),
-    {
-      keepPreviousData: true,
-      revalidateOnFocus: false,
-    }
-  );
-
-  const total = data?.meta.total ?? initialLoadData?.meta.total ?? 0;
-  const pageData = data?.data?.data ?? [];
-  const initialPageData = initialLoadData?.data?.data ?? [];
-
-  // Handle initial load of 20 items
+  // Initial load - only once
   useEffect(() => {
-    if (initialPageData.length > 0 && isFirstLoad) {
-      // Replace all with fresh 20 items (not append to initialData)
-      setAllHistory(initialPageData);
-      setIsFirstLoad(false);
-    }
-  }, [initialPageData, isFirstLoad]);
-
-  // Handle subsequent pagination loads
-  useEffect(() => {
-    if (!pageData.length || isFirstLoad) return;
-
-    setAllHistory((prev) => {
-      // 🔒 dedupe by id
-      const map = new Map<string, any>();
-
-      // data lama dulu (terbaru di atas)
-      prev.forEach((item) => map.set(item.id, item));
-
-      // data baru (lebih lama) → bawah
-      pageData.forEach((item: { id: string }) => {
-        if (!map.has(item.id)) {
-          map.set(item.id, item);
+    if (!userID || initialLoadDone.current) return;
+    
+    const loadInitial = async () => {
+      try {
+        setIsInitialLoading(true);
+        const result = await getChatHistoryByUserID(userID, 1, INITIAL_LOAD);
+        
+        if (!isMounted.current) return;
+        
+        const items = result?.data?.data ?? [];
+        setAllHistory(items);
+        setTotal(result?.meta?.total ?? 0);
+        initialLoadDone.current = true;
+      } catch (err) {
+        if (isMounted.current) {
+          setError(err);
         }
-      });
+      } finally {
+        if (isMounted.current) {
+          setIsInitialLoading(false);
+        }
+      }
+    };
 
-      return Array.from(map.values());
+    // If initialData is provided, use it and skip fetch
+    if (initialData.length > 0) {
+      setAllHistory(initialData);
+      initialLoadDone.current = true;
+      setIsInitialLoading(false);
+    } else {
+      loadInitial();
+    }
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, [userID]);
+
+  // Load more function for infinite scroll
+  const loadMore = useCallback(async () => {
+    if (!userID || isLoadingMore || allHistory.length >= total) return;
+
+    try {
+      setIsLoadingMore(true);
+      const result = await getChatHistoryByUserID(userID, page, PER_PAGE);
+      
+      if (!isMounted.current) return;
+
+      const newItems = result?.data?.data ?? [];
+      
+      if (newItems.length > 0) {
+        setAllHistory((prev) => {
+          // Dedupe by id
+          const existingIds = new Set(prev.map((item) => item.id));
+          const uniqueNewItems = newItems.filter(
+            (item: { id: string }) => !existingIds.has(item.id)
+          );
+          return [...prev, ...uniqueNewItems];
+        });
+        setPage((p) => p + 1);
+      }
+      
+      setTotal(result?.meta?.total ?? total);
+    } catch (err) {
+      if (isMounted.current) {
+        setError(err);
+      }
+    } finally {
+      if (isMounted.current) {
+        setIsLoadingMore(false);
+      }
+    }
+  }, [userID, page, isLoadingMore, allHistory.length, total]);
+
+  // Add new chat to the top (for real-time updates)
+  const addNewChat = useCallback((newChat: any) => {
+    setAllHistory((prev) => {
+      // Check if already exists
+      if (prev.some((item) => item.id === newChat.id)) {
+        return prev;
+      }
+      return [newChat, ...prev];
     });
-  }, [pageData]);
+    setTotal((t) => t + 1);
+  }, []);
+
+  // Refresh only fetches newest items and prepends them
+  const refresh = useCallback(async () => {
+    if (!userID) return;
+
+    try {
+      // Only fetch first page to check for new items
+      const result = await getChatHistoryByUserID(userID, 1, PER_PAGE);
+      
+      if (!isMounted.current) return;
+
+      const newItems = result?.data?.data ?? [];
+      
+      setAllHistory((prev) => {
+        const existingIds = new Set(prev.map((item) => item.id));
+        const uniqueNewItems = newItems.filter(
+          (item: { id: string }) => !existingIds.has(item.id)
+        );
+        
+        if (uniqueNewItems.length > 0) {
+          return [...uniqueNewItems, ...prev];
+        }
+        return prev;
+      });
+      
+      setTotal(result?.meta?.total ?? total);
+    } catch (err) {
+      console.error("Failed to refresh chat history:", err);
+    }
+  }, [userID, total]);
 
   const hasMore = allHistory.length < total;
-
-  const loadMore = () => {
-    if (!isLoading && hasMore && !isFirstLoad) {
-      setPage((prev) => prev + 1);
-    }
-  };
-
-  const refresh = () => {
-    if (!userID) return;
-    setPage(2);
-    setAllHistory([]);
-    setIsFirstLoad(true);
-  };
 
   return {
     history: allHistory,
     total,
     error,
-    isLoading,
+    isLoading: isInitialLoading,
+    isLoadingMore,
     hasMore,
     loadMore,
     refresh,
+    addNewChat,
     currentPage: page,
     displayedCount: allHistory.length,
   };

@@ -58,6 +58,7 @@ const nextConfig: NextConfig = {
   experimental: {
     globalNotFound: true,
   },
+  // cacheComponents: true,
 };
 
 const withNextIntl = createNextIntlPlugin();

@@ -13,10 +13,20 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { nanoid } from "nanoid";
+import { routing } from "@/i18n/routing";
 
-const NotFoundContent = () => {
+type NotFoundContentProps = {
+  locale?: string;
+};
+
+const NotFoundContent = ({ locale: localeProp }: NotFoundContentProps) => {
   const pathname = usePathname();
   const router = useRouter();
+  
+  // Detect locale from pathname or use prop or default to "en"
+  const detectedLocale = pathname?.split("/")[1];
+  const isValidLocale = routing.locales.includes(detectedLocale as any);
+  const locale = localeProp || (isValidLocale ? detectedLocale : "en");
   const [rayId, setRayId] = useState("");
   const [dataIP, setDataIP] = useState("");
   const [hasLogged, setHasLogged] = useState(false);
@@ -133,10 +143,12 @@ const NotFoundContent = () => {
               alt="icon-m-health"
               className="object-contain w-12 h-12 mb-3"
             />
-            <h3 className="text-primary font-semibold">404 Not Found</h3>
-            <p className="text-health">Halaman Tidak Ditemukan</p>
+            <h3 className="text-primary font-semibold">{locale === routing.defaultLocale ? "404 Tidak Ditemukan" : "404 Not Found"}</h3>
+            <p className="text-health">{locale === routing.defaultLocale ? "Halaman Tidak Ditemukan" : "Page Not Found"}</p>
             <p className="text-sm! text-muted-foreground">
-              Sepertinya kamu tersesat di jalur yang tidak tersedia.
+              {locale === routing.defaultLocale
+                ? "Sepertinya kamu tersesat di jalur yang tidak tersedia."
+                : "It seems you got lost on a path that doesn't exist."}
             </p>
             <div className="flex justify-start items-center gap-3 mt-5">
               <Button
@@ -145,14 +157,14 @@ const NotFoundContent = () => {
                 onClick={() => router.back()}
               >
                 <ArrowLeft />
-                Back
+                {locale === routing.defaultLocale ? "Kembali" : "Back"}
               </Button>
               <Button
                 className="rounded-2xl"
                 onClick={() => router.replace("/")}
               >
                 <Home />
-                Home
+                {locale === routing.defaultLocale ? "Beranda" : "Home"}
               </Button>
             </div>
           </div>
@@ -162,7 +174,7 @@ const NotFoundContent = () => {
             className="mt-2 border rounded-3xl p-4 bg-white w-full"
           >
             <CollapsibleTrigger className="flex items-center justify-between text-primary w-full bg-white h-7">
-              <p className="text-sm!">Informasi Teknis</p>
+              <p className="text-sm!">{locale === routing.defaultLocale ? "Informasi Teknis" : "Technical Information"}</p>
               {detailsOpen ? (
                 <ChevronUp className="w-4 h-4" />
               ) : (
@@ -170,8 +182,8 @@ const NotFoundContent = () => {
               )}
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2 text-muted-foreground space-y-1">
-              <p className="text-xs!">{rayId || "Tidak tersedia"}</p>
-              <p className="text-xs!">{dataIP || "Tidak tersedia"}</p>
+              <p className="text-xs!">{rayId || (locale === routing.defaultLocale ? "Tidak tersedia" : "Not available")}</p>
+              <p className="text-xs!">{dataIP || (locale === routing.defaultLocale ? "Tidak tersedia" : "Not available")}</p>
               <p className="text-xs!">{pathname}</p>
             </CollapsibleContent>
           </Collapsible>

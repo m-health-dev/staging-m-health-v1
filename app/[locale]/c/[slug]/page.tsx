@@ -39,18 +39,20 @@ export async function generateMetadata(
   const { data, all } = await getChatSession(slug);
   // console.log({ data, all });
 
+  const chatSessionDesc = locale === routing.defaultLocale ? "Sesi Chat M HEALTH" : "M HEALTH Chat Session";
+
   return {
     title: `${all.data.title}`,
-    description: `M HEALTH Chat Session`,
+    description: chatSessionDesc,
     openGraph: {
       title: `${all.data.title}`,
-      description: `M HEALTH Chat Session`,
+      description: chatSessionDesc,
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
             all.data.title
           )}&description=${encodeURIComponent(
-            "M HEALTH Chat Session"
+            chatSessionDesc
           )}&path=${encodeURIComponent(`m-health.id/c/${slug}`)}`,
           width: 800,
           height: 450,

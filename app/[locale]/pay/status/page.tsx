@@ -16,6 +16,7 @@ import { formatRupiah } from "@/helper/rupiah";
 import { cn } from "@/lib/utils";
 import TransactionStatusClient from "./transaction-status-client";
 import { getConsultationByID } from "@/lib/consult/get-consultation";
+import { routing } from "@/i18n/routing";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -53,25 +54,25 @@ const SuccessPayment = async ({ searchParams }: Props) => {
     if (productType === "package") {
       const res = await getPackageByID(productId as string);
       dataProduct = res?.data ?? null;
-      productTypeTitle = locale === "id" ? "Paket" : "Package";
+      productTypeTitle = locale === routing.defaultLocale ? "Program" : "Program";
     } else if (productType === "medical_equipment") {
       const res = await getMedicalEquipmentByID(productId as string);
       dataProduct = res?.data?.data ?? null;
       productTypeTitle =
-        locale === "id" ? "Peralatan Medis" : "Medical Products";
+        locale === routing.defaultLocale ? "Peralatan Medis" : "Medical Products";
     } else if (productType === "medical") {
       const res = await getMedicalByID(productId as string);
       dataProduct = res?.data?.data ?? null;
-      productTypeTitle = locale === "id" ? "Paket Medis" : "Medical Package";
+      productTypeTitle = locale === routing.defaultLocale ? "Paket Medis" : "Medical Package";
     } else if (productType === "wellness") {
       const res = await getWellnessByID(productId as string);
       dataProduct = res?.data?.data ?? null;
       productTypeTitle =
-        locale === "id" ? "Paket Kebugaran" : "Wellness Package";
+        locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness Package";
     } else if (productType === "consultation") {
       const res = await getConsultationByID(productId as string);
       dataProduct = res?.data ?? null;
-      productTypeTitle = locale === "id" ? "Konsultasi" : "Consultation";
+      productTypeTitle = locale === routing.defaultLocale ? "Konsultasi" : "Consultation";
     }
   } catch (err) {
     // API error → tetap aman tanpa 500

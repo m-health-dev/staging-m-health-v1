@@ -8,6 +8,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { stripHtml } from "@/helper/removeHTMLTag";
 import { formatRupiah } from "@/helper/rupiah";
+import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { Mars, Stethoscope, Venus, VenusAndMars } from "lucide-react";
 import Image from "next/image";
@@ -118,20 +119,20 @@ const TransactionStatusClientAdmin = ({
   ) : error ? (
     <div className="text-center p-10 bg-red-50 rounded-2xl border border-red-200">
       <h3 className="text-xl font-semibold text-red-600 mb-2">
-        {locale === "id" ? "Terjadi Kesalahan" : "An Error Occurred"}
+        {locale === routing.defaultLocale ? "Terjadi Kesalahan" : "An Error Occurred"}
       </h3>
       <p className="text-red-500">{error}</p>
       <button
         onClick={() => window.location.reload()}
         className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
       >
-        {locale === "id" ? "Muat Ulang" : "Reload"}
+        {locale === routing.defaultLocale ? "Muat Ulang" : "Reload"}
       </button>
     </div>
   ) : !data ? (
     <div className="text-center p-10">
       <p>
-        {locale === "id"
+        {locale === routing.defaultLocale
           ? "Data transaksi tidak ditemukan"
           : "Transaction data not found"}
       </p>
@@ -147,13 +148,13 @@ const TransactionStatusClientAdmin = ({
               {/* <pre>{JSON.stringify(dataProduct, null, 2)}</pre> */}
               <h5 className="font-bold text-primary text-lg">
                 <Stethoscope className="inline-block mr-2 size-5" />
-                {locale === "id"
+                {locale === routing.defaultLocale
                   ? "Konsultasi dengan Dokter"
                   : "Consultation with Doctor"}
               </h5>
               <div className="mt-5">
                 <p className="text-sm! text-muted-foreground">
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? "Jadwal Konsultasi Anda"
                     : "Your Consultation Schedule"}
                 </p>
@@ -164,12 +165,12 @@ const TransactionStatusClientAdmin = ({
               {dataProduct.data.complaint && (
                 <div className="mt-5">
                   <p className="text-sm! text-muted-foreground">
-                    {locale === "id"
+                    {locale === routing.defaultLocale
                       ? "Kondisi/ Keluhan Kesehatan Anda"
                       : "Your Health Condition"}
                   </p>
                   <p>
-                    {locale === "id"
+                    {locale === routing.defaultLocale
                       ? `${stripHtml(dataProduct.data.complaint)}`
                       : `${stripHtml(dataProduct.data.complaint)}`}
                   </p>
@@ -179,7 +180,7 @@ const TransactionStatusClientAdmin = ({
           </Link>
         ) : (
           <Link
-            href={`/search?q=${encodeURIComponent(locale === "id" ? dataProduct.id_title : dataProduct.en_title)}`}
+            href={`/search?q=${encodeURIComponent(locale === routing.defaultLocale ? dataProduct.id_title : dataProduct.en_title)}`}
           >
             <div className="bg-white rounded-2xl p-5 border grid lg:grid-cols-4 grid-cols-1 gap-5 w-full">
               <div className="lg:col-span-1 w-full">
@@ -214,12 +215,12 @@ const TransactionStatusClientAdmin = ({
                   )}
                 </div>
                 <h5 className="font-bold text-primary text-lg">
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? dataProduct.id_title
                     : dataProduct.en_title}
                 </h5>
                 <p>
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? dataProduct.id_tagline
                     : dataProduct.en_tagline}
                 </p>
@@ -238,10 +239,10 @@ const TransactionStatusClientAdmin = ({
       ) : (
         <div className="text-start p-5 bg-yellow-50 rounded-2xl border border-yellow-200">
           <h5 className="text-lg font-semibold text-yellow-600 mb-2">
-            {locale === "id" ? "Produk Tidak Ditemukan" : "Product Not Found"}
+            {locale === routing.defaultLocale ? "Produk Tidak Ditemukan" : "Product Not Found"}
           </h5>
           <p className="text-yellow-500">
-            {locale === "id"
+            {locale === routing.defaultLocale
               ? "Maaf, produk yang Anda beli tidak dapat ditemukan. Silakan hubungi layanan pelanggan untuk bantuan lebih lanjut."
               : "Sorry, the product you purchased cannot be found. Please contact customer service for further assistance."}
           </p>

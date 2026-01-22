@@ -33,16 +33,19 @@ const Footer = () => {
                 width={250}
                 height={60}
                 className="object-contain"
-                alt="M-Health Logo"
+                alt="M-HEALTH Logo"
               />
             </Link>
             <div className="mt-10">
-              <h6 className="font-bold text-primary">
-                PT. Medika Integrasi Persada
+              <h6 className="font-bold text-primary mb-2">
+                PT. Medika Integrasi Persada Indonesia
               </h6>
-              <h6 className="font-bold text-primary">
-                PT. Medika Integrasi Klinik Indonesia
-              </h6>
+              <div className="flex items-start gap-5 mb-2">
+                <div className="h-0.5 w-8 bg-primary mt-3" />
+                <h6 className="font-bold text-primary">
+                  PT. Medika Integrasi Klinik Indonesia
+                </h6>
+              </div>
               <div className="text-muted-foreground mt-4">
                 <p>
                   {locale === routing.defaultLocale
@@ -242,8 +245,8 @@ const Footer = () => {
         </div>
         <div className="py-[5vh] flex lg:flex-row flex-col justify-between gap-5 lg:items-center">
           <p className="text-muted-foreground text-sm!">
-            &copy; 2025, PT. Medika Integrasi Persada. PT. Medika Integrasi
-            Klinik Indonesia. M-Health.{" "}
+            &copy; 2025, PT. Medika Integrasi Persada Indonesia. PT. Medika
+            Integrasi Klinik Indonesia. M HEALTH.{" "}
             {locale === routing.defaultLocale
               ? "Hak cipta dilindungi oleh undang-undang."
               : "All rights reserved."}

@@ -5,6 +5,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { routing } from "@/i18n/routing";
 
 const LoadingChat = ({
   className,
@@ -35,14 +36,14 @@ const LoadingChat = ({
 
   const text =
     phase === 0
-      ? locale === "id"
+      ? locale === routing.defaultLocale
         ? "Memuat"
         : "Loading"
       : phase === 1
-      ? locale === "id"
+      ? locale === routing.defaultLocale
         ? "Membaca Data"
         : "Read Data"
-      : locale === "id"
+      : locale === routing.defaultLocale
       ? "Menggali Informasi"
       : "Searching Information";
 

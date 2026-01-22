@@ -27,6 +27,7 @@ import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { forgotPasswordAction } from "../actions/auth.actions";
 import Link from "next/link";
+import { routing } from "@/i18n/routing";
 
 const ForgotPassClient = ({ locale }: { locale: string }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -52,14 +53,14 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
 
     if (response?.warning) {
       setLoading(false);
-      setWarning(locale === "id" ? response.warning.id : response.warning.en);
+      setWarning(locale === routing.defaultLocale ? response.warning.id : response.warning.en);
     } else if (response?.error) {
       setLoading(false);
-      setError(locale === "id" ? response.error.id : response.error.en);
+      setError(locale === routing.defaultLocale ? response.error.id : response.error.en);
     } else if (response?.success && response?.message) {
       setLoading(false);
       setSuccess(
-        `${locale === "id" ? response.message.id : response.message.en}`
+        `${locale === routing.defaultLocale ? response.message.id : response.message.en}`,
       );
     }
     setLoading(false);
@@ -78,16 +79,16 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
                 width={180}
                 height={60}
                 className="object-contain mb-8 flex justify-center items-center"
-                alt="M-Health Logo"
+                alt="M-HEALTH Logo"
               />
             </Link>
             <h3 className="font-bold text-primary mb-10">
-              {locale === "id" ? "Lupa Kata Sandi" : "Forgot Your Password?"}
+              {locale === routing.defaultLocale ? "Lupa Kata Sandi" : "Forgot Your Password?"}
             </h3>
             {error && (
               <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                  {locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
                 </p>
                 <p className="text-sm!">{error}</p>
               </div>
@@ -95,7 +96,7 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
             {warning && (
               <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                  {locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
                 </p>
                 <p className="text-sm!">{warning}</p>
               </div>
@@ -103,7 +104,7 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
             {success && (
               <div className="bg-green-50 text-green-500 p-4 border border-green-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? "Permintaan Berhasil"
                     : "Request Successful"}
                 </p>
@@ -132,7 +133,7 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
                 />
                 <div>
                   <p className="text-muted-foreground text-sm!">
-                    {locale === "id"
+                    {locale === routing.defaultLocale
                       ? "Kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda."
                       : "We will send a link to reset your password."}
                   </p>
@@ -142,7 +143,7 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
                     <Spinner />
                   ) : (
                     <p>
-                      {locale === "id"
+                      {locale === routing.defaultLocale
                         ? "Atur Ulang Kata Sandi"
                         : "Reset Password"}
                     </p>

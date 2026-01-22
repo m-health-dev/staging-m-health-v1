@@ -31,11 +31,13 @@ const DoctorStudio = async ({
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
-          <h4 className="text-primary font-semibold">Doctors Data</h4>
+          <h4 className="text-primary font-semibold">
+            {locale === routing.defaultLocale ? "Data Dokter" : "Doctors Data"}
+          </h4>
         </div>
         <Link href={`/${locale}/studio/doctor/add`}>
           <Button className="rounded-2xl flex lg:w-fit w-full">
-            <Plus /> <p className="lg:block hidden">Add New Doctor</p>
+            <Plus /> <p className="lg:block hidden">{locale === routing.defaultLocale ? "Tambah Dokter Baru" : "Add New Doctor"}</p>
           </Button>
         </Link>
       </div>
@@ -54,7 +56,7 @@ const DoctorStudio = async ({
         </p>
         <div className="flex flex-wrap gap-4 items-center">
           <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
-            {meta.total} Doctor
+            {meta.total} {locale === routing.defaultLocale ? "Dokter" : "Doctor"}
           </p>
         </div>
       </div>

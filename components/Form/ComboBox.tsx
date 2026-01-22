@@ -24,16 +24,19 @@ import {
 } from "@/components/ui/command";
 import { nanoid } from "nanoid";
 import { cn } from "@/lib/utils";
-
-const options = [
-  { value: "option1", label: "Pilihan Satu" },
-  { value: "option2", label: "Pilihan Dua" },
-  { value: "option3", label: "Pilihan Tiga" },
-];
+import { useLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
 
 export function ComboBoxField() {
   const form = useFormContext();
   const [open, setOpen] = useState(false);
+  const locale = useLocale();
+
+  const options = [
+    { value: "option1", label: locale === routing.defaultLocale ? "Pilihan Satu" : "Option One" },
+    { value: "option2", label: locale === routing.defaultLocale ? "Pilihan Dua" : "Option Two" },
+    { value: "option3", label: locale === routing.defaultLocale ? "Pilihan Tiga" : "Option Three" },
+  ];
 
   return (
     <FormField
@@ -42,7 +45,7 @@ export function ComboBoxField() {
       render={({ field }) => (
         <FormItem className="flex flex-col gap-2">
           <FormLabel className="text-primary font-semibold!">
-            Kategori
+            {locale === routing.defaultLocale ? "Kategori" : "Category"}
           </FormLabel>
 
           <Popover open={open} onOpenChange={setOpen}>
@@ -56,14 +59,14 @@ export function ComboBoxField() {
               >
                 {field.value
                   ? options.find((o) => o.value === field.value)?.label
-                  : "Pilih kategori"}
+                  : (locale === routing.defaultLocale ? "Pilih kategori" : "Select category")}
               </Button>
             </PopoverTrigger>
 
             <PopoverContent className="p-0 min-w-md max-w-full">
               <Command>
-                <CommandInput placeholder="Cari kategori..." />
-                <CommandEmpty>Tidak ditemukan.</CommandEmpty>
+                <CommandInput placeholder={locale === routing.defaultLocale ? "Cari kategori..." : "Search category..."} />
+                <CommandEmpty>{locale === routing.defaultLocale ? "Tidak ditemukan." : "No results found."}</CommandEmpty>
 
                 <CommandGroup>
                   {options.map((o) => (

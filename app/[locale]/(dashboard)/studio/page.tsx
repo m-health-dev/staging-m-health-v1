@@ -4,6 +4,11 @@ import { getAccessToken, getUser } from "../../(auth)/actions/auth.actions";
 import { User } from "@supabase/supabase-js";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import UnderConstruction from "@/components/utility/under-construction";
+import { getLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import DynamicGreeting from "@/components/utility/DynamicGreeting";
+import { getCurrentTime } from "@/lib/time/get-current-time";
+import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 
 function getThreeWords(text: string | null): string {
   if (!text) return "";
@@ -16,6 +21,9 @@ const StudioDashboard = async () => {
   const supabase = await createClient();
   const user = await getUser();
   const accessToken = await getAccessToken();
+  const locale = await getLocale();
+
+  const time = await getCurrentTime();
 
   // Jalankan semua query secara paralel untuk load lebih cepat
   const [
@@ -76,12 +84,14 @@ const StudioDashboard = async () => {
 
   return (
     <ContainerWrap>
-      <div className="my-10">
-        <h4 className="font-semibold text-primary">
-          Halo {getThreeWords(accounts?.fullname)}!
-        </h4>
-        <p className="mt-1 text-muted-foreground">
-          Selamat datang di M Health Studio.
+      <DynamicGreeting
+        name={getThreeWords(accounts?.fullname)}
+        locale={locale}
+      />
+
+      <div className="bg-white border border-primary px-3 py-1 inline-flex mb-10 rounded-full text-sm! text-primary">
+        <p>
+          <LocalDateTime date={time} withSeconds />
         </p>
       </div>
 
@@ -92,7 +102,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{AccountTotal}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Akun Telah Dibuat</p>
+              <p>{locale === routing.defaultLocale ? "Akun Telah Dibuat" : "Account Created"}</p>
             </div>
           </div>
         </div>
@@ -102,7 +112,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{ChatSession}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Sesi Percakapan</p>
+              <p>{locale === routing.defaultLocale ? "Sesi Percakapan" : "Chat Sessions"}</p>
             </div>
           </div>
         </div>
@@ -112,7 +122,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Consultation}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Consultation Scheduled</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Konsultasi Terjadwal"
+                  : "Consultation Scheduled"}
+              </p>
             </div>
           </div>
         </div>
@@ -122,7 +136,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Payment}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Transaction Recorded</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Transaksi Tercatat"
+                  : "Transaction Recorded"}
+              </p>
             </div>
           </div>
         </div>
@@ -132,7 +150,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Packages}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Programs</p>
+              <p>{locale === routing.defaultLocale ? "Program" : "Programs"}</p>
             </div>
           </div>
         </div>
@@ -142,7 +160,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Wellness}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Wellness</p>
+              <p>{locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness Packages"}</p>
             </div>
           </div>
         </div>
@@ -152,7 +170,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Medical}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Medical</p>
+              <p>{locale === routing.defaultLocale ? "Paket Medis" : "Medical Packages"}</p>
             </div>
           </div>
         </div>
@@ -162,7 +180,9 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Vendor}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Partner & Hospital</p>
+              <p>
+                {locale === routing.defaultLocale ? "Mitra & Rumah Sakit" : "Partner & Hospital"}
+              </p>
             </div>
           </div>
         </div>
@@ -172,7 +192,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Insurance}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Insurance</p>
+              <p>{locale === routing.defaultLocale ? "Asuransi" : "Insurance"}</p>
             </div>
           </div>
         </div>
@@ -182,7 +202,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Doctor}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Doctor</p>
+              <p>{locale === routing.defaultLocale ? "Dokter" : "Doctor"}</p>
             </div>
           </div>
         </div>
@@ -192,7 +212,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Hotel}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Hotel</p>
+              <p>{locale === routing.defaultLocale ? "Hotel" : "Hotel"}</p>
             </div>
           </div>
         </div>
@@ -202,7 +222,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Equipment}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Medical Products</p>
+              <p>{locale === routing.defaultLocale ? "Produk Medis" : "Medical Products"}</p>
             </div>
           </div>
         </div>
@@ -212,7 +232,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Events}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Events</p>
+              <p>{locale === routing.defaultLocale ? "Acara" : "Events"}</p>
             </div>
           </div>
         </div>
@@ -222,7 +242,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Article}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Article</p>
+              <p>{locale === routing.defaultLocale ? "Artikel" : "Article"}</p>
             </div>
           </div>
         </div>
@@ -232,7 +252,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{ArticleAuthor}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Article Author</p>
+              <p>{locale === routing.defaultLocale ? "Penulis Artikel" : "Article Author"}</p>
             </div>
           </div>
         </div>
@@ -242,7 +262,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{ArticleCategory}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Article Category</p>
+              <p>{locale === routing.defaultLocale ? "Kategori Artikel" : "Article Category"}</p>
             </div>
           </div>
         </div>
@@ -252,7 +272,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Hero}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Hero Banner</p>
+              <p>{locale === routing.defaultLocale ? "Banner Utama" : "Hero Banner"}</p>
             </div>
           </div>
         </div>
@@ -262,7 +282,7 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{TOS}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Terms of Service</p>
+              <p>{locale === routing.defaultLocale ? "Syarat Layanan" : "Terms of Service"}</p>
             </div>
           </div>
         </div>
@@ -272,17 +292,19 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Privacy}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>Privacy Policy</p>
+              <p>{locale === routing.defaultLocale ? "Kebijakan Privasi" : "Privacy Policy"}</p>
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-white p-4 border rounded-2xl mt-10">
-        <p className="text-sm! text-primary mb-1">Your Access Token</p>
+      {/* <div className="bg-white p-4 border rounded-2xl mt-10">
+        <p className="text-sm! text-primary mb-1">
+          {locale === routing.defaultLocale ? "Token Akses Anda" : "Your Access Token"}
+        </p>
         <pre className="text-wrap wrap-anywhere text-sm!">
           {JSON.stringify(accessToken, null, 2)}
         </pre>
-      </div>
+      </div> */}
       <div className="my-10">
         <UnderConstruction element />
       </div>

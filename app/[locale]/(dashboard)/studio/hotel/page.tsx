@@ -37,11 +37,13 @@ const Hotel = async ({
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
-          <h4 className="text-primary font-semibold">Hotel Data</h4>
+          <h4 className="text-primary font-semibold">
+            {locale === routing.defaultLocale ? "Data Hotel" : "Hotel Data"}
+          </h4>
         </div>
         <Link href={`/${locale}/studio/hotel/add`}>
           <Button className="rounded-2xl flex lg:w-fit w-full">
-            <Plus /> <p className="lg:block hidden">Add New Hotel</p>
+            <Plus /> <p className="lg:block hidden">{locale === routing.defaultLocale ? "Tambah Hotel Baru" : "Add New Hotel"}</p>
           </Button>
         </Link>
       </div>

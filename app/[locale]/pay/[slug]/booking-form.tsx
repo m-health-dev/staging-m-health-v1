@@ -85,7 +85,7 @@ function parseDomicile(raw: unknown): {
 
 function toUtcMidnightFromLocalDate(date: Date) {
   return new Date(
-    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
   );
 }
 
@@ -151,18 +151,18 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
               postal_code: data.domicile_postal_code?.trim() || "",
             },
           },
-          { id: account.id }
+          { id: account.id },
         );
       }
 
       if (res.success) {
         setLoading(false);
         setBookingLoading(false);
-        toast.success(
-          locale === "id"
-            ? "Data pemesanan berhasil disimpan!"
-            : "Booking data saved successfully!"
-        );
+        // toast.success(
+        //   locale === "id"
+        //     ? "Data pemesanan berhasil disimpan!"
+        //     : "Booking data saved successfully!"
+        // );
 
         router.refresh();
 
@@ -173,9 +173,9 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
         setLoading(false);
         setBookingLoading(false);
         toast.error(
-          locale === "id"
+          locale === routing.defaultLocale
             ? "Data pemesanan gagal disimpan!"
-            : "Failed to save booking data!"
+            : "Failed to save booking data!",
         );
       }
 
@@ -207,10 +207,10 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
     return (
       <div className="bg-white p-5 border rounded-2xl">
         <h3 className="text-primary font-bold mb-4">
-          {locale === "id" ? "Formulir Pemesanan" : "Booking Form"}
+          {locale === routing.defaultLocale ? "Formulir Pemesanan" : "Booking Form"}
         </h3>
         <p className="mb-5 text-primary text-xs! bg-blue-50 border-l-4 border-blue-500 px-4 py-2">
-          {locale === "id"
+          {locale === routing.defaultLocale
             ? "Pastikan data berikut sudah benar. Silahkan isi/ perbaiki data berikut untuk mempermudah proses pemesanan, data akan secara otomatis disimpan sebagai data akun anda."
             : "Please make sure the following data is correct. Please fill in/ correct the following data to facilitate the ordering process, the data will be automatically saved to your account."}
         </p>
@@ -267,7 +267,7 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === "id" ? "Nama Lengkap" : "Full Name"}
+                      {locale === routing.defaultLocale ? "Nama Lengkap" : "Full Name"}
                     </FormLabel>
                     <FormControl>
                       <Input {...field} className="h-12" />
@@ -284,7 +284,7 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === "id" ? "Kota/ Provinsi" : "Province/ City"}
+                        {locale === routing.defaultLocale ? "Kota/ Provinsi" : "Province/ City"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} className="h-12" />
@@ -299,7 +299,7 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === "id" ? "Kecamatan" : "District"}
+                        {locale === routing.defaultLocale ? "Kecamatan" : "District"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} className="h-12" />
@@ -314,7 +314,7 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === "id" ? "Kode Pos" : "Postal Code"}
+                        {locale === routing.defaultLocale ? "Kode Pos" : "Postal Code"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} type="number" className="h-12" />
@@ -330,7 +330,7 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === "id" ? "Alamat Lengkap" : "Full Address"}
+                      {locale === routing.defaultLocale ? "Alamat Lengkap" : "Full Address"}
                     </FormLabel>
                     <FormControl>
                       <Textarea {...field} className="min-h-32" />
@@ -344,7 +344,7 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
         </Form>
       </div>
     );
-  }
+  },
 );
 
 BookingClientForm.displayName = "BookingClientForm";

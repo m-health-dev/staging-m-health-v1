@@ -38,6 +38,7 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
 
 import { addEvent, updateEvent } from "@/lib/events/post-patch-events";
 import { CalendarCheckInOut } from "@/components/Form/CalendarCheckInOut";
@@ -234,7 +235,7 @@ const UpdateArticleCategoryForm = ({ id, data }: UpdateForm) => {
           resourceLabel="Category"
           router={router}
           slug={`${baseUrl}/${locale}/article?category=${
-            locale === "id" ? data.id_category : data.en_category
+            locale === routing.defaultLocale ? data.id_category : data.en_category
           }`}
         />
       </div>

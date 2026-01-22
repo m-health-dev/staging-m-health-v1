@@ -166,7 +166,7 @@ const NavHeader = ({
               width={150}
               height={40}
               className="object-contain"
-              alt="M-Health Logo"
+              alt="M-HEALTH Logo"
             />
           </Link>
           <div>

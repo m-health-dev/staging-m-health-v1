@@ -68,6 +68,7 @@ interface ChatbotSidebarProps extends React.ComponentProps<typeof Sidebar> {
   sessionID?: string;
   publicIDFetch: string | null;
   isLoading: boolean;
+  isLoadingMore?: boolean;
   sidebarDataLoading?: boolean; // Loading state for packages/medical/wellness
   locale: string;
   onRefreshHistory?: () => void;
@@ -89,6 +90,7 @@ export function ChatbotSidebar({
   sessionID,
   publicIDFetch,
   isLoading,
+  isLoadingMore = false,
   sidebarDataLoading = false,
   locale,
   onRefreshHistory,
@@ -106,6 +108,34 @@ export function ChatbotSidebar({
   const [isLoadingNewChat, setIsLoadingNewChat] = React.useState(false);
   const [createNewChat, setCreateNewChat] = React.useState(false);
   const pathname = usePathname();
+  
+  // Ref for infinite scroll sentinel
+  const loadMoreRef = React.useRef<HTMLDivElement>(null);
+
+  // Infinite scroll observer
+  React.useEffect(() => {
+    if (!hasMore || !onLoadMore || isLoadingMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+          onLoadMore();
+        }
+      },
+      { threshold: 0.1, rootMargin: "100px" }
+    );
+
+    const sentinel = loadMoreRef.current;
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+
+    return () => {
+      if (sentinel) {
+        observer.unobserve(sentinel);
+      }
+    };
+  }, [hasMore, onLoadMore, isLoadingMore]);
 
   // React.useEffect(() => {
   //   if (pathname === `/${locale}` || pathname === `/${locale}/`) {
@@ -405,78 +435,65 @@ export function ChatbotSidebar({
               </p>
               <div className="space-y-5 pt-3">
                 <div className="space-y-2">
-                  {isLoading ? (
+                  {/* Initial loading skeleton - only show on first load when no history */}
+                  {isLoading && history.length === 0 ? (
                     <div className="space-y-3">
-                      {Array.from({ length: history.length }).map((_, i) => (
+                      {Array.from({ length: 5 }).map((_, i) => (
                         <Skeleton key={i} className="w-full h-12" />
                       ))}
                     </div>
                   ) : (
                     <>
-                      {history ? (
-                        history.map((s) => (
-                          <React.Suspense key={s.id} fallback={<Spinner />}>
-                            <div
-                              key={s.id}
-                              className="w-full text-left group/hst cursor-pointer relative p-2 hover:bg-muted hover:shadow-sm rounded-2xl hover:outline"
-                            >
-                              <Link href={`/${locale}/c/${s.id}`}>
-                                <div className="flex justify-between items-center">
-                                  <div>
-                                    <p className="text-primary text-base! line-clamp-1 wrap-break-word z-5 capitalize">
-                                      {s.title === ""
-                                        ? "M HEALTH Chat"
-                                        : s.title}
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                              <Button
-                                variant={"destructive_outline"}
-                                className="w-6 h-6 rounded-full group-hover/hst:translate-x-0 group-hover/hst:opacity-100 translate-x-5 opacity-0 overflow-hidden transition-all duration-300 ease-in-out absolute right-2 top-2"
-                                onClick={() => handleDeleteChatSession(s.id)}
-                              >
-                                {loadingDelete ? (
-                                  <Spinner />
-                                ) : (
-                                  <Trash className="size-3" />
-                                )}
-                              </Button>
+                      {history.map((s) => (
+                        <div
+                          key={s.id}
+                          className="w-full text-left group/hst cursor-pointer relative p-2 hover:bg-muted hover:shadow-sm rounded-2xl hover:outline"
+                        >
+                          <Link href={`/${locale}/c/${s.id}`}>
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <p className="text-primary text-base! line-clamp-1 wrap-break-word z-5 capitalize">
+                                  {s.title === ""
+                                    ? "M HEALTH Chat"
+                                    : s.title}
+                                </p>
+                              </div>
                             </div>
-                          </React.Suspense>
-                        ))
-                      ) : (
-                        <div className="px-3 bg-muted py-4 rounded-2xl">
-                          <p className="text-muted-foreground text-sm!">
-                            {locale === routing.defaultLocale
-                              ? "Belum ada riwayat percakapan saat ini."
-                              : "No chat history available yet."}
-                          </p>
+                          </Link>
+                          <Button
+                            variant={"destructive_outline"}
+                            className="w-6 h-6 rounded-full group-hover/hst:translate-x-0 group-hover/hst:opacity-100 translate-x-5 opacity-0 overflow-hidden transition-all duration-300 ease-in-out absolute right-2 top-2"
+                            onClick={() => handleDeleteChatSession(s.id)}
+                          >
+                            {loadingDelete ? (
+                              <Spinner />
+                            ) : (
+                              <Trash className="size-3" />
+                            )}
+                          </Button>
+                        </div>
+                      ))}
+
+                      {/* Infinite scroll sentinel */}
+                      {hasMore && (
+                        <div
+                          ref={loadMoreRef}
+                          className="flex justify-center py-3"
+                        >
+                          {isLoadingMore && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <Spinner className="size-4" />
+                              <p className="text-sm!">
+                                {locale === routing.defaultLocale
+                                  ? "Memuat..."
+                                  : "Loading..."}
+                              </p>
+                            </div>
+                          )}
                         </div>
                       )}
 
-                      {hasMore && onLoadMore && (
-                        <Button
-                          className="w-full rounded-full"
-                          size={"sm"}
-                          variant="outline"
-                          onClick={onLoadMore}
-                          disabled={isLoading}
-                        >
-                          {isLoading ? (
-                            <Spinner className="size-4" />
-                          ) : (
-                            <ChevronDown className="size-4" />
-                          )}
-                          <p className="text-sm!">
-                            {locale === routing.defaultLocale
-                              ? "Tampilkan Lebih Banyak"
-                              : "Show More"}
-                          </p>
-                        </Button>
-                      )}
-
-                      {!hasMore && history && (
+                      {!hasMore && history.length > 0 && (
                         <div className="px-3 bg-muted py-2 rounded-2xl text-center">
                           <p className="text-muted-foreground text-sm!">
                             {locale === routing.defaultLocale

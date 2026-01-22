@@ -10,11 +10,11 @@ declare const google: { accounts: accounts };
 
 const generateNonce = async (): Promise<[string, string]> => {
   const nonce = btoa(
-    String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))
+    String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32))),
   );
   const hashBuffer = await crypto.subtle.digest(
     "SHA-256",
-    new TextEncoder().encode(nonce)
+    new TextEncoder().encode(nonce),
   );
   const hashedNonce = Array.from(new Uint8Array(hashBuffer))
     .map((b) => b.toString(16).padStart(2, "0"))
@@ -48,7 +48,7 @@ const OneTapComponent = () => {
           nonce,
         });
 
-        if (!error) router.refresh();
+        if (!error) window.location.reload();
       },
     });
 

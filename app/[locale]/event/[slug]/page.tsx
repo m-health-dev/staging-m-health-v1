@@ -190,12 +190,12 @@ const EventsContent = async ({ params }: Props) => {
                   <Link href={e.registration_url} target="_blank">
                     <Button className="rounded-full lg:w-fit w-full font-medium cursor-pointer">
                       <ArrowUpRight className="size-5" />{" "}
-                      <p>Register to this Event</p>
+                      <p>{locale === routing.defaultLocale ? "Daftar ke Acara Ini" : "Register to this Event"}</p>
                     </Button>
                   </Link>
                 ) : (
                   <p className="bg-gray-100 inline-flex py-2 px-4 rounded-full lg:w-fit w-full text-muted-foreground font-medium items-center gap-3 justify-center">
-                    <PencilLine className="size-4" /> On Site Registration
+                    <PencilLine className="size-4" /> {locale === routing.defaultLocale ? "Pendaftaran di Lokasi" : "On Site Registration"}
                   </p>
                 )}
               </div>

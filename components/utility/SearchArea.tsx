@@ -14,6 +14,7 @@ import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 import Link from "next/link";
 import { typeOftarget } from "@/lib/search/get-search";
+import { routing } from "@/i18n/routing";
 
 const SearchArea = ({ target }: { target: string }) => {
   const pathname = usePathname();
@@ -78,8 +79,8 @@ const SearchArea = ({ target }: { target: string }) => {
 
       router.push(
         `/${locale}/search?q=${encodeURIComponent(
-          searchQuery
-        )}&target=${target}`
+          searchQuery,
+        )}&target=${target}`,
       );
     }
   };
@@ -111,7 +112,7 @@ const SearchArea = ({ target }: { target: string }) => {
             className="bg-white lg:px-4 lg:py-2 lg:w-fit lg:h-fit w-10 h-10 rounded-full inline-flex gap-3 items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-all duration-300 text-primary border"
           >
             <Search className="size-5" />
-            <p className="lg:block hidden">Search</p>
+            <p className="lg:block hidden">{locale === routing.defaultLocale ? "Cari" : "Search"}</p>
           </button>
           <Link href={`/${locale}`}>
             <button className="bg-white lg:px-4 lg:py-2 lg:w-fit lg:h-fit w-10 h-10 rounded-full inline-flex gap-3 items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-all duration-300 text-primary border">
@@ -126,7 +127,7 @@ const SearchArea = ({ target }: { target: string }) => {
           <DialogTitle className="hidden" />
           <div className="search_anything">
             <h5 className="text-primary font-bold mb-5 capitalize">
-              {locale === "id"
+              {locale === routing.defaultLocale
                 ? `Cari Paket ${target} M HEALTH`
                 : `Search ${target} Packages in M HEALTH`}
             </h5>
@@ -138,7 +139,7 @@ const SearchArea = ({ target }: { target: string }) => {
                 value={searchQuery}
                 onChange={handleInputChange}
                 placeholder={
-                  locale === "id" ? "Ketik disini..." : "Type here..."
+                  locale === routing.defaultLocale ? "Ketik disini..." : "Type here..."
                 }
                 className="h-14 rounded-full bg-white px-5 placeholder:text-primary/50 lg:text-[18px] text-base w-full focus-visible:border-muted-foreground/20 focus-visible:ring-0! outline-0!"
               />

@@ -43,7 +43,9 @@ const Users = async ({
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
-          <h4 className="text-primary font-semibold">Users Data</h4>
+          <h4 className="text-primary font-semibold">
+            {locale === routing.defaultLocale ? "Data Pengguna" : "Users Data"}
+          </h4>
         </div>
         {/* <Link href={`/${locale}/studio/users/add`}>
           <Button className="rounded-2xl flex lg:w-fit w-full">
@@ -66,7 +68,7 @@ const Users = async ({
         </p>
         <div className="flex flex-wrap gap-4 items-center">
           <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
-            {total} User
+            {total} {locale === routing.defaultLocale ? "Pengguna" : "User"}
           </p>
         </div>
       </div>

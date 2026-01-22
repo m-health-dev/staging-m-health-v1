@@ -34,7 +34,7 @@ const EventCard = ({ e, locale }: { e: EventsType; locale: string }) => {
               } // Ganti dengan slide.image_url saat tersedia
               width={720}
               height={403}
-              alt={locale === "id" ? e.id_title : e.en_title}
+              alt={locale === routing.defaultLocale ? e.id_title : e.en_title}
               onLoad={() => setImageLoaded(true)}
               loading="lazy"
               className={cn(

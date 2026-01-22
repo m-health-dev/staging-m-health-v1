@@ -30,11 +30,18 @@ const PackageStudio = async ({
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
-          <h4 className="text-primary font-semibold">Packages Data</h4>
+          <h4 className="text-primary font-semibold">
+            {locale === routing.defaultLocale
+              ? "Data Program"
+              : "Programs Data"}
+          </h4>
         </div>
         <Link href={`/${locale}/studio/packages/add`}>
-          <Button className="rounded-2xl flex lg:w-fit w-full">
-            <Plus /> <p className="lg:block hidden">Add New Packages</p>
+          <Button className="flex lg:w-fit w-full h-12 rounded-full">
+            <Plus />{" "}
+            <p className="lg:block hidden">
+              {locale === routing.defaultLocale ? "Tambah Baru" : "Add New"}
+            </p>
           </Button>
         </Link>
       </div>
@@ -53,7 +60,7 @@ const PackageStudio = async ({
         </p>
         <div className="flex flex-wrap gap-4 items-center">
           <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
-            {meta.total} Package
+            {meta.total} Program
           </p>
         </div>
       </div>

@@ -180,64 +180,91 @@ export function Studio1DataTable<TData, TValue>({
         <>
           <div className="flex lg:flex-row flex-col lg:items-center items-end justify-center lg:justify-between pb-4 gap-4">
             {type !== "legal" && (
-              <Input
-                placeholder="Filter by Name"
-                value={
-                  (table
-                    .getColumn(
-                      `${
-                        type === "users"
-                          ? "fullname"
-                          : type === "authors"
-                            ? "name"
-                            : type === "article-category"
-                              ? "id_category"
-                              : type === "hero"
-                                ? "title"
-                                : type === "consult-schedule"
-                                  ? "fullname"
-                                  : type === "payment-records"
-                                    ? "transaction_id"
-                                    : type === "doctor"
-                                      ? "name"
-                                      : type === "contact"
-                                        ? "id"
-                                        : type === "error-logs"
-                                          ? "ray_id"
-                                          : "id_title"
-                      }`,
-                    )
-                    ?.getFilterValue() as string) ?? ""
-                }
-                onChange={(event) =>
-                  table
-                    .getColumn(
-                      `${
-                        type === "users"
-                          ? "fullname"
-                          : type === "authors"
-                            ? "name"
-                            : type === "article-category"
-                              ? "id_category"
-                              : type === "hero"
-                                ? "title"
-                                : type === "consult-schedule"
-                                  ? "fullname"
-                                  : type === "payment-records"
-                                    ? "transaction_id"
-                                    : type === "doctor"
-                                      ? "name"
-                                      : type === "contact"
-                                        ? "id"
-                                        : type === "error-logs"
-                                          ? "ray_id"
-                                          : "id_title"
-                      }`,
-                    )
-                    ?.setFilterValue(event.target.value)
-                }
-                className="lg:max-w-sm w-full h-12"
-              />
+              <div className="flex flex-col gap-2">
+                <Input
+                  placeholder={`${locale === routing.defaultLocale ? "Cari berdasarkan" : "Search by"} ${
+                    type === "users"
+                      ? "Fullname"
+                      : type === "authors"
+                        ? "Name"
+                        : type === "article-category"
+                          ? "ID Category"
+                          : type === "hero"
+                            ? "Title"
+                            : type === "consult-schedule"
+                              ? "Fullname"
+                              : type === "payment-records"
+                                ? "Transaction ID"
+                                : type === "doctor"
+                                  ? "Name"
+                                  : type === "contact"
+                                    ? "ID"
+                                    : type === "error-logs"
+                                      ? "Ray ID"
+                                      : "ID Title"
+                  }`}
+                  value={
+                    (table
+                      .getColumn(
+                        `${
+                          type === "users"
+                            ? "fullname"
+                            : type === "authors"
+                              ? "name"
+                              : type === "article-category"
+                                ? "id_category"
+                                : type === "hero"
+                                  ? "title"
+                                  : type === "consult-schedule"
+                                    ? "fullname"
+                                    : type === "payment-records"
+                                      ? "transaction_id"
+                                      : type === "doctor"
+                                        ? "name"
+                                        : type === "contact"
+                                          ? "id"
+                                          : type === "error-logs"
+                                            ? "ray_id"
+                                            : "id_title"
+                        }`,
+                      )
+                      ?.getFilterValue() as string) ?? ""
+                  }
+                  onChange={(event) =>
+                    table
+                      .getColumn(
+                        `${
+                          type === "users"
+                            ? "fullname"
+                            : type === "authors"
+                              ? "name"
+                              : type === "article-category"
+                                ? "id_category"
+                                : type === "hero"
+                                  ? "title"
+                                  : type === "consult-schedule"
+                                    ? "fullname"
+                                    : type === "payment-records"
+                                      ? "transaction_id"
+                                      : type === "doctor"
+                                        ? "name"
+                                        : type === "contact"
+                                          ? "id"
+                                          : type === "error-logs"
+                                            ? "ray_id"
+                                            : "id_title"
+                        }`,
+                      )
+                      ?.setFilterValue(event.target.value)
+                  }
+                  className="lg:max-w-sm w-full h-12"
+                />
+                <p className="text-muted-foreground text-sm!">
+                  {locale === routing.defaultLocale
+                    ? "Pencarian ini hanya berguna untuk data yang sudah ada pada halaman ini. Untuk melihat di halaman lain, silahkan gunakan fitur pagination."
+                    : "This search is only useful for existing data on this page. To see data on other pages, please use the pagination feature."}
+                </p>
+              </div>
             )}
 
             <div className="flex flex-row gap-4">
@@ -448,7 +475,7 @@ export function Studio1DataTable<TData, TValue>({
                                   row.getValue("created_at"),
                                 ).getDate() === now.getDate() && (
                                   <p className="bg-health px-1.5 py-0.5 rounded-lg text-white text-xs! inline-flex w-fit">
-                                    New
+                                    {locale === routing.defaultLocale ? "Baru" : "New"}
                                   </p>
                                 )}
                             </div>
@@ -464,7 +491,7 @@ export function Studio1DataTable<TData, TValue>({
                                   row.getValue("accessed_at"),
                                 ).getDate() === now.getDate() && (
                                   <p className="bg-health px-1.5 py-0.5 rounded-lg text-white text-xs! inline-flex w-fit">
-                                    New
+                                    {locale === routing.defaultLocale ? "Baru" : "New"}
                                   </p>
                                 )}
                             </div>
@@ -663,7 +690,7 @@ export function Studio1DataTable<TData, TValue>({
                         {type !== "error-logs" ? (
                           <div>
                             <p className="text-xs! text-muted-foreground">
-                              Created at
+                              {locale === routing.defaultLocale ? "Dibuat pada" : "Created at"}
                             </p>
                             <p className="text-sm!">
                               <LocalDateTime
@@ -674,7 +701,7 @@ export function Studio1DataTable<TData, TValue>({
                         ) : (
                           <div>
                             <p className="text-xs! text-muted-foreground">
-                              Accessed at
+                              {locale === routing.defaultLocale ? "Diakses pada" : "Accessed at"}
                             </p>
                             <p className="text-sm!">
                               <LocalDateTime
@@ -687,7 +714,7 @@ export function Studio1DataTable<TData, TValue>({
                         {type !== "contact" && type !== "error-logs" && (
                           <div>
                             <p className="text-xs! text-muted-foreground">
-                              Updated at
+                              {locale === routing.defaultLocale ? "Diperbarui pada" : "Updated at"}
                             </p>
                             <p className="text-sm!">
                               <LocalDateTime
@@ -730,7 +757,7 @@ export function Studio1DataTable<TData, TValue>({
                 })
               ) : (
                 <div className="h-24 text-center col-span-3 bg-white border rounded-2xl flex justify-center items-center">
-                  <p className="text-muted-foreground">No results.</p>
+                  <p className="text-muted-foreground">{locale === routing.defaultLocale ? "Tidak ada hasil." : "No results."}</p>
                 </div>
               )}
             </div>
@@ -787,7 +814,7 @@ export function Studio1DataTable<TData, TValue>({
                         colSpan={safeColumns.length}
                         className="h-24 text-center"
                       >
-                        No results.
+                        {locale === routing.defaultLocale ? "Tidak ada hasil." : "No results."}
                       </TableCell>
                     </TableRow>
                   )}

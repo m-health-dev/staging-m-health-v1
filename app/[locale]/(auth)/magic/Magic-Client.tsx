@@ -81,19 +81,21 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
 
     if (response.error)
       setError(
-        locale === routing.defaultLocale ? response.error.id : response.error.en
+        locale === routing.defaultLocale
+          ? response.error.id
+          : response.error.en,
       );
     if (response.warning)
       setWarning(
         locale === routing.defaultLocale
           ? response.warning.id
-          : response.warning.en
+          : response.warning.en,
       );
     if (response.success)
       setSuccess(
         locale === routing.defaultLocale
           ? response.success.id
-          : response.success.en
+          : response.success.en,
       );
   }
 
@@ -110,12 +112,12 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
                 width={180}
                 height={60}
                 className="object-contain mb-8 flex justify-center items-center"
-                alt="M-Health Logo"
+                alt="M-HEALTH Logo"
               />
             </Link>
             <div className="mb-10">
               <h3 className="font-bold text-primary mb-2">
-                {locale === "id"
+                {locale === routing.defaultLocale
                   ? "Masuk dengan Tautan Ajaib"
                   : "Sign In with Magic Link"}
               </h3>
@@ -124,14 +126,14 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
             {error && (
               <AlertBox
                 type="error"
-                title={locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                title={locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
                 message={error}
               />
             )}
             {warning && (
               <AlertBox
                 type="warning"
-                title={locale === "id" ? "Permintaan Gagal" : "Request Failed"}
+                title={locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
                 message={warning}
               />
             )}
@@ -139,7 +141,7 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
               <AlertBox
                 type="success"
                 title={
-                  locale === "id" ? "Permintaan Berhasil" : "Request Successful"
+                  locale === routing.defaultLocale ? "Permintaan Berhasil" : "Request Successful"
                 }
                 message={success}
               />
@@ -167,18 +169,18 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
                 />
 
                 <Button type="submit" className="w-full h-12 rounded-full">
-                  {loading ? <Spinner /> : "Request Magic Link"}
+                  {loading ? <Spinner /> : (locale === routing.defaultLocale ? "Minta Tautan Ajaib" : "Request Magic Link")}
                 </Button>
               </form>
             </Form>
 
             <p className="text-muted-foreground text-sm! mt-5 text-center">
-              {locale === "id" ? "Belum punya akun?" : "Don't have an account?"}{" "}
+              {locale === routing.defaultLocale ? "Belum punya akun?" : "Don't have an account?"}{" "}
               <span
                 onClick={() => router.push("/sign-up")}
                 className="text-health cursor-pointer underline"
               >
-                {locale === "id" ? "Daftar." : "Sign Up."}
+                {locale === routing.defaultLocale ? "Daftar." : "Sign Up."}
               </span>{" "}
             </p>
           </div>
@@ -204,8 +206,8 @@ const AlertBox = ({
     type === "error"
       ? "bg-red-50 text-red-500 border-red-500"
       : type === "warning"
-      ? "bg-yellow-50 text-yellow-500 border-yellow-500"
-      : "bg-green-50 text-green-500 border-green-500";
+        ? "bg-yellow-50 text-yellow-500 border-yellow-500"
+        : "bg-green-50 text-green-500 border-green-500";
 
   return (
     <div className={`${colors} p-4 border rounded-2xl mb-2`}>

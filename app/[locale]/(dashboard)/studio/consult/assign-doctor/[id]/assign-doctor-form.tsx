@@ -4,6 +4,7 @@ import { ComboBoxDoctorListOption } from "@/components/Form/ComboBoxDoctorListOp
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { assignDoctor } from "@/lib/doctor/post-patch-doctor";
+import { routing } from "@/i18n/routing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
@@ -41,11 +42,18 @@ const AssignDoctorForm = ({
 
     if (res.success) {
       setLoading(false);
-      toast.success(`Doctor assigned successfully!`, {
-        duration: 4000,
-        description:
-          "Message to whatsapp and email of the user and doctor in progress to send.",
-      });
+      toast.success(
+        locale === routing.defaultLocale
+          ? "Dokter berhasil ditugaskan!"
+          : "Doctor assigned successfully!",
+        {
+          duration: 4000,
+          description:
+            locale === routing.defaultLocale
+              ? "Pesan ke WhatsApp dan email pengguna serta dokter sedang dalam proses pengiriman."
+              : "Message to WhatsApp and email of the user and doctor in progress to send.",
+        }
+      );
       router.refresh();
     } else if (res.error) {
       setLoading(false);
@@ -68,7 +76,13 @@ const AssignDoctorForm = ({
               disabled={loading}
               className="h-12 rounded-full"
             >
-              {loading ? "Assigning..." : "Assign Doctor"}
+              {loading
+                ? locale === routing.defaultLocale
+                  ? "Menugaskan..."
+                  : "Assigning..."
+                : locale === routing.defaultLocale
+                ? "Tugaskan Dokter"
+                : "Assign Doctor"}
             </Button>
           </div>
         </form>

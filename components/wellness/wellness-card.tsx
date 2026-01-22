@@ -46,7 +46,7 @@ const WellnessCard = ({
           } // Ganti dengan slide.image_url saat tersedia
           width={720}
           height={403}
-          alt={locale === "id" ? d.id_title : d.en_title}
+          alt={locale === routing.defaultLocale ? d.id_title : d.en_title}
           onLoad={() => setImageLoaded(true)}
           loading="lazy"
           className={cn(

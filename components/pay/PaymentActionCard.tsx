@@ -8,6 +8,7 @@ import { usePaymentFlow } from "@/components/pay/PaymentFlowProvider";
 import { Account } from "@/types/account.types";
 import { calculateDiscount, calculateTaxes } from "@/helper/rupiah";
 import { Spinner } from "../ui/spinner";
+import { routing } from "@/i18n/routing";
 
 export type PaymentActionProps = {
   locale: string;
@@ -39,11 +40,12 @@ const PaymentActionCard = ({
 
   const taxes = calculateTaxes(
     Number(discountPrice ? discountPrice : realPrice),
-    11
+    11,
   );
 
   const totalPrice = Number(discountPrice ? discountPrice : realPrice) + taxes;
-  const { runBookingSubmit, bookingLoading } = usePaymentFlow();
+  const { runBookingSubmit, bookingLoading, setIsProcessingPayment } =
+    usePaymentFlow();
 
   const handlePay = async () => {
     if (!account?.id) {
@@ -55,6 +57,7 @@ const PaymentActionCard = ({
     if (!ok) return;
 
     setIsLoading(true);
+    setIsProcessingPayment(true);
     setError(null);
 
     try {
@@ -84,10 +87,11 @@ const PaymentActionCard = ({
     } catch (err) {
       console.error("Payment error:", err);
       setError(
-        locale === "id"
+        locale === routing.defaultLocale
           ? "Gagal memulai pembayaran. Coba lagi."
-          : "Failed to start payment. Please retry."
+          : "Failed to start payment. Please retry.",
       );
+      setIsProcessingPayment(false);
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +100,7 @@ const PaymentActionCard = ({
   return (
     <>
       <h4 className="font-bold text-primary text-2xl mb-5">
-        {locale === "id" ? "Ringkasan Pesanan" : "Order Summary"}
+        {locale === routing.defaultLocale ? "Ringkasan Pesanan" : "Order Summary"}
       </h4>
       <div className="space-y-5">
         <div className="flex w-full justify-between items-end">
@@ -108,7 +112,7 @@ const PaymentActionCard = ({
           <>
             <div className="flex w-full justify-between items-end">
               <p className="text-muted-foreground text-xs!">
-                {locale === "id" ? "Potongan Harga" : "Discount"}
+                {locale === routing.defaultLocale ? "Potongan Harga" : "Discount"}
                 <span className="text-xs bg-red-50 text-red-500 px-2 py-1 border border-red-500 rounded-full ml-2">
                   {calculateDiscount(realPrice, discountPrice)}
                 </span>
@@ -121,7 +125,7 @@ const PaymentActionCard = ({
 
         <div className="flex w-full justify-between items-end">
           <p className="text-muted-foreground text-xs!">
-            {locale === "id" ? "Pajak" : "Tax"}
+            {locale === routing.defaultLocale ? "Pajak" : "Tax"}
             <span className="ml-1 text-xs text-muted-foreground">(11%)</span>
           </p>
           <p>Rp{taxes.toLocaleString("id-ID")}</p>
@@ -140,12 +144,12 @@ const PaymentActionCard = ({
         >
           {(isLoading || bookingLoading) && <Spinner />}
           {isLoading || bookingLoading
-            ? locale === "id"
+            ? locale === routing.defaultLocale
               ? "Memproses..."
               : "Processing..."
-            : locale === "id"
-            ? "Lanjutkan ke Pembayaran"
-            : "Continue"}
+            : locale === routing.defaultLocale
+              ? "Lanjutkan ke Pembayaran"
+              : "Continue"}
         </Button>
         {error && (
           <p className="text-sm text-red-500" role="alert">

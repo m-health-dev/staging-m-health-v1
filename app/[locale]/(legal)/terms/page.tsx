@@ -14,7 +14,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -28,8 +28,8 @@ export async function generateMetadata(
     } - M HEALTH`,
     description: `${
       locale === routing.defaultLocale
-        ? "Syarat dan Ketentuan ini berlaku untuk akses dan penggunaan Anda atas situs web, produk, dan layanan daring lainnya (secara kolektif, “Layanan”) yang disediakan oleh PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Persada (M-HEALTH) (selanjutnya disebut “kami”)."
-        : "These Terms and Conditions apply to your access and use of the website, products, and other online services (collectively, the “Services”) provided by PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Persada (M-HEALTH) (hereinafter referred to as “we”). "
+        ? "Syarat dan Ketentuan ini berlaku untuk akses dan penggunaan Anda atas situs web, produk, dan layanan daring lainnya (secara kolektif, “Layanan”) yang disediakan oleh PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Persada (M-HEALTH) (selanjutnya disebut “kami”)."
+        : "These Terms and Conditions apply to your access and use of the website, products, and other online services (collectively, the “Services”) provided by PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Persada (M-HEALTH) (hereinafter referred to as “we”). "
     }`,
     openGraph: {
       title: `${
@@ -39,19 +39,19 @@ export async function generateMetadata(
       } - M HEALTH`,
       description: `${
         locale === routing.defaultLocale
-          ? "Syarat dan Ketentuan ini berlaku untuk akses dan penggunaan Anda atas situs web, produk, dan layanan daring lainnya (secara kolektif, “Layanan”) yang disediakan oleh PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Persada (M-HEALTH) (selanjutnya disebut “kami”)."
-          : "These Terms and Conditions apply to your access and use of the website, products, and other online services (collectively, the “Services”) provided by PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Persada (M-HEALTH) (hereinafter referred to as “we”). "
+          ? "Syarat dan Ketentuan ini berlaku untuk akses dan penggunaan Anda atas situs web, produk, dan layanan daring lainnya (secara kolektif, “Layanan”) yang disediakan oleh PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Persada (M-HEALTH) (selanjutnya disebut “kami”)."
+          : "These Terms and Conditions apply to your access and use of the website, products, and other online services (collectively, the “Services”) provided by PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Persada (M-HEALTH) (hereinafter referred to as “we”). "
       }`,
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "Syarat dan Ketentuan Layanan"
-              : "Terms of Service"
+              : "Terms of Service",
           )}&description=${encodeURIComponent(
             locale === routing.defaultLocale
-              ? "Syarat dan Ketentuan ini berlaku untuk akses dan penggunaan Anda atas situs web, produk, dan layanan daring lainnya (secara kolektif, “Layanan”) yang disediakan oleh PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Persada (M-HEALTH) (selanjutnya disebut “kami”)."
-              : "These Terms and Conditions apply to your access and use of the website, products, and other online services (collectively, the “Services”) provided by PT. Medika Integrasi Persada & PT. Medika Integrasi Klinik Persada (M-HEALTH) (hereinafter referred to as “we”). "
+              ? "Syarat dan Ketentuan ini berlaku untuk akses dan penggunaan Anda atas situs web, produk, dan layanan daring lainnya (secara kolektif, “Layanan”) yang disediakan oleh PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Persada (M-HEALTH) (selanjutnya disebut “kami”)."
+              : "These Terms and Conditions apply to your access and use of the website, products, and other online services (collectively, the “Services”) provided by PT. Medika Integrasi Persada Indonesia & PT. Medika Integrasi Klinik Persada (M-HEALTH) (hereinafter referred to as “we”). ",
           )}&path=${encodeURIComponent("m-health.id/terms")}`,
           width: 800,
           height: 450,
@@ -68,7 +68,7 @@ const TermsPage = async () => {
     <Wrapper>
       <ContainerWrap size="lg" className="py-10">
         <h1 className="text-3xl font-bold text-primary mb-5 mt-10">
-          {locale === "en" ? "Terms of Service" : "Syarat Layanan"}
+          {locale === routing.defaultLocale ? "Syarat Layanan" : "Terms of Service"}
         </h1>
 
         <p className="mb-20 text-muted-foreground">

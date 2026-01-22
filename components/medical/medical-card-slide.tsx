@@ -13,6 +13,7 @@ import AvatarVendorHotel from "../utility/AvatarVendorHotel";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { SearchAlert } from "lucide-react";
 import { Button } from "../ui/button";
+import { routing } from "@/i18n/routing";
 
 const MedicalCardSlide = ({ id, locale }: { id: string; locale: string }) => {
   const [data, setData] = React.useState<MedicalType | null>(null);
@@ -57,7 +58,7 @@ const MedicalCardSlide = ({ id, locale }: { id: string; locale: string }) => {
       <div className="bg-gray-50 rounded-2xl border p-4 h-full flex flex-col gap-3 justify-center items-start">
         <SearchAlert className="w-5 h-5 text-muted-foreground " />
         <p className="text-muted-foreground">
-          {locale === "id"
+          {locale === routing.defaultLocale
             ? "Gagal memuat data. Mungkin data ini telah diarsipkan atau dihapus."
             : "Failed to load data. This data may have been archived or deleted."}
         </p>
@@ -65,7 +66,7 @@ const MedicalCardSlide = ({ id, locale }: { id: string; locale: string }) => {
           <Link
             href={`/${locale}/search?q=${data?.en_title || data?.id_title || "all"}&type=medical`}
           >
-            {locale === "id" ? "Cari" : "Search"}
+            {locale === routing.defaultLocale ? "Cari" : "Search"}
           </Link>
         </Button>
       </div>
@@ -142,7 +143,7 @@ const Content = ({
               } // Ganti dengan v.image_url saat tersedia
               width={720}
               height={403}
-              alt={locale === "id" ? v.id_title : v.en_title}
+              alt={locale === routing.defaultLocale ? v.id_title : v.en_title}
               onLoad={() => setImageLoaded(true)}
               loading="lazy"
               className={cn(
@@ -157,14 +158,14 @@ const Content = ({
           <div className="">
             <div>
               <h5 className="capitalize font-bold text-primary line-clamp-3">
-                {locale === "id" ? v.id_title : v.en_title}
+                {locale === routing.defaultLocale ? v.id_title : v.en_title}
               </h5>
             </div>
           </div>
           <div className="mt-2 ">
             <div>
               <p className="text-muted-foreground line-clamp-2">
-                {locale === "id" ? v.id_tagline : v.en_tagline}
+                {locale === routing.defaultLocale ? v.id_tagline : v.en_tagline}
               </p>
             </div>
           </div>

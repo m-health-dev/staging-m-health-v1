@@ -8,6 +8,7 @@ import "dayjs/locale/en";
 import { useLocale } from "next-intl";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { routing } from "@/i18n/routing";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -15,9 +16,11 @@ dayjs.extend(timezone);
 export default function LocalDateTime({
   date,
   specificFormat,
+  withSeconds,
 }: {
   date: string | Date;
   specificFormat?: string;
+  withSeconds?: boolean;
 }) {
   const params = useParams<{ locale: string }>();
   const [mounted, setMounted] = useState(false);
@@ -36,18 +39,28 @@ export default function LocalDateTime({
 
   let formattedDate: string;
 
-  if (params.locale === "id") {
+  if (params.locale === routing.defaultLocale) {
     // Indonesia → WIB (Asia/Jakarta, UTC+7)
     formattedDate = dayjs(date)
       .tz("Asia/Jakarta")
       .locale("id")
-      .format(specificFormat || "dddd, DD MMMM YYYY - HH:mm WIB");
+      .format(
+        specificFormat ||
+          (withSeconds
+            ? "dddd, DD MMMM YYYY - HH:mm:ss WIB"
+            : "dddd, DD MMMM YYYY - HH:mm WIB"),
+      );
   } else {
     // English → Pacific Time (America/Los_Angeles)
     formattedDate = dayjs(date)
       .tz("UTC")
       .locale("en")
-      .format(specificFormat || "dddd, DD MMMM YYYY - HH:mm UTC");
+      .format(
+        specificFormat ||
+          (withSeconds
+            ? "dddd, DD MMMM YYYY - HH:mm:ss UTC"
+            : "dddd, DD MMMM YYYY - HH:mm UTC"),
+      );
   }
 
   return <span suppressHydrationWarning>{formattedDate}</span>;

@@ -229,99 +229,174 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             </div>
           )}
 
-          {/* Markdown Renderer */}
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkBreaks]}
-            rehypePlugins={[rehypeSanitize]}
-            components={{
-              h1: (props) => (
-                <h1 className="text-2xl! font-bold mb-4 font-sans" {...props} />
-              ),
-              h2: (props) => (
-                <h2 className="text-xl! font-bold mb-3 font-sans" {...props} />
-              ),
-              h3: (props) => (
-                <h3 className="text-lg! font-bold mb-2 font-sans" {...props} />
-              ),
-              h4: (props) => (
-                <h3
-                  className="text-[18px]! font-bold mb-2 font-sans"
-                  {...props}
-                />
-              ),
-              p: ({ node, children, ...props }) => (
-                <p
-                  className="text-base leading-relaxed mb-3 font-sans"
-                  {...props}
-                >
-                  {children}
-                </p>
-              ),
-              ul: (props) => (
-                <ul
-                  className="list-disc list-inside space-y-1 mb-3 font-sans"
-                  {...props}
-                />
-              ),
-              ol: (props) => (
-                <ol
-                  className="list-decimal list-inside space-y-1 mb-3 font-sans"
-                  {...props}
-                />
-              ),
-              li: ({ children, ...props }) => {
-                const flattened = flattenListChildren(children);
-                return (
-                  <li
-                    className="ml-4 text-base leading-relaxed font-sans"
+          <div className="md:max-w-full max-w-[calc(100vw-12vw)]">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm, remarkBreaks]}
+              rehypePlugins={[rehypeSanitize]}
+              components={{
+                h1: (props) => (
+                  <h1
+                    className="text-2xl! font-bold mb-4 font-sans"
+                    {...props}
+                  />
+                ),
+                h2: (props) => (
+                  <h2
+                    className="text-xl! font-bold mb-3 font-sans"
+                    {...props}
+                  />
+                ),
+                h3: (props) => (
+                  <h3
+                    className="text-lg! font-bold mb-2 font-sans"
+                    {...props}
+                  />
+                ),
+                h4: (props) => (
+                  <h3
+                    className="text-[18px]! font-bold mb-2 font-sans"
+                    {...props}
+                  />
+                ),
+                p: ({ node, children, ...props }) => (
+                  <p
+                    className="text-base leading-relaxed mb-3 font-sans"
                     {...props}
                   >
-                    {flattened}
-                  </li>
-                );
-              },
-              strong: (props) => (
-                <strong className="font-bold text-primary" {...props} />
-              ),
-              em: (props) => (
-                <em className="italic text-primary/90" {...props} />
-              ),
-              pre: (props) => (
-                <pre
-                  className="bg-gray-100 p-4 rounded-2xl font-mono mb-4 overflow-x-auto"
-                  {...props}
-                />
-              ),
-              code: (props) => (
-                <code
-                  className="bg-gray-200 text-primary font-mono px-1.5 py-0.5 rounded"
-                  {...props}
-                />
-              ),
-              blockquote: (props) => (
-                <blockquote
-                  className="border-l-4 border-primary pl-3 italic text-primary/80 mb-3"
-                  {...props}
-                />
-              ),
-              br: (props) => <br {...props} />,
-              hr: (props) => (
-                <hr className="mb-5 border-primary/30" {...props} />
-              ),
-              a: ({ href, children }) => (
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-health underline underline-offset-2 decoration-2"
-                >
-                  {children}
-                </a>
-              ),
-            }}
-          >
-            {cleanMessage}
-          </ReactMarkdown>
+                    {children}
+                  </p>
+                ),
+                ul: (props) => (
+                  <ul
+                    className="list-disc list-inside space-y-1 mb-3 font-sans"
+                    {...props}
+                  />
+                ),
+                ol: (props) => (
+                  <ol
+                    className="list-decimal list-inside space-y-1 mb-3 font-sans"
+                    {...props}
+                  />
+                ),
+                li: ({ children, ...props }) => {
+                  const flattened = flattenListChildren(children);
+                  return (
+                    <li
+                      className="ml-4 text-base leading-relaxed font-sans"
+                      {...props}
+                    >
+                      {flattened}
+                    </li>
+                  );
+                },
+                strong: (props) => (
+                  <strong className="font-bold text-primary" {...props} />
+                ),
+                em: (props) => (
+                  <em className="italic text-primary/90" {...props} />
+                ),
+                pre: (props) => (
+                  <pre
+                    className="bg-gray-100 p-4 rounded-2xl font-mono mb-4 overflow-x-auto"
+                    {...props}
+                  />
+                ),
+                code: (props) => (
+                  <code
+                    className="bg-gray-200 text-primary font-mono px-1.5 py-0.5 rounded"
+                    {...props}
+                  />
+                ),
+                blockquote: (props) => (
+                  <blockquote
+                    className="border-l-4 border-primary pl-3 italic text-primary/80 mb-3"
+                    {...props}
+                  />
+                ),
+                br: (props) => <br {...props} />,
+                hr: (props) => (
+                  <hr className="mb-5 border-primary/30" {...props} />
+                ),
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-health underline underline-offset-2 decoration-2"
+                  >
+                    {children}
+                  </a>
+                ),
+
+                table: (props) => (
+                  // <div className="relative lg:w-full w-1/2 my-4">
+                  <div
+                    className="
+                    relative 
+                    my-4
+        overflow-x-auto
+        rounded-xl
+        border border-primary/20
+        bg-white
+      "
+                  >
+                    <table
+                      className="w-full min-w-[600px]  border-collapse text-sm table-fixed"
+                      {...props}
+                    />
+                  </div>
+                  // </div>
+                ),
+
+                thead: (props) => (
+                  <thead
+                    className="bg-primary/10 sticky top-0 z-10"
+                    {...props}
+                  />
+                ),
+
+                tbody: (props) => (
+                  <tbody className="divide-y divide-primary/10" {...props} />
+                ),
+
+                tr: (props) => (
+                  <tr
+                    className="hover:bg-primary/5 transition-colors"
+                    {...props}
+                  />
+                ),
+
+                th: (props) => (
+                  <th
+                    className="
+      px-4 py-3
+      text-left text-xs lg:text-sm
+      font-semibold text-primary
+      border-b border-primary/20
+      whitespace-nowrap
+    "
+                    {...props}
+                  />
+                ),
+
+                td: ({ children, ...props }) => (
+                  <td
+                    className="
+      px-4 py-2
+      text-sm text-foreground
+      align-top
+      whitespace-normal
+    "
+                    {...props}
+                  >
+                    {children}
+                  </td>
+                ),
+              }}
+            >
+              {cleanMessage}
+            </ReactMarkdown>
+          </div>
 
           {/* Streaming indicator - hanya muncul saat belum ada message */}
           {isStreaming && !isUser && !message.trim() && (
@@ -338,7 +413,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               className={cn(
                 "space-y-5 ",
                 actions.map((a, i) =>
-                  a.type === "consultation" ? "" : "border-t mt-5 pt-5 mb-3",
+                  a.type === "consultation" ? "" : "mt-5 lg:mb-5 mb-3",
                 ),
               )}
             >
@@ -361,7 +436,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                           key={actionIndex}
                           ref={scrollRef}
                           className={cn(
-                            "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-linear-to-t from-transparent via-background to-background",
                           )}
                           onMouseDown={handleMouseDown}
                           onMouseMove={handleMouseMove}
@@ -402,7 +477,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                           key={actionIndex}
                           ref={scrollRef}
                           className={cn(
-                            "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-linear-to-t from-transparent via-background to-background",
                           )}
                           onMouseDown={handleMouseDown}
                           onMouseMove={handleMouseMove}
@@ -434,7 +509,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                       rootMargin="50px"
                     >
                       <div>
-                        <h4 className="font-semibold text-primary mb-5 -mt-5">
+                        <h4 className="font-semibold text-primary mb-5">
                           {locale === routing.defaultLocale
                             ? "Paket Kebugaran Terkait"
                             : "Related Wellness Packages"}
@@ -443,7 +518,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                           key={actionIndex}
                           ref={scrollRef}
                           className={cn(
-                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-linear-to-t from-transparent via-background to-background",
                           )}
                           onMouseDown={handleMouseDown}
                           onMouseMove={handleMouseMove}
@@ -485,7 +560,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                           key={actionIndex}
                           ref={scrollRef}
                           className={cn(
-                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-linear-to-t from-transparent via-background to-background",
                           )}
                           onMouseDown={handleMouseDown}
                           onMouseMove={handleMouseMove}
@@ -517,7 +592,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                       rootMargin="50px"
                     >
                       <div>
-                        <h4 className="font-semibold text-primary mb-5 -mt-5">
+                        <h4 className="font-semibold text-primary mb-5">
                           {locale === routing.defaultLocale
                             ? "Hotel Terkait"
                             : "Related Hotels"}
@@ -526,7 +601,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                           key={actionIndex}
                           ref={scrollRef}
                           className={cn(
-                            "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-linear-to-t from-transparent via-background to-background",
                           )}
                           onMouseDown={handleMouseDown}
                           onMouseMove={handleMouseMove}
@@ -558,7 +633,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                       rootMargin="50px"
                     >
                       <div>
-                        <h4 className="font-semibold text-primary mb-5 -mt-5">
+                        <h4 className="font-semibold text-primary mb-5">
                           {locale === routing.defaultLocale
                             ? "Dokter Terkait"
                             : "Related Doctors"}
@@ -567,7 +642,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                           key={actionIndex}
                           ref={scrollRef}
                           className={cn(
-                            "flex flex-row overflow-hidden cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-background",
+                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-linear-to-t from-transparent via-background to-background",
                           )}
                           onMouseDown={handleMouseDown}
                           onMouseMove={handleMouseMove}

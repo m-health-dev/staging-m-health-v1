@@ -30,11 +30,18 @@ const WellnessStudio = async ({
     <ContainerWrap className="pb-[20vh]">
       <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
         <div className="flex flex-col w-full">
-          <h4 className="text-primary font-semibold">Wellness Data</h4>
+          <h4 className="text-primary font-semibold">
+            {locale === routing.defaultLocale
+              ? "Data Paket Kebugaran"
+              : "Wellness Package Data"}
+          </h4>
         </div>
         <Link href={`/${locale}/studio/wellness/add`}>
-          <Button className="rounded-2xl flex lg:w-fit w-full">
-            <Plus /> <p className="lg:block hidden">Add New Wellness</p>
+          <Button className="flex lg:w-fit w-full h-12 rounded-full">
+            <Plus />{" "}
+            <p className="lg:block hidden">
+              {locale === routing.defaultLocale ? "Tambah Baru" : "Add New"}
+            </p>
           </Button>
         </Link>
       </div>
@@ -53,7 +60,10 @@ const WellnessStudio = async ({
         </p>
         <div className="flex flex-wrap gap-4 items-center">
           <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
-            {meta.total} Wellness
+            {meta.total}{" "}
+            {locale === routing.defaultLocale
+              ? "Paket Kebugaran"
+              : "Wellness Packages"}
           </p>
         </div>
       </div>

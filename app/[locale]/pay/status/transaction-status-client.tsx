@@ -8,6 +8,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { stripHtml } from "@/helper/removeHTMLTag";
 import { formatRupiah } from "@/helper/rupiah";
+import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { Mars, Stethoscope, Venus, VenusAndMars } from "lucide-react";
 import Image from "next/image";
@@ -124,20 +125,20 @@ const TransactionStatusClient = ({
       ) : error ? (
         <div className="text-center p-10 bg-red-50 rounded-2xl border border-red-200">
           <h3 className="text-xl font-semibold text-red-600 mb-2">
-            {locale === "id" ? "Terjadi Kesalahan" : "An Error Occurred"}
+            {locale === routing.defaultLocale ? "Terjadi Kesalahan" : "An Error Occurred"}
           </h3>
           <p className="text-red-500">{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
           >
-            {locale === "id" ? "Muat Ulang" : "Reload"}
+            {locale === routing.defaultLocale ? "Muat Ulang" : "Reload"}
           </button>
         </div>
       ) : !data ? (
         <div className="text-center p-10">
           <p>
-            {locale === "id"
+            {locale === routing.defaultLocale
               ? "Data transaksi tidak ditemukan"
               : "Transaction data not found"}
           </p>
@@ -160,23 +161,23 @@ const TransactionStatusClient = ({
           {data.payment_status === "settlement" ||
             (data.payment_status === "capture" && (
               <h2 className="text-3xl font-semibold mb-4 text-health">
-                {locale === "id" ? "Pembayaran Berhasil" : "Payment Successful"}
+                {locale === routing.defaultLocale ? "Pembayaran Berhasil" : "Payment Successful"}
               </h2>
             ))}
           {data.payment_status === "pending" && (
             <h2 className="text-3xl font-semibold mb-4 text-amber-500">
-              {locale === "id" ? "Pembayaran Gagal" : "Payment Failed"}
+              {locale === routing.defaultLocale ? "Pembayaran Gagal" : "Payment Failed"}
             </h2>
           )}
           {data.payment_status === "expire" && (
             <h2 className="text-3xl font-semibold mb-4 text-red-500">
-              {locale === "id" ? "Pembayaran Gagal" : "Payment Failed"}
+              {locale === routing.defaultLocale ? "Pembayaran Gagal" : "Payment Failed"}
             </h2>
           )}
 
           <p className="mb-2 text-primary">
             <span className="text-muted-foreground text-sm!">
-              {locale === "id" ? "ID Pemesanan " : "Order ID "}
+              {locale === routing.defaultLocale ? "ID Pemesanan " : "Order ID "}
             </span>
             <br />
             {data.order_id}
@@ -185,14 +186,14 @@ const TransactionStatusClient = ({
           {(data.payment_status === "settlement" ||
             data.payment_status === "capture") && (
             <p className="mt-4">
-              {locale === "id"
+              {locale === routing.defaultLocale
                 ? "Terima kasih telah melakukan pembayaran. Berikut adalah detail pembayaran Anda:"
                 : "Thank you for your payment. Here are your payment details:"}
             </p>
           )}
 
           {/* <p className="text-muted-foreground mt-10">
-            {locale === "id" ? "Total Pembayaran" : "Total Payment"}
+            {locale === routing.defaultLocale ? "Total Pembayaran" : "Total Payment"}
           </p>
           <h4 className="text-primary font-bold">
             {formatRupiah(data.product_data.total)}
@@ -212,10 +213,10 @@ const TransactionStatusClient = ({
                   >
                     {isLoading && <Spinner />}
                     {isLoading
-                      ? locale === "id"
+                      ? locale === routing.defaultLocale
                         ? "Memproses..."
                         : "Processing..."
-                      : locale === "id"
+                      : locale === routing.defaultLocale
                         ? "Coba Lagi"
                         : "Try Again"}
                   </Button>
@@ -230,7 +231,7 @@ const TransactionStatusClient = ({
               px-4 py-4"
                 >
                   <p className="text-xs! text-muted-foreground">
-                    {locale === "id"
+                    {locale === routing.defaultLocale
                       ? "Saat ini data pembayaran telah kami terima dan akan kami lakukan verifikasi ulang. Mohon berkenan untuk menunggu                  beberapa saat (Paling lambat 1x24 jam pada jam kerja 08.00-16.00 Waktu Indonesia Barat). Setelah pembayaran berhasil diverifikasi ulang,                  anda akan mendapatkan informasi mengenai pembelian ini melalui email/ nomor WhatsApp yang telah anda kirimkan. Terima kasih."
                       : "We have received your payment data and will re-verify it. Please wait for a moment (maximum 1x24 hours during working hours 08.00-16.00 Western Indonesia Time). Once the payment is successfully re-verified, you will receive information regarding this purchase via the email/ WhatsApp number you provided. Thank you. "}
                   </p>
@@ -246,7 +247,7 @@ const TransactionStatusClient = ({
               px-4 py-4"
                 >
                   <p className="text-xs! text-health">
-                    {locale === "id"
+                    {locale === routing.defaultLocale
                       ? "Sesaat lagi anda akan menerima informasi detail konsultasi online melalui email & nomor WhatsApp yang telah anda daftarkan. Mohon hadir tepat waktu, jika waktu konsultasi telah berakhir dan anda belum hadir maka jadwal konsultasi anda akan hangus dan tidak dapat melakukan penjadwalan ulang. Terima kasih."
                       : "You will soon receive online consultation details via the registered email & WhatsApp number. Please be on time, if the consultation time has ended and you have not attended, your consultation schedule will be voided and you will not be able to reschedule. Thank you. "}
                   </p>
@@ -258,13 +259,13 @@ const TransactionStatusClient = ({
                 <div className="bg-white rounded-2xl p-5 border my-10">
                   <h5 className="font-bold text-primary text-lg">
                     <Stethoscope className="inline-block mr-2 size-5" />
-                    {locale === "id"
+                    {locale === routing.defaultLocale
                       ? "Konsultasi dengan Dokter"
                       : "Consultation with Doctor"}
                   </h5>
                   <div className="mt-5">
                     <p className="text-sm! text-muted-foreground">
-                      {locale === "id"
+                      {locale === routing.defaultLocale
                         ? "Jadwal Konsultasi Anda"
                         : "Your Consultation Schedule"}
                     </p>
@@ -277,7 +278,7 @@ const TransactionStatusClient = ({
                   {dataProduct.data.complaint && (
                     <div className="mt-5">
                       <p className="text-sm! text-muted-foreground">
-                        {locale === "id"
+                        {locale === routing.defaultLocale
                           ? "Kondisi/ Keluhan Kesehatan Anda"
                           : "Your Health Condition"}
                       </p>
@@ -323,12 +324,12 @@ const TransactionStatusClient = ({
                       )}
                     </div>
                     <h5 className="font-bold text-primary text-lg">
-                      {locale === "id"
+                      {locale === routing.defaultLocale
                         ? dataProduct.id_title
                         : dataProduct.en_title}
                     </h5>
                     <p>
-                      {locale === "id"
+                      {locale === routing.defaultLocale
                         ? dataProduct.id_tagline
                         : dataProduct.en_tagline}
                     </p>
@@ -346,12 +347,12 @@ const TransactionStatusClient = ({
             ) : (
               <div className="text-start p-5 bg-yellow-50 rounded-2xl border border-yellow-200 my-10">
                 <h5 className="text-lg font-semibold text-yellow-600 mb-2">
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? "Produk Tidak Ditemukan"
                     : "Product Not Found"}
                 </h5>
                 <p className="text-yellow-500">
-                  {locale === "id"
+                  {locale === routing.defaultLocale
                     ? "Maaf, produk yang Anda beli tidak dapat ditemukan. Silakan hubungi layanan pelanggan untuk bantuan lebih lanjut."
                     : "Sorry, the product you purchased cannot be found. Please contact customer service for further assistance."}
                 </p>
@@ -360,13 +361,13 @@ const TransactionStatusClient = ({
 
             <div className="border-l-4 border-health px-4 py-2">
               <p className="text-muted-foreground text-sm!">
-                {locale === "id"
+                {locale === routing.defaultLocale
                   ? "Mengalami kendala saat pembayaran atau memiliki pertanyaan mengenai pembelian?"
                   : "Having trouble with your payment or have questions about your purchase?"}
               </p>
               <p className="text-sm! mt-1">
                 <Link href="/contact" className="text-health font-semibold">
-                  {locale === "id" ? "Hubungi Kami" : "Contact Us"}
+                  {locale === routing.defaultLocale ? "Hubungi Kami" : "Contact Us"}
                 </Link>
               </p>
             </div>

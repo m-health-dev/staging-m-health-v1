@@ -172,14 +172,14 @@ const AccountClientForm = ({
         if (patchRes.success) {
           toast.success("Avatar uploaded & saved!", {
             description:
-              locale === "id"
+              locale === routing.defaultLocale
                 ? "Avatar berhasil diperbarui"
                 : "Avatar successfully updated",
           });
           router.refresh();
         } else {
           toast.error(
-            locale === "id" ? patchRes.error?.id : patchRes.error?.en
+            locale === routing.defaultLocale ? patchRes.error?.id : patchRes.error?.en
           );
         }
       }
@@ -260,14 +260,14 @@ const AccountClientForm = ({
           setAvatarPreview(null);
           form.setValue("avatar_url", "");
           toast.success(
-            locale === "id"
+            locale === routing.defaultLocale
               ? "Avatar berhasil dihapus!"
               : "Avatar deleted successfully!"
           );
           router.refresh();
         } else {
           toast.error(
-            locale === "id" ? patchRes.error?.id : patchRes.error?.en
+            locale === routing.defaultLocale ? patchRes.error?.id : patchRes.error?.en
           );
         }
       }
@@ -349,7 +349,7 @@ const AccountClientForm = ({
 
     if (res.success) {
       setLoading(false);
-      toast.success(locale === "id" ? res.message?.id : res.message?.en);
+      toast.success(locale === routing.defaultLocale ? res.message?.id : res.message?.en);
       if (!admin) {
         router.refresh();
       } else {
@@ -357,7 +357,7 @@ const AccountClientForm = ({
       }
     } else if (res.error) {
       setLoading(false);
-      toast.error(locale === "id" ? res.error.id : res.error.en);
+      toast.error(locale === routing.defaultLocale ? res.error.id : res.error.en);
     }
   }
 
@@ -491,7 +491,7 @@ const AccountClientForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-primary font-semibold!">
-                    {locale === "id" ? "Nama Lengkap" : "Full Name"}
+                    {locale === routing.defaultLocale ? "Nama Lengkap" : "Full Name"}
                   </FormLabel>
                   <FormControl>
                     <Input {...field} className="h-12" />
@@ -509,7 +509,7 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === "id" ? "Tinggi Badan" : "Height"}
+                      {locale === routing.defaultLocale ? "Tinggi Badan" : "Height"}
                     </FormLabel>
                     <FormControl>
                       <div className="relative">
@@ -538,7 +538,7 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === "id" ? "Berat Badan" : "Weight"}
+                      {locale === routing.defaultLocale ? "Berat Badan" : "Weight"}
                     </FormLabel>
                     <FormControl>
                       <div className="relative">
@@ -569,7 +569,7 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === "id" ? "Tanggal Lahir" : "Date of Birth"}{" "}
+                      {locale === routing.defaultLocale ? "Tanggal Lahir" : "Date of Birth"}{" "}
                       {/* {field.value && (
                         <span className="bg-accent px-2 py-1 rounded-lg inline-flex! w-fit text-muted-foreground">
                           {getAgeDetail(field.value).years} Tahun{" "}
@@ -596,7 +596,7 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === "id" ? "Jenis Kelamin" : "Gender"}
+                      {locale === routing.defaultLocale ? "Jenis Kelamin" : "Gender"}
                     </FormLabel>
 
                     <RadioGroup
@@ -639,7 +639,7 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === "id" ? "Provinsi/ Kota" : "Province/ City"}
+                      {locale === routing.defaultLocale ? "Provinsi/ Kota" : "Province/ City"}
                     </FormLabel>
                     <FormControl>
                       <Input {...field} className="h-12" />
@@ -654,7 +654,7 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === "id" ? "Kecamatan" : "District"}
+                      {locale === routing.defaultLocale ? "Kecamatan" : "District"}
                     </FormLabel>
                     <FormControl>
                       <Input {...field} className="h-12" />
@@ -669,7 +669,7 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === "id" ? "Kode Pos" : "Postal Code"}
+                      {locale === routing.defaultLocale ? "Kode Pos" : "Postal Code"}
                     </FormLabel>
                     <FormControl>
                       <Input {...field} type="number" className="h-12" />
@@ -684,7 +684,7 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === "id" ? "Alamat Lengkap" : "Full Address"}
+                      {locale === routing.defaultLocale ? "Alamat Lengkap" : "Full Address"}
                     </FormLabel>
                     <FormControl>
                       <Textarea {...field} className="min-h-32" />
@@ -702,10 +702,10 @@ const AccountClientForm = ({
               disabled={loading}
             >
               {loading
-                ? locale === "id"
+                ? locale === routing.defaultLocale
                   ? "Memperbarui..."
                   : "Updating..."
-                : locale === "id"
+                : locale === routing.defaultLocale
                 ? "Perbarui Akun"
                 : "Update Account"}
             </Button>

@@ -24,7 +24,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -48,9 +48,9 @@ export async function generateMetadata(
           url:
             v.highlight_image ||
             `/api/og?title=${encodeURIComponent(
-              v.name
+              v.name,
             )}&description=${encodeURIComponent(
-              plainDescription
+              plainDescription,
             )}&path=${encodeURIComponent(`m-health.id/hotel/${slug}`)}`,
           width: 800,
           height: 450,
@@ -82,7 +82,7 @@ const HotelPublicDetailPage = async ({ params }: Props) => {
       </ContainerWrap>
       <ContainerWrap size="md" className="mb-20">
         <div className=" flex  items-center lg:-mt-12 -mt-6 w-full z-10">
-          <div className="bg-white flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0 justify-between w-full rounded-2xl p-4">
+          <div className="bg-linear-to-b from-white via-white to-transparent flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0 justify-between w-full rounded-2xl lg:px-6 px-4 py-8">
             <div className="inline-flex lg:flex-row flex-col lg:items-center items-start lg:gap-5 gap-0">
               <Image
                 src={v.logo}
@@ -96,7 +96,7 @@ const HotelPublicDetailPage = async ({ params }: Props) => {
             <Link href={v.location_map}>
               <div className="inline-flex items-center gap-1 bg-health text-white lg:px-4 px-2 py-2 lg:w-fit lg:h-fit rounded-full">
                 <MapPin className="size-5" />
-                <p className="block">Location</p>
+                <p className="block">{locale === routing.defaultLocale ? "Lokasi" : "Location"}</p>
               </div>
             </Link>
           </div>
@@ -111,7 +111,7 @@ const HotelPublicDetailPage = async ({ params }: Props) => {
             <p className="mb-5">{v.location}</p>
           </>
         )}
-        <p className="text-sm! text-muted-foreground mt-10 mb-2">About</p>
+        <p className="text-sm! text-muted-foreground mt-10 mb-2">{locale === routing.defaultLocale ? "Tentang" : "About"}</p>
         <div>
           <div
             className="prose max-w-none"
