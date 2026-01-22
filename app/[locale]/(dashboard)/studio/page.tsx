@@ -89,8 +89,8 @@ const StudioDashboard = async () => {
         locale={locale}
       />
 
-      <div className="bg-white border border-primary px-3 py-1 inline-flex mb-10 rounded-full text-sm! text-primary">
-        <p>
+      <div className="bg-white border border-primary px-3 py-1 inline-flex mb-10 rounded-full text-primary">
+        <p className="text-xs!">
           <LocalDateTime date={time} withSeconds />
         </p>
       </div>
@@ -102,7 +102,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{AccountTotal}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Akun Telah Dibuat" : "Account Created"}</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Akun Telah Dibuat"
+                  : "Account Created"}
+              </p>
             </div>
           </div>
         </div>
@@ -112,7 +116,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{ChatSession}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Sesi Percakapan" : "Chat Sessions"}</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Sesi Percakapan"
+                  : "Chat Sessions"}
+              </p>
             </div>
           </div>
         </div>
@@ -160,7 +168,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Wellness}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness Packages"}</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Paket Kebugaran"
+                  : "Wellness Packages"}
+              </p>
             </div>
           </div>
         </div>
@@ -170,7 +182,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Medical}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Paket Medis" : "Medical Packages"}</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Paket Medis"
+                  : "Medical Packages"}
+              </p>
             </div>
           </div>
         </div>
@@ -181,7 +197,9 @@ const StudioDashboard = async () => {
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
               <p>
-                {locale === routing.defaultLocale ? "Mitra & Rumah Sakit" : "Partner & Hospital"}
+                {locale === routing.defaultLocale
+                  ? "Mitra & Rumah Sakit"
+                  : "Partner & Hospital"}
               </p>
             </div>
           </div>
@@ -192,7 +210,9 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Insurance}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Asuransi" : "Insurance"}</p>
+              <p>
+                {locale === routing.defaultLocale ? "Asuransi" : "Insurance"}
+              </p>
             </div>
           </div>
         </div>
@@ -222,7 +242,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Equipment}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Produk Medis" : "Medical Products"}</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Produk Medis"
+                  : "Medical Products"}
+              </p>
             </div>
           </div>
         </div>
@@ -252,7 +276,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{ArticleAuthor}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Penulis Artikel" : "Article Author"}</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Penulis Artikel"
+                  : "Article Author"}
+              </p>
             </div>
           </div>
         </div>
@@ -262,7 +290,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{ArticleCategory}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Kategori Artikel" : "Article Category"}</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Kategori Artikel"
+                  : "Article Category"}
+              </p>
             </div>
           </div>
         </div>
@@ -272,7 +304,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Hero}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Banner Utama" : "Hero Banner"}</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Banner Utama"
+                  : "Hero Banner"}
+              </p>
             </div>
           </div>
         </div>
@@ -282,7 +318,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{TOS}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Syarat Layanan" : "Terms of Service"}</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Syarat Layanan"
+                  : "Terms of Service"}
+              </p>
             </div>
           </div>
         </div>
@@ -292,7 +332,11 @@ const StudioDashboard = async () => {
               <h3 className="text-primary font-semibold">{Privacy}</h3>
             </div>
             <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Kebijakan Privasi" : "Privacy Policy"}</p>
+              <p>
+                {locale === routing.defaultLocale
+                  ? "Kebijakan Privasi"
+                  : "Privacy Policy"}
+              </p>
             </div>
           </div>
         </div>

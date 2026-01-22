@@ -52,8 +52,8 @@ const DashboardPage = async () => {
             name={getThreeWords(userData?.fullname)}
             locale={locale}
           />{" "}
-          <div className="bg-white border border-primary px-3 py-1 inline-flex rounded-full text-sm! text-primary">
-            <p>
+          <div className="bg-white border border-primary px-3 py-1 inline-flex rounded-full text-primary">
+            <p className="text-xs!">
               <LocalDateTime date={time} withSeconds />
             </p>
           </div>
