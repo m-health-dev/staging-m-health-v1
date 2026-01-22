@@ -125,7 +125,9 @@ const TransactionStatusClient = ({
       ) : error ? (
         <div className="text-center p-10 bg-red-50 rounded-2xl border border-red-200">
           <h3 className="text-xl font-semibold text-red-600 mb-2">
-            {locale === routing.defaultLocale ? "Terjadi Kesalahan" : "An Error Occurred"}
+            {locale === routing.defaultLocale
+              ? "Terjadi Kesalahan"
+              : "An Error Occurred"}
           </h3>
           <p className="text-red-500">{error}</p>
           <button
@@ -161,17 +163,23 @@ const TransactionStatusClient = ({
           {data.payment_status === "settlement" ||
             (data.payment_status === "capture" && (
               <h2 className="text-3xl font-semibold mb-4 text-health">
-                {locale === routing.defaultLocale ? "Pembayaran Berhasil" : "Payment Successful"}
+                {locale === routing.defaultLocale
+                  ? "Pembayaran Berhasil"
+                  : "Payment Successful"}
               </h2>
             ))}
           {data.payment_status === "pending" && (
             <h2 className="text-3xl font-semibold mb-4 text-amber-500">
-              {locale === routing.defaultLocale ? "Pembayaran Gagal" : "Payment Failed"}
+              {locale === routing.defaultLocale
+                ? "Pembayaran Gagal"
+                : "Payment Failed"}
             </h2>
           )}
           {data.payment_status === "expire" && (
             <h2 className="text-3xl font-semibold mb-4 text-red-500">
-              {locale === routing.defaultLocale ? "Pembayaran Gagal" : "Payment Failed"}
+              {locale === routing.defaultLocale
+                ? "Pembayaran Gagal"
+                : "Payment Failed"}
             </h2>
           )}
 
@@ -242,16 +250,38 @@ const TransactionStatusClient = ({
               (data.payment_status === "settlement" ||
                 data.payment_status === "capture") &&
               productType === "consultation" && (
-                <div
-                  className="mt-5 border-l-4 border-l-health bg-health/5
+                <>
+                  <div
+                    className="mt-5 border-l-4 border-l-health bg-health/5
               px-4 py-4"
-                >
-                  <p className="text-xs! text-health">
-                    {locale === routing.defaultLocale
-                      ? "Sesaat lagi anda akan menerima informasi detail konsultasi online melalui email & nomor WhatsApp yang telah anda daftarkan. Mohon hadir tepat waktu, jika waktu konsultasi telah berakhir dan anda belum hadir maka jadwal konsultasi anda akan hangus dan tidak dapat melakukan penjadwalan ulang. Terima kasih."
-                      : "You will soon receive online consultation details via the registered email & WhatsApp number. Please be on time, if the consultation time has ended and you have not attended, your consultation schedule will be voided and you will not be able to reschedule. Thank you. "}
-                  </p>
-                </div>
+                  >
+                    <p className="text-xs! text-health">
+                      {locale === routing.defaultLocale
+                        ? "Sesaat lagi anda akan menerima informasi detail konsultasi online melalui email & nomor WhatsApp yang telah anda daftarkan. Mohon hadir tepat waktu, jika waktu konsultasi telah berakhir dan anda belum hadir maka jadwal konsultasi anda akan hangus dan tidak dapat melakukan penjadwalan ulang. Terima kasih."
+                        : "You will soon receive online consultation details via the registered email & WhatsApp number. Please be on time, if the consultation time has ended and you have not attended, your consultation schedule will be voided and you will not be able to reschedule. Thank you. "}
+                    </p>
+                  </div>
+                  <div className="mt-5">
+                    <p>
+                      {locale === routing.defaultLocale
+                        ? "Silakan klik tombol dibawah ini, untuk melihat status konsultasi online anda:"
+                        : "Please click the button below to view your online consultation status:"}
+                    </p>
+                    <Button
+                      variant={"outline"}
+                      className="h-12 rounded-full mt-2"
+                    >
+                      <Link
+                        href={`/${locale}/dashboard/consult/${data.product_data.id}`}
+                        className="w-full"
+                      >
+                        {locale === routing.defaultLocale
+                          ? "Lihat Status Konsultasi"
+                          : "View Consultation Status"}
+                      </Link>
+                    </Button>
+                  </div>
+                </>
               )}
 
             {dataProduct ? (
@@ -367,7 +397,9 @@ const TransactionStatusClient = ({
               </p>
               <p className="text-sm! mt-1">
                 <Link href="/contact" className="text-health font-semibold">
-                  {locale === routing.defaultLocale ? "Hubungi Kami" : "Contact Us"}
+                  {locale === routing.defaultLocale
+                    ? "Hubungi Kami"
+                    : "Contact Us"}
                 </Link>
               </p>
             </div>

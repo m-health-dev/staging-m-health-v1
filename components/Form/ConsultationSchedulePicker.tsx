@@ -208,191 +208,207 @@ export default function ConsultationSchedulePicker({
   };
 
   return (
-    <Card className="w-full">
-      <CardContent className="p-6 space-y-6">
-        {/* Current Schedule Info (Update Mode) */}
-        {mode === "update" && currentSchedule && (
-          <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
-            <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-2">
-              <CalendarDays className="size-4" />
-              {locale === routing.defaultLocale ? "Jadwal Saat Ini:" : "Current Schedule:"}
-            </p>
-            <p className="text-base font-bold text-amber-800 dark:text-amber-300">
-              {new Date(currentSchedule.date).toLocaleDateString(
-                locale === routing.defaultLocale ? "id-ID" : "en-US",
-                {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                },
-              )}{" "}
-              - {currentSchedule.time}
-            </p>
-            <p className="text-xs text-amber-600 dark:text-amber-500 mt-2">
-              {locale === routing.defaultLocale
-                ? "Pilih tanggal dan waktu baru untuk mengubah jadwal"
-                : "Select a new date and time to change the schedule"}
-            </p>
-          </div>
-        )}
+    <div className="w-full">
+      <div className="flex flex-col w-full gap-5">
+        <div className="bg-white border p-4 rounded-3xl">
+          {mode === "update" && currentSchedule && (
+            <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+              <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-2">
+                <CalendarDays className="size-4" />
+                {locale === routing.defaultLocale
+                  ? "Jadwal Saat Ini:"
+                  : "Current Schedule:"}
+              </p>
+              <p className="text-base font-bold text-amber-800 dark:text-amber-300">
+                {new Date(currentSchedule.date).toLocaleDateString(
+                  locale === routing.defaultLocale ? "id-ID" : "en-US",
+                  {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  },
+                )}{" "}
+                - {currentSchedule.time}
+              </p>
+              <p className="text-xs text-amber-600 dark:text-amber-500 mt-2">
+                {locale === routing.defaultLocale
+                  ? "Pilih tanggal dan waktu baru untuk mengubah jadwal"
+                  : "Select a new date and time to change the schedule"}
+              </p>
+            </div>
+          )}
 
-        {/* Step 1: Date Selection */}
-        <div>
-          <h6 className="text-lg font-semibold text-primary mb-4">
-            {locale === routing.defaultLocale ? "1. Pilih Tanggal" : "1. Select Date"}
-          </h6>
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={handleDateSelect}
-            disabled={disabledDates}
-            className="rounded-md border w-full"
-          />
-          <p className="text-sm text-muted-foreground mt-2">
-            {locale === routing.defaultLocale
-              ? "Tanggal yang dapat dipilih: Hari ini hingga 30 hari ke depan"
-              : "Available dates: Today up to 30 days ahead"}
-          </p>
-        </div>
-
-        {/* Step 2: Time Selection */}
-        {selectedDate && (
+          {/* Step 1: Date Selection */}
           <div>
             <h6 className="text-lg font-semibold text-primary mb-4">
-              {locale === routing.defaultLocale ? "2. Pilih Waktu" : "2. Select Time"}
+              {locale === routing.defaultLocale
+                ? "1. Pilih Tanggal"
+                : "1. Select Date"}
             </h6>
+            <div className="lg:max-w-1/2 w-full">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={handleDateSelect}
+                disabled={disabledDates}
+                className="rounded-md border w-full bg-white"
+              />
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">
+              {locale === routing.defaultLocale
+                ? "Tanggal yang dapat dipilih: Hari ini hingga 30 hari ke depan"
+                : "Available dates: Today up to 30 days ahead"}
+            </p>
+          </div>
+        </div>
+        <div className="bg-white border p-4 rounded-3xl">
+          {/* Step 2: Time Selection */}
+          {selectedDate && (
+            <div>
+              <h6 className="text-lg font-semibold text-primary mb-4">
+                {locale === routing.defaultLocale
+                  ? "2. Pilih Waktu"
+                  : "2. Select Time"}
+              </h6>
 
-            {loadingSlots ? (
-              <div className="flex items-center justify-center py-8">
-                <Spinner />
-                <span className="ml-2 text-muted-foreground">
-                  {locale === routing.defaultLocale
-                    ? "Memuat slot waktu..."
-                    : "Loading time slots..."}
-                </span>
-              </div>
-            ) : showTimeSlots ? (
-              <>
-                {availableSlots.length === 0 ? (
-                  <div className="text-center py-8 bg-muted rounded-lg">
-                    <p className="text-muted-foreground">
-                      {locale === routing.defaultLocale
-                        ? "Tidak ada slot waktu tersedia untuk tanggal ini"
-                        : "No time slots available for this date"}
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                      {availableSlots.map((slot) => {
-                        const isPassed = isTimeSlotPassed(slot, selectedDate);
-                        const isBooked = isSlotBooked(slot, selectedDate);
-                        const isDisabled = isSlotDisabled(slot, selectedDate);
-                        const isCurrent = isCurrentSchedule(slot, selectedDate);
-                        const isSelected = selectedTime === slot;
-
-                        return (
-                          <Button
-                            key={slot}
-                            type="button"
-                            variant={isSelected ? "default" : "outline"}
-                            disabled={isDisabled}
-                            className={cn(
-                              "h-12 relative",
-                              isSelected && "ring-2 ring-primary ring-offset-2",
-                              isPassed &&
-                                "opacity-50 cursor-not-allowed line-through",
-                              isBooked &&
-                                !isCurrent &&
-                                "opacity-50 cursor-not-allowed bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 text-red-400",
-                              isCurrent &&
-                                !isSelected &&
-                                "border-amber-400 bg-amber-50 dark:bg-amber-950/30",
-                            )}
-                            onClick={() => handleTimeSelect(slot)}
-                          >
-                            {isSelected && !isDisabled && (
-                              <Check className="absolute top-1 right-1 size-4" />
-                            )}
-                            {isCurrent && !isSelected && (
-                              <Clock className="absolute top-1 right-1 size-3 text-amber-500" />
-                            )}
-                            {slot}
-                          </Button>
-                        );
-                      })}
+              {loadingSlots ? (
+                <div className="flex items-center justify-center py-8">
+                  <Spinner />
+                  <span className="ml-2 text-muted-foreground">
+                    {locale === routing.defaultLocale
+                      ? "Memuat slot waktu..."
+                      : "Loading time slots..."}
+                  </span>
+                </div>
+              ) : showTimeSlots ? (
+                <>
+                  {availableSlots.length === 0 ? (
+                    <div className="text-center py-8 bg-muted rounded-lg">
+                      <p className="text-muted-foreground">
+                        {locale === routing.defaultLocale
+                          ? "Tidak ada slot waktu tersedia untuk tanggal ini"
+                          : "No time slots available for this date"}
+                      </p>
                     </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                        {availableSlots.map((slot) => {
+                          const isPassed = isTimeSlotPassed(slot, selectedDate);
+                          const isBooked = isSlotBooked(slot, selectedDate);
+                          const isDisabled = isSlotDisabled(slot, selectedDate);
+                          const isCurrent = isCurrentSchedule(
+                            slot,
+                            selectedDate,
+                          );
+                          const isSelected = selectedTime === slot;
 
-                    {/* Legend */}
-                    <div className="flex flex-wrap gap-4 mt-4 text-xs text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded border bg-red-50 dark:bg-red-950/30 border-red-200"></div>
-                        <span>
-                          {locale === routing.defaultLocale
-                            ? "Sudah dibooking"
-                            : "Already booked"}
-                        </span>
+                          return (
+                            <Button
+                              key={slot}
+                              type="button"
+                              variant={isSelected ? "default" : "outline"}
+                              disabled={isDisabled}
+                              className={cn(
+                                "h-12 relative",
+                                isSelected &&
+                                  "ring-2 ring-primary ring-offset-2",
+                                isPassed &&
+                                  "opacity-50 cursor-not-allowed line-through",
+                                isBooked &&
+                                  !isCurrent &&
+                                  "opacity-50 cursor-not-allowed bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 text-red-400",
+                                isCurrent &&
+                                  !isSelected &&
+                                  "border-amber-400 bg-amber-50 dark:bg-amber-950/30",
+                              )}
+                              onClick={() => handleTimeSelect(slot)}
+                            >
+                              {isSelected && !isDisabled && (
+                                <Check className="absolute top-1 right-1 size-4" />
+                              )}
+                              {isCurrent && !isSelected && (
+                                <Clock className="absolute top-1 right-1 size-3 text-amber-500" />
+                              )}
+                              {slot}
+                            </Button>
+                          );
+                        })}
                       </div>
-                      {mode === "update" && (
+
+                      {/* Legend */}
+                      <div className="flex flex-wrap gap-4 mt-4 text-xs text-muted-foreground">
                         <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 rounded border bg-amber-50 dark:bg-amber-950/30 border-amber-400"></div>
+                          <div className="w-4 h-4 rounded border bg-red-50 dark:bg-red-950/30 border-red-200"></div>
                           <span>
                             {locale === routing.defaultLocale
-                              ? "Jadwal saat ini"
-                              : "Current schedule"}
+                              ? "Sudah dibooking"
+                              : "Already booked"}
                           </span>
                         </div>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded border line-through opacity-50"></div>
-                        <span>
-                          {locale === routing.defaultLocale ? "Waktu berlalu" : "Time passed"}
-                        </span>
+                        {mode === "update" && (
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded border bg-amber-50 dark:bg-amber-950/30 border-amber-400"></div>
+                            <span>
+                              {locale === routing.defaultLocale
+                                ? "Jadwal saat ini"
+                                : "Current schedule"}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 rounded border line-through opacity-50"></div>
+                          <span>
+                            {locale === routing.defaultLocale
+                              ? "Waktu berlalu"
+                              : "Time passed"}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
 
-                {bookedSlots.length > 0 && (
-                  <p className="text-sm text-muted-foreground mt-4">
-                    {locale === routing.defaultLocale
-                      ? `${bookedSlots.length} slot sudah dibooking`
-                      : `${bookedSlots.length} slots already booked`}
-                  </p>
-                )}
-              </>
-            ) : null}
-          </div>
-        )}
+                  {bookedSlots.length > 0 && (
+                    <p className="text-sm text-muted-foreground mt-4">
+                      {locale === routing.defaultLocale
+                        ? `${bookedSlots.length} slot sudah dibooking`
+                        : `${bookedSlots.length} slots already booked`}
+                    </p>
+                  )}
+                </>
+              ) : null}
+            </div>
+          )}
 
-        {/* Selected Summary */}
-        {selectedDate && selectedTime && (
-          <div className="bg-primary/10 p-4 rounded-lg border border-primary">
-            <p className="text-sm font-semibold text-primary mb-1">
-              {mode === "update"
-                ? locale === routing.defaultLocale
-                  ? "Jadwal Baru:"
-                  : "New Schedule:"
-                : locale === routing.defaultLocale
-                  ? "Jadwal Terpilih:"
-                  : "Selected Schedule:"}
-            </p>
-            <p className="text-base font-bold text-primary">
-              {selectedDate.toLocaleDateString(
-                locale === routing.defaultLocale ? "id-ID" : "en-US",
-                {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                },
-              )}{" "}
-              - {selectedTime}
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          {/* Selected Summary */}
+          {selectedDate && selectedTime && (
+            <div className="bg-primary/10 p-4 rounded-lg border border-primary mt-5">
+              <p className="text-sm font-semibold text-primary mb-1">
+                {mode === "update"
+                  ? locale === routing.defaultLocale
+                    ? "Jadwal Baru:"
+                    : "New Schedule:"
+                  : locale === routing.defaultLocale
+                    ? "Jadwal Terpilih:"
+                    : "Selected Schedule:"}
+              </p>
+              <p className="text-base font-bold text-primary">
+                {selectedDate.toLocaleDateString(
+                  locale === routing.defaultLocale ? "id-ID" : "en-US",
+                  {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  },
+                )}{" "}
+                - {selectedTime}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

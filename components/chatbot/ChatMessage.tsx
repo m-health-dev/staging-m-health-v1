@@ -31,6 +31,7 @@ import WellnessCardSlide from "../wellness/wellness-card-slide";
 import HotelCardSlide from "../vendor-hotel/hotel-card-slide";
 import DoctorCardSlide from "../doctor/doctor-card-slide";
 import LazyActionItem from "./LazyActionItem";
+import { get } from "node:http";
 
 const ReactMarkdown = dynamic(() => import("react-markdown"), {
   ssr: false,
@@ -83,6 +84,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const locale = useLocale();
 
   const phoneNumber = "082310172457";
+
+  const getChatID = window?.location?.pathname?.split("/")[3] || "";
 
   let cleanMessage = message.trim();
 
@@ -680,7 +683,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           {!isUser && urgent && (
             <div className="mt-3 mb-5 bg-white py-10 px-3 rounded-2xl border w-full">
               <Link
-                href={`/${locale}/connect?session=${sessionId}`}
+                href={`/${locale}/connect?session=${sessionId ?? getChatID}`}
                 className="flex items-center justify-center w-full gap-3 flex-col"
               >
                 <p className="text-center max-w-md">

@@ -103,6 +103,10 @@ const CWDComponent = ({
   const [uploadLoadingRFImage, setUploadLoadingRFImage] = useState(false);
   const [deletedImages, setDeletedImages] = useState<string[]>([]);
   const [referencePreview, setReferencePreview] = useState<string[]>([]);
+
+  const [processToPayment, setProcesstoPayment] = useState(false);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+
   const domicile = parseDomicile(accounts?.domicile);
 
   const router = useRouter();
@@ -139,6 +143,61 @@ const CWDComponent = ({
     setCurrentStep((prev) => (prev - 1) as Step);
   }
 
+  async function handleGenerateSummary() {
+    if (!chatSession) {
+      toast.error(
+        locale === routing.defaultLocale
+          ? "Sesi percakapan tidak ditemukan"
+          : "Chat session not found",
+      );
+      return;
+    }
+
+    setSummaryLoading(true);
+
+    try {
+      const res = await fetch("/api/chat/summary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sessionId: chatSession,
+          locale: locale,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success && data.summary) {
+        form.setValue("complaint", data.summary);
+        toast.success(
+          locale === routing.defaultLocale
+            ? "Rangkuman berhasil dibuat!"
+            : "Summary created successfully!",
+        );
+      } else {
+        toast.error(
+          locale === routing.defaultLocale
+            ? "Gagal membuat rangkuman"
+            : "Failed to create summary",
+          {
+            description: data.error || "Unknown error",
+          },
+        );
+      }
+    } catch (error) {
+      console.error("Summary generation error:", error);
+      toast.error(
+        locale === routing.defaultLocale
+          ? "Terjadi kesalahan saat membuat rangkuman"
+          : "An error occurred while creating summary",
+      );
+    } finally {
+      setSummaryLoading(false);
+    }
+  }
+
   async function handleBatchImageUpload(files: File[]) {
     const formData = new FormData();
     files.forEach((file) => formData.append("file", file));
@@ -150,7 +209,7 @@ const CWDComponent = ({
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -172,7 +231,7 @@ const CWDComponent = ({
   async function handleDelete(
     url: string,
     field: "logo" | "highlight" | "reference",
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -235,8 +294,8 @@ const CWDComponent = ({
     chat_session: normalizedChatSession
       ? normalizedChatSession
       : checkSession === false
-      ? randomID
-      : "",
+        ? randomID
+        : "",
     phone_number: accounts?.phone ? String(accounts.phone) : "",
     email: accounts?.email ?? "",
     fullname: accounts?.fullname ?? "",
@@ -288,7 +347,7 @@ const CWDComponent = ({
 
   function toUtcMidnightFromLocalDate(date: Date) {
     return new Date(
-      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
     );
   }
 
@@ -338,27 +397,29 @@ const CWDComponent = ({
         {
           description: `${res.error}`,
           duration: 15000,
-        }
+        },
       );
     }
 
-    toast.success(
-      locale === routing.defaultLocale
-        ? "Jadwal Konsultasi Berhasil Dibuat"
-        : "Consult Scheduled!",
-      {
-        description:
-          locale === routing.defaultLocale
-            ? "Permintaan Anda berhasil disimpan. Lanjutkan ke halaman pembayaran untuk menyelesaikan jadwal konsultasi."
-            : "Your request successfully saved. Proceed to payment page to complete the consult schedule.",
-        duration: 15000,
-      }
-    );
+    // toast.success(
+    //   locale === routing.defaultLocale
+    //     ? "Jadwal Konsultasi Berhasil Dibuat"
+    //     : "Consult Scheduled!",
+    //   {
+    //     description:
+    //       locale === routing.defaultLocale
+    //         ? "Permintaan Anda berhasil disimpan. Lanjutkan ke halaman pembayaran untuk menyelesaikan jadwal konsultasi."
+    //         : "Your request successfully saved. Proceed to payment page to complete the consult schedule.",
+    //     duration: 15000,
+    //   }
+    // );
+
+    setProcesstoPayment(true);
 
     form.reset();
     setLoading(false);
     router.push(
-      `/${locale}/pay/${uuidv4()}?product=${res.data.id}&type=consultation`
+      `/${locale}/pay/${uuidv4()}?product=${res.data.id}&type=consultation`,
     );
   }
 
@@ -368,576 +429,649 @@ const CWDComponent = ({
         size="md"
         className="flex justify-center items-center min-h-screen flex-col lg:min-w-2xl! lg:max-w-2xl! py-20"
       >
-        <Image
-          src={
-            "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
-          }
-          width={100}
-          height={100}
-          unoptimized
-          alt="icon-m-health"
-          className="object-contain w-full h-10 mb-10"
-        />
-        <div className="">
-          <div className="mb-10">
-            <h4 className="text-primary font-bold mb-2">{labels.title}</h4>
-            <p className="text-muted-foreground">{labels.desc}</p>
+        {processToPayment ? (
+          <div className="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-white/95 backdrop-blur-sm">
+            <Spinner className="size-8 text-health mb-6" />
+            <div className="text-center px-6 max-w-ld">
+              <p className="text-lg font-semibold text-primary mb-1">
+                {locale === routing.defaultLocale
+                  ? "Kami sedang melakukan verifikasi dan memproses pesanan Anda"
+                  : "We are verifying and processing your order"}
+              </p>
+              <p className="text-muted-foreground">
+                {locale === routing.defaultLocale
+                  ? "Sesaat lagi Anda akan diarahkan ke halaman detail pembayaran"
+                  : "You will be redirected to the payment detail page shortly"}
+              </p>
+            </div>
           </div>
-          <div className="question_to_answer mt-5">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-5"
-              >
-                {currentStep === 1 && (
-                  <div className="space-y-5">
-                    <FormField
-                      control={form.control}
-                      name="chat_session"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary font-semibold!">
-                            {!checkSession
-                              ? locale === routing.defaultLocale
-                                ? "ID Konsultasi"
-                                : "Consultation ID"
-                              : locale === routing.defaultLocale
-                              ? "ID Sesi Percakapan Anda"
-                              : "Your Chat Session ID"}
-                          </FormLabel>
-                          <FormControl>
-                            {!checkSession ? (
-                              <span className="font-sans text-muted-foreground uppercase">
-                                {field.value}
-                              </span>
-                            ) : (
-                              <Link
-                                href={`/${locale}/c/${chatSession}`}
-                                target="_blank"
-                              >
-                                <Input
-                                  {...field}
-                                  type="text"
-                                  readOnly
-                                  className="h-12 cursor-pointer opacity-70 uppercase"
-                                />
-                              </Link>
-                            )}
-                          </FormControl>
-                          {checkSession && (
-                            <FormDescription>
-                              {locale === routing.defaultLocale
-                                ? "Sesi percakapan ini akan kami kirimkan kepada dokter, sebagai salah satu rujukan. Klik pada kolom untuk membuka sesi percakapan anda kembali."
-                                : "This chat session will be sent to the doctor as a reference. Click on the field to open your chat session again."}
-                            </FormDescription>
-                          )}
-
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    {/* TextArea */}
-                    <FormField
-                      control={form.control}
-                      name="complaint"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary font-semibold!">
-                            {locale === routing.defaultLocale
-                              ? "Ceritakan Kondisi Kesehatan Anda"
-                              : "Describe Your Health Condition"}
-                          </FormLabel>
-
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              placeholder='Jika anda tidak direkomendasikan oleh AI saat mengakses halaman ini silahkan ceritakan secara detail keluhan yang anda rasakan. Jika anda direkomendasikan oleh AI, silahkan tambahkan informasi tambahan atau ketik "Sesuai Chat" yang mungkin dapat membantu dokter dalam memberikan penanganan.'
-                              className="min-h-52"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="reference_image"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary font-semibold!">
-                            {locale === routing.defaultLocale
-                              ? "Unggah Gambar Referensi (Opsional)"
-                              : "Upload Reference Images (Optional)"}
-                          </FormLabel>
-                          <FormDescription>
-                            {locale === routing.defaultLocale
-                              ? "Silahkan tambahkan gambar yang dapat membantu dokter dalam memberikan penanganan jika diperlukan."
-                              : "Please add images that may help the doctor in providing treatment if necessary."}
-                          </FormDescription>
-                          {uploadLoadingRFImage ? (
-                            <div className="flex flex-col gap-5 mb-3">
-                              <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
-                            </div>
-                          ) : referencePreview.length === 0 ? (
-                            <FormControl>
-                              <Dropzone
-                                accept={{ "image/*": [] }}
-                                maxSize={1024 * 1024 * 5}
-                                maxFiles={5}
-                                src={[]}
-                                onDrop={async (acceptedFiles) => {
-                                  setUploadLoadingRFImage(true);
-
-                                  const urls = await handleBatchImageUpload(
-                                    acceptedFiles
-                                  );
-
-                                  if (urls) {
-                                    const oldImages =
-                                      form.getValues("reference_image") || [];
-                                    const merged = [...oldImages, ...urls];
-                                    form.setValue("reference_image", merged);
-                                    setReferencePreview(merged);
-                                    setUploadLoadingRFImage(false);
-                                  }
-                                }}
-                                onError={console.error}
-                                className="hover:bg-muted bg-white rounded-2xl lg:min-w-md w-full h-full"
-                              >
-                                <DropzoneEmptyState />
-                                <DropzoneContent />
-                              </Dropzone>
-                            </FormControl>
-                          ) : (
-                            referencePreview && (
-                              <div className="flex flex-col gap-5 mb-3">
-                                {referencePreview.map((url, i) => (
-                                  <div key={url} className="relative">
-                                    <Image
-                                      src={url}
-                                      width={320}
-                                      height={320}
-                                      alt={url}
-                                      className="aspect-video w-full rounded-2xl mt-3 object-cover border"
-                                    />
-                                    <Button
-                                      size="sm"
-                                      type="button"
-                                      variant={"destructive_outline"}
-                                      onClick={() =>
-                                        handleDelete(
-                                          url.replace(
-                                            process.env
-                                              .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                            ""
-                                          ),
-                                          "reference",
-                                          i
-                                        )
-                                      }
-                                      className="absolute w-10 h-10 top-5 right-2 rounded-full"
-                                    >
-                                      {loading ? <Spinner /> : <Trash />}
-                                    </Button>
-                                  </div>
-                                ))}
-                                {referencePreview.length !== 5 && (
-                                  <FormControl>
-                                    <Dropzone
-                                      accept={{ "image/*": [] }}
-                                      maxSize={1024 * 1024 * 5}
-                                      maxFiles={5}
-                                      src={[]}
-                                      onDrop={async (acceptedFiles) => {
-                                        setUploadLoadingRFImage(true);
-
-                                        const urls =
-                                          await handleBatchImageUpload(
-                                            acceptedFiles
-                                          );
-
-                                        if (urls) {
-                                          const oldImages =
-                                            form.getValues("reference_image") ||
-                                            [];
-                                          const merged = [
-                                            ...oldImages,
-                                            ...urls,
-                                          ];
-                                          form.setValue(
-                                            "reference_image",
-                                            merged
-                                          );
-                                          setReferencePreview(merged);
-                                          setUploadLoadingRFImage(false);
-                                        }
-                                      }}
-                                      onError={console.error}
-                                      className="hover:bg-muted bg-white rounded-2xl lg:min-w-sm w-full"
-                                    >
-                                      <DropzoneEmptyState />
-                                      <DropzoneContent />
-                                    </Dropzone>
-                                  </FormControl>
-                                )}
-                              </div>
-                            )
-                          )}
-
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-
-                {currentStep === 2 && (
-                  <div className="space-y-5">
-                    <div className="lg:grid grid-cols-2 flex flex-col gap-5">
-                      {/* Email */}
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-primary font-semibold!">
-                              Email
-                            </FormLabel>
-                            <FormControl>
-                              <Input {...field} type="email" className="h-12" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* Phone Number */}
-                      <FormField
-                        control={form.control}
-                        name="phone_number"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-primary font-semibold!">
-                              Phone Number
-                            </FormLabel>
-                            <FormControl>
-                              <PhoneInput defaultCountry="ID" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    {/* Normal String */}
-                    <FormField
-                      control={form.control}
-                      name="fullname"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary font-semibold!">
-                            Full Name
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} className="h-12" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <div className="lg:grid grid-cols-2 flex flex-col gap-5">
-                      {/* Height */}
-                      <FormField
-                        control={form.control}
-                        name="height"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-primary font-semibold!">
-                              Height
-                            </FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <Input
-                                  {...field}
-                                  type="number"
-                                  className="h-12"
-                                />
-                                <div className="bg-accent absolute right-0 top-0 h-12 w-12 border rounded-2xl flex items-center justify-center">
-                                  <p>CM</p>
-                                </div>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* Weight */}
-                      <FormField
-                        control={form.control}
-                        name="weight"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-primary font-semibold!">
-                              Weight
-                            </FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <Input
-                                  {...field}
-                                  type="number"
-                                  className="h-12"
-                                />
-                                <div className="bg-accent absolute right-0 top-0 h-12 w-12 border rounded-2xl flex items-center justify-center">
-                                  <p>KG</p>
-                                </div>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="lg:grid grid-cols-2 flex flex-col gap-5">
-                      {/* Date of Birth */}
-                      <FormField
-                        control={form.control}
-                        name="date_of_birth"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-primary font-semibold!">
-                              Date of Birth{" "}
-                              {field.value && (
-                                <span className="bg-accent px-2 py-1 rounded-lg inline-flex! w-fit text-muted-foreground">
-                                  {getAgeDetail(field.value).years} Tahun{" "}
-                                  {getAgeDetail(field.value).months} Bulan
-                                </span>
-                              )}
-                            </FormLabel>
-                            <FormControl>
-                              <CalendarDatePicker
-                                value={field.value}
-                                onChange={field.onChange}
-                              />
-                            </FormControl>
-
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* Gender */}
-                      <FormField
-                        control={form.control}
-                        name="gender"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-primary font-semibold!">
-                              Gender
-                            </FormLabel>
-
-                            <RadioGroup
-                              onValueChange={field.onChange}
-                              value={field.value}
-                              className="space-y-0"
-                            >
-                              {[
-                                { id: "male", label: "Male" },
-                                { id: "female", label: "Female" },
-                              ].map((item) => (
-                                <FormItem
-                                  key={item.id}
-                                  className="flex items-center space-x-2"
-                                >
-                                  <FormControl>
-                                    <RadioGroupItem
-                                      value={item.id}
-                                      id={item.id}
-                                    />
-                                  </FormControl>
-                                  <FormLabel
-                                    htmlFor={item.id}
-                                    className="font-normal cursor-pointer"
+        ) : (
+          <>
+            <Image
+              src={
+                "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+              }
+              width={100}
+              height={100}
+              unoptimized
+              alt="icon-m-health"
+              className="object-contain w-full h-10 mb-10"
+            />
+            <div className="">
+              <div className="mb-10">
+                <h4 className="text-primary font-bold mb-2">{labels.title}</h4>
+                <p className="text-muted-foreground">{labels.desc}</p>
+              </div>
+              <div className="question_to_answer mt-5">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-5"
+                  >
+                    {currentStep === 1 && (
+                      <div className="space-y-5">
+                        <FormField
+                          control={form.control}
+                          name="chat_session"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-primary font-semibold!">
+                                {!checkSession
+                                  ? locale === routing.defaultLocale
+                                    ? "ID Konsultasi"
+                                    : "Consultation ID"
+                                  : locale === routing.defaultLocale
+                                    ? "ID Sesi Percakapan Anda"
+                                    : "Your Chat Session ID"}
+                              </FormLabel>
+                              <FormControl>
+                                {!checkSession ? (
+                                  <span className="font-sans text-muted-foreground uppercase">
+                                    {field.value}
+                                  </span>
+                                ) : (
+                                  <Link
+                                    href={`/${locale}/c/${chatSession}`}
+                                    target="_blank"
                                   >
-                                    {item.label}
-                                  </FormLabel>
-                                </FormItem>
-                              ))}
-                            </RadioGroup>
+                                    <Input
+                                      {...field}
+                                      type="text"
+                                      readOnly
+                                      className="h-12 cursor-pointer opacity-70 uppercase"
+                                    />
+                                  </Link>
+                                )}
+                              </FormControl>
+                              {checkSession && (
+                                <FormDescription>
+                                  {locale === routing.defaultLocale
+                                    ? "Sesi percakapan ini akan kami kirimkan kepada dokter, sebagai salah satu rujukan. Klik pada kolom untuk membuka sesi percakapan anda kembali."
+                                    : "This chat session will be sent to the doctor as a reference. Click on the field to open your chat session again."}
+                                </FormDescription>
+                              )}
 
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <FormField
-                      control={form.control}
-                      name="domicile_city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary font-semibold!">
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        {/* TextArea */}
+                        <FormField
+                          control={form.control}
+                          name="complaint"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-primary font-semibold!">
+                                {locale === routing.defaultLocale
+                                  ? "Ceritakan Kondisi Kesehatan Anda"
+                                  : "Describe Your Health Condition"}
+                              </FormLabel>
+                              {checkSession && (
+                                <div className="border-l-4 border-l-primary bg-primary/10 p-4">
+                                  <p className=" text-sm! text-muted-foreground">
+                                    {locale === routing.defaultLocale
+                                      ? 'Jika anda tidak direkomendasikan oleh AI saat mengakses halaman ini silahkan ceritakan secara detail keluhan yang anda rasakan. Jika anda direkomendasikan oleh AI, silahkan tambahkan informasi tambahan atau klik tombol "Buat Rangkuman" agar kami bantu kamu untuk membuat ringkasan dari data percakapanmu. Deskripsi ini akan membantu dokter dalam memberikan penanganan.'
+                                      : 'If you are not recommended by AI when accessing this page, please describe in detail the complaints you feel. If you are recommended by AI, please add additional information or click the "Create Summary" button so we can help you to summarize from your chat data. This description will help the doctor in providing treatment.'}
+                                  </p>
+                                  <Button
+                                    type="button"
+                                    variant={"outline"}
+                                    className="rounded-full mt-4"
+                                    disabled={summaryLoading}
+                                    onClick={handleGenerateSummary}
+                                  >
+                                    {summaryLoading ? (
+                                      <>
+                                        <Spinner className="mr-2" />
+                                        {locale === routing.defaultLocale
+                                          ? "Membuat Rangkuman..."
+                                          : "Creating Summary..."}
+                                      </>
+                                    ) : (
+                                      <>
+                                        {locale === routing.defaultLocale
+                                          ? "Buat Rangkuman"
+                                          : "Create Summary"}
+                                      </>
+                                    )}
+                                  </Button>
+                                </div>
+                              )}
+
+                              <FormControl>
+                                <Textarea
+                                  {...field}
+                                  placeholder={
+                                    locale === routing.defaultLocale
+                                      ? "Ceritakan secara detail kondisi kesehatan Anda..."
+                                      : "Describe in detail your health condition..."
+                                  }
+                                  className="min-h-52"
+                                />
+                              </FormControl>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="reference_image"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-primary font-semibold!">
+                                {locale === routing.defaultLocale
+                                  ? "Unggah Gambar Referensi (Opsional)"
+                                  : "Upload Reference Images (Optional)"}
+                              </FormLabel>
+                              <FormDescription>
+                                {locale === routing.defaultLocale
+                                  ? "Silahkan tambahkan gambar yang dapat membantu dokter dalam memberikan penanganan jika diperlukan."
+                                  : "Please add images that may help the doctor in providing treatment if necessary."}
+                              </FormDescription>
+                              {uploadLoadingRFImage ? (
+                                <div className="flex flex-col gap-5 mb-3">
+                                  <Skeleton className="aspect-video w-full rounded-2xl object-cover border" />
+                                </div>
+                              ) : referencePreview.length === 0 ? (
+                                <FormControl>
+                                  <Dropzone
+                                    accept={{ "image/*": [] }}
+                                    maxSize={1024 * 1024 * 5}
+                                    maxFiles={5}
+                                    src={[]}
+                                    onDrop={async (acceptedFiles) => {
+                                      setUploadLoadingRFImage(true);
+
+                                      const urls =
+                                        await handleBatchImageUpload(
+                                          acceptedFiles,
+                                        );
+
+                                      if (urls) {
+                                        const oldImages =
+                                          form.getValues("reference_image") ||
+                                          [];
+                                        const merged = [...oldImages, ...urls];
+                                        form.setValue(
+                                          "reference_image",
+                                          merged,
+                                        );
+                                        setReferencePreview(merged);
+                                        setUploadLoadingRFImage(false);
+                                      }
+                                    }}
+                                    onError={console.error}
+                                    className="hover:bg-muted bg-white rounded-2xl lg:min-w-md w-full h-full"
+                                  >
+                                    <DropzoneEmptyState />
+                                    <DropzoneContent />
+                                  </Dropzone>
+                                </FormControl>
+                              ) : (
+                                referencePreview && (
+                                  <div className="flex flex-col gap-5 mb-3">
+                                    {referencePreview.map((url, i) => (
+                                      <div key={url} className="relative">
+                                        <Image
+                                          src={url}
+                                          width={320}
+                                          height={320}
+                                          alt={url}
+                                          className="aspect-video w-full rounded-2xl mt-3 object-cover border"
+                                        />
+                                        <Button
+                                          size="sm"
+                                          type="button"
+                                          variant={"destructive_outline"}
+                                          onClick={() =>
+                                            handleDelete(
+                                              url.replace(
+                                                process.env
+                                                  .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
+                                                "",
+                                              ),
+                                              "reference",
+                                              i,
+                                            )
+                                          }
+                                          className="absolute w-10 h-10 top-5 right-2 rounded-full"
+                                        >
+                                          {loading ? <Spinner /> : <Trash />}
+                                        </Button>
+                                      </div>
+                                    ))}
+                                    {referencePreview.length !== 5 && (
+                                      <FormControl>
+                                        <Dropzone
+                                          accept={{ "image/*": [] }}
+                                          maxSize={1024 * 1024 * 5}
+                                          maxFiles={5}
+                                          src={[]}
+                                          onDrop={async (acceptedFiles) => {
+                                            setUploadLoadingRFImage(true);
+
+                                            const urls =
+                                              await handleBatchImageUpload(
+                                                acceptedFiles,
+                                              );
+
+                                            if (urls) {
+                                              const oldImages =
+                                                form.getValues(
+                                                  "reference_image",
+                                                ) || [];
+                                              const merged = [
+                                                ...oldImages,
+                                                ...urls,
+                                              ];
+                                              form.setValue(
+                                                "reference_image",
+                                                merged,
+                                              );
+                                              setReferencePreview(merged);
+                                              setUploadLoadingRFImage(false);
+                                            }
+                                          }}
+                                          onError={console.error}
+                                          className="hover:bg-muted bg-white rounded-2xl lg:min-w-sm w-full"
+                                        >
+                                          <DropzoneEmptyState />
+                                          <DropzoneContent />
+                                        </Dropzone>
+                                      </FormControl>
+                                    )}
+                                  </div>
+                                )
+                              )}
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    )}
+
+                    {currentStep === 2 && (
+                      <div className="space-y-5">
+                        <div className="lg:grid grid-cols-2 flex flex-col gap-5">
+                          {/* Email */}
+                          <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-primary font-semibold!">
+                                  Email
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    type="email"
+                                    className="h-12"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          {/* Phone Number */}
+                          <FormField
+                            control={form.control}
+                            name="phone_number"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-primary font-semibold!">
+                                  Phone Number
+                                </FormLabel>
+                                <FormControl>
+                                  <PhoneInput defaultCountry="ID" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        {/* Normal String */}
+                        <FormField
+                          control={form.control}
+                          name="fullname"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-primary font-semibold!">
+                                Full Name
+                              </FormLabel>
+                              <FormControl>
+                                <Input {...field} className="h-12" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className="lg:grid grid-cols-2 flex flex-col gap-5">
+                          {/* Height */}
+                          <FormField
+                            control={form.control}
+                            name="height"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-primary font-semibold!">
+                                  Height
+                                </FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <Input
+                                      {...field}
+                                      type="number"
+                                      className="h-12"
+                                    />
+                                    <div className="bg-accent absolute right-0 top-0 h-12 w-12 border rounded-2xl flex items-center justify-center">
+                                      <p>CM</p>
+                                    </div>
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          {/* Weight */}
+                          <FormField
+                            control={form.control}
+                            name="weight"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-primary font-semibold!">
+                                  Weight
+                                </FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <Input
+                                      {...field}
+                                      type="number"
+                                      className="h-12"
+                                    />
+                                    <div className="bg-accent absolute right-0 top-0 h-12 w-12 border rounded-2xl flex items-center justify-center">
+                                      <p>KG</p>
+                                    </div>
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="lg:grid grid-cols-2 flex flex-col gap-5">
+                          {/* Date of Birth */}
+                          <FormField
+                            control={form.control}
+                            name="date_of_birth"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-primary font-semibold!">
+                                  Date of Birth{" "}
+                                  {field.value && (
+                                    <span className="bg-accent px-2 py-1 rounded-lg inline-flex! w-fit text-muted-foreground">
+                                      {getAgeDetail(field.value).years} Tahun{" "}
+                                      {getAgeDetail(field.value).months} Bulan
+                                    </span>
+                                  )}
+                                </FormLabel>
+                                <FormControl>
+                                  <CalendarDatePicker
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                  />
+                                </FormControl>
+
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          {/* Gender */}
+                          <FormField
+                            control={form.control}
+                            name="gender"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-primary font-semibold!">
+                                  Gender
+                                </FormLabel>
+
+                                <RadioGroup
+                                  onValueChange={field.onChange}
+                                  value={field.value}
+                                  className="space-y-0"
+                                >
+                                  {[
+                                    { id: "male", label: "Male" },
+                                    { id: "female", label: "Female" },
+                                  ].map((item) => (
+                                    <FormItem
+                                      key={item.id}
+                                      className="flex items-center space-x-2"
+                                    >
+                                      <FormControl>
+                                        <RadioGroupItem
+                                          value={item.id}
+                                          id={item.id}
+                                        />
+                                      </FormControl>
+                                      <FormLabel
+                                        htmlFor={item.id}
+                                        className="font-normal cursor-pointer"
+                                      >
+                                        {item.label}
+                                      </FormLabel>
+                                    </FormItem>
+                                  ))}
+                                </RadioGroup>
+
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="grid lg:grid-cols-2 grid-cols-1 w-full gap-5">
+                          <FormField
+                            control={form.control}
+                            name="domicile_city"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-primary font-semibold!">
+                                  {locale === routing.defaultLocale
+                                    ? "Kota/ Provinsi"
+                                    : "City/ Province/ State"}
+                                </FormLabel>
+                                <FormControl>
+                                  <Input {...field} className="h-12" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="domicile_district"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-primary font-semibold!">
+                                  {locale === routing.defaultLocale
+                                    ? "Kecamatan"
+                                    : "District"}
+                                </FormLabel>
+                                <FormControl>
+                                  <Input {...field} className="h-12" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="domicile_postal_code"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-primary font-semibold!">
+                                  {locale === routing.defaultLocale
+                                    ? "Kode Pos"
+                                    : "Postal Code"}
+                                </FormLabel>
+                                <FormControl>
+                                  <Input {...field} className="h-12" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name="domicile_address"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-primary font-semibold!">
+                                {locale === routing.defaultLocale
+                                  ? "Alamat Lengkap"
+                                  : "Full Address"}
+                              </FormLabel>
+                              <FormControl>
+                                <Textarea {...field} className="min-h-32" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    )}
+
+                    {currentStep === 3 && (
+                      <div className="space-y-5">
+                        <div className="">
+                          {/* Schedule */}
+                          <FormField
+                            control={form.control}
+                            name="scheduled_datetime"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-primary font-semibold!">
+                                  {locale === routing.defaultLocale
+                                    ? "Jadwal Konsultasi"
+                                    : "Consultation Schedule"}
+                                </FormLabel>
+                                <FormControl>
+                                  <ConsultationSchedulePicker
+                                    selected={field.value}
+                                    onChange={field.onChange}
+                                    locale={locale}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div>
+                          <p className="text-muted-foreground text-xs!">
                             {locale === routing.defaultLocale
-                              ? "Kota/ Provinsi"
-                              : "City/ Province/ State"}
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} className="h-12" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="domicile_district"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary font-semibold!">
-                            {locale === routing.defaultLocale ? "Kecamatan" : "District"}
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} className="h-12" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="domicile_postal_code"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary font-semibold!">
-                            {locale === routing.defaultLocale ? "Kode Pos" : "Postal Code"}
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} className="h-12" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="domicile_address"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-primary font-semibold!">
-                            {locale === routing.defaultLocale
-                              ? "Alamat Lengkap"
-                              : "Full Address"}
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea {...field} className="min-h-32" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
-
-                {currentStep === 3 && (
-                  <div className="space-y-5">
-                    <div className="">
-                      {/* Schedule */}
-                      <FormField
-                        control={form.control}
-                        name="scheduled_datetime"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-primary font-semibold!">
+                              ? "Dengan mengirim form ini anda telah menyetujui"
+                              : "By submitting this form you agree to"}{" "}
+                            <span
+                              className="text-health underline cursor-pointer"
+                              onClick={() => router.push("/terms-of-service")}
+                            >
                               {locale === routing.defaultLocale
-                                ? "Jadwal Konsultasi"
-                                : "Consultation Schedule"}
-                            </FormLabel>
-                            <FormControl>
-                              <ConsultationSchedulePicker
-                                selected={field.value}
-                                onChange={field.onChange}
-                                locale={locale}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                                ? "Syarat dan Ketentuan"
+                                : "Terms of Service"}
+                            </span>{" "}
+                            {locale === routing.defaultLocale ? "dan" : "and"}{" "}
+                            <span
+                              className="text-health underline cursor-pointer"
+                              onClick={() => router.push("/privacy")}
+                            >
+                              {locale === routing.defaultLocale
+                                ? "Kebijakan Privasi"
+                                : "Privacy Policy"}
+                            </span>{" "}
+                            {locale === routing.defaultLocale
+                              ? "kami. Melalui pendaftaran konsultasi ini anda akan secara otomatis terdaftar di M HEALTH. Untuk masuk ke akun anda silahkan klik tautan pada email yang telah kami kirimkan kepada anda. Password untuk masuk juga telah terkirim ke email anda."
+                              : "By submitting this consultation registration form, you will be automatically registered in M HEALTH. To access your account, please click the link in the email we have sent you. The password to log in has also been sent to your email."}
+                          </p>
+                        </div>
+                      </div>
+                    )}
 
-                    <div>
-                      <p className="text-muted-foreground text-xs!">
-                        Dengan mengirim form ini anda telah menyetujui{" "}
-                        <span
-                          className="text-health underline cursor-pointer"
-                          onClick={() => router.push("/terms-of-service")}
-                        >
-                          Ketentuan Penggunaan
-                        </span>{" "}
-                        dan{" "}
-                        <span
-                          className="text-health underline cursor-pointer"
-                          onClick={() => router.push("/privacy")}
-                        >
-                          Kebijakan Privasi
-                        </span>{" "}
-                        kami. Melalui pendaftaran konsultasi ini anda akan
-                        secara otomatis terdaftar di M HEALTH. Untuk masuk ke
-                        akun anda silahkan klik tautan pada email yang telah
-                        kami kirimkan kepada anda. Password untuk masuk juga
-                        telah terkirim ke email anda.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                <div
-                  className={cn(
-                    "flex flex-wrap mt-5 gap-5",
-                    currentStep === 1 ? "justify-end" : "justify-between"
-                  )}
-                >
-                  {currentStep > 1 && (
-                    <Button
-                      type="button"
-                      className="rounded-2xl w-full"
-                      variant="outline"
-                      onClick={handleBack}
+                    <div
+                      className={cn(
+                        "flex flex-wrap mt-5 gap-5",
+                        currentStep === 1 ? "justify-end" : "justify-between",
+                      )}
                     >
-                      Back
-                    </Button>
-                  )}
+                      {currentStep > 1 && (
+                        <Button
+                          type="button"
+                          className="lg:w-fit w-full h-12 rounded-full"
+                          variant="outline"
+                          onClick={handleBack}
+                        >
+                          Back
+                        </Button>
+                      )}
 
-                  {currentStep < 3 && (
-                    <Button
-                      type="button"
-                      className="rounded-2xl w-full"
-                      onClick={handleNext}
-                    >
-                      Next
-                    </Button>
-                  )}
+                      {currentStep < 3 && (
+                        <Button
+                          type="button"
+                          className="lg:w-fit w-full h-12 px-8 rounded-full"
+                          onClick={handleNext}
+                        >
+                          Next
+                        </Button>
+                      )}
 
-                  {currentStep === 3 && (
-                    <div className="lg:col-span-2 col-span-1 w-full">
-                      <Button
-                        type="submit"
-                        disabled={loading}
-                        className="rounded-2xl flex w-full"
-                      >
-                        {loading ? <Spinner /> : "Submit"}
-                      </Button>
+                      {currentStep === 3 && (
+                        <Button
+                          type="submit"
+                          disabled={loading}
+                          className="lg:w-fit w-full h-12 px-8 rounded-full flex"
+                        >
+                          {loading ? <Spinner /> : "Submit"}
+                        </Button>
+                      )}
                     </div>
-                  )}
-                </div>
-              </form>
-            </Form>
-          </div>
-        </div>
+                  </form>
+                </Form>
+              </div>
+            </div>
+          </>
+        )}
       </ContainerWrap>
     </div>
   );
