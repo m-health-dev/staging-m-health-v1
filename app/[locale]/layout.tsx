@@ -88,10 +88,11 @@ export default async function RootLayout({ children, params }: Props) {
             <script
               src="https://cdn.userway.org/widget.js"
               data-account="wjUwooWFlF"
-              data-language="id"
+              data-language={locale}
               data-color="#3e77ab"
               data-z-index="10001"
               data-widget_layout="full"
+              data-position="3"
               // async
               // nonce={nonce}
             ></script>
