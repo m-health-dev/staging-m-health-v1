@@ -3,11 +3,39 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function updateSession(
   request: NextRequest,
-  response: NextResponse // Response dari next-intl diterima di sini
+  response: NextResponse, // Response dari next-intl diterima di sini
 ) {
   // Ambil locale dari URL path, misal /en/dashboard -> en
   // Asumsi format: /{locale}/...
   const locale = request.nextUrl.pathname.split("/")[1] || "en";
+
+  // let supabaseResponse = NextResponse.next({
+  //   request,
+  // });
+
+  // const supabase = createServerClient(
+  //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  //   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+  //   {
+  //     cookies: {
+  //       getAll() {
+  //         return request.cookies.getAll();
+  //       },
+  //       setAll(cookiesToSet) {
+  //         // 1. Update cookies di Request (agar tersedia di server components)
+  //         cookiesToSet.forEach(({ name, value }) =>
+  //           request.cookies.set(name, value)
+  //         );
+
+  //         // 2. Update cookies di Response (agar tersimpan di browser user)
+  //         // PENTING: Kita update response yang dipassing dari next-intl
+  //         cookiesToSet.forEach(({ name, value, options }) =>
+  //           response.cookies.set(name, value, options)
+  //         );
+  //       },
+  //     },
+  //   }
+  // );
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,19 +46,18 @@ export async function updateSession(
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          // 1. Update cookies di Request (agar tersedia di server components)
           cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
+            request.cookies.set(name, value),
           );
-
-          // 2. Update cookies di Response (agar tersimpan di browser user)
-          // PENTING: Kita update response yang dipassing dari next-intl
+          response = NextResponse.next({
+            request,
+          });
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
+            response.cookies.set(name, value, options),
           );
         },
       },
-    }
+    },
   );
 
   // Mengambil user untuk cek auth

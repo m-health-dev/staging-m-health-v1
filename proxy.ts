@@ -1,7 +1,7 @@
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing"; // Sesuaikan path import
 import { type NextRequest } from "next/server";
-import { updateSession } from "./utils/supabase/middleware"; // Sesuaikan path import
+import { updateSession } from "./utils/supabase/proxy"; // Sesuaikan path import
 
 const handleI18nRouting = createMiddleware(routing);
 

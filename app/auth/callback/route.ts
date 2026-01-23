@@ -1,36 +1,47 @@
-import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
-
-const getBaseUrl = (): string => {
-  // Always prioritize environment variable for production
-  if (process.env.NEXT_PUBLIC_BASE_URL) {
-    return process.env.NEXT_PUBLIC_BASE_URL;
-  }
-  // Fallback for development
-  return "http://localhost:3030";
-};
+// The client you created from the Server-Side Auth instructions
+import { createClient } from "@/utils/supabase/server";
 
 export async function GET(request: Request) {
-  // The `/auth/callback` route is required for the server-side auth flow implemented
-  // by the SSR package. It exchanges an auth code for the user's session.
-  // https://supabase.com/docs/guides/auth/server-side/nextjs
-  const requestUrl = new URL(request.url);
-  const code = requestUrl.searchParams.get("code");
-  const origin = getBaseUrl();
-  const redirectTo = requestUrl.searchParams.get("redirect")?.toString();
+  const { searchParams, origin } = new URL(request.url);
+  const code = searchParams.get("code");
+  // if "next" is in param, use it as the redirect URL
+  let next = searchParams.get("next") ?? "/";
+  if (!next.startsWith("/")) {
+    // if "next" is not a relative URL, use the default
+    next = "/";
+  }
+
+  console.log("OAuth callback received, exchanging code for session:", {
+    code,
+    next,
+  });
 
   if (code) {
     const supabase = await createClient();
-    const { data: checkCode } = await supabase.auth.exchangeCodeForSession(
-      code
-    );
-    console.log("Success Exchange Code!");
+    const { data: exchange, error } =
+      await supabase.auth.exchangeCodeForSession(code);
+    if (error || !exchange?.session) {
+      return NextResponse.redirect(`${origin}/auth/error`);
+    }
+    const { data, error: set } = await supabase.auth.setSession({
+      access_token: exchange.session.access_token,
+      refresh_token: exchange.session.refresh_token,
+    });
+    if (!set) {
+      const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
+      const isLocalEnv = process.env.NODE_ENV === "development";
+      if (isLocalEnv) {
+        // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
+        return NextResponse.redirect(`${origin}${next}`);
+      } else if (forwardedHost) {
+        return NextResponse.redirect(`https://${forwardedHost}${next}`);
+      } else {
+        return NextResponse.redirect(`${origin}${next}`);
+      }
+    }
   }
 
-  if (redirectTo) {
-    return NextResponse.redirect(`${origin}${redirectTo}`);
-  }
-
-  // URL to redirect to after sign up process completes
-  return NextResponse.redirect(`${origin}/en/dashboard`);
+  // return the user to an error page with instructions
+  return NextResponse.redirect(`${origin}/auth/error`);
 }

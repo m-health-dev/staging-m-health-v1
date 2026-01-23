@@ -92,11 +92,14 @@ const getBaseUrl = (): string => {
   return "http://localhost:3030";
 };
 
-export const signUpAction = async (data: {
-  fullname: string;
-  email: string;
-  password: string;
-}) => {
+export const signUpAction = async (
+  data: {
+    fullname: string;
+    email: string;
+    password: string;
+  },
+  captchaToken: string,
+) => {
   const supabase = await createClient();
   const origin = getBaseUrl();
   const validatedData = AuthSignUpSchema.safeParse(data);
@@ -127,7 +130,7 @@ export const signUpAction = async (data: {
 
   try {
     const response = await fetch(
-      `https://api.pwnedpasswords.com/range/${prefix}`
+      `https://api.pwnedpasswords.com/range/${prefix}`,
     );
     const text = await response.text();
     const breachedHashes = text.split("\n");
@@ -154,6 +157,7 @@ export const signUpAction = async (data: {
     password: validatedData.data.password,
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
+      captchaToken,
     },
   });
 
@@ -167,7 +171,7 @@ export const signUpAction = async (data: {
       `${errInsertFullname.code}: ${
         errInsertFullname.message ||
         "Terjadi kesalahan saat melakukan pengiriman nama."
-      }`
+      }`,
     );
   }
 
@@ -175,7 +179,7 @@ export const signUpAction = async (data: {
     console.error(
       `${signUpError.code}: ${
         signUpError.message || "Terjadi kesalahan saat melakukan pendaftaran."
-      }`
+      }`,
     );
 
     if (signUpError?.code === "weak_password") {
@@ -215,11 +219,14 @@ export const signUpAction = async (data: {
   }
 };
 
-export const signInAction = async (data: {
-  email: string;
-  password: string;
-  redirect: string;
-}) => {
+export const signInAction = async (
+  data: {
+    email: string;
+    password: string;
+    redirect: string;
+  },
+  captchaToken: string,
+) => {
   const supabase = await createClient();
   const validatedData = signInSchema.safeParse(data);
   const locale = await getLocale();
@@ -245,6 +252,9 @@ export const signInAction = async (data: {
   const { data: user, error } = await supabase.auth.signInWithPassword({
     email: validatedData.data?.email,
     password: validatedData.data?.password,
+    options: {
+      captchaToken,
+    },
   });
 
   // console.log(user);
@@ -479,12 +489,13 @@ export const signWithGoogle = async (redirectTo?: string) => {
     options: {
       redirectTo: `${origin}/auth/oauth?next=${encodeURIComponent(
         redirectTo?.replace(process.env.NEXT_PUBLIC_BASE_URL || "", "") ||
-          "/dashboard"
+          "/dashboard",
       )}`,
-      queryParams: {
-        access_type: "offline",
-        prompt: "consent",
-      },
+
+      // queryParams: {
+      //   access_type: "offline",
+      //   prompt: "consent",
+      // },
     },
   });
   if (error) {
@@ -648,7 +659,7 @@ export const forgotPasswordAction = async (data: { email: string }) => {
     validatedData.data.email,
     {
       redirectTo: `${origin}/auth/callback?redirect=/${locale}/reset-password`,
-    }
+    },
   );
 
   if (error) {
@@ -727,7 +738,7 @@ export const resetPasswordAction = async (data: {
 
   try {
     const response = await fetch(
-      `https://api.pwnedpasswords.com/range/${prefix}`
+      `https://api.pwnedpasswords.com/range/${prefix}`,
     );
     const text = await response.text();
     const breachedHashes = text.split("\n");
@@ -782,7 +793,7 @@ export const resetPasswordAction = async (data: {
   await supabase.auth.signOut();
   return (
     redirect(
-      `/${locale}/sign-in?reset=success&email=${user.user?.email}&record=${checkRequested.request}`
+      `/${locale}/sign-in?reset=success&email=${user.user?.email}&record=${checkRequested.request}`,
     ),
     {
       success: {
@@ -822,7 +833,7 @@ export async function deleteUser() {
 
   console.log(
     "from bucket:",
-    files?.map((file) => `${file.name}`)
+    files?.map((file) => `${file.name}`),
   );
 
   if (!files) {
@@ -848,7 +859,7 @@ export async function deleteUser() {
 
     if (storageError) {
       throw new Error(
-        `Failed to delete avatar from storage: ${storageError.message}`
+        `Failed to delete avatar from storage: ${storageError.message}`,
       );
     }
 

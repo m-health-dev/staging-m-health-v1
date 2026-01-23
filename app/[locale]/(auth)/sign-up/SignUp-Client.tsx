@@ -26,6 +26,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 import { useLocale } from "next-intl";
 import { signUpAction, signWithGoogle } from "../actions/auth.actions";
@@ -41,6 +42,8 @@ const SignUpClient = ({ image }: { image: any }) => {
   const locale = useLocale();
   const params = useSearchParams();
   const redirectData = params.get("redirect") || `/${locale}/dashboard`;
+
+  const [captchaUpToken, setCaptchaUpToken] = React.useState<string>("");
 
   const apiBaseUrl =
     process.env.NODE_ENV === "production"
@@ -76,23 +79,35 @@ const SignUpClient = ({ image }: { image: any }) => {
 
   async function onSubmit(data: z.infer<typeof AuthSignUpSchema>) {
     setLoading(true);
-    const response = await signUpAction(data);
+    const response = await signUpAction(data, captchaUpToken as string);
 
     if (response?.error) {
       setLoading(false);
-      setError(locale === routing.defaultLocale ? response.error.id : response.error.en);
+      setError(
+        locale === routing.defaultLocale
+          ? response.error.id
+          : response.error.en,
+      );
       // toast.error(`Registrasi Gagal`, {
       //   description: `${response.error}`,
       // });
     } else if (response?.warning) {
       setLoading(false);
-      setWarning(locale === routing.defaultLocale ? response.warning.id : response.warning.en);
+      setWarning(
+        locale === routing.defaultLocale
+          ? response.warning.id
+          : response.warning.en,
+      );
       // toast.warning(`Registrasi Gagal`, {
       //   description: `${response.warning}`,
       // });
     } else if (response?.success) {
       setLoading(false);
-      setSuccess(locale === routing.defaultLocale ? response.success.id : response.success.en);
+      setSuccess(
+        locale === routing.defaultLocale
+          ? response.success.id
+          : response.success.en,
+      );
       // toast.success(`Registrasi Berhasil`, {
       //   description: `${response.success}`,
       // });
@@ -117,7 +132,9 @@ const SignUpClient = ({ image }: { image: any }) => {
               />
             </Link>
             <h3 className="font-bold text-primary mb-10">
-              {locale === routing.defaultLocale ? "Buat Akun Baru" : "Create a New Account"}
+              {locale === routing.defaultLocale
+                ? "Buat Akun Baru"
+                : "Create a New Account"}
             </h3>
             {error && (
               <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
@@ -160,7 +177,9 @@ const SignUpClient = ({ image }: { image: any }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === routing.defaultLocale ? "Nama Lengkap" : "Full Name"}
+                        {locale === routing.defaultLocale
+                          ? "Nama Lengkap"
+                          : "Full Name"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} type="text" className="h-12" />
@@ -190,7 +209,9 @@ const SignUpClient = ({ image }: { image: any }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === routing.defaultLocale ? "Kata Sandi" : "Password"}
+                        {locale === routing.defaultLocale
+                          ? "Kata Sandi"
+                          : "Password"}
                       </FormLabel>
                       <FormControl>
                         <div className="relative w-full h-12">
@@ -227,7 +248,9 @@ const SignUpClient = ({ image }: { image: any }) => {
                       className="text-health underline cursor-pointer"
                       onClick={() => router.push("/terms-of-service")}
                     >
-                      {locale === routing.defaultLocale ? "Syarat Layanan" : "Terms of Service"}
+                      {locale === routing.defaultLocale
+                        ? "Syarat Layanan"
+                        : "Terms of Service"}
                     </span>{" "}
                     {locale === routing.defaultLocale ? "dan" : "and"}{" "}
                     <span
@@ -241,11 +264,24 @@ const SignUpClient = ({ image }: { image: any }) => {
                     {locale === routing.defaultLocale && "kami."}
                   </p>
                 </div>
+                <div>
+                  <Turnstile
+                    siteKey="0x4AAAAAACOWvPh9bptcSxI4"
+                    onSuccess={(token: any) => {
+                      setCaptchaUpToken(token);
+                    }}
+                    options={{
+                      theme: "light",
+                    }}
+                  />
+                </div>
                 <Button type="submit" className="w-full h-12 rounded-full">
                   {loading ? (
                     <Spinner />
                   ) : (
-                    <p>{locale === routing.defaultLocale ? "Daftar" : "Sign Up"}</p>
+                    <p>
+                      {locale === routing.defaultLocale ? "Daftar" : "Sign Up"}
+                    </p>
                   )}
                 </Button>
               </form>

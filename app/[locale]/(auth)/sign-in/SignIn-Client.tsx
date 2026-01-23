@@ -35,6 +35,7 @@ import {
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 const SignInClient = ({
   component = false,
@@ -59,6 +60,8 @@ const SignInClient = ({
   const emailData = params.get("email");
   const resetData = params.get("reset");
   const recordResetData = params.get("record");
+
+  const [captchaInToken, setCaptchaInToken] = React.useState<string>("");
 
   const redirectRecord = path.startsWith(`/${locale}/c`)
     ? path
@@ -111,7 +114,7 @@ const SignInClient = ({
 
   async function onSubmit(data: z.infer<typeof AuthSignInSchema>) {
     setLoading(true);
-    const res = await signInAction(data);
+    const res = await signInAction(data, captchaInToken as string);
 
     if (res?.error) {
       setLoading(false);
@@ -469,6 +472,17 @@ const SignInClient = ({
                           : "I forgot my password"}
                       </p>
                     </button>
+                  </div>
+                  <div>
+                    <Turnstile
+                      siteKey="0x4AAAAAACOWvPh9bptcSxI4"
+                      onSuccess={(token: any) => {
+                        setCaptchaInToken(token);
+                      }}
+                      options={{
+                        theme: "light",
+                      }}
+                    />
                   </div>
                   <Button
                     type="submit"
