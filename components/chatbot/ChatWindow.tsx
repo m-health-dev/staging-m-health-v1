@@ -253,7 +253,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
       <Dialog open={dialogSignIn}>
         <DialogContent
-          className="bg-white rounded-2xl px-5 lg:min-w-4xl lg:max-w-4xl max-w-sm overflow-y-auto max-h-[90vh]"
+          className="bg-white rounded-2xl px-5 lg:min-w-4xl lg:max-w-4xl max-w-sm overflow-y-auto hide-scroll max-h-[90vh]"
           showCloseButton={false}
         >
           <DialogTitle className="hidden" />

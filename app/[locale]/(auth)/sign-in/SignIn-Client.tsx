@@ -331,17 +331,16 @@ const SignInClient = ({
             <div className="border-b border-gray-300 w-full"></div>
           </div>
           <Button
-            variant="outline"
             type="button"
-            className="w-full h-12 rounded-full flex items-center gap-2 mb-3"
+            className="w-full h-12 rounded-full flex items-center gap-2 mb-3 bg-white text-gray-800 border hover:bg-gray-50"
             onClick={handleGoogleSignIn}
           >
             <Image
               src={
                 "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/google.svg"
               }
-              width={50}
-              height={50}
+              width={20}
+              height={20}
               alt="Google Logo"
             />
             <p>
