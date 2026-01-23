@@ -401,11 +401,9 @@ export function Studio1DataTable<TData, TValue>({
                         <div>
                           {type === "users" && (
                             <div className="inline-flex gap-2 items-center mb-3">
-                              {!row.getValue("avatar_url") ? (
+                              {!row.getValue("google_avatar") ? (
                                 <Avatar
-                                  name={String(
-                                    row.getValue("fullname") || "User",
-                                  )}
+                                  name={String(row.getValue("email") || "User")}
                                   className="w-20! h-20! border rounded-full"
                                   colors={[
                                     "#3e77ab",
@@ -417,10 +415,20 @@ export function Studio1DataTable<TData, TValue>({
                                   variant="beam"
                                   size={20}
                                 />
-                              ) : (
+                              ) : row.getValue("avatar_url") ? (
                                 <Image
                                   src={row.getValue("avatar_url")}
-                                  alt={row.getValue("fullname")}
+                                  alt={row.getValue("email")}
+                                  width={100}
+                                  height={100}
+                                  className={
+                                    "w-20 h-20 object-center object-cover aspect-square rounded-full"
+                                  }
+                                />
+                              ) : (
+                                <Image
+                                  src={row.getValue("google_avatar")}
+                                  alt={row.getValue("email")}
                                   width={100}
                                   height={100}
                                   className={
@@ -475,7 +483,9 @@ export function Studio1DataTable<TData, TValue>({
                                   row.getValue("created_at"),
                                 ).getDate() === now.getDate() && (
                                   <p className="bg-health px-1.5 py-0.5 rounded-lg text-white text-xs! inline-flex w-fit">
-                                    {locale === routing.defaultLocale ? "Baru" : "New"}
+                                    {locale === routing.defaultLocale
+                                      ? "Baru"
+                                      : "New"}
                                   </p>
                                 )}
                             </div>
@@ -491,7 +501,9 @@ export function Studio1DataTable<TData, TValue>({
                                   row.getValue("accessed_at"),
                                 ).getDate() === now.getDate() && (
                                   <p className="bg-health px-1.5 py-0.5 rounded-lg text-white text-xs! inline-flex w-fit">
-                                    {locale === routing.defaultLocale ? "Baru" : "New"}
+                                    {locale === routing.defaultLocale
+                                      ? "Baru"
+                                      : "New"}
                                   </p>
                                 )}
                             </div>
@@ -543,7 +555,11 @@ export function Studio1DataTable<TData, TValue>({
                             {row.getValue(
                               `${
                                 type === "users"
-                                  ? "fullname"
+                                  ? row.getValue("fullname")
+                                    ? "fullname"
+                                    : row.getValue("google_fullname")
+                                      ? "google_fullname"
+                                      : "email"
                                   : type === "authors"
                                     ? "name"
                                     : type === "article-category"
@@ -690,7 +706,9 @@ export function Studio1DataTable<TData, TValue>({
                         {type !== "error-logs" ? (
                           <div>
                             <p className="text-xs! text-muted-foreground">
-                              {locale === routing.defaultLocale ? "Dibuat pada" : "Created at"}
+                              {locale === routing.defaultLocale
+                                ? "Dibuat pada"
+                                : "Created at"}
                             </p>
                             <p className="text-sm!">
                               <LocalDateTime
@@ -701,7 +719,9 @@ export function Studio1DataTable<TData, TValue>({
                         ) : (
                           <div>
                             <p className="text-xs! text-muted-foreground">
-                              {locale === routing.defaultLocale ? "Diakses pada" : "Accessed at"}
+                              {locale === routing.defaultLocale
+                                ? "Diakses pada"
+                                : "Accessed at"}
                             </p>
                             <p className="text-sm!">
                               <LocalDateTime
@@ -714,7 +734,9 @@ export function Studio1DataTable<TData, TValue>({
                         {type !== "contact" && type !== "error-logs" && (
                           <div>
                             <p className="text-xs! text-muted-foreground">
-                              {locale === routing.defaultLocale ? "Diperbarui pada" : "Updated at"}
+                              {locale === routing.defaultLocale
+                                ? "Diperbarui pada"
+                                : "Updated at"}
                             </p>
                             <p className="text-sm!">
                               <LocalDateTime
@@ -757,7 +779,11 @@ export function Studio1DataTable<TData, TValue>({
                 })
               ) : (
                 <div className="h-24 text-center col-span-3 bg-white border rounded-2xl flex justify-center items-center">
-                  <p className="text-muted-foreground">{locale === routing.defaultLocale ? "Tidak ada hasil." : "No results."}</p>
+                  <p className="text-muted-foreground">
+                    {locale === routing.defaultLocale
+                      ? "Tidak ada hasil."
+                      : "No results."}
+                  </p>
                 </div>
               )}
             </div>
@@ -814,7 +840,9 @@ export function Studio1DataTable<TData, TValue>({
                         colSpan={safeColumns.length}
                         className="h-24 text-center"
                       >
-                        {locale === routing.defaultLocale ? "Tidak ada hasil." : "No results."}
+                        {locale === routing.defaultLocale
+                          ? "Tidak ada hasil."
+                          : "No results."}
                       </TableCell>
                     </TableRow>
                   )}

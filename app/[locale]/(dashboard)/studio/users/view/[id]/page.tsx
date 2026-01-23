@@ -38,79 +38,88 @@ const UserDetailPage = async ({
       <h2 className="my-20 text-start text-primary font-bold">
         {locale === routing.defaultLocale ? "Data Pengguna" : "Users Data"}
       </h2>
-      <div className="grid lg:grid-cols-3 grid-cols-1 w-full gap-10 mb-[20vh]">
-        <div className="space-y-5 lg:col-span-2 w-full">
-          {c.avatar_url ? (
-            <Image
-              src={c.avatar_url}
-              height={300}
-              width={300}
-              alt={c.fullname}
-              className="aspect-square object-cover w-32 h-32 rounded-full"
-            />
-          ) : c.google_avatar ? (
-            <Image
-              src={c.google_avatar}
-              height={300}
-              width={300}
-              alt={c.fullname}
-              className="aspect-square object-cover w-32 h-32 rounded-full"
-            />
-          ) : (
-            <Avatar
-              name={c.fullname}
-              className="w-32! h-32!"
-              colors={["#3e77ab", "#22b26e", "#f2f26f", "#fff7bd", "#95cfb7"]}
-              variant="beam"
-              size={32}
-            />
-          )}
-          <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
-            <div>
-              <Link href={`mailto:${c.email}`}>
-                <p className="text-muted-foreground">Email</p>
-                <p>{c.email}</p>
-              </Link>
-            </div>
+
+      <div className="space-y-5 lg:col-span-2 w-full">
+        {c.avatar_url ? (
+          <Image
+            src={c.avatar_url}
+            height={300}
+            width={300}
+            alt={c.fullname}
+            className="aspect-square object-cover w-32 h-32 rounded-full"
+          />
+        ) : c.google_avatar ? (
+          <Image
+            src={c.google_avatar}
+            height={300}
+            width={300}
+            alt={c.fullname}
+            className="aspect-square object-cover w-32 h-32 rounded-full"
+          />
+        ) : (
+          <Avatar
+            name={c.email}
+            className="w-32! h-32!"
+            colors={["#3e77ab", "#22b26e", "#f2f26f", "#fff7bd", "#95cfb7"]}
+            variant="beam"
+            size={32}
+          />
+        )}
+        <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
+          <div>
+            <Link href={`mailto:${c.email}`}>
+              <p className="text-muted-foreground">Email</p>
+              <p>{c.email}</p>
+            </Link>
+          </div>
+          {c.phone && (
             <div>
               <Link
                 href={`whatsapp://send?phone=${String(c.phone).replaceAll(
                   "+",
-                  ""
+                  "",
                 )}`}
               >
                 <p className="text-muted-foreground">Phone Number</p>
-                <p>{c.phone}</p>
+                <p>{c.phone ?? "N/A"}</p>
               </Link>
             </div>
+          )}
+        </div>
+        <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
+          <div>
+            <p className="text-muted-foreground">Created at</p>
+            <p>
+              <LocalDateTime date={c.created_at} />
+            </p>
           </div>
-          <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
-            <div>
-              <p className="text-muted-foreground">Created at</p>
-              <p>
-                <LocalDateTime date={c.created_at} />
-              </p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Updated at</p>
-              <p>
-                <LocalDateTime date={c.updated_at} />
-              </p>
-            </div>
+          <div>
+            <p className="text-muted-foreground">Updated at</p>
+            <p>
+              <LocalDateTime date={c.updated_at} />
+            </p>
           </div>
-          <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
+        </div>
+        <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
+          {c.fullname && (
             <div>
               <p className="text-muted-foreground">Fullname</p>
-              <p>{c.fullname}</p>
+              <p>{c.fullname ?? "N/A"}</p>
             </div>
+          )}
+          {c.weight && (
             <div>
               <p className="text-muted-foreground">Weight</p>
-              <p>{c.weight}kg</p>
+              <p>{c.weight ?? "N/A"}kg</p>
             </div>
+          )}
+          {c.height && (
             <div>
               <p className="text-muted-foreground">Height</p>
-              <p>{c.height}cm</p>
+              <p>{c.height ?? "N/A"}cm</p>
             </div>
+          )}
+          {c.gender && (
             <div>
               <p className="text-muted-foreground">Gender</p>
               {c.gender === "male" ? (
@@ -130,29 +139,33 @@ const UserDetailPage = async ({
                 </div>
               )}
             </div>
+          )}
+
+          {c.domicile && (
             <div>
               <p className="text-muted-foreground">Domicile/ Location</p>
               <div>
-                <p>{c.domicile.address}</p>
-                <p>{c.domicile.district}</p>
-                <p>{c.domicile.city}</p>
-                <p>{c.domicile.postal_code}</p>
+                {c.domicile.address && <p>{c.domicile.address ?? "N/A"}</p>}
+                {c.domicile.district && <p>{c.domicile.district ?? "N/A"}</p>}
+                {c.domicile.city && <p>{c.domicile.city ?? "N/A"}</p>}
+                {c.domicile.postal_code && (
+                  <p>{c.domicile.postal_code ?? "N/A"}</p>
+                )}
               </div>
             </div>
+          )}
+
+          {c.birthdate && (
             <div>
               <p className="text-muted-foreground">Birthdate</p>
               <p>
                 <LocalDateTime date={c.birthdate} />
               </p>
             </div>
-          </div>
-        </div>
-
-        <div>
-          <h6 className="text-primary font-semibold">Actions</h6>
-          <div className="w-full h-32 border bg-white rounded-2xl mt-5" />
+          )}
         </div>
       </div>
+
       {/* <div className="text-wrap break-anywhere">
         <pre>{JSON.stringify(res.data, null, 2)}</pre>
       </div> */}

@@ -29,6 +29,10 @@ const ChatActivityDash = async ({
   const { data, total, meta, links } =
     (await getChatHistoryByUserID(userID!, page, per_page)) || [];
 
+  const { data: session } = await supabase.auth.getSession();
+
+  const userData = await getUserInfo(session?.session?.access_token!);
+
   const history: any[] = data.data || [];
 
   return (
@@ -47,6 +51,7 @@ const ChatActivityDash = async ({
           links={links}
           meta={meta}
           locale={locale}
+          account={userData!}
           perPage={per_page}
         />
       </ContainerWrap>

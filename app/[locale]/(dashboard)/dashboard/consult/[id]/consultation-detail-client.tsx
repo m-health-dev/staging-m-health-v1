@@ -55,6 +55,27 @@ const ConsultationDetailClient = ({
     <div className="mb-20">
       <ContainerWrap>
         <div className="my-10">
+          <div className="mb-4">
+            {c.payment_status === "success" ? (
+              <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
+                {locale === routing.defaultLocale
+                  ? "Pembayaran Berhasil"
+                  : "Payment Successful"}
+              </p>
+            ) : c.payment_status === "waiting" ? (
+              <p className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
+                {locale === routing.defaultLocale
+                  ? "Menunggu Pembayaran"
+                  : "Waiting for Payment"}
+              </p>
+            ) : (
+              <p className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
+                {locale === routing.defaultLocale
+                  ? "Pembayaran Gagal"
+                  : "Payment Failed"}
+              </p>
+            )}
+          </div>
           <h3 className="text-primary font-bold">
             {locale === routing.defaultLocale
               ? "Detail Konsultasi"
@@ -110,7 +131,16 @@ const ConsultationDetailClient = ({
               </div>
             </div>
           )}
-
+          <div className="border-l-4 border-l-health px-4 bg-green-50 py-3">
+            <p className="text-muted-foreground mb-1">
+              {locale === routing.defaultLocale
+                ? "Tanggal dan Waktu Terjadwal"
+                : "Scheduled DateTime"}
+            </p>
+            <p className="text-health font-semibold">
+              <LocalDateTime date={c.scheduled_datetime} />
+            </p>
+          </div>
           <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
             <div>
               <Link href={`mailto:${c.email}`}>
@@ -134,6 +164,7 @@ const ConsultationDetailClient = ({
               </Link>
             </div>
           </div>
+
           <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
             <div>
               <p className="text-muted-foreground mb-1">
@@ -165,7 +196,9 @@ const ConsultationDetailClient = ({
               ) : c.gender === "female" ? (
                 <div className="inline-flex items-center gap-2 bg-pink-100 px-3 py-1 rounded-full border border-pink-400">
                   <Venus className="size-4 text-pink-500" />
-                  <p className="text-pink-500 text-sm!">{translations.female}</p>
+                  <p className="text-pink-500 text-sm!">
+                    {translations.female}
+                  </p>
                 </div>
               ) : (
                 <div className="inline-flex items-center gap-2 bg-health/10 px-3 py-1 rounded-full border border-health">
@@ -188,36 +221,7 @@ const ConsultationDetailClient = ({
               </div>
             </div>
           </div>
-          <div className="border-l-4 border-l-gray-400 px-4 bg-gray-50 py-3">
-            <p className="text-muted-foreground mb-1">
-              {locale === routing.defaultLocale
-                ? "Status Pembayaran"
-                : "Payment Status"}
-            </p>
-            {c.payment_status === "success" ? (
-              <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full">
-                {c.payment_status}
-              </p>
-            ) : c.payment_status === "waiting" ? (
-              <p className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full">
-                {c.payment_status}
-              </p>
-            ) : (
-              <p className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full">
-                {c.payment_status}
-              </p>
-            )}
-          </div>
-          <div className="border-l-4 border-l-health px-4 bg-green-50 py-3">
-            <p className="text-muted-foreground mb-1">
-              {locale === routing.defaultLocale
-                ? "Tanggal dan Waktu Terjadwal"
-                : "Scheduled DateTime"}
-            </p>
-            <p className="text-health bg-white py-2 px-4 border rounded-full inline-flex font-semibold">
-              <LocalDateTime date={c.scheduled_datetime} />
-            </p>
-          </div>
+
           <div>
             <p className="text-muted-foreground mb-1">
               {locale === routing.defaultLocale
@@ -238,7 +242,7 @@ const ConsultationDetailClient = ({
                 ? "Kondisi Kesehatan"
                 : "Health Condition"}
             </p>
-            <div className=" bg-white py-2 px-3 min-h-12 flex items-center text-gray-800 border rounded-2xl text-wrap">
+            <div className=" bg-white py-4 px-4 min-h-12 flex items-center text-gray-800 rounded-2xl text-wrap">
               <p>{c.complaint}</p>
             </div>
           </div>
@@ -249,16 +253,16 @@ const ConsultationDetailClient = ({
                 : "Referenced Image"}
             </p>
             {c.reference_image && c.reference_image.length > 0 ? (
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
                 {c.reference_image.map((img: string, index: number) => (
                   <ImageZoom key={index}>
                     <Image
                       key={index}
                       src={img}
                       alt={`Reference Image ${index + 1}`}
-                      width={300}
-                      height={300}
-                      className="w-full h-48 object-cover rounded-2xl border"
+                      width={400}
+                      height={400}
+                      className="w-full h-auto object-cover aspect-video rounded-2xl border"
                     />
                   </ImageZoom>
                 ))}

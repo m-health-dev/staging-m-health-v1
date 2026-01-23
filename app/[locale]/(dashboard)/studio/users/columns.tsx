@@ -25,7 +25,14 @@ import { deleteUsers } from "@/lib/users/delete-users";
 import { UsersType } from "@/types/account.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Avatar from "boring-avatars";
-import { Check, Copy, MoreHorizontal, PenSquare, Trash2 } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Eye,
+  MoreHorizontal,
+  PenSquare,
+  Trash2,
+} from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -44,6 +51,26 @@ export const columns: ColumnDef<UsersType>[] = [
     },
   },
   {
+    accessorKey: "google_avatar",
+    header: ({ column }) => {
+      return <span className="hidden"></span>;
+    },
+    cell: ({ row }) => {
+      const google_avatar: string = row.getValue("google_avatar");
+      return <span className="hidden"></span>;
+    },
+  },
+  {
+    accessorKey: "google_fullname",
+    header: ({ column }) => {
+      return <span className="hidden"></span>;
+    },
+    cell: ({ row }) => {
+      const google_fullname: string = row.getValue("google_fullname");
+      return <span className="hidden"></span>;
+    },
+  },
+  {
     accessorKey: "avatar_url",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Avatar" />
@@ -52,11 +79,12 @@ export const columns: ColumnDef<UsersType>[] = [
     cell: ({ row }) => {
       const avatar_url: string = row.getValue("avatar_url");
       const fullname: string = row.getValue("fullname");
+      const google_avatar: string = row.getValue("google_avatar");
 
       const [error, setError] = useState(false);
 
       // Jika tidak ada avatar_url atau sudah error → tampilkan avatar
-      if (!avatar_url || error) {
+      if ((!avatar_url && !google_avatar) || error) {
         return (
           <Avatar
             name={fullname || "User Avatar"}
@@ -70,7 +98,7 @@ export const columns: ColumnDef<UsersType>[] = [
 
       return (
         <Image
-          src={avatar_url}
+          src={avatar_url || google_avatar}
           alt={fullname || "User Avatar"}
           width={40}
           height={40}
@@ -208,6 +236,17 @@ export const columns: ColumnDef<UsersType>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <p
+                  className="text-sm! text-muted-foreground"
+                  onClick={() =>
+                    router.push(`/${locale}/studio/users/view/${id}`)
+                  }
+                >
+                  <Eye />
+                  View Data
+                </p>
+              </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <p
                   className="text-sm! text-muted-foreground"

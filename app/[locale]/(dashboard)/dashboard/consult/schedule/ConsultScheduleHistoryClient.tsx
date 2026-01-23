@@ -28,7 +28,7 @@ const ConsultScheduleHistoryClient = ({
   const [loading, setLoading] = React.useState(false);
   return (
     <div className="mb-[20vh]">
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+      <div className="grid lg:grid-cols-1 grid-cols-1 gap-4">
         {loading
           ? Array.from({ length: perPage }).map(() => {
               const id = nanoid();
@@ -40,18 +40,32 @@ const ConsultScheduleHistoryClient = ({
               const id = nanoid();
               return (
                 <div key={id} className="bg-white rounded-2xl border p-4">
-                  <Link
-                    href={`/${locale}/dashboard/consult/${cons.id}`}
-                    target="_blank"
-                  >
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="flex items-center gap-2">
-                        <p className="bg-gray-50 text-gray-700 border border-gray-500 px-3 py-1 rounded-full capitalize">
-                          {cons.payment_status}
-                        </p>
-                      </div>
-                    </div>
+                  <Link href={`/${locale}/dashboard/consult/${cons.id}`}>
+                    {cons.payment_status === "success" ? (
+                      <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
+                        {locale === routing.defaultLocale
+                          ? "Pembayaran Berhasil"
+                          : "Payment Successful"}
+                      </p>
+                    ) : cons.payment_status === "waiting" ? (
+                      <p className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
+                        {locale === routing.defaultLocale
+                          ? "Menunggu Pembayaran"
+                          : "Waiting for Payment"}
+                      </p>
+                    ) : (
+                      <p className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
+                        {locale === routing.defaultLocale
+                          ? "Pembayaran Gagal"
+                          : "Payment Failed"}
+                      </p>
+                    )}
 
+                    <p className="text-muted-foreground mb-0 text-sm! mt-5">
+                      {locale === routing.defaultLocale
+                        ? "Tanggal dan Waktu Terjadwal"
+                        : "Scheduled Date and Time"}
+                    </p>
                     <h5 className="text-primary font-semibold mb-4">
                       <LocalDateTime date={cons.scheduled_datetime} />
                     </h5>
