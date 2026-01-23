@@ -135,6 +135,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   // Scroll to start of new message - hanya saat message baru, bukan saat content update
   useEffect(() => {
     if (messages.length === 0) return;
+    if (typeof window === "undefined") return;
 
     const timer = setTimeout(() => {
       if (lastMessageRef.current) {
@@ -252,7 +253,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
       <Dialog open={dialogSignIn}>
         <DialogContent
-          className="bg-white rounded-2xl px-5 lg:min-w-4xl lg:max-w-4xl max-w-sm"
+          className="bg-white rounded-2xl px-5 lg:min-w-4xl lg:max-w-4xl max-w-sm overflow-y-auto max-h-[90vh]"
           showCloseButton={false}
         >
           <DialogTitle className="hidden" />

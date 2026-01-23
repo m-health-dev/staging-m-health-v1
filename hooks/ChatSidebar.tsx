@@ -6,6 +6,7 @@ export function useResponsiveSidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
+    // if (typeof window === "undefined") return;
     // Fungsi untuk cek ukuran layar
     const checkScreenSize = () => {
       const isDesktop = window.matchMedia("(min-width: 1300px)").matches; // >= 1024px = laptop

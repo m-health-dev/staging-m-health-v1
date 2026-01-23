@@ -23,6 +23,8 @@ import SnowFall from "@/components/snow-fall";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DialogSwitchLang from "@/components/utility/lang/DialogSwitchLang";
 import PageTransition from "@/components/utility/PageTransition";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { headers } from "next/headers";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -41,7 +43,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "M HEALTH - v1.0.0@beta-1",
+  title: "M HEALTH - v1.0.0@beta-2",
   description:
     "M HEALTH adalah platform kesehatan digital yang dirancang untuk membantu Anda mendapatkan informasi medis yang cepat, akurat, dan terpercaya. Kami memahami bahwa mencari solusi kesehatan sering kali terasa membingungkan. Oleh karena itu, kami hadir sebagai 'digital front door' — pintu gerbang kesehatan yang memudahkan siapa pun untuk bertanya, berkonsultasi, serta merencanakan perjalanan medis dan wellness secara sederhana, transparan, dan terjangkau.",
 };
@@ -53,6 +55,7 @@ type Props = {
 
 export default async function RootLayout({ children, params }: Props) {
   const { locale } = await params;
+  const nonce = (await headers()).get("x-nonce") || undefined;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
@@ -91,11 +94,10 @@ export default async function RootLayout({ children, params }: Props) {
                 },
               }}
             />
+            <GoogleAnalytics gaId="G-P8LGDRYY19" nonce={nonce} />
             <Analytics />
             <SpeedInsights />
             <DialogSwitchLang />
-
-            {/* <PageTransition>{children}</PageTransition> */}
             {children}
             <OneTapComponent />
           </NextIntlClientProvider>

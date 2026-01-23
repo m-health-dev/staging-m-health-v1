@@ -17,7 +17,7 @@ import {
   resetPasswordSchema,
 } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye, EyeOff } from "lucide-react";
+import { EyeClosed, Eye, EyeOff, Undo2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -33,6 +33,9 @@ import { resetPasswordAction } from "../actions/auth.actions";
 import { locale } from "dayjs";
 import Link from "next/link";
 import { routing } from "@/i18n/routing";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 const ResetPassClient = ({ locale }: { locale: string }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -45,6 +48,9 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
   const params = useSearchParams();
   const emailParams = params.get("email");
 
+  const [captchaResetToken, setCaptchaResetToken] = React.useState<string>("");
+  const [captchaReady, setCaptchaReady] = React.useState(false);
+
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -56,14 +62,22 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
   async function onSubmit(data: z.infer<typeof resetPasswordSchema>) {
     setLoading(true);
 
-    const response = await resetPasswordAction(data);
+    const response = await resetPasswordAction(data, captchaResetToken);
 
     if (response?.warning) {
       setLoading(false);
-      setWarning(locale === routing.defaultLocale ? response.warning.id : response.warning.en);
+      setWarning(
+        locale === routing.defaultLocale
+          ? response.warning.id
+          : response.warning.en,
+      );
     } else if (response?.error) {
       setLoading(false);
-      setError(locale === routing.defaultLocale ? response.error.id : response.error.en);
+      setError(
+        locale === routing.defaultLocale
+          ? response.error.id
+          : response.error.en,
+      );
     } else if (response?.success) {
       setLoading(false);
       setSuccess(`${response.success}`);
@@ -75,6 +89,14 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-white">
       <ContainerWrap size="xl">
+        <div className="lg:top-5 lg:left-5 lg:mb-0 mb-5 lg:fixed w-fit">
+          <Button
+            className="w-full rounded-full flex items-center gap-2 mb-3 bg-white text-gray-500 border hover:bg-gray-50"
+            onClick={() => router.back()}
+          >
+            <Undo2 /> {locale === routing.defaultLocale ? "Kembali" : "Back"}
+          </Button>
+        </div>
         <div className="flex min-h-screen items-center justify-center">
           <div className="md:max-w-sm w-full col-span-1">
             <Link href={`/${locale}`}>
@@ -101,7 +123,9 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
             {error && (
               <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
+                  {locale === routing.defaultLocale
+                    ? "Permintaan Gagal"
+                    : "Request Failed"}
                 </p>
                 <p className="text-sm!">{error}</p>
               </div>
@@ -109,7 +133,9 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
             {warning && (
               <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
+                  {locale === routing.defaultLocale
+                    ? "Permintaan Gagal"
+                    : "Request Failed"}
                 </p>
                 <p className="text-sm!">{warning}</p>
               </div>
@@ -135,7 +161,9 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === routing.defaultLocale ? "Kata Sandi Baru" : "New Password"}
+                        {locale === routing.defaultLocale
+                          ? "Kata Sandi Baru"
+                          : "New Password"}
                       </FormLabel>
                       <FormControl>
                         <div className="relative w-full h-12">
@@ -202,15 +230,42 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
                     </FormItem>
                   )}
                 />
+                <div className="h-16 mt-5">
+                  <Skeleton
+                    className={cn(
+                      "w-full h-16 rounded-md",
+                      !captchaReady ? "block opacity-100" : "hidden opacity-0",
+                    )}
+                  />
 
-                <Button type="submit" className="w-full h-12 rounded-full">
+                  <Turnstile
+                    siteKey="0x4AAAAAACOWvPh9bptcSxI4"
+                    onSuccess={(token: any) => {
+                      setCaptchaResetToken(token);
+                    }}
+                    options={{
+                      theme: "light",
+                      size: "flexible",
+                      language: locale === routing.defaultLocale ? "id" : "en",
+                    }}
+                    onWidgetLoad={() => {
+                      setCaptchaReady(true);
+                    }}
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={!captchaResetToken || loading}
+                  className="w-full h-12 rounded-full"
+                >
                   {loading ? (
                     <Spinner />
                   ) : (
                     <p>
                       {locale === routing.defaultLocale
                         ? "Atur Ulang Kata Sandi"
-                        : "Reset Password"}
+                        : "Change Password"}
                     </p>
                   )}
                 </Button>

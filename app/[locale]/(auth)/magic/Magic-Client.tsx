@@ -29,6 +29,10 @@ import z from "zod";
 import { locale } from "dayjs";
 import { routing } from "@/i18n/routing";
 import Link from "next/link";
+import { Turnstile } from "@marsidev/react-turnstile";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { Undo2 } from "lucide-react";
 
 export const RequestMagicLinkSchema = z.object({
   email: z.email(),
@@ -40,6 +44,9 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
   const [warning, setWarning] = React.useState("");
   const [success, setSuccess] = React.useState("");
   const [requested, setRequested] = React.useState(false);
+
+  const [captchaMagicToken, setCaptchaMagicToken] = React.useState<string>("");
+  const [captchaReady, setCaptchaReady] = React.useState(false);
 
   const router = useRouter();
   const params = useSearchParams();
@@ -64,7 +71,7 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
     resetMessages();
     setLoading(true);
 
-    const response = await handleSendMagicLinkAction(data);
+    const response = await handleSendMagicLinkAction(data, captchaMagicToken);
 
     handleResponse(response);
     setLoading(false);
@@ -102,6 +109,14 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-white w-full">
       <ContainerWrap size="xl">
+        <div className="lg:top-5 lg:left-5 lg:mb-0 mb-5 lg:fixed w-fit">
+          <Button
+            className="w-full rounded-full flex items-center gap-2 mb-3 bg-white text-gray-500 border hover:bg-gray-50"
+            onClick={() => router.back()}
+          >
+            <Undo2 /> {locale === routing.defaultLocale ? "Kembali" : "Back"}
+          </Button>
+        </div>
         <div className="flex items-center justify-center w-full">
           <div className="max-w-sm w-full">
             <Link href={`/${locale}`}>
@@ -126,14 +141,22 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
             {error && (
               <AlertBox
                 type="error"
-                title={locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
+                title={
+                  locale === routing.defaultLocale
+                    ? "Permintaan Gagal"
+                    : "Request Failed"
+                }
                 message={error}
               />
             )}
             {warning && (
               <AlertBox
                 type="warning"
-                title={locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
+                title={
+                  locale === routing.defaultLocale
+                    ? "Permintaan Gagal"
+                    : "Request Failed"
+                }
                 message={warning}
               />
             )}
@@ -141,7 +164,9 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
               <AlertBox
                 type="success"
                 title={
-                  locale === routing.defaultLocale ? "Permintaan Berhasil" : "Request Successful"
+                  locale === routing.defaultLocale
+                    ? "Permintaan Berhasil"
+                    : "Request Successful"
                 }
                 message={success}
               />
@@ -168,14 +193,50 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
                   )}
                 />
 
-                <Button type="submit" className="w-full h-12 rounded-full">
-                  {loading ? <Spinner /> : (locale === routing.defaultLocale ? "Minta Tautan Ajaib" : "Request Magic Link")}
+                <div className="h-16 mt-5">
+                  <Skeleton
+                    className={cn(
+                      "w-full h-16 rounded-md",
+                      !captchaReady ? "block opacity-100" : "hidden opacity-0",
+                    )}
+                  />
+
+                  <Turnstile
+                    siteKey="0x4AAAAAACOWvPh9bptcSxI4"
+                    onSuccess={(token: any) => {
+                      setCaptchaMagicToken(token);
+                    }}
+                    options={{
+                      theme: "light",
+                      size: "flexible",
+                      language: locale === routing.defaultLocale ? "id" : "en",
+                    }}
+                    onWidgetLoad={() => {
+                      setCaptchaReady(true);
+                    }}
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={!captchaMagicToken || loading}
+                  className="w-full h-12 rounded-full"
+                >
+                  {loading ? (
+                    <Spinner />
+                  ) : locale === routing.defaultLocale ? (
+                    "Minta Tautan Ajaib"
+                  ) : (
+                    "Request Magic Link"
+                  )}
                 </Button>
               </form>
             </Form>
 
             <p className="text-muted-foreground text-sm! mt-5 text-center">
-              {locale === routing.defaultLocale ? "Belum punya akun?" : "Don't have an account?"}{" "}
+              {locale === routing.defaultLocale
+                ? "Belum punya akun?"
+                : "Don't have an account?"}{" "}
               <span
                 onClick={() => router.push("/sign-up")}
                 className="text-health cursor-pointer underline"

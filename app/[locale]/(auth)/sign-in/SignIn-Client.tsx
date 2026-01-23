@@ -13,9 +13,9 @@ import { Input } from "@/components/ui/input";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { AuthSignInSchema, ForgotPassSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye, ChevronsRight } from "lucide-react";
+import { EyeClosed, Eye, ChevronsRight, Undo2 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z, { set } from "zod";
@@ -36,6 +36,7 @@ import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Turnstile } from "@marsidev/react-turnstile";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const SignInClient = ({
   component = false,
@@ -62,6 +63,7 @@ const SignInClient = ({
   const recordResetData = params.get("record");
 
   const [captchaInToken, setCaptchaInToken] = React.useState<string>("");
+  const [captchaReady, setCaptchaReady] = React.useState(false);
 
   const redirectRecord = path.startsWith(`/${locale}/c`)
     ? path
@@ -70,14 +72,23 @@ const SignInClient = ({
   useEffect(() => {
     const newRequestCount = 3 - Number(recordResetData);
     if (resetData === "success") {
-      toast.success("Berhasil Memulihkan Akun", {
-        description: `Kata sandi telah diperbarui, selalu ingat kata sandi yang baru ya! ${
-          newRequestCount === 0
-            ? `Karena, sisa kuota untuk memulihkan akunmu telah habis.`
-            : `Karena, sisa kuota untuk memulihkan akunmu hanya tersisa ${newRequestCount} kali.`
-        } `,
-        duration: 30000,
-      });
+      toast.success(
+        locale === routing.defaultLocale
+          ? "Berhasil Memulihkan Akun"
+          : "Account Recovery Successful",
+        {
+          description: `${locale === routing.defaultLocale ? "Kata sandi telah diperbarui, selalu ingat kata sandi yang baru ya!" : "Your password has been updated, always remember your new password!"} ${
+            newRequestCount === 0
+              ? locale === routing.defaultLocale
+                ? "Ini adalah kesempatan terakhir untuk memulihkan akunmu. Jika kamu lupa kata sandi lagi, kamu harus menghubungi dukungan pelanggan kami."
+                : "This is your last chance to recover your account. If you forget your password again, you will need to contact our customer support."
+              : locale === routing.defaultLocale
+                ? `Kamu memiliki ${newRequestCount} kesempatan lagi untuk memulihkan akunmu.`
+                : `You have ${newRequestCount} more attempts to recover your account.`
+          } `,
+          duration: 30000,
+        },
+      );
     }
   }, [recordResetData]);
 
@@ -140,7 +151,7 @@ const SignInClient = ({
   }
 
   return component ? (
-    <div className={cn("flex flex-col justify-center bg-white ")}>
+    <div className={cn("flex flex-col justify-center bg-white")}>
       <div
         className={cn(
           "lg:grid lg:grid-cols-2 flex flex-col gap-8 items-start justify-center lg:p-3 p-0",
@@ -176,6 +187,7 @@ const SignInClient = ({
                 : "You must be logged in to continue your conversation."}
             </p>
           )}
+
           {error && (
             <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2 mt-2">
               <p className="font-bold mb-1">
@@ -273,9 +285,32 @@ const SignInClient = ({
                   </p>
                 </button>
               </div>
+              <div className="h-16 mt-5">
+                <Skeleton
+                  className={cn(
+                    "w-full h-16 rounded-md",
+                    !captchaReady ? "block opacity-100" : "hidden opacity-0",
+                  )}
+                />
+
+                <Turnstile
+                  siteKey="0x4AAAAAACOWvPh9bptcSxI4"
+                  onSuccess={(token: any) => {
+                    setCaptchaInToken(token);
+                  }}
+                  options={{
+                    theme: "light",
+                    size: "flexible",
+                    language: locale === routing.defaultLocale ? "id" : "en",
+                  }}
+                  onWidgetLoad={() => {
+                    setCaptchaReady(true);
+                  }}
+                />
+              </div>
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={!captchaInToken || loading}
                 className="w-full h-12 rounded-full"
               >
                 {loading ? (
@@ -301,7 +336,14 @@ const SignInClient = ({
             className="w-full h-12 rounded-full flex items-center gap-2 mb-3"
             onClick={handleGoogleSignIn}
           >
-            <FontAwesomeIcon icon={faGoogle} />{" "}
+            <Image
+              src={
+                "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/google.svg"
+              }
+              width={50}
+              height={50}
+              alt="Google Logo"
+            />
             <p>
               {locale === routing.defaultLocale
                 ? "Lanjutkan dengan Google"
@@ -341,6 +383,14 @@ const SignInClient = ({
       className={cn("min-h-screen flex flex-col justify-center bg-white py-10")}
     >
       <ContainerWrap size="xxl">
+        <div className="lg:top-5 lg:left-5 lg:mb-0 mb-5 lg:fixed w-fit">
+          <Button
+            className="w-full rounded-full flex items-center gap-2 mb-3 bg-white text-gray-500 border hover:bg-gray-50"
+            onClick={() => router.back()}
+          >
+            <Undo2 /> {locale === routing.defaultLocale ? "Kembali" : "Back"}
+          </Button>
+        </div>
         <div className={cn("flex items-center justify-center")}>
           <div className={cn("w-full max-w-sm")}>
             <Link href={`/${locale}`}>
@@ -473,7 +523,16 @@ const SignInClient = ({
                       </p>
                     </button>
                   </div>
-                  <div>
+                  <div className="h-16">
+                    <Skeleton
+                      className={cn(
+                        "w-full h-16 rounded-md",
+                        !captchaReady
+                          ? "block opacity-100"
+                          : "hidden opacity-0",
+                      )}
+                    />
+
                     <Turnstile
                       siteKey="0x4AAAAAACOWvPh9bptcSxI4"
                       onSuccess={(token: any) => {
@@ -481,12 +540,18 @@ const SignInClient = ({
                       }}
                       options={{
                         theme: "light",
+                        size: "flexible",
+                        language:
+                          locale === routing.defaultLocale ? "id" : "en",
+                      }}
+                      onWidgetLoad={() => {
+                        setCaptchaReady(true);
                       }}
                     />
                   </div>
                   <Button
                     type="submit"
-                    disabled={loading}
+                    disabled={!captchaInToken || loading}
                     className="w-full h-12 rounded-full"
                   >
                     {loading ? (
@@ -507,12 +572,18 @@ const SignInClient = ({
                 <div className="border-b border-gray-300 w-full"></div>
               </div>
               <Button
-                variant="outline"
                 type="button"
-                className="w-full h-12 rounded-full flex items-center gap-2 mb-3"
+                className="w-full h-12 rounded-full flex items-center gap-2 mb-3 bg-white text-gray-800 border hover:bg-gray-50"
                 onClick={handleGoogleSignIn}
               >
-                <FontAwesomeIcon icon={faGoogle} />{" "}
+                <Image
+                  src={
+                    "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/google.svg"
+                  }
+                  width={20}
+                  height={20}
+                  alt="Google Logo"
+                />
                 <p>
                   {locale === routing.defaultLocale
                     ? "Lanjutkan dengan Google"

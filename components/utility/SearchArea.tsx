@@ -24,6 +24,8 @@ const SearchArea = ({ target }: { target: string }) => {
   const [lastScrollY, setLastScrollY] = React.useState(0);
 
   React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const windowHeight = window.innerHeight;
@@ -112,7 +114,9 @@ const SearchArea = ({ target }: { target: string }) => {
             className="bg-white lg:px-4 lg:py-2 lg:w-fit lg:h-fit w-10 h-10 rounded-full inline-flex gap-3 items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-all duration-300 text-primary border"
           >
             <Search className="size-5" />
-            <p className="lg:block hidden">{locale === routing.defaultLocale ? "Cari" : "Search"}</p>
+            <p className="lg:block hidden">
+              {locale === routing.defaultLocale ? "Cari" : "Search"}
+            </p>
           </button>
           <Link href={`/${locale}`}>
             <button className="bg-white lg:px-4 lg:py-2 lg:w-fit lg:h-fit w-10 h-10 rounded-full inline-flex gap-3 items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-all duration-300 text-primary border">
@@ -139,7 +143,9 @@ const SearchArea = ({ target }: { target: string }) => {
                 value={searchQuery}
                 onChange={handleInputChange}
                 placeholder={
-                  locale === routing.defaultLocale ? "Ketik disini..." : "Type here..."
+                  locale === routing.defaultLocale
+                    ? "Ketik disini..."
+                    : "Type here..."
                 }
                 className="h-14 rounded-full bg-white px-5 placeholder:text-primary/50 lg:text-[18px] text-base w-full focus-visible:border-muted-foreground/20 focus-visible:ring-0! outline-0!"
               />

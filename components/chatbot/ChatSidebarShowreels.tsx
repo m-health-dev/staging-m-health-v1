@@ -58,7 +58,10 @@ const ChatSidebarShowreels = ({
           }}
           className="flex w-full items-center gap-2 text-primary cursor-pointer"
         >
-          <Plus /> <p className="font-bold">{locale === routing.defaultLocale ? "Obrolan Baru" : "New Chat"}</p>
+          <Plus />{" "}
+          <p className="font-bold">
+            {locale === routing.defaultLocale ? "Obrolan Baru" : "New Chat"}
+          </p>
         </button>
       </div>
 
@@ -67,7 +70,11 @@ const ChatSidebarShowreels = ({
       </pre> */}
 
       <div className="bg-white p-4 rounded-2xl border">
-        <h4 className="font-extrabold text-primary">{locale === routing.defaultLocale ? "Riwayat Obrolan" : "Chat History"}</h4>
+        <h4 className="font-extrabold text-primary">
+          {locale === routing.defaultLocale
+            ? "Riwayat Obrolan"
+            : "Chat History"}
+        </h4>
         <div className="space-y-5 pt-3">
           <div className="space-y-2">
             {isLoading ? (
@@ -106,11 +113,14 @@ const ChatSidebarShowreels = ({
                     onClick={() => {
                       localStorage.removeItem("mhealth_chat_sessions");
                       if (setOpenSheet) setOpenSheet(false);
-                      window.location.reload();
+                      router.refresh();
                     }}
                     className="text-xs text-red-500 hover:text-red-700 inline-flex gap-1 items-center mt-2 transition cursor-pointer"
                   >
-                    <Trash2 className="size-3" /> {locale === routing.defaultLocale ? "Hapus riwayat percakapan" : "Clear chat history"}
+                    <Trash2 className="size-3" />{" "}
+                    {locale === routing.defaultLocale
+                      ? "Hapus riwayat percakapan"
+                      : "Clear chat history"}
                   </div>
                 )}
               </>
@@ -120,7 +130,9 @@ const ChatSidebarShowreels = ({
       </div>
 
       <div className="bg-white p-4 rounded-2xl border">
-        <h4 className="font-extrabold text-primary mb-3">{locale === routing.defaultLocale ? "Program" : "Programs"}</h4>
+        <h4 className="font-extrabold text-primary mb-3">
+          {locale === routing.defaultLocale ? "Program" : "Programs"}
+        </h4>
         <div className="space-y-5">
           {packages.map((img, i) => (
             <Link
@@ -168,7 +180,9 @@ const ChatSidebarShowreels = ({
       </div>
 
       <div className="bg-white p-4 rounded-2xl border">
-        <h4 className="font-extrabold text-primary mb-3">{locale === routing.defaultLocale ? "Kebugaran" : "Wellness"}</h4>
+        <h4 className="font-extrabold text-primary mb-3">
+          {locale === routing.defaultLocale ? "Kebugaran" : "Wellness"}
+        </h4>
         <div className="space-y-5">
           {wellness.map((img, i) => (
             <Link
@@ -216,7 +230,9 @@ const ChatSidebarShowreels = ({
       </div>
 
       <div className="bg-white p-4 rounded-2xl border">
-        <h4 className="font-extrabold text-primary mb-3">{locale === routing.defaultLocale ? "Medis" : "Medical"}</h4>
+        <h4 className="font-extrabold text-primary mb-3">
+          {locale === routing.defaultLocale ? "Medis" : "Medical"}
+        </h4>
         <div className="space-y-5">
           {medical.map((img, i) => (
             <Link

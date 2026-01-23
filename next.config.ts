@@ -2,8 +2,57 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { withBotId } from "botid/next/config";
 
+const isDev = process.env.NODE_ENV === "development";
+
+const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' ${isDev ? " 'unsafe-eval'" : ""}
+      https://challenges.cloudflare.com
+      https://www.googletagmanager.com
+      https://www.google-analytics.com
+      https://va.vercel-scripts.com
+      https://accounts.google.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    img-src 'self' blob: data:
+      https://images.unsplash.com
+      https://unsplash.com
+      https://placehold.co
+      https://lh3.googleusercontent.com
+      https://avatars.githubusercontent.com
+      https://*.supabase.co;
+    font-src 'self' https://fonts.gstatic.com data:;
+    connect-src 'self'
+      https://*.m-health.id
+      https://*.supabase.co
+      wss://*.supabase.co
+      https://www.google-analytics.com
+      https://www.googletagmanager.com
+      https://va.vercel-scripts.com
+      https://accounts.google.com
+      https://challenges.cloudflare.com;
+    frame-src https://challenges.cloudflare.com https://www.google.com;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'self';
+    upgrade-insecure-requests;
+  `;
+
 const nextConfig: NextConfig = {
   output: "standalone",
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: cspHeader.replace(/\n/g, ""),
+          },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       {

@@ -48,6 +48,8 @@ const PaymentActionCard = ({
     usePaymentFlow();
 
   const handlePay = async () => {
+    if (typeof window === "undefined") return;
+
     if (!account?.id) {
       setError("Anda harus masuk untuk melakukan pembayaran.");
       return;
@@ -100,7 +102,9 @@ const PaymentActionCard = ({
   return (
     <>
       <h4 className="font-bold text-primary text-2xl mb-5">
-        {locale === routing.defaultLocale ? "Ringkasan Pesanan" : "Order Summary"}
+        {locale === routing.defaultLocale
+          ? "Ringkasan Pesanan"
+          : "Order Summary"}
       </h4>
       <div className="space-y-5">
         <div className="flex w-full justify-between items-end">
@@ -112,7 +116,9 @@ const PaymentActionCard = ({
           <>
             <div className="flex w-full justify-between items-end">
               <p className="text-muted-foreground text-xs!">
-                {locale === routing.defaultLocale ? "Potongan Harga" : "Discount"}
+                {locale === routing.defaultLocale
+                  ? "Potongan Harga"
+                  : "Discount"}
                 <span className="text-xs bg-red-50 text-red-500 px-2 py-1 border border-red-500 rounded-full ml-2">
                   {calculateDiscount(realPrice, discountPrice)}
                 </span>

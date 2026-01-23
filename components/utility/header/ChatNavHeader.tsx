@@ -81,7 +81,7 @@ const ChatNavHeader = ({
   const [shareLink, setShareLink] = useState(shareSlug);
 
   const [initialStatus, setInitialStatus] = useState(status);
-  
+
   // Extract session ID from current path (for when URL changes via replaceState)
   const [currentSessionId, setCurrentSessionId] = useState(sessionId);
 
@@ -94,9 +94,13 @@ const ChatNavHeader = ({
   // Listen for URL changes from window.history.replaceState
   useEffect(() => {
     const handleUrlChange = () => {
-      const newPath = window.location.pathname;
+      let newPath = "";
+
+      if (typeof window !== "undefined") {
+        newPath = window.location.pathname;
+      }
       setPath(newPath);
-      
+
       // Extract session ID from path if it's a chat page
       const chatMatch = newPath.match(/\/c\/([^/]+)/);
       if (chatMatch && chatMatch[1]) {
@@ -126,14 +130,14 @@ const ChatNavHeader = ({
   useEffect(() => {
     setPath(pathname);
   }, [pathname]);
-  
+
   // Sync sessionId from props when it changes (e.g., on full page navigation)
   useEffect(() => {
     if (sessionId) {
       setCurrentSessionId(sessionId);
     }
   }, [sessionId]);
-  
+
   // Sync status from props
   useEffect(() => {
     if (status) {

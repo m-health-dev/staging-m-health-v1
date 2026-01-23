@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { AuthSignUpSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye } from "lucide-react";
+import { EyeClosed, Eye, Undo2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -31,6 +31,8 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { useLocale } from "next-intl";
 import { signUpAction, signWithGoogle } from "../actions/auth.actions";
 import { routing } from "@/i18n/routing";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 const SignUpClient = ({ image }: { image: any }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -44,6 +46,7 @@ const SignUpClient = ({ image }: { image: any }) => {
   const redirectData = params.get("redirect") || `/${locale}/dashboard`;
 
   const [captchaUpToken, setCaptchaUpToken] = React.useState<string>("");
+  const [captchaReady, setCaptchaReady] = React.useState(false);
 
   const apiBaseUrl =
     process.env.NODE_ENV === "production"
@@ -118,6 +121,14 @@ const SignUpClient = ({ image }: { image: any }) => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-white py-10">
       <ContainerWrap size="xl">
+        <div className="lg:top-5 lg:left-5 lg:mb-0 mb-5 lg:fixed w-fit">
+          <Button
+            className="w-full rounded-full flex items-center gap-2 mb-3 bg-white text-gray-500 border hover:bg-gray-50"
+            onClick={() => router.back()}
+          >
+            <Undo2 /> {locale === routing.defaultLocale ? "Kembali" : "Back"}
+          </Button>
+        </div>
         <div className="flex justify-center items-center">
           <div className="max-w-sm">
             <Link href={`/${locale}`}>
@@ -264,7 +275,14 @@ const SignUpClient = ({ image }: { image: any }) => {
                     {locale === routing.defaultLocale && "kami."}
                   </p>
                 </div>
-                <div>
+                <div className="h-16">
+                  <Skeleton
+                    className={cn(
+                      "w-full h-16 rounded-md",
+                      !captchaReady ? "block opacity-100" : "hidden opacity-0",
+                    )}
+                  />
+
                   <Turnstile
                     siteKey="0x4AAAAAACOWvPh9bptcSxI4"
                     onSuccess={(token: any) => {
@@ -272,10 +290,19 @@ const SignUpClient = ({ image }: { image: any }) => {
                     }}
                     options={{
                       theme: "light",
+                      size: "flexible",
+                      language: locale === routing.defaultLocale ? "id" : "en",
+                    }}
+                    onWidgetLoad={() => {
+                      setCaptchaReady(true);
                     }}
                   />
                 </div>
-                <Button type="submit" className="w-full h-12 rounded-full">
+                <Button
+                  type="submit"
+                  disabled={!captchaUpToken || loading}
+                  className="w-full h-12 rounded-full"
+                >
                   {loading ? (
                     <Spinner />
                   ) : (
@@ -295,16 +322,22 @@ const SignUpClient = ({ image }: { image: any }) => {
             </div>
 
             <Button
-              variant="outline"
               type="button"
-              className="w-full h-12 rounded-full flex items-center"
+              className="w-full h-12 rounded-full flex items-center gap-2 mb-3 bg-white text-gray-800 border hover:bg-gray-50"
               onClick={handleGoogleSignIn}
             >
-              <FontAwesomeIcon icon={faGoogle} />{" "}
+              <Image
+                src={
+                  "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/google.svg"
+                }
+                width={20}
+                height={20}
+                alt="Google Logo"
+              />
               <p>
                 {locale === routing.defaultLocale
-                  ? "Daftar dengan Google"
-                  : "Sign Up with Google"}
+                  ? "Lanjutkan dengan Google"
+                  : "Continue with Google"}
               </p>
             </Button>
             <p className="text-muted-foreground text-sm! mt-5 text-center">

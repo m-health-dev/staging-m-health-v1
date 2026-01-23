@@ -6,7 +6,6 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { ArrowUp, ChevronDown, Plus, SlidersHorizontal } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import ChatWindow from "./ChatWindow";
-import { chatGemini } from "@/lib/chatbot/geminiAPI";
 import QuickAction from "../home/QuickAction";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -436,8 +435,8 @@ const ChatStart = ({
           <h3 className="text-primary font-extrabold mb-2">
             {accounts?.fullname
               ? locale === routing.defaultLocale
-                ? `Halo, ${accounts.fullname.split(" ")[0]}! 👋`
-                : `Hi, ${accounts.fullname.split(" ")[0]}! 👋`
+                ? `Halo, ${accounts.fullname ? (accounts.fullname.split(" ")[0].length === 1 ? accounts.fullname.split(" ")[0] : accounts.fullname.split(" ")[1]) : accounts.google_fullname}! 👋`
+                : `Hi, ${accounts.fullname ? (accounts.fullname.split(" ")[0].length === 1 ? accounts.fullname.split(" ")[0] : accounts.fullname.split(" ")[1]) : accounts.google_fullname}! 👋`
               : locale === routing.defaultLocale
                 ? `Halo! Senang bertemu denganmu!`
                 : `Hi! Nice to meet you!`}

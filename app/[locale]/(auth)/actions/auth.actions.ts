@@ -319,7 +319,10 @@ export const signInAction = async (
   }
 };
 
-export const handleSendMagicLinkAction = async (data: { email: string }) => {
+export const handleSendMagicLinkAction = async (
+  data: { email: string },
+  captchaToken: string,
+) => {
   const supabase = await createClient();
   const origin = getBaseUrl();
 
@@ -344,6 +347,7 @@ export const handleSendMagicLinkAction = async (data: { email: string }) => {
   let options = {
     emailRedirectTo: `${origin}/auth/callback`,
     shouldCreateUser: true,
+    captchaToken,
   };
 
   const { allowPassword } = getAuthTypes();
@@ -533,7 +537,10 @@ export const signWithGoogle = async (redirectTo?: string) => {
   // return redirect(redirectTo);
 };
 
-export const forgotPasswordAction = async (data: { email: string }) => {
+export const forgotPasswordAction = async (
+  data: { email: string },
+  captchaToken: string,
+) => {
   const supabase = await createClient();
   const validatedData = ForgotPassSchema.safeParse(data);
   const origin = getBaseUrl();
@@ -657,6 +664,7 @@ export const forgotPasswordAction = async (data: { email: string }) => {
 
   const { error } = await supabase.auth.resetPasswordForEmail(
     validatedData.data.email,
+
     {
       redirectTo: `${origin}/auth/callback?redirect=/${locale}/reset-password`,
     },
@@ -688,10 +696,13 @@ export const forgotPasswordAction = async (data: { email: string }) => {
   };
 };
 
-export const resetPasswordAction = async (data: {
-  password: string;
-  confirmPassword: string;
-}) => {
+export const resetPasswordAction = async (
+  data: {
+    password: string;
+    confirmPassword: string;
+  },
+  captchaToken: string,
+) => {
   const supabase = await createClient();
   const validatedData = resetPasswordSchema.safeParse(data);
   const locale = await getLocale();

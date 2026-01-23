@@ -119,11 +119,13 @@ const TransactionStatusClientAdmin = ({
   ) : error ? (
     <div className="text-center p-10 bg-red-50 rounded-2xl border border-red-200">
       <h3 className="text-xl font-semibold text-red-600 mb-2">
-        {locale === routing.defaultLocale ? "Terjadi Kesalahan" : "An Error Occurred"}
+        {locale === routing.defaultLocale
+          ? "Terjadi Kesalahan"
+          : "An Error Occurred"}
       </h3>
       <p className="text-red-500">{error}</p>
       <button
-        onClick={() => window.location.reload()}
+        onClick={() => router.refresh()}
         className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
       >
         {locale === routing.defaultLocale ? "Muat Ulang" : "Reload"}
@@ -239,7 +241,9 @@ const TransactionStatusClientAdmin = ({
       ) : (
         <div className="text-start p-5 bg-yellow-50 rounded-2xl border border-yellow-200">
           <h5 className="text-lg font-semibold text-yellow-600 mb-2">
-            {locale === routing.defaultLocale ? "Produk Tidak Ditemukan" : "Product Not Found"}
+            {locale === routing.defaultLocale
+              ? "Produk Tidak Ditemukan"
+              : "Product Not Found"}
           </h5>
           <p className="text-yellow-500">
             {locale === routing.defaultLocale

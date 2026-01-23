@@ -7,7 +7,7 @@ import type { Message } from "@/components/chatbot/ChatWindow";
 export function useChatSession(
   session: any[] | undefined,
   sessionID: string | undefined,
-  locale: string
+  locale: string,
 ) {
   const [selectedChat, setSelectedChat] = useState<Message[]>(session || []);
   const [isPending, startTransition] = useTransition();

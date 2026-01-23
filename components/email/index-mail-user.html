@@ -1,0 +1,314 @@
+<div
+  style="
+    font-family: &quot;Manrope&quot;, sans-serif;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+  "
+>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Stack+Sans+Text:wght@200..700&display=swap");
+  </style>
+
+  <div
+    style="
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 30px 30px 0 0;
+      border: 1px solid #e2e8f0;
+      flex: content;
+      justify-items: center;
+      align-items: center;
+      width: full;
+    "
+  >
+    <img
+      src="https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/351683e6cb20f2684a3935a0428cad62.png"
+      alt="M-HEALTH Logo"
+      width="150"
+      height="50"
+      style="object-fit: contain"
+    />
+  </div>
+  <div
+    style="
+      background: #f8fafc;
+      padding: 20px;
+      border-left: 1px solid #e2e8f0;
+      border-right: 1px solid #e2e8f0;
+    "
+  >
+    <h2 style="color: #3e77ab; margin-top: 0">
+      Halo {{ $json.user_fullname }} 👋
+    </h2>
+    <p
+      style="
+        color: gray;
+        font-style: italic;
+        font-size: 12px;
+        margin-top: -12px;
+      "
+    >
+      Hello {{ $json.user_fullname }} 👋
+    </p>
+    <p style="color: black; font-size: 16px">
+      Berikut adalah detail janji temu konsultasi online Anda dengan dokter
+      kami:
+    </p>
+    <p
+      style="
+        color: gray;
+        font-style: italic;
+        font-size: 12px;
+        margin-top: -10px;
+      "
+    >
+      Here are the details of your online consultation appointment with our
+      doctor:
+    </p>
+    <div
+      style="
+        margin-top: 30px;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 20px;
+        border: 1px solid rgb(227, 227, 227);
+      "
+    >
+      <p style="color: gray; line-height: 0.1">👨‍⚕️ Dokter</p>
+      <p
+        style="
+          color: gray;
+          font-style: italic;
+          font-size: 12px;
+          margin-top: -5px;
+        "
+      >
+        Doctor
+      </p>
+      <p
+        style="
+          border-bottom: 1px solid rgba(128, 128, 128, 0.21);
+          padding-bottom: 10px;
+          margin-bottom: 10px;
+          line-height: 1.5;
+        "
+      >
+        <strong style="color: #3e77ab">{{ $json.doctor_name }}</strong>
+      </p>
+      <p style="color: gray; line-height: 0.1; margin-top: 30px">📅 Jadwal</p>
+      <p
+        style="
+          color: gray;
+          font-style: italic;
+          font-size: 12px;
+          margin-top: -5px;
+        "
+      >
+        Schedule
+      </p>
+      <p
+        style="
+          border-bottom: 1px solid rgba(128, 128, 128, 0.21);
+          padding-bottom: 10px;
+          margin-bottom: 10px;
+          line-height: 1.5;
+        "
+      >
+        <strong style="color: #3e77ab">{{ $json.scheduled_datetime }}</strong>
+      </p>
+      <p style="color: gray; line-height: 0.1; margin-top: 30px">
+        📋 Keluhan/ Kondisi Kesehatan
+      </p>
+      <p
+        style="
+          color: gray;
+          font-style: italic;
+          font-size: 12px;
+          margin-top: -5px;
+        "
+      >
+        Complaints/ Health Conditions
+      </p>
+      <p style="margin-bottom: 10px; line-height: 1.5">
+        <strong style="color: #3e77ab">{{ $json.complaint }}</strong>
+      </p>
+    </div>
+
+    <div style="text-align: center; margin: 50px 0">
+      <a
+        href="{{ $('Create an event').item.json.hangoutLink }}"
+        style="
+          background: #30b878;
+          color: white;
+          padding: 14px 32px;
+          text-decoration: none;
+          border-radius: 50px;
+          font-weight: bold;
+
+          flex-direction: column;
+          line-height: 1.5;
+          text-align: center;
+        "
+        ><span>Google Meet</span>
+      </a>
+      <p
+        style="
+          font-style: italic;
+          color: #3e77ab;
+          margin-top: 30px;
+          font-size: 14px;
+        "
+      >
+        {{ $('Create an event').item.json.hangoutLink }}
+      </p>
+    </div>
+    <p style="font-size: 16px; text-align: start">
+      Informasi ini dikirim secara otomatis, setelah dokter ditugaskan. Mohon
+      tidak membalas email ini. Jika terdapat pertanyaan, silakan hubungi
+      layanan pelanggan kami. Mohon hadir tepat waktu untuk janji temu Anda.
+    </p>
+    <p
+      style="
+        font-size: 12px;
+        text-align: start;
+        font-style: italic;
+        color: gray;
+      "
+    >
+      This information is sent automatically once a doctor has been assigned.
+      Please do not reply to this email. If you have any questions, please
+      contact our customer service. Please arrive on time for your appointment.
+    </p>
+
+    <p style="font-size: 16px; text-align: start; margin-top: 40px">
+      Salam hangat kami,
+    </p>
+    <p
+      style="
+        font-size: 12px;
+        text-align: start;
+        font-style: italic;
+        color: gray;
+        margin-top: -10px;
+      "
+    >
+      Warm regards,
+    </p>
+    <p
+      style="
+        font-size: 20px;
+        text-align: start;
+        color: #30b878;
+        font-weight: 700;
+        margin-top: -2px;
+      "
+    >
+      M HEALTH
+    </p>
+  </div>
+  <div
+    style="
+      background: #191c1e;
+      padding: 40px 20px;
+      border-radius: 0 0 30px 30px;
+      text-align: start;
+    "
+  >
+    <p style="color: white; margin: 0; font-size: 14px">
+      Anda menerima email ini karena terdaftar di M-HEALTH dan sesuai dengan
+      Ketentuan Penggunaan dan Kebijakan Privasi dan/atau tujuan sah lainnya.
+    </p>
+    <p
+      style="
+        font-size: 12px;
+        text-align: start;
+        font-style: italic;
+        color: rgb(169, 169, 169);
+        margin-top: 5px;
+        margin-bottom: 20px;
+      "
+    >
+      You are receiving this email because you are registered with M-HEALTH and
+      in accordance with the Terms of Use and Privacy Policy and/or other
+      legitimate purposes.
+    </p>
+
+    <p style="color: white; margin: 0; font-size: 14px">
+      © 2025, PT. Medika Integrasi Persada Indonesia. PT. Medika Integrasi
+      Klinik Indonesia. M HEALTH. Hak cipta dilindungi oleh undang-undang.
+    </p>
+    <p
+      style="
+        font-size: 12px;
+        text-align: start;
+        font-style: italic;
+        color: rgb(169, 169, 169);
+        margin-top: 5px;
+      "
+    >
+      © 2025, PT. Medika Integrasi Persada Indonesia. PT. Medika Integrasi
+      Klinik Indonesia. M HEALTH. All rights reserved.
+    </p>
+    <div
+      style="
+        border-top: 1px solid rgb(71, 71, 71);
+        margin-top: 20px;
+        padding-top: 20px;
+        text-align: center;
+      "
+    >
+      <p style="font-size: 14px; color: #30b878; margin: 0; padding-top: 0px">
+        info@m-health.id | +62 823-1017-2457
+      </p>
+      <p style="color: white; margin: 0; font-size: 14px; padding-top: 10px">
+        Jl. Pandan 11A, Gading Kasri, Kec. Klojen, Kota Malang, Jawa Timur 65115
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- prettier-ignore -->
+Halo *{{ $json.user_fullname }}* 👋
+
+Berikut adalah detail janji temu konsultasi online Anda dengan dokter kami:
+
+👨‍⚕️ Dokter
+*{{ $json.doctor_name }}*
+
+🔗 Link Meeting
+{{ $('Create an event').item.json.hangoutLink }}
+
+📅 Jadwal 
+{{ $json.scheduled_datetime }}
+
+📋 Keluhan
+{{ $json.complaint }}
+
+Informasi ini dikirim secara otomatis, setelah dokter ditugaskan. Mohon tidak membalas email ini. Jika terdapat pertanyaan, silakan hubungi layanan pelanggan kami. Mohon hadir tepat waktu untuk janji temu Anda.
+
+Salam hangat Kami,
+M-HEALTH
+
+---
+
+Hello {{ $json.user_fullname }} 👋
+
+Here are the details of your online consultation appointment with our doctor:
+
+👨‍⚕️ Dokter
+*{{ $json.doctor_name }}*
+
+🔗 Link Meeting
+{{ $('Create an event').item.json.hangoutLink }}
+
+📅 Jadwal 
+{{ $json.scheduled_datetime }}
+
+📋 Keluhan
+{{ $json.complaint }}
+
+This information is sent automatically once a doctor has been assigned. Please do not reply to this email. If you have any questions, please contact our customer service. Please arrive on time for your appointment.
+
+Warm regards,
+M-HEALTH

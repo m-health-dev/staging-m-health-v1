@@ -48,7 +48,7 @@ const OneTapComponent = () => {
           nonce,
         });
 
-        if (!error) window.location.reload();
+        if (!error && typeof window !== "undefined") window.location.reload();
       },
     });
 

@@ -41,7 +41,7 @@ export default function SignOutPage() {
       toast.success(
         locale === routing.defaultLocale
           ? "Kamu Berhasil Keluar!"
-          : "You have successfully signed out!"
+          : "You have successfully signed out!",
       );
 
       // Redirect to login page after successful sign out
@@ -54,7 +54,7 @@ export default function SignOutPage() {
           : "Oops, you failed to sign out",
         {
           description: err.message || "An error occurred while signing out",
-        }
+        },
       );
     } finally {
       setIsLoading(false);
@@ -97,7 +97,7 @@ export default function SignOutPage() {
         <CardFooter className="flex justify-between">
           <Button
             variant="outline"
-            className="rounded-full"
+            className="rounded-full h-12"
             onClick={handleCancel}
             disabled={isLoading}
           >
@@ -107,15 +107,15 @@ export default function SignOutPage() {
             variant="destructive"
             onClick={handleSignOut}
             disabled={isLoading}
-            className="gap-2 rounded-full px-5!"
+            className="gap-2 h-12 rounded-full px-5!"
           >
             {isLoading
               ? locale === routing.defaultLocale
                 ? "Keluar..."
                 : "Signing out..."
               : locale === routing.defaultLocale
-              ? "Keluar"
-              : "Sign Out"}
+                ? "Keluar"
+                : "Sign Out"}
             {!isLoading && <LogOut className="h-4 w-4" />}
           </Button>
         </CardFooter>

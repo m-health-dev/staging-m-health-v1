@@ -85,7 +85,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
   const phoneNumber = "082310172457";
 
-  const getChatID = window?.location?.pathname?.split("/")[3] || "";
+  const [chatID, setChatID] = useState("");
+
+  useEffect(() => {
+    setChatID(window.location.pathname.split("/")[3] || "");
+  }, []);
 
   let cleanMessage = message.trim();
 
@@ -683,7 +687,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           {!isUser && urgent && (
             <div className="mt-3 mb-5 bg-white py-10 px-3 rounded-2xl border w-full">
               <Link
-                href={`/${locale}/connect?session=${sessionId ?? getChatID}`}
+                href={`/${locale}/connect?session=${sessionId ?? chatID}`}
                 className="flex items-center justify-center w-full gap-3 flex-col"
               >
                 <p className="text-center max-w-md">

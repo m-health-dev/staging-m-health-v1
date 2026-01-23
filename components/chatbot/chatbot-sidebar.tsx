@@ -108,7 +108,7 @@ export function ChatbotSidebar({
   const [isLoadingNewChat, setIsLoadingNewChat] = React.useState(false);
   const [createNewChat, setCreateNewChat] = React.useState(false);
   const pathname = usePathname();
-  
+
   // Ref for infinite scroll sentinel
   const loadMoreRef = React.useRef<HTMLDivElement>(null);
 
@@ -122,7 +122,7 @@ export function ChatbotSidebar({
           onLoadMore();
         }
       },
-      { threshold: 0.1, rootMargin: "100px" }
+      { threshold: 0.1, rootMargin: "100px" },
     );
 
     const sentinel = loadMoreRef.current;
@@ -199,7 +199,9 @@ export function ChatbotSidebar({
     try {
       // kasih delay sebelum redirect
       setTimeout(() => {
-        window.location.replace(`/${locale}`);
+        if (typeof window !== "undefined") {
+          window.location.replace(`/${locale}`);
+        }
       }, 300);
     } catch (error) {
       console.error("Error creating new chat:", error);
@@ -453,9 +455,7 @@ export function ChatbotSidebar({
                             <div className="flex justify-between items-center">
                               <div>
                                 <p className="text-primary text-base! line-clamp-1 wrap-break-word z-5 capitalize">
-                                  {s.title === ""
-                                    ? "M HEALTH Chat"
-                                    : s.title}
+                                  {s.title === "" ? "M HEALTH Chat" : s.title}
                                 </p>
                               </div>
                             </div>

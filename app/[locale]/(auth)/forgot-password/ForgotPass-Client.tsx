@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { AuthSignInSchema, ForgotPassSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye } from "lucide-react";
+import { EyeClosed, Eye, Undo2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -28,6 +28,9 @@ import { Spinner } from "@/components/ui/spinner";
 import { forgotPasswordAction } from "../actions/auth.actions";
 import Link from "next/link";
 import { routing } from "@/i18n/routing";
+import { Turnstile } from "@marsidev/react-turnstile";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 const ForgotPassClient = ({ locale }: { locale: string }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -38,6 +41,9 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
   const router = useRouter();
   const params = useSearchParams();
   const emailParams = params.get("email");
+  const [captchaForgotToken, setCaptchaForgotToken] =
+    React.useState<string>("");
+  const [captchaReady, setCaptchaReady] = React.useState(false);
 
   const form = useForm<z.infer<typeof ForgotPassSchema>>({
     resolver: zodResolver(ForgotPassSchema),
@@ -49,14 +55,22 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
   async function onSubmit(data: z.infer<typeof ForgotPassSchema>) {
     setLoading(true);
 
-    const response = await forgotPasswordAction(data);
+    const response = await forgotPasswordAction(data, captchaForgotToken);
 
     if (response?.warning) {
       setLoading(false);
-      setWarning(locale === routing.defaultLocale ? response.warning.id : response.warning.en);
+      setWarning(
+        locale === routing.defaultLocale
+          ? response.warning.id
+          : response.warning.en,
+      );
     } else if (response?.error) {
       setLoading(false);
-      setError(locale === routing.defaultLocale ? response.error.id : response.error.en);
+      setError(
+        locale === routing.defaultLocale
+          ? response.error.id
+          : response.error.en,
+      );
     } else if (response?.success && response?.message) {
       setLoading(false);
       setSuccess(
@@ -69,6 +83,14 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-white">
       <ContainerWrap size="xl">
+        <div className="lg:top-5 lg:left-5 lg:mb-0 mb-5 lg:fixed w-fit">
+          <Button
+            className="w-full rounded-full flex items-center gap-2 mb-3 bg-white text-gray-500 border hover:bg-gray-50"
+            onClick={() => router.back()}
+          >
+            <Undo2 /> {locale === routing.defaultLocale ? "Kembali" : "Back"}
+          </Button>
+        </div>
         <div className="flex items-center justify-center">
           <div className="md:max-w-sm w-full col-span-1">
             <Link href={`/${locale}`}>
@@ -83,12 +105,16 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
               />
             </Link>
             <h3 className="font-bold text-primary mb-10">
-              {locale === routing.defaultLocale ? "Lupa Kata Sandi" : "Forgot Your Password?"}
+              {locale === routing.defaultLocale
+                ? "Lupa Kata Sandi"
+                : "Forgot Your Password?"}
             </h3>
             {error && (
               <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
+                  {locale === routing.defaultLocale
+                    ? "Permintaan Gagal"
+                    : "Request Failed"}
                 </p>
                 <p className="text-sm!">{error}</p>
               </div>
@@ -96,7 +122,9 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
             {warning && (
               <div className="bg-yellow-50 text-yellow-500 p-4 border border-yellow-500 rounded-2xl mb-2">
                 <p className="font-bold mb-1">
-                  {locale === routing.defaultLocale ? "Permintaan Gagal" : "Request Failed"}
+                  {locale === routing.defaultLocale
+                    ? "Permintaan Gagal"
+                    : "Request Failed"}
                 </p>
                 <p className="text-sm!">{warning}</p>
               </div>
@@ -138,14 +166,41 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
                       : "We will send a link to reset your password."}
                   </p>
                 </div>
-                <Button type="submit" className="w-full h-12 rounded-full">
+                <div className="h-16 mt-5">
+                  <Skeleton
+                    className={cn(
+                      "w-full h-16 rounded-md",
+                      !captchaReady ? "block opacity-100" : "hidden opacity-0",
+                    )}
+                  />
+
+                  <Turnstile
+                    siteKey="0x4AAAAAACOWvPh9bptcSxI4"
+                    onSuccess={(token: any) => {
+                      setCaptchaForgotToken(token);
+                    }}
+                    options={{
+                      theme: "light",
+                      size: "flexible",
+                      language: locale === routing.defaultLocale ? "id" : "en",
+                    }}
+                    onWidgetLoad={() => {
+                      setCaptchaReady(true);
+                    }}
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  disabled={!captchaForgotToken || loading}
+                  className="w-full h-12 rounded-full"
+                >
                   {loading ? (
                     <Spinner />
                   ) : (
                     <p>
                       {locale === routing.defaultLocale
-                        ? "Atur Ulang Kata Sandi"
-                        : "Reset Password"}
+                        ? "Buat Permintaan"
+                        : "Submit Request"}
                     </p>
                   )}
                 </Button>
