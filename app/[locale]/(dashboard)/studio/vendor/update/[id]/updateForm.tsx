@@ -674,8 +674,14 @@ const UpdateVendorForm = ({
               />
 
               <InsuranceMultiSelectField
-                readInsuranceIds={vendorData.insurance_id}
+                readInsuranceIds={
+                  Array.isArray(vendorData.insurance_id)
+                    ? vendorData.insurance_id
+                    : []
+                }
               />
+
+              {/* <pre>{JSON.stringify(vendorData, null, 2)}</pre> */}
 
               <div className="lg:col-span-2 col-span-1 flex w-full items-center justify-center mt-5">
                 <Button

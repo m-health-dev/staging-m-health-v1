@@ -11,7 +11,10 @@ const cspHeader = `
       https://www.googletagmanager.com
       https://www.google-analytics.com
       https://va.vercel-scripts.com
-      https://accounts.google.com;
+      https://accounts.google.com
+      https://static.cloudflareinsights.com
+      https://www.googletagmanager.com
+      https://cdn.userway.org;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     img-src 'self' blob: data:
       https://images.unsplash.com
@@ -19,7 +22,8 @@ const cspHeader = `
       https://placehold.co
       https://lh3.googleusercontent.com
       https://avatars.githubusercontent.com
-      https://*.supabase.co;
+      https://*.supabase.co
+      https://cdn.userway.org;
     font-src 'self' https://fonts.gstatic.com data:;
     connect-src 'self'
       https://*.m-health.id
@@ -29,7 +33,8 @@ const cspHeader = `
       https://www.googletagmanager.com
       https://va.vercel-scripts.com
       https://accounts.google.com
-      https://challenges.cloudflare.com;
+      https://challenges.cloudflare.com
+      https://cdn.userway.org;
     frame-src https://challenges.cloudflare.com https://www.google.com;
     object-src 'none';
     base-uri 'self';

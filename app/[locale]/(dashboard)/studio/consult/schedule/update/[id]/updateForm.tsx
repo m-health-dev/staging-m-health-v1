@@ -101,7 +101,7 @@ const UpdateConsultationData = ({
   const [uploadLoadingRFImage, setUploadLoadingRFImage] = useState(false);
   const [deletedImages, setDeletedImages] = useState<string[]>([]);
   const [referencePreview, setReferencePreview] = useState<string[]>(
-    data.reference_image || []
+    data.reference_image || [],
   );
   const domicile = parseDomicile(accounts?.domicile);
 
@@ -150,7 +150,7 @@ const UpdateConsultationData = ({
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -172,7 +172,7 @@ const UpdateConsultationData = ({
   async function handleDelete(
     url: string,
     field: "logo" | "highlight" | "reference",
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -278,7 +278,7 @@ const UpdateConsultationData = ({
 
   function toUtcMidnightFromLocalDate(date: Date) {
     return new Date(
-      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
     );
   }
 
@@ -319,7 +319,7 @@ const UpdateConsultationData = ({
           postal_code: data.domicile_postal_code?.trim() || "",
         },
       },
-      id
+      id,
     );
 
     if (res.error) {
@@ -331,7 +331,7 @@ const UpdateConsultationData = ({
         {
           description: `${res.error}`,
           duration: 15000,
-        }
+        },
       );
     }
 
@@ -345,7 +345,7 @@ const UpdateConsultationData = ({
             ? "Permintaan Anda berhasil disimpan."
             : "Your request successfully saved.",
         duration: 15000,
-      }
+      },
     );
 
     form.reset();
@@ -491,9 +491,8 @@ const UpdateConsultationData = ({
                                 onDrop={async (acceptedFiles) => {
                                   setUploadLoadingRFImage(true);
 
-                                  const urls = await handleBatchImageUpload(
-                                    acceptedFiles
-                                  );
+                                  const urls =
+                                    await handleBatchImageUpload(acceptedFiles);
 
                                   if (urls) {
                                     const oldImages =
@@ -532,10 +531,10 @@ const UpdateConsultationData = ({
                                           url.replace(
                                             process.env
                                               .NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                            ""
+                                            "",
                                           ),
                                           "reference",
-                                          i
+                                          i,
                                         )
                                       }
                                       className="absolute w-10 h-10 top-5 right-2 rounded-full"
@@ -556,7 +555,7 @@ const UpdateConsultationData = ({
 
                                         const urls =
                                           await handleBatchImageUpload(
-                                            acceptedFiles
+                                            acceptedFiles,
                                           );
 
                                         if (urls) {
@@ -569,7 +568,7 @@ const UpdateConsultationData = ({
                                           ];
                                           form.setValue(
                                             "reference_image",
-                                            merged
+                                            merged,
                                           );
                                           setReferencePreview(merged);
                                           setUploadLoadingRFImage(false);
@@ -799,7 +798,9 @@ const UpdateConsultationData = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === routing.defaultLocale ? "Kecamatan" : "District"}
+                            {locale === routing.defaultLocale
+                              ? "Kecamatan"
+                              : "District"}
                           </FormLabel>
                           <FormControl>
                             <Input {...field} className="h-12" />
@@ -814,7 +815,9 @@ const UpdateConsultationData = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-primary font-semibold!">
-                            {locale === routing.defaultLocale ? "Kode Pos" : "Postal Code"}
+                            {locale === routing.defaultLocale
+                              ? "Kode Pos"
+                              : "Postal Code"}
                           </FormLabel>
                           <FormControl>
                             <Input {...field} className="h-12" />
@@ -881,7 +884,7 @@ const UpdateConsultationData = ({
                         Dengan mengirim form ini anda telah menyetujui{" "}
                         <span
                           className="text-health underline cursor-pointer"
-                          onClick={() => router.push("/terms-of-service")}
+                          onClick={() => router.push("/terms")}
                         >
                           Ketentuan Penggunaan
                         </span>{" "}
@@ -905,7 +908,7 @@ const UpdateConsultationData = ({
                 <div
                   className={cn(
                     "flex flex-wrap mt-5 gap-5",
-                    currentStep === 1 ? "justify-end" : "justify-between"
+                    currentStep === 1 ? "justify-end" : "justify-between",
                   )}
                 >
                   {currentStep > 1 && (

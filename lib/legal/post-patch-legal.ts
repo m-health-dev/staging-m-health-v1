@@ -22,7 +22,7 @@ export async function postTermsOfService(payload: {
       };
     }
 
-    const res = await fetch(`${apiBaseUrl}/api/v1/admin/terms-of-service`, {
+    const res = await fetch(`${apiBaseUrl}/api/v1/admin/terms`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -36,7 +36,7 @@ export async function postTermsOfService(payload: {
     if (res.status !== 201) {
       return {
         success: false,
-        error: `Failed to receive terms-of-service/create data. Cause : ${json.message}`,
+        error: `Failed to receive terms/create data. Cause : ${json.message}`,
       };
     }
 
@@ -46,7 +46,7 @@ export async function postTermsOfService(payload: {
       success: true,
     };
   } catch (error) {
-    console.error("Receive terms-of-service/create Error:", error);
+    console.error("Receive terms/create Error:", error);
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",

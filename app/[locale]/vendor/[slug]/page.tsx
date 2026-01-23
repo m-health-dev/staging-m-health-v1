@@ -104,7 +104,9 @@ const VendorPublicDetailPage = async ({
             <Link href={v.location_map}>
               <div className="inline-flex items-center gap-1 bg-health text-white lg:px-4 px-2 py-2 lg:w-fit lg:h-fit rounded-full">
                 <MapPin className="size-5" />
-                <p className="block">{locale === routing.defaultLocale ? "Lokasi" : "Location"}</p>
+                <p className="block">
+                  {locale === routing.defaultLocale ? "Lokasi" : "Location"}
+                </p>
               </div>
             </Link>
           </div>
@@ -195,6 +197,8 @@ const VendorPublicDetailPage = async ({
             </div>
           </>
         )}
+
+        {/* <pre>{JSON.stringify(v, null, 2)}</pre> */}
       </ContainerWrap>
     </Wrapper>
   );

@@ -43,6 +43,8 @@ export function InsuranceMultiSelectField({ readInsuranceIds }: Props) {
   const [loading, setLoading] = useState(false);
   const [insuranceData, setInsuranceData] = useState<InsuranceType[]>([]);
 
+  console.log("readInsuranceIds", { readInsuranceIds });
+
   const insuranceIds =
     useWatch({ name: "insurance_id", control: form.control }) || [];
 

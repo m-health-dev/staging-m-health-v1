@@ -257,7 +257,7 @@ const SignUpClient = ({ image }: { image: any }) => {
                       : "By signing up you agree to our"}{" "}
                     <span
                       className="text-health underline cursor-pointer"
-                      onClick={() => router.push("/terms-of-service")}
+                      onClick={() => router.push("/terms")}
                     >
                       {locale === routing.defaultLocale
                         ? "Syarat Layanan"

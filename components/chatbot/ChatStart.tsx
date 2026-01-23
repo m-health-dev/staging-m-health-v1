@@ -435,8 +435,8 @@ const ChatStart = ({
           <h3 className="text-primary font-extrabold mb-2">
             {accounts?.fullname
               ? locale === routing.defaultLocale
-                ? `Halo, ${accounts.fullname ? (accounts.fullname.split(" ")[0].length === 1 ? accounts.fullname.split(" ")[0] : accounts.fullname.split(" ")[1]) : accounts.google_fullname}! 👋`
-                : `Hi, ${accounts.fullname ? (accounts.fullname.split(" ")[0].length === 1 ? accounts.fullname.split(" ")[0] : accounts.fullname.split(" ")[1]) : accounts.google_fullname}! 👋`
+                ? `Halo, ${accounts.fullname ? (accounts.fullname.split(" ")[0].length >= 1 ? accounts.fullname.split(" ")[0] : accounts.fullname.split(" ")[1]) : accounts.google_fullname}! 👋`
+                : `Hi, ${accounts.fullname ? (accounts.fullname.split(" ")[0].length >= 1 ? accounts.fullname.split(" ")[0] : accounts.fullname.split(" ")[1]) : accounts.google_fullname}! 👋`
               : locale === routing.defaultLocale
                 ? `Halo! Senang bertemu denganmu!`
                 : `Hi! Nice to meet you!`}

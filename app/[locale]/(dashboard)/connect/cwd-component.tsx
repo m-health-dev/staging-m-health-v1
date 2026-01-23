@@ -1006,7 +1006,7 @@ const CWDComponent = ({
                               : "By submitting this form you agree to"}{" "}
                             <span
                               className="text-health underline cursor-pointer"
-                              onClick={() => router.push("/terms-of-service")}
+                              onClick={() => router.push("/terms")}
                             >
                               {locale === routing.defaultLocale
                                 ? "Syarat dan Ketentuan"

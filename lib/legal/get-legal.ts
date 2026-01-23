@@ -11,7 +11,7 @@ const apiBaseUrl =
 
 export async function getAllTermsOfService(
   page: number = 1,
-  per_page: number = 10
+  per_page: number = 10,
 ) {
   try {
     const res = await fetch(
@@ -23,7 +23,7 @@ export async function getAllTermsOfService(
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();
@@ -31,7 +31,7 @@ export async function getAllTermsOfService(
     if (res.status !== 200) {
       return {
         success: false,
-        error: `Failed to receive terms-of-service/read data. Cause : ${json.message}`,
+        error: `Failed to receive terms/read data. Cause : ${json.message}`,
       };
     }
 
@@ -44,7 +44,7 @@ export async function getAllTermsOfService(
       success: true,
     };
   } catch (error) {
-    console.error("Receive terms-of-service/read Error:", error);
+    console.error("Receive terms/read Error:", error);
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",
@@ -67,7 +67,7 @@ export async function getLatestTermsOfService() {
     if (res.status !== 200) {
       return {
         success: false,
-        error: `Failed to receive terms-of-service/latest. Cause : ${res.status} - ${data.message}`,
+        error: `Failed to receive terms/latest. Cause : ${res.status} - ${data.message}`,
       };
     }
 
@@ -76,7 +76,7 @@ export async function getLatestTermsOfService() {
       success: true,
     };
   } catch (error) {
-    console.error(`Receive terms-of-service/latest Error:`, error);
+    console.error(`Receive terms/latest Error:`, error);
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",
@@ -86,7 +86,7 @@ export async function getLatestTermsOfService() {
 
 export async function getAllPrivacyPolicy(
   page: number = 1,
-  per_page: number = 10
+  per_page: number = 10,
 ) {
   try {
     const res = await fetch(
@@ -98,7 +98,7 @@ export async function getAllPrivacyPolicy(
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();
