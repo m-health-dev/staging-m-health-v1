@@ -27,7 +27,7 @@ const UserTransactionHistoryClient = ({
   const [loading, setLoading] = React.useState(false);
   return (
     <div className="mb-[20vh]">
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+      <div className="flex flex-col divide-y-2 gap-2">
         {loading
           ? Array.from({ length: perPage }).map(() => {
               const id = nanoid();
@@ -38,24 +38,50 @@ const UserTransactionHistoryClient = ({
           : history.map((h, i) => {
               const id = nanoid();
               return (
-                <div key={id} className="bg-white rounded-2xl border p-4">
+                <div key={id} className="bg-white rounded-2xl border p-4 ">
                   <Link
                     href={`/${locale}/pay/status?order_id=${h.transaction_id}`}
                     target="_blank"
+                    className="flex flex-col md:flex-row md:justify-between gap-4"
                   >
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="flex items-center gap-2">
-                        <p className="bg-gray-50 text-gray-700 border border-gray-500 px-3 py-1 rounded-full capitalize">
-                          {h.payment_status}
-                        </p>
+                    <div>
+                      <div className="inline-flex mb-4">
+                        {h.payment_status === "settlement" ||
+                        h.payment_status === "capture" ? (
+                          <p className="bg-green-50 border border-green-500 px-3 py-1 rounded-full capitalize text-green-500 text-xs!">
+                            {locale === routing.defaultLocale
+                              ? "Pembayaran Berhasil"
+                              : "Payment Success"}
+                          </p>
+                        ) : h.payment_status === "pending" ? (
+                          <p className="bg-amber-50 border border-amber-500 px-3 py-1 rounded-full capitalize text-amber-500 text-xs!">
+                            {locale === routing.defaultLocale
+                              ? "Menunggu Pembayaran"
+                              : "Waiting Payment"}
+                          </p>
+                        ) : (
+                          <p className="bg-red-50 border border-red-500 px-3 py-1 rounded-full capitalize text-red-500 text-xs!">
+                            {locale === routing.defaultLocale
+                              ? "Pembayaran Gagal"
+                              : "Payment Failed"}
+                          </p>
+                        )}
                       </div>
+                      <p className="text-health text-sm!">{h.transaction_id}</p>
+                      <h6 className="text-primary font-semibold mb-4">
+                        {h.product_data.name}
+                      </h6>
+                      <p className="text-sm! text-muted-foreground">
+                        {locale === routing.defaultLocale
+                          ? "Dibuat pada"
+                          : "Created at"}
+                      </p>
+                      <p>
+                        <LocalDateTime date={h.created_at} />
+                      </p>
                     </div>
-                    <p className="text-health text-sm!">{h.transaction_id}</p>
-                    <h5 className="text-primary font-semibold mb-4">
-                      {h.product_data.name}
-                    </h5>
 
-                    <div className="mb-5 border-l-4 border-l-primary bg-blue-50 p-4">
+                    <div className="text-end">
                       <p className="text-sm! text-muted-foreground">
                         {locale === routing.defaultLocale
                           ? "Total Pembayaran"
@@ -65,15 +91,6 @@ const UserTransactionHistoryClient = ({
                         {formatRupiah(h.product_data.total)}
                       </h6>
                     </div>
-
-                    <p className="text-sm! text-muted-foreground">
-                      {locale === routing.defaultLocale
-                        ? "Dibuat pada"
-                        : "Created at"}
-                    </p>
-                    <p>
-                      <LocalDateTime date={h.created_at} />
-                    </p>
                   </Link>
                 </div>
               );

@@ -25,6 +25,7 @@ import DialogSwitchLang from "@/components/utility/lang/DialogSwitchLang";
 import PageTransition from "@/components/utility/PageTransition";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { headers } from "next/headers";
+import ScrollToTop from "@/components/utility/ScrollToTop";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -111,6 +112,7 @@ export default async function RootLayout({ children, params }: Props) {
             <GoogleAnalytics gaId="G-P8LGDRYY19" nonce={nonce} />
             <Analytics />
             <SpeedInsights />
+            <ScrollToTop />
             <DialogSwitchLang />
             {children}
 

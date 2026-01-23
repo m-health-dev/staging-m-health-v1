@@ -200,12 +200,14 @@ const TransactionStatusClient = ({
             </p>
           )}
 
-          {/* <p className="text-muted-foreground mt-10">
-            {locale === routing.defaultLocale ? "Total Pembayaran" : "Total Payment"}
+          <p className="text-muted-foreground mt-10">
+            {locale === routing.defaultLocale
+              ? "Total Pembayaran"
+              : "Total Payment"}
           </p>
           <h4 className="text-primary font-bold">
             {formatRupiah(data.product_data.total)}
-          </h4> */}
+          </h4>
 
           {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
 

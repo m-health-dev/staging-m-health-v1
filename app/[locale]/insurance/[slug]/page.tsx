@@ -70,6 +70,8 @@ const InsurancePublicDetailPage = async ({
 
   const locale = await getLocale();
 
+  const { data: user } = await supabase.auth.getUser();
+
   const v: InsuranceType = (await getInsuranceBySlug(slug)).data.data;
   return (
     <Wrapper>
@@ -95,25 +97,10 @@ const InsurancePublicDetailPage = async ({
               />
               <h4 className="text-health font-bold lg:mb-0 mb-4">{v.name}</h4>
             </div>
-            {/* <Link href={v.location_map}>
-              <div className="inline-flex items-center gap-1 bg-health text-white lg:px-4 px-2 py-2 lg:w-fit lg:h-fit rounded-full">
-                <MapPin className="size-5" />
-                <p className="block">Location</p>
-              </div>
-            </Link> */}
           </div>
         </div>
-        {/* {v.location && (
-          <>
-            <p className="text-sm! text-muted-foreground mt-10 mb-2">
-              {locale === routing.defaultLocale ? "Lokasi" : "Location"}
-            </p>
 
-            <p className="mb-5">{v.location}</p>
-          </>
-        )} */}
-
-        <p className="text-sm! text-muted-foreground mt-10 mb-2">
+        <p className="text-sm! text-muted-foreground mt-5 mb-2">
           {locale === routing.defaultLocale
             ? "Kategori Asuransi"
             : "Insurance Category"}
@@ -145,6 +132,36 @@ const InsurancePublicDetailPage = async ({
               <p className="text-sm!">{s}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-10 mb-2">
+          <p className="text-sm! text-muted-foreground mb-2">
+            {locale === routing.defaultLocale ? "Agen Asuransi" : "Agent"}
+          </p>
+          <div className="inline-flex items-center gap-4 bg-white px-5 py-4 rounded-4xl">
+            {v.agent_photo_url && (
+              <Image
+                src={v.agent_photo_url}
+                width={720}
+                height={720}
+                alt={v.agent_name}
+                className="aspect-square w-14 h-14 rounded-full object-center object-cover border"
+              />
+            )}
+
+            <div>
+              <h6 className="text-base font-semibold! text-primary">
+                {v.agent_name}
+              </h6>
+              <p className="text-sm! text-muted-foreground">
+                {!user
+                  ? v.agent_number.slice(0, 3) +
+                    "*******" +
+                    v.agent_number.slice(7, 10)
+                  : v.agent_number}
+              </p>
+            </div>
+          </div>
         </div>
 
         <p className="text-sm! text-muted-foreground mt-10 mb-2">

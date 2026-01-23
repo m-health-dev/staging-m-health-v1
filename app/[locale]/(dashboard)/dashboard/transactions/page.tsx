@@ -34,26 +34,24 @@ const UserTransactionDash = async ({
   const history: any[] = data || [];
 
   return (
-    <div>
-      <ContainerWrap>
-        <div className="py-20">
-          <h2 className="font-semibold text-primary">
-            {locale === routing.defaultLocale
-              ? "Riwayat Transaksi"
-              : "Transaction History"}
-          </h2>
-        </div>
+    <ContainerWrap>
+      <div className="py-20">
+        <h2 className="font-semibold text-primary">
+          {locale === routing.defaultLocale
+            ? "Riwayat Transaksi"
+            : "Transaction History"}
+        </h2>
+      </div>
 
-        {/* <pre>{JSON.stringify({ data, meta, links }, null, 2)}</pre> */}
-        <UserTransactionHistoryClient
-          history={history}
-          links={links}
-          meta={meta}
-          locale={locale}
-          perPage={per_page}
-        />
-      </ContainerWrap>
-    </div>
+      {/* <pre>{JSON.stringify({ data, meta, links }, null, 2)}</pre> */}
+      <UserTransactionHistoryClient
+        history={history}
+        links={links}
+        meta={meta}
+        locale={locale}
+        perPage={per_page}
+      />
+    </ContainerWrap>
   );
 };
 
