@@ -28,6 +28,7 @@ import { routing } from "@/i18n/routing";
 import { ro } from "date-fns/locale";
 import { Spinner } from "../ui/spinner";
 import { cn } from "@/lib/utils";
+import { getLocale } from "next-intl/server";
 
 const QuickAction = ({
   includeSearchBar,
@@ -46,7 +47,7 @@ const QuickAction = ({
 }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const locale = useLocale();
+
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = React.useState(query || "");
@@ -56,6 +57,8 @@ const QuickAction = ({
   const lastSearchedQuery = React.useRef<string>("");
 
   const currentSearchParam = searchParams.get("q") || "";
+
+  const locale = useLocale();
 
   // Initialize search query from URL on mount
   React.useEffect(() => {

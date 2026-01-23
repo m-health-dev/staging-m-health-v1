@@ -26,6 +26,7 @@ import PageTransition from "@/components/utility/PageTransition";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { headers } from "next/headers";
 import ScrollToTop from "@/components/utility/ScrollToTop";
+import Script from "next/script";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -86,17 +87,17 @@ export default async function RootLayout({ children, params }: Props) {
             />
 
             {/* UserWay Accessibility Widget */}
-            <script
+            <Script
               src="https://cdn.userway.org/widget.js"
+              strategy="afterInteractive"
               data-account="wjUwooWFlF"
               data-language={locale}
               data-color="#3e77ab"
               data-z-index="10001"
               data-widget_layout="full"
               data-position="3"
-              // async
               // nonce={nonce}
-            ></script>
+            />
 
             <Toaster
               richColors
