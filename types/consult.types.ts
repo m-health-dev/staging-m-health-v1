@@ -33,6 +33,13 @@ export type ConsultScheduleType = {
   meeting_link: string;
 };
 
+export type ConsultPrice = {
+  id: string;
+  price: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export type DoctorType = {
   id: string;
   created_at: string;

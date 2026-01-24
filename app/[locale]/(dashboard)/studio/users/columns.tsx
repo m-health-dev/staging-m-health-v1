@@ -174,6 +174,9 @@ export const columns: ColumnDef<UsersType>[] = [
     cell: ({ row }) => {
       const id: string = row.getValue("id");
       const fullname: string = row.getValue("fullname");
+      const google_fullname: string = row.getValue("google_fullname");
+
+      const nameData = fullname || google_fullname;
 
       const [copied, setCopied] = useState(false);
       const [openConfirm, setOpenConfirm] = useState(false);
@@ -196,7 +199,7 @@ export const columns: ColumnDef<UsersType>[] = [
 
       const handleCopyName = async () => {
         try {
-          await navigator.clipboard.writeText(fullname);
+          await navigator.clipboard.writeText(nameData);
           setCopied(true);
           setTimeout(() => setCopied(false), 2000);
         } catch (err) {
@@ -210,7 +213,7 @@ export const columns: ColumnDef<UsersType>[] = [
           const res = await deleteUsers(id);
           if (!res.error) {
             toast.success("Success to Delete User", {
-              description: `${id.slice(0, 8).toUpperCase()} - ${fullname}`,
+              description: `${id.slice(0, 8).toUpperCase()} - ${nameData}`,
             });
           } else if (res.error) {
             toast.error("Failed to Delete User", {
@@ -334,7 +337,7 @@ export const columns: ColumnDef<UsersType>[] = [
                     className="font-medium inline-flex items-center gap-2 bg-muted rounded-md px-2"
                     onClick={handleCopyName}
                   >
-                    {fullname}{" "}
+                    {nameData}{" "}
                     {!copied ? (
                       <Copy className="size-4" />
                     ) : (
@@ -378,7 +381,7 @@ export const columns: ColumnDef<UsersType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== fullname}
+                  disabled={inputName !== nameData || loading}
                   onClick={async () => {
                     await handleDeleteUser();
                     setOpenConfirm(false);

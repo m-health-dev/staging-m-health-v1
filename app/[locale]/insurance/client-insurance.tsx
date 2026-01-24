@@ -42,20 +42,6 @@ const ClientInsurancePublic = ({
                   className="relative lg:aspect-video aspect-3/4 h-auto w-full group/vendor-card hover:outline-3 hover:outline-health rounded-2xl transition-all duration-200"
                 >
                   <Link href={`/${locale}/insurance/${v.slug}`}>
-                    {/* {v.location && (
-                      <div className="absolute top-0 right-0 p-4 z-10">
-                        <div
-                          className={cn(
-                            "px-3 py-1 bg-white rounded-xl capitalize truncate inline-flex w-fit text-primary"
-                          )}
-                        >
-                          <p className="lg:text-sm! text-xs!">
-                            {v.location.split(",")[0]}
-                          </p>
-                        </div>
-                      </div>
-                    )} */}
-
                     <div className="overflow-hidden rounded-2xl">
                       {v.name && v.highlight_image ? (
                         <Image

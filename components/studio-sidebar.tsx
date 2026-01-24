@@ -44,6 +44,7 @@ import {
   GalleryHorizontal,
   GalleryVertical,
   Grid2X2Check,
+  HandCoins,
   HeartHandshake,
   HeartPlus,
   Hotel,
@@ -93,7 +94,8 @@ const getNavData = (locale: string) => ({
       icon: HeartPlus,
     },
     {
-      title: locale === routing.defaultLocale ? "Produk Medis" : "Medical Products",
+      title:
+        locale === routing.defaultLocale ? "Produk Medis" : "Medical Products",
       url: "/studio/equipment",
       icon: BriefcaseMedical,
     },
@@ -197,7 +199,8 @@ const getNavData = (locale: string) => ({
   ],
   chatbot: [
     {
-      name: locale === routing.defaultLocale ? "Aktivitas Chat" : "Chat Activity",
+      name:
+        locale === routing.defaultLocale ? "Aktivitas Chat" : "Chat Activity",
       url: "/studio/chat-activity",
       icon: BotMessageSquare,
     },
@@ -221,14 +224,23 @@ const getNavData = (locale: string) => ({
   ],
   schedules: [
     {
-      name: locale === routing.defaultLocale ? "Jadwal Konsultasi" : "Consultation Schedules",
+      name:
+        locale === routing.defaultLocale
+          ? "Jadwal Konsultasi"
+          : "Consultation Schedules",
       url: "/studio/consult/schedule",
       icon: ClipboardClock,
+    },
+    {
+      name:
+        locale === routing.defaultLocale ? "Harga Konsultasi" : "Consult Price",
+      url: "/dashboard/consult/price",
+      icon: HandCoins,
     },
   ],
   payment: [
     {
-      name: locale === routing.defaultLocale ? "Catatan Pembayaran" : "Payment Records",
+      name: locale === routing.defaultLocale ? "Transaksi" : "Transactions",
       url: "/studio/payment/records",
       icon: CreditCard,
     },
@@ -240,7 +252,10 @@ const getNavData = (locale: string) => ({
       icon: Users,
     },
     {
-      name: locale === routing.defaultLocale ? "Pemulihan Pengguna" : "Recovery Users",
+      name:
+        locale === routing.defaultLocale
+          ? "Pemulihan Pengguna"
+          : "Recovery Users",
       url: "/studio/users/recovery",
       icon: UserCog,
     },
@@ -257,17 +272,24 @@ const getNavData = (locale: string) => ({
     //   icon: Focus,
     // },
     {
-      name: locale === routing.defaultLocale ? "Syarat dan Ketentuan" : "Terms of Service",
+      name:
+        locale === routing.defaultLocale
+          ? "Syarat dan Ketentuan"
+          : "Terms of Service",
       url: "/studio/legal/terms",
       icon: ListCheck,
     },
     {
-      name: locale === routing.defaultLocale ? "Kebijakan Privasi" : "Privacy Consent",
+      name:
+        locale === routing.defaultLocale
+          ? "Kebijakan Privasi"
+          : "Privacy Consent",
       url: "/studio/legal/privacy",
       icon: ShieldCheck,
     },
     {
-      name: locale === routing.defaultLocale ? "Pesan Kontak" : "Contact Messages",
+      name:
+        locale === routing.defaultLocale ? "Pesan Kontak" : "Contact Messages",
       url: "/studio/contact",
       icon: MessageCircle,
     },
@@ -307,7 +329,9 @@ export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="hide-scroll">
-        <p className="text-xs! px-4">{locale === routing.defaultLocale ? "Akun" : "Accounts"}</p>
+        <p className="text-xs! px-4">
+          {locale === routing.defaultLocale ? "Akun" : "Accounts"}
+        </p>
         {accounts && <NavUser user={accounts} locale={locale} type="side" />}
 
         <div className="px-4">
@@ -315,13 +339,41 @@ export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
         </div>
 
         <NavMain items={data.navMain} />
-        <NavMenu title={locale === routing.defaultLocale ? "Tipe" : "Type"} items={data.type} />
+        <NavMenu
+          title={locale === routing.defaultLocale ? "Tipe" : "Type"}
+          items={data.type}
+        />
         <NavMenu title="Chat Bot" items={data.chatbot} />
-        <NavMenu title={locale === routing.defaultLocale ? "Artikel" : "Article"} items={data.articles} />
-        <NavMenu title={locale === routing.defaultLocale ? "Jadwal" : "Schedules"} items={data.schedules} />
-        <NavMenu title={locale === routing.defaultLocale ? "Pembayaran" : "Payment"} items={data.payment} />
-        <NavMenu title={locale === routing.defaultLocale ? "Manajemen Pengguna" : "User Management"} items={data.user_management} />
-        <NavMenu title={locale === routing.defaultLocale ? "Konfigurasi Website" : "Website Config"} items={data.website_config} />
+        <NavMenu
+          title={locale === routing.defaultLocale ? "Artikel" : "Article"}
+          items={data.articles}
+        />
+        <NavMenu
+          title={
+            locale === routing.defaultLocale ? "Konsultasi" : "Consultation"
+          }
+          items={data.schedules}
+        />
+        <NavMenu
+          title={locale === routing.defaultLocale ? "Pembayaran" : "Payment"}
+          items={data.payment}
+        />
+        <NavMenu
+          title={
+            locale === routing.defaultLocale
+              ? "Manajemen Pengguna"
+              : "User Management"
+          }
+          items={data.user_management}
+        />
+        <NavMenu
+          title={
+            locale === routing.defaultLocale
+              ? "Konfigurasi Website"
+              : "Website Config"
+          }
+          items={data.website_config}
+        />
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
         {/* <div className="fixed bottom-0 py-2 bg-linear-to-t from-white via-white px-1">
           {accounts && <NavUser user={accounts} locale={locale} type="side" />}

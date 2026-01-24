@@ -22,7 +22,7 @@ export async function getConsultationSlot(date: string) {
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();
@@ -83,6 +83,44 @@ export async function getConsultationByID(id: string) {
   }
 }
 
+export async function getConsultationByChatSessionID(session_id: string) {
+  try {
+    const accessToken = await getAccessToken();
+    const res = await fetch(
+      `${apiBaseUrl}/api/v1/consultations/by-chat-session/${session_id}`,
+      {
+        method: "GET",
+        headers: {
+          "X-API-Key": apiSecretKey,
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    const json = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to receive consultation by session id data. Cause : ${json.message}`,
+      };
+    }
+
+    // console.log({ json });
+    return {
+      data: json,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive consultation data by session id Error:", error);
+    return {
+      success: false,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
+
 export async function getConsultationPrice() {
   try {
     const res = await fetch(`${apiBaseUrl}/api/v1/consultation-price`, {
@@ -118,7 +156,7 @@ export async function getConsultationPrice() {
 
 export async function getMyConsultations(
   page: number = 1,
-  per_page: number = 10
+  per_page: number = 10,
 ) {
   try {
     const accessToken = await getAccessToken();
@@ -131,7 +169,7 @@ export async function getMyConsultations(
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();
@@ -206,12 +244,12 @@ export async function getMyConsultationsByID(id: string) {
 
 export async function getAllConsultations(
   page: number = 1,
-  per_page: number = 10
+  per_page: number = 10,
 ) {
   try {
     const accessToken = await getAccessToken();
     const res = await fetch(
-      `${apiBaseUrl}/api/v1/consultations?page=${page}&per_page=${per_page}`,
+      `${apiBaseUrl}/api/v1/consultations?page=${page}&per_page=${per_page}&sort_by=created_at&order=desc`,
       {
         method: "GET",
         headers: {
@@ -219,7 +257,7 @@ export async function getAllConsultations(
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();

@@ -18,7 +18,12 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { BotMessageSquare, ClipboardClock, ScanBarcode } from "lucide-react";
+import {
+  BotMessageSquare,
+  ClipboardClock,
+  HandCoins,
+  ScanBarcode,
+} from "lucide-react";
 import { IconHelp, IconSettings } from "@tabler/icons-react";
 import { Account } from "@/types/account.types";
 import { useLocale } from "next-intl";
@@ -38,7 +43,10 @@ export function DashboardSidebar({
   const data = {
     navMain: [
       {
-        name: locale === routing.defaultLocale ? "Riwayat Transaksi" : "Transaction History",
+        name:
+          locale === routing.defaultLocale
+            ? "Riwayat Transaksi"
+            : "Transaction History",
         url: "/dashboard/transactions",
         icon: ScanBarcode,
       },
@@ -57,14 +65,18 @@ export function DashboardSidebar({
     ],
     chatbot: [
       {
-        name: locale === routing.defaultLocale ? "Aktivitas Chat" : "Chat Activity",
+        name:
+          locale === routing.defaultLocale ? "Aktivitas Chat" : "Chat Activity",
         url: "/dashboard/chat-activity",
         icon: BotMessageSquare,
       },
     ],
     schedules: [
       {
-        name: locale === routing.defaultLocale ? "Jadwal Konsultasi" : "Consult Schedules",
+        name:
+          locale === routing.defaultLocale
+            ? "Jadwal Konsultasi"
+            : "Consult Schedules",
         url: "/dashboard/consult/schedule",
         icon: ClipboardClock,
       },
@@ -93,16 +105,26 @@ export function DashboardSidebar({
       </SidebarHeader>
 
       <SidebarContent className="hide-scroll mt-5">
-        <p className="text-xs! px-4">{locale === routing.defaultLocale ? "Akun" : "Accounts"}</p>
+        <p className="text-xs! px-4">
+          {locale === routing.defaultLocale ? "Akun" : "Accounts"}
+        </p>
         <NavUser user={accounts} locale={locale} type="side" />
 
         <div className="px-4">
           <LanguageSwitcher />
         </div>
 
-        <NavMenu title={locale === routing.defaultLocale ? "Transaksi" : "Transaction"} items={data.navMain} />
+        <NavMenu
+          title={locale === routing.defaultLocale ? "Transaksi" : "Transaction"}
+          items={data.navMain}
+        />
         <NavMenu title="Chat Bot" items={data.chatbot} />
-        <NavMenu title={locale === routing.defaultLocale ? "Jadwal" : "Schedules"} items={data.schedules} />
+        <NavMenu
+          title={
+            locale === routing.defaultLocale ? "Konsultasi" : "Consultation"
+          }
+          items={data.schedules}
+        />
 
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>

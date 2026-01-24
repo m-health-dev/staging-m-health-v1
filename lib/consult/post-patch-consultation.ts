@@ -101,7 +101,7 @@ export async function updateConsultation(
     };
     chat_session?: string;
   },
-  id: string
+  id: string,
 ) {
   try {
     console.log("Sending consultation/update to BE:", payload);
@@ -131,6 +131,45 @@ export async function updateConsultation(
     };
   } catch (error) {
     console.error("Sent consultation/update Error:", error);
+    return {
+      success: false,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
+
+export async function updateConsultationPrice(
+  payload: {
+    price: number;
+  },
+  id: string,
+) {
+  try {
+    console.log("Sending consultation/update price to BE:", payload);
+    const accessToken = await getAccessToken();
+
+    const res = await fetch(`${apiBaseUrl}/api/v1/consultation-price/${id} `, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (res.status !== 200) {
+      return {
+        success: false,
+        error: `Failed to sent consultation-price/update price data. Cause: ${res.status} - ${data.message}`,
+      };
+    }
+    return {
+      data,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Sent consultation-price/update price Error:", error);
     return {
       success: false,
       message: "Terjadi kesalahan saat terhubung ke server.",

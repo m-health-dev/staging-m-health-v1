@@ -19,6 +19,7 @@ interface ChatPreviewModeProps {
   publicID: string;
   user?: Account;
   onNewMessage?: () => void;
+  consultSession?: any;
 }
 
 const ChatPreviewMode: React.FC<ChatPreviewModeProps> = ({
@@ -31,6 +32,7 @@ const ChatPreviewMode: React.FC<ChatPreviewModeProps> = ({
   publicID,
   user,
   onNewMessage,
+  consultSession,
 }) => {
   return (
     <>

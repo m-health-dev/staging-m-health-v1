@@ -727,6 +727,8 @@ const CWDComponent = ({
                                 </FormLabel>
                                 <FormControl>
                                   <Input
+                                    readOnly
+                                    disabled
                                     {...field}
                                     type="email"
                                     className="h-12"

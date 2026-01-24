@@ -37,6 +37,11 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import SignInClient from "@/app/[locale]/(auth)/sign-in/SignIn-Client";
+import { ConsultScheduleType } from "@/types/consult.types";
+import AvatarDoctor from "../utility/AvatarDoctor";
+import Link from "next/link";
+import LocalDateTime from "../utility/lang/LocaleDateTime";
+import { v4 as uuidv4 } from "uuid";
 
 export interface Message {
   id: string;
@@ -65,6 +70,7 @@ interface ChatWindowProps {
   type?: "default" | "preview" | "share";
   status?: string;
   urgent?: boolean;
+  consultSession?: any;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
@@ -77,6 +83,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   type = "default",
   status,
   urgent,
+  consultSession,
 }) => {
   const locale = useLocale();
   const [inputValue, setInputValue] = useState("");
@@ -86,6 +93,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   const [showNotice, setShowNotice] = useState(true);
+
+  const [isLoadingBuy, setIsLoadingBuy] = useState(false);
 
   // const [isExpanded, setIsExpanded] = useState(false);
   // const [isRouting, setIsRouting] = useState(false);
@@ -247,6 +256,20 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
   const isShowInput = type === "preview" || type === "share";
 
+  const consult: ConsultScheduleType = consultSession.data;
+
+  const payID = uuidv4();
+
+  const handleBuy = async () => {
+    setIsLoadingBuy(true);
+    router.push(
+      `/${locale}/pay/${payID}?product=${consult.chat_session}&type=consultation`,
+    );
+  };
+
+  const dateNow = new Date();
+  const consultExpiredAt = new Date(consult.reservation_expires_at);
+
   return (
     <div className="relative flex flex-col min-h-screen" ref={chatContainerRef}>
       {/* Scroll to Bottom Button */}
@@ -302,6 +325,100 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                           <X className="size-5" />
                         </button>
                       </div>
+                    </div>
+                  </div>
+                )}
+                {consult && (
+                  <div>
+                    {/* <pre>{JSON.stringify(consult, null, 2)}</pre> */}
+                    <div className="bg-white p-4 rounded-2xl border">
+                      <p className="text-primary mb-4">
+                        {locale === routing.defaultLocale
+                          ? "Anda memiliki sesi konsultasi untuk percakapan ini,"
+                          : "You have consultation session for this chat,"}
+                      </p>
+                      <div className="mb-4">
+                        <p className="text-sm! text-muted-foreground mb-1">
+                          {locale === routing.defaultLocale
+                            ? "Konsultasi dijadwalkan pada,"
+                            : "Consultation Scheduled at,"}
+                        </p>
+                        <p className="font-semibold text-health">
+                          <LocalDateTime date={consult.scheduled_datetime} />
+                        </p>
+                      </div>
+                      {consult.payment_status === "success" &&
+                        consult.doctor_id && (
+                          <div className="space-y-3">
+                            <div>
+                              <p className="text-sm! text-muted-foreground mb-1">
+                                {locale === routing.defaultLocale
+                                  ? "Dokter"
+                                  : "Doctor"}
+                              </p>
+                              <AvatarDoctor
+                                doctor={consult.doctor_id}
+                                locale={locale}
+                                size="md"
+                              />
+                            </div>
+
+                            <div>
+                              <p className="text-sm! text-muted-foreground mb-1">
+                                Meeting Link
+                              </p>
+                              <Link href={consult.meeting_link}>
+                                <p className="text-primary underline">
+                                  {consult.meeting_link}
+                                </p>
+                              </Link>
+                            </div>
+                          </div>
+                        )}
+
+                      {consult.payment_status !== "success" &&
+                        (dateNow < consultExpiredAt ? (
+                          <>
+                            <p className="mb-2">
+                              {locale === routing.defaultLocale
+                                ? "Konsultasi ini belum dibayar, jika ingin memulai konsultasi silahkan coba kembali pembayaran dengan menekan tombol di bawah ini."
+                                : "This consultation is unpaid, if you want to start the consultation please retry payment by pressing the button below."}
+                            </p>
+                            <p>
+                              {dateNow.toISOString()} /{" "}
+                              {consultExpiredAt.toISOString()}
+                            </p>
+                            <div className="lg:w-fit w-full">
+                              <Button
+                                className="h-10 bg-health hover:bg-health rounded-full w-full disabled:opacity-70"
+                                onClick={() => handleBuy()}
+                                disabled={isLoading}
+                              >
+                                {isLoading && <Spinner />}
+                                {isLoading
+                                  ? locale === routing.defaultLocale
+                                    ? "Memproses..."
+                                    : "Processing..."
+                                  : locale === routing.defaultLocale
+                                    ? "Coba Lagi"
+                                    : "Try Again"}
+                              </Button>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <p className="bg-amber-50 text-amber-500 px-3 py-1 rounded-full inline-flex w-fit border border-amber-500">
+                              {locale === routing.defaultLocale
+                                ? "Sesi pembayaran konsultasi telah kedaluwarsa"
+                                : "Consultation payment session has expired"}
+                            </p>
+                            <p className="text-muted-foreground text-sm! border-l-primary border-l-4 px-3 py-2 bg-blue-50 mt-4">
+                              {locale === routing.defaultLocale
+                                ? "Silahkan buat sesi konsultasi baru dengan klik salah satu tombol konsultasi dengan dokter di salah satu percakapan ini untuk melanjutkan konsultasi dengan dokter."
+                                : "Please create a new consultation session by clicking one of the consultation buttons with a doctor in one of these conversations to continue consulting with a doctor."}
+                            </p>
+                          </>
+                        ))}
                     </div>
                   </div>
                 )}

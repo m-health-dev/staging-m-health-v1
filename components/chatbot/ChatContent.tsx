@@ -27,6 +27,7 @@ const ChatContent = ({
   status,
   shareSlug,
   labels,
+  consultSession,
 }: {
   session?: any[];
   initialHistory?: any[];
@@ -40,6 +41,7 @@ const ChatContent = ({
   status?: string;
   shareSlug?: string;
   labels?: any;
+  consultSession?: any;
 }) => {
   // Custom hooks for state management
   const { selectedChat, isPending, currentSessionID, chatResetKey } =
@@ -112,6 +114,7 @@ const ChatContent = ({
         publicID={publicID}
         user={user}
         onNewMessage={refresh}
+        consultSession={consultSession}
       />
     );
   }
@@ -148,6 +151,7 @@ const ChatContent = ({
         currentSessionID={currentSessionID}
         chatResetKey={chatResetKey}
         urgent={urgent}
+        consultSession={consultSession}
       />
     );
   }

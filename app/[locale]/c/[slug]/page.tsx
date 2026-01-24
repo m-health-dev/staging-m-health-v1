@@ -10,6 +10,7 @@ import {
   getChatSession,
   getShareSlug,
 } from "@/lib/chatbot/getChatActivity";
+import { getConsultationByChatSessionID } from "@/lib/consult/get-consultation";
 import { getAllMedical } from "@/lib/medical/get-medical";
 import { getAllPackages } from "@/lib/packages/get-packages";
 import { getAllWellness } from "@/lib/wellness/get-wellness";
@@ -30,7 +31,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -39,7 +40,10 @@ export async function generateMetadata(
   const { data, all } = await getChatSession(slug);
   // console.log({ data, all });
 
-  const chatSessionDesc = locale === routing.defaultLocale ? "Sesi Chat M HEALTH" : "M HEALTH Chat Session";
+  const chatSessionDesc =
+    locale === routing.defaultLocale
+      ? "Sesi Chat M HEALTH"
+      : "M HEALTH Chat Session";
 
   return {
     title: `${all.data.title}`,
@@ -50,9 +54,9 @@ export async function generateMetadata(
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
-            all.data.title
+            all.data.title,
           )}&description=${encodeURIComponent(
-            chatSessionDesc
+            chatSessionDesc,
           )}&path=${encodeURIComponent(`m-health.id/c/${slug}`)}`,
           width: 800,
           height: 450,
@@ -75,9 +79,10 @@ export default async function SessionPage({ params }: Props) {
 
   const t = await getTranslations("utility");
 
-  const [sessionChat, shareSlug, supabase] = await Promise.all([
+  const [sessionChat, shareSlug, consultSession, supabase] = await Promise.all([
     getChatSession(sessionID),
     getShareSlug(sessionID),
+    getConsultationByChatSessionID(sessionID),
     createClient(),
   ]);
 
@@ -101,8 +106,8 @@ export default async function SessionPage({ params }: Props) {
   const historyData = checkUser
     ? await getChatHistoryByUserID(userID!, 1, 50)
     : publicID
-    ? await getChatHistory(publicID, 1, 50)
-    : { data: [], total: 0 };
+      ? await getChatHistory(publicID, 1, 50)
+      : { data: [], total: 0 };
   // console.log("History: ", historyData);
   const {
     data: { session },
@@ -166,6 +171,7 @@ export default async function SessionPage({ params }: Props) {
           delete: t("delete"),
           cancel: t("cancel"),
         }}
+        consultSession={consultSession.data}
       />
     </>
   );

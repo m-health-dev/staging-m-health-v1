@@ -26,6 +26,7 @@ const ChatStart = ({
   status,
   urgent,
   locale,
+  consultSession,
 }: {
   chat: Message[];
   session?: any[];
@@ -37,6 +38,7 @@ const ChatStart = ({
   status?: string;
   urgent?: boolean;
   locale?: string;
+  consultSession?: any;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -424,6 +426,7 @@ const ChatStart = ({
         pendingSessionId={pendingSessionId}
         status={status}
         urgent={urgent}
+        consultSession={consultSession}
       />
     );
   }

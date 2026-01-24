@@ -13,7 +13,7 @@ const apiBaseUrl =
 
 export async function getAllPaymentsRecord(
   page: number = 1,
-  per_page: number = 10
+  per_page: number = 10,
 ) {
   try {
     const accessToken = await getAccessToken();
@@ -26,7 +26,7 @@ export async function getAllPaymentsRecord(
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();
@@ -73,7 +73,7 @@ export async function getPaymentsByOrderID(order_id: string) {
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();
@@ -93,6 +93,44 @@ export async function getPaymentsByOrderID(order_id: string) {
     };
   } catch (error) {
     console.error("Receive all transactions/read by order_id Error:", error);
+    return {
+      success: false,
+      data: null,
+      message: "Terjadi kesalahan saat terhubung ke server.",
+    };
+  }
+}
+
+export async function getPaymentsByChatSessionID(session_id: string) {
+  try {
+    const res = await fetch(
+      `${apiBaseUrl}/api/v1/payments/by-session-id/${session_id}`,
+      {
+        method: "GET",
+        headers: {
+          "X-API-Key": apiSecretKey,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    const json = await res.json();
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: null,
+        error: `Failed to receive all transactions/read by session_id data. Cause : ${json.message}`,
+      };
+    }
+
+    // console.log(json.links);
+    return {
+      data: json,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Receive all transactions/read by session_id Error:", error);
     return {
       success: false,
       data: null,
@@ -139,7 +177,7 @@ export async function getPaymentsByOrderIDAdmin(order_id: string) {
 export async function getPaymentsByUser(
   user_id: string,
   page: number = 1,
-  per_page: number = 10
+  per_page: number = 10,
 ) {
   try {
     const accessToken = await getAccessToken();
@@ -152,7 +190,7 @@ export async function getPaymentsByUser(
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();

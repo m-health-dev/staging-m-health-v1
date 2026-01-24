@@ -232,7 +232,7 @@ const AddVendor = () => {
                   </FormItem>
                 )}
               />
-              <div className="lg:grid flex flex-col grid-cols-2 gap-5 items-start">
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start">
                 <DynamicInputField
                   form={form}
                   name="category"
@@ -245,7 +245,7 @@ const AddVendor = () => {
                 />
               </div>
 
-              <div className="lg:grid grid-cols-2 flex flex-col gap-5 items-start">
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start">
                 <FormField
                   control={form.control}
                   name="logo"
@@ -414,7 +414,7 @@ const AddVendor = () => {
                 />
               </div>
 
-              <div className="lg:grid grid-cols-2 flex flex-col gap-5 items-start">
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start">
                 <FormField
                   control={form.control}
                   name="agent_photo_url"

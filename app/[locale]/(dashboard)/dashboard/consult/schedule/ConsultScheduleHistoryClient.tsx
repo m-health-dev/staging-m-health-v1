@@ -9,6 +9,7 @@ import SimplePagination from "@/components/utility/simple-pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupiah } from "@/helper/rupiah";
 import { ConsultScheduleType } from "@/types/consult.types";
+import { Check, Loader, Stethoscope, X } from "lucide-react";
 
 type ConsultScheduleHistoryClientProps = {
   consult: ConsultScheduleType[];
@@ -41,25 +42,39 @@ const ConsultScheduleHistoryClient = ({
               return (
                 <div key={id} className="bg-white rounded-2xl border p-4">
                   <Link href={`/${locale}/dashboard/consult/${cons.id}`}>
-                    {cons.payment_status === "success" ? (
-                      <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
-                        {locale === routing.defaultLocale
-                          ? "Pembayaran Berhasil"
-                          : "Payment Successful"}
-                      </p>
-                    ) : cons.payment_status === "waiting" ? (
-                      <p className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
-                        {locale === routing.defaultLocale
-                          ? "Menunggu Pembayaran"
-                          : "Waiting for Payment"}
-                      </p>
-                    ) : (
-                      <p className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
-                        {locale === routing.defaultLocale
-                          ? "Pembayaran Gagal"
-                          : "Payment Failed"}
-                      </p>
-                    )}
+                    <div className="flex flex-wrap gap-2">
+                      {cons.payment_status === "success" ? (
+                        <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                          <Check className="size-4" />
+                          {locale === routing.defaultLocale
+                            ? "Pembayaran Berhasil"
+                            : "Payment Successful"}
+                        </p>
+                      ) : cons.payment_status === "waiting" ? (
+                        <p className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                          <Loader className="size-4" />
+                          {locale === routing.defaultLocale
+                            ? "Menunggu Pembayaran"
+                            : "Waiting for Payment"}
+                        </p>
+                      ) : (
+                        <p className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                          <X className="size-4" />
+                          {locale === routing.defaultLocale
+                            ? "Pembayaran Gagal"
+                            : "Payment Failed"}
+                        </p>
+                      )}
+
+                      {cons.doctor_id && (
+                        <p className="text-sky-600 bg-sky-50 border-sky-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                          <Stethoscope className="size-4" />
+                          {locale === routing.defaultLocale
+                            ? "Dokter Ditugaskan"
+                            : "Doctor Assigned"}
+                        </p>
+                      )}
+                    </div>
 
                     <p className="text-muted-foreground mb-0 text-sm! mt-5">
                       {locale === routing.defaultLocale

@@ -8,6 +8,7 @@ import { routing } from "@/i18n/routing";
 import SimplePagination from "@/components/utility/simple-pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupiah } from "@/helper/rupiah";
+import { Check, Loader, X } from "lucide-react";
 
 type UserTransactionHistoryClientProps = {
   history: any[];
@@ -28,6 +29,13 @@ const UserTransactionHistoryClient = ({
   return (
     <div className="mb-[20vh]">
       <div className="flex flex-col divide-y-2 gap-2">
+        {history.length === 0 && !loading && (
+          <p className="text-start text-muted-foreground py-10">
+            {locale === routing.defaultLocale
+              ? "Tidak ada riwayat transaksi."
+              : "No transaction history."}
+          </p>
+        )}
         {loading
           ? Array.from({ length: perPage }).map(() => {
               const id = nanoid();
@@ -48,35 +56,38 @@ const UserTransactionHistoryClient = ({
                       <div className="inline-flex mb-4">
                         {h.payment_status === "settlement" ||
                         h.payment_status === "capture" ? (
-                          <p className="bg-green-50 border border-green-500 px-3 py-1 rounded-full capitalize text-green-500 text-xs!">
+                          <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                            <Check className="size-4" />
                             {locale === routing.defaultLocale
                               ? "Pembayaran Berhasil"
-                              : "Payment Success"}
+                              : "Payment Successful"}
                           </p>
                         ) : h.payment_status === "pending" ? (
-                          <p className="bg-amber-50 border border-amber-500 px-3 py-1 rounded-full capitalize text-amber-500 text-xs!">
+                          <p className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                            <Loader className="size-4" />
                             {locale === routing.defaultLocale
                               ? "Menunggu Pembayaran"
-                              : "Waiting Payment"}
+                              : "Waiting for Payment"}
                           </p>
                         ) : (
-                          <p className="bg-red-50 border border-red-500 px-3 py-1 rounded-full capitalize text-red-500 text-xs!">
+                          <p className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                            <X className="size-4" />
                             {locale === routing.defaultLocale
                               ? "Pembayaran Gagal"
                               : "Payment Failed"}
                           </p>
                         )}
                       </div>
-                      <p className="text-health text-sm!">{h.transaction_id}</p>
+                      <p className="text-health text-xs!">{h.transaction_id}</p>
                       <h6 className="text-primary font-semibold mb-4">
                         {h.product_data.name}
                       </h6>
-                      <p className="text-sm! text-muted-foreground">
+                      <p className="text-xs! text-muted-foreground">
                         {locale === routing.defaultLocale
                           ? "Dibuat pada"
                           : "Created at"}
                       </p>
-                      <p>
+                      <p className="text-sm! text-muted-foreground mb-0">
                         <LocalDateTime date={h.created_at} />
                       </p>
                     </div>
@@ -97,13 +108,15 @@ const UserTransactionHistoryClient = ({
             })}
       </div>
 
-      <SimplePagination
-        links={links}
-        meta={meta}
-        show={[10, 25, 50]}
-        defaultPerPage={10}
-        onLoadingChange={setLoading}
-      />
+      {history.length === 0 && !loading && (
+        <SimplePagination
+          links={links}
+          meta={meta}
+          show={[10, 25, 50]}
+          defaultPerPage={10}
+          onLoadingChange={setLoading}
+        />
+      )}
     </div>
   );
 };

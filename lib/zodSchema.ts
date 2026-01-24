@@ -261,3 +261,7 @@ export const DoctorSchema = z.object({
   is_available: z.boolean(),
   status: z.string(),
 });
+
+export const ConsultationPriceSchema = z.object({
+  price: z.number().min(1000),
+});

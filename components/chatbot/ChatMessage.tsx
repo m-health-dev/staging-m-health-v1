@@ -32,6 +32,8 @@ import HotelCardSlide from "../vendor-hotel/hotel-card-slide";
 import DoctorCardSlide from "../doctor/doctor-card-slide";
 import LazyActionItem from "./LazyActionItem";
 import { get } from "node:http";
+import InsuranceCardSlide from "../insurance/insurance-card-slide";
+import Image from "next/image";
 
 const ReactMarkdown = dynamic(() => import("react-markdown"), {
   ssr: false,
@@ -591,6 +593,47 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     </LazyActionItem>
                   )}
 
+                  {action.type === "insurance" && action.ids.length > 0 && (
+                    <LazyActionItem
+                      index={actionIndex}
+                      delay={200}
+                      minHeight="250px"
+                      rootMargin="50px"
+                    >
+                      <div>
+                        <h4 className="font-semibold text-primary mb-5">
+                          {locale === routing.defaultLocale
+                            ? "Asuransi Terkait"
+                            : "Related Insurance"}
+                        </h4>
+                        <div
+                          key={actionIndex}
+                          ref={scrollRef}
+                          className={cn(
+                            "flex flex-row overflow-x-auto cursor-grab active:cursor-grabbing gap-4 p-5 rounded-2xl select-none bg-linear-to-t from-transparent via-background to-background",
+                          )}
+                          onMouseDown={handleMouseDown}
+                          onMouseMove={handleMouseMove}
+                          onMouseUp={handleMouseUp}
+                          onMouseLeave={handleMouseUp}
+                        >
+                          {action.ids.map((item: any, index: number) => (
+                            <div
+                              key={index}
+                              className="lg:w-3/6 w-5/6 h-auto shrink-0"
+                            >
+                              <InsuranceCardSlide
+                                key={index}
+                                id={item}
+                                locale={locale}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </LazyActionItem>
+                  )}
+
                   {action.type === "hotels" && action.ids.length > 0 && (
                     <LazyActionItem
                       index={actionIndex}
@@ -695,6 +738,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     ? "Jika anda ingin berkonsultasi dengan dokter untuk penanganan lebih lanjut, silakan klik tombol di bawah ini."
                     : "If you want to consult a doctor for further treatment, please click the button below."}
                 </p>
+
                 <Button
                   variant="default"
                   size={"lg"}
@@ -705,6 +749,19 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     ? "Konsultasi dengan Dokter"
                     : "Start Consultation with Doctor"}
                 </Button>
+
+                <p className="border lg:rounded-full rounded-2xl px-4 py-2 text-center mt-5">
+                  {locale === routing.defaultLocale
+                    ? "Konsultasi akan dilakukan secara daring menggunakan Google Meet"
+                    : "Consultation will be conducted online using Google Meet"}
+                  <Image
+                    src="https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/google_meet_icon.png"
+                    width={20}
+                    height={20}
+                    alt="Google Meet Icon"
+                    className="inline-block ml-2"
+                  />
+                </p>
               </Link>
             </div>
           )}

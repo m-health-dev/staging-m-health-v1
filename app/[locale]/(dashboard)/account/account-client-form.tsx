@@ -84,7 +84,7 @@ function parseDomicile(raw: unknown): {
 
 function toUtcMidnightFromLocalDate(date: Date) {
   return new Date(
-    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
   );
 }
 
@@ -102,7 +102,7 @@ const AccountClientForm = ({
   const [deletedImages, setDeletedImages] = useState<string[]>([]);
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
-    account.avatar_url || null
+    account.avatar_url || null,
   );
   const [uploadLoadingAvatar, setUploadLoadingAvatar] = useState(false);
 
@@ -118,7 +118,7 @@ const AccountClientForm = ({
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await res.json();
@@ -154,7 +154,7 @@ const AccountClientForm = ({
               height: form.getValues("height"),
               weight: form.getValues("weight"),
               birthdate: toUtcMidnightFromLocalDate(
-                form.getValues("birthdate")
+                form.getValues("birthdate"),
               ),
               avatar_url: data.url,
               domicile: {
@@ -165,7 +165,7 @@ const AccountClientForm = ({
                   form.getValues("domicile_postal_code")?.trim() || "",
               },
             },
-            { id: account.id }
+            { id: account.id },
           );
         }
 
@@ -179,7 +179,9 @@ const AccountClientForm = ({
           router.refresh();
         } else {
           toast.error(
-            locale === routing.defaultLocale ? patchRes.error?.id : patchRes.error?.en
+            locale === routing.defaultLocale
+              ? patchRes.error?.id
+              : patchRes.error?.en,
           );
         }
       }
@@ -195,7 +197,7 @@ const AccountClientForm = ({
     url: string,
     field: "default" | "avatar",
 
-    index?: number
+    index?: number,
   ) {
     setLoading(true);
     const deletedPath = url; // url relative yg dikirim ke API
@@ -241,7 +243,7 @@ const AccountClientForm = ({
               height: form.getValues("height"),
               weight: form.getValues("weight"),
               birthdate: toUtcMidnightFromLocalDate(
-                form.getValues("birthdate")
+                form.getValues("birthdate"),
               ),
               avatar_url: "",
               domicile: {
@@ -252,7 +254,7 @@ const AccountClientForm = ({
                   form.getValues("domicile_postal_code")?.trim() || "",
               },
             },
-            { id: account.id }
+            { id: account.id },
           );
         }
 
@@ -262,12 +264,14 @@ const AccountClientForm = ({
           toast.success(
             locale === routing.defaultLocale
               ? "Avatar berhasil dihapus!"
-              : "Avatar deleted successfully!"
+              : "Avatar deleted successfully!",
           );
           router.refresh();
         } else {
           toast.error(
-            locale === routing.defaultLocale ? patchRes.error?.id : patchRes.error?.en
+            locale === routing.defaultLocale
+              ? patchRes.error?.id
+              : patchRes.error?.en,
           );
         }
       }
@@ -343,13 +347,15 @@ const AccountClientForm = ({
             postal_code: data.domicile_postal_code?.trim() || "",
           },
         },
-        { id: account.id }
+        { id: account.id },
       );
     }
 
     if (res.success) {
       setLoading(false);
-      toast.success(locale === routing.defaultLocale ? res.message?.id : res.message?.en);
+      toast.success(
+        locale === routing.defaultLocale ? res.message?.id : res.message?.en,
+      );
       if (!admin) {
         router.refresh();
       } else {
@@ -357,7 +363,9 @@ const AccountClientForm = ({
       }
     } else if (res.error) {
       setLoading(false);
-      toast.error(locale === routing.defaultLocale ? res.error.id : res.error.en);
+      toast.error(
+        locale === routing.defaultLocale ? res.error.id : res.error.en,
+      );
     }
   }
 
@@ -386,9 +394,8 @@ const AccountClientForm = ({
                           onDrop={async (acceptedFiles) => {
                             setUploadLoadingAvatar(true);
                             try {
-                              const url = await handleImageUpload(
-                                acceptedFiles
-                              );
+                              const url =
+                                await handleImageUpload(acceptedFiles);
 
                               if (url) {
                                 form.setValue("avatar_url", url, {
@@ -425,9 +432,9 @@ const AccountClientForm = ({
                               handleDelete(
                                 avatarPreview.replace(
                                   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-                                  ""
+                                  "",
                                 ),
-                                "avatar"
+                                "avatar",
                               )
                             }
                             className="absolute w-10 h-10 top-5 right-0 rounded-full shadow-2xl"
@@ -453,6 +460,7 @@ const AccountClientForm = ({
                     </FormLabel>
                     <FormControl>
                       <Input
+                        disabled
                         readOnly
                         {...field}
                         type="email"
@@ -491,7 +499,9 @@ const AccountClientForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-primary font-semibold!">
-                    {locale === routing.defaultLocale ? "Nama Lengkap" : "Full Name"}
+                    {locale === routing.defaultLocale
+                      ? "Nama Lengkap"
+                      : "Full Name"}
                   </FormLabel>
                   <FormControl>
                     <Input {...field} className="h-12" />
@@ -509,7 +519,9 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === routing.defaultLocale ? "Tinggi Badan" : "Height"}
+                      {locale === routing.defaultLocale
+                        ? "Tinggi Badan"
+                        : "Height"}
                     </FormLabel>
                     <FormControl>
                       <div className="relative">
@@ -538,7 +550,9 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === routing.defaultLocale ? "Berat Badan" : "Weight"}
+                      {locale === routing.defaultLocale
+                        ? "Berat Badan"
+                        : "Weight"}
                     </FormLabel>
                     <FormControl>
                       <div className="relative">
@@ -569,7 +583,9 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === routing.defaultLocale ? "Tanggal Lahir" : "Date of Birth"}{" "}
+                      {locale === routing.defaultLocale
+                        ? "Tanggal Lahir"
+                        : "Date of Birth"}{" "}
                       {/* {field.value && (
                         <span className="bg-accent px-2 py-1 rounded-lg inline-flex! w-fit text-muted-foreground">
                           {getAgeDetail(field.value).years} Tahun{" "}
@@ -596,7 +612,9 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === routing.defaultLocale ? "Jenis Kelamin" : "Gender"}
+                      {locale === routing.defaultLocale
+                        ? "Jenis Kelamin"
+                        : "Gender"}
                     </FormLabel>
 
                     <RadioGroup
@@ -639,7 +657,9 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === routing.defaultLocale ? "Provinsi/ Kota" : "Province/ City"}
+                      {locale === routing.defaultLocale
+                        ? "Provinsi/ Kota"
+                        : "Province/ City"}
                     </FormLabel>
                     <FormControl>
                       <Input {...field} className="h-12" />
@@ -654,7 +674,9 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === routing.defaultLocale ? "Kecamatan" : "District"}
+                      {locale === routing.defaultLocale
+                        ? "Kecamatan"
+                        : "District"}
                     </FormLabel>
                     <FormControl>
                       <Input {...field} className="h-12" />
@@ -669,7 +691,9 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === routing.defaultLocale ? "Kode Pos" : "Postal Code"}
+                      {locale === routing.defaultLocale
+                        ? "Kode Pos"
+                        : "Postal Code"}
                     </FormLabel>
                     <FormControl>
                       <Input {...field} type="number" className="h-12" />
@@ -684,7 +708,9 @@ const AccountClientForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === routing.defaultLocale ? "Alamat Lengkap" : "Full Address"}
+                      {locale === routing.defaultLocale
+                        ? "Alamat Lengkap"
+                        : "Full Address"}
                     </FormLabel>
                     <FormControl>
                       <Textarea {...field} className="min-h-32" />
@@ -706,8 +732,8 @@ const AccountClientForm = ({
                   ? "Memperbarui..."
                   : "Updating..."
                 : locale === routing.defaultLocale
-                ? "Perbarui Akun"
-                : "Update Account"}
+                  ? "Perbarui Akun"
+                  : "Update Account"}
             </Button>
           </div>
         </form>

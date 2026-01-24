@@ -41,6 +41,7 @@ interface ChatWithSidebarProps {
   currentSessionID: string | null;
   chatResetKey: number;
   urgent?: boolean;
+  consultSession?: any;
 }
 
 const ChatWithSidebar: React.FC<ChatWithSidebarProps> = ({
@@ -72,6 +73,7 @@ const ChatWithSidebar: React.FC<ChatWithSidebarProps> = ({
   currentSessionID,
   chatResetKey,
   urgent,
+  consultSession,
 }) => {
   // Manage messages state locally for new chat transitions
   const [localMessages, setLocalMessages] = useState<Message[]>(selectedChat);
@@ -157,6 +159,7 @@ const ChatWithSidebar: React.FC<ChatWithSidebarProps> = ({
           urgent={urgent}
           locale={locale}
           type={type}
+          consultSession={consultSession}
         />
       </SidebarInset>
     </SidebarProvider>

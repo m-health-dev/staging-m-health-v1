@@ -341,14 +341,16 @@ const StudioDashboard = async () => {
           </div>
         </div>
       </div>
-      {/* <div className="bg-white p-4 border rounded-2xl mt-10">
+      <div className="bg-white p-4 border rounded-2xl mt-10">
         <p className="text-sm! text-primary mb-1">
-          {locale === routing.defaultLocale ? "Token Akses Anda" : "Your Access Token"}
+          {locale === routing.defaultLocale
+            ? "Token Akses Anda"
+            : "Your Access Token"}
         </p>
         <pre className="text-wrap wrap-anywhere text-sm!">
           {JSON.stringify(accessToken, null, 2)}
         </pre>
-      </div> */}
+      </div>
       <div className="my-10">
         <UnderConstruction element />
       </div>

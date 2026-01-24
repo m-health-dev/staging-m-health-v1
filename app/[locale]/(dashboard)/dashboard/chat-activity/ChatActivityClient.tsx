@@ -105,6 +105,13 @@ const ChatActivityClient = ({
   return (
     <div className="mb-[20vh]">
       <div className="flex flex-col gap-5">
+        {history.length === 0 && !loading && (
+          <p className="text-start text-muted-foreground py-10">
+            {locale === routing.defaultLocale
+              ? "Belum ada riwayat percakapan."
+              : "No chat history."}
+          </p>
+        )}
         {history.length >= 1 && (
           <Dialog open={dialogOpen}>
             <DialogTrigger asChild onClick={() => setDialogOpen(true)}>
@@ -224,13 +231,15 @@ const ChatActivityClient = ({
             })}
       </div>
 
-      <SimplePagination
-        links={links}
-        meta={meta}
-        show={[10, 25, 50]}
-        defaultPerPage={10}
-        onLoadingChange={setLoading}
-      />
+      {history.length === 0 && !loading && (
+        <SimplePagination
+          links={links}
+          meta={meta}
+          show={[10, 25, 50]}
+          defaultPerPage={10}
+          onLoadingChange={setLoading}
+        />
+      )}
     </div>
   );
 };
