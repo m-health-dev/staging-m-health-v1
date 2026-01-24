@@ -139,7 +139,7 @@ const ErrorContent = ({
 
   return (
     <ContainerWrap
-      size="xxl"
+      size="xl"
       className="relative flex lg:flex-row flex-col w-full min-h-screen items-center"
     >
       <div className="flex flex-col items-center justify-center min-h-screen w-full">
