@@ -11,8 +11,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Skeleton } from "../ui/skeleton";
 import { routing } from "@/i18n/routing";
 
-const OurNews = async () => {
-  const locale = await getLocale();
+const OurNews = async ({ data, locale }: { data: any; locale: string }) => {
   return (
     <div className="mt-[5vh] bg-white border-t lg:rounded-t-[5rem] rounded-t-4xl">
       <ContainerWrap className="py-[5vh]">
@@ -20,7 +19,7 @@ const OurNews = async () => {
           {locale === routing.defaultLocale ? "Artikel Terbaru" : "Our News"}
         </h2>
         <Suspense fallback={<SkeletonComponent />}>
-          <Content />
+          <Content data={data} locale={locale} />
         </Suspense>
       </ContainerWrap>
       <div className="bg-linear-to-b from-white to-background w-full h-52" />
@@ -40,12 +39,8 @@ const SkeletonComponent = () => {
   );
 };
 
-const Content = async () => {
-  const locale = await getLocale();
-
-  const { data: articlesResult } = await getAllPublicArticles(1, 4);
-
-  const articles = Array.isArray(articlesResult) ? articlesResult : [];
+const Content = async ({ data, locale }: { data: any; locale: string }) => {
+  const articles = Array.isArray(data) ? data : [];
 
   const t = await getTranslations("utility");
   return (

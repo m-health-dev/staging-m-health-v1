@@ -24,7 +24,7 @@ const EventCard = ({ e, locale }: { e: EventsType; locale: string }) => {
             <Skeleton
               className={cn(
                 "absolute inset-0 z-10 rounded-2xl flex w-full justify-center items-center transition-all duration-500",
-                imageLoaded ? "hidden" : "block"
+                imageLoaded ? "hidden" : "block",
               )}
             />
             <Image
@@ -39,7 +39,7 @@ const EventCard = ({ e, locale }: { e: EventsType; locale: string }) => {
               loading="lazy"
               className={cn(
                 "relative w-full aspect-square object-center object-cover rounded-2xl transition-all duration-500  group-hover:scale-105",
-                imageLoaded ? "opacity-100" : "opacity-0"
+                imageLoaded ? "opacity-100" : "opacity-0",
               )}
             />
           </div>
@@ -115,7 +115,7 @@ const EventCard = ({ e, locale }: { e: EventsType; locale: string }) => {
 
         <div className="flex items-center gap-3">
           {e.registration_url ? (
-            <Link href={e.registration_url} target="_blank">
+            <Link href={`${e.registration_url}`} target="_blank">
               <Button className="rounded-full lg:w-fit w-full font-medium cursor-pointer">
                 <ArrowUpRight className="size-5" />{" "}
                 <p>

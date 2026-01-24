@@ -13,8 +13,13 @@ import { PackageType } from "@/types/packages.types";
 import { Skeleton } from "../ui/skeleton";
 import { routing } from "@/i18n/routing";
 
-const PopularPackage = async () => {
-  const locale = await getLocale();
+const PopularPackage = async ({
+  data,
+  locale,
+}: {
+  data: any;
+  locale: string;
+}) => {
   return (
     <div className="mt-[10vh]">
       <ContainerWrap>
@@ -25,7 +30,7 @@ const PopularPackage = async () => {
         </h2>
       </ContainerWrap>
       <Suspense fallback={<SkeletonComponent />}>
-        <Content />
+        <Content data={data} locale={locale} />
       </Suspense>
     </div>
   );
@@ -45,15 +50,8 @@ const SkeletonComponent = () => {
   );
 };
 
-const Content = async () => {
-  const [packagesResult, locale] = await Promise.all([
-    getAllPackages(1, 10),
-    getLocale(),
-  ]);
-
-  const packages = Array.isArray(packagesResult.data)
-    ? packagesResult.data
-    : [];
+const Content = async ({ data, locale }: { data: any; locale: string }) => {
+  const packages = Array.isArray(data) ? data : [];
 
   const t = await getTranslations("utility");
   return (

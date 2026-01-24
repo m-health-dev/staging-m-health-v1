@@ -5,8 +5,8 @@ import ContainerWrap from "../utility/ContainerWrap";
 import QuickAction from "./QuickAction";
 import { getAllActiveHero } from "@/lib/hero/get-hero";
 
-const Jumbotron = async () => {
-  const { data } = await getAllActiveHero();
+const Jumbotron = async ({ data, locale }: { data: any; locale: string }) => {
+  // const { data } = await getAllActiveHero();
   return (
     <>
       <ContainerWrap size="xl">

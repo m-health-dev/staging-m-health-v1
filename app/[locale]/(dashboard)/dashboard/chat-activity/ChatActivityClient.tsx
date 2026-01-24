@@ -214,7 +214,7 @@ const ChatActivityClient = ({
                   </Link>
                   <Button
                     variant={"destructive_outline"}
-                    className="w-7 h-7 rounded-full absolute right-2 bottom-2"
+                    className="w-8 h-8 rounded-full absolute right-2 top-2"
                     onClick={() => handleDeleteChatSession(h.id)}
                   >
                     {loadDelete ? <Spinner /> : <Trash className="size-3" />}

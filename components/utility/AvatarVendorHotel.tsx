@@ -19,12 +19,14 @@ const AvatarVendorHotel = ({
   vendor_id,
   size = "sm",
   locale,
+  arranged,
 }: {
   type: "vendor" | "hotel";
   hotel_id?: string;
   vendor_id?: string;
   size?: "sm" | "md" | "lg";
   locale: string;
+  arranged?: boolean;
 }) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -74,7 +76,7 @@ const AvatarVendorHotel = ({
         className={cn(
           size === "sm" && "w-7 h-7",
           size === "md" && "w-10 h-10",
-          size === "lg" && "w-14 h-14"
+          size === "lg" && "w-14 h-14",
         )}
       >
         <Skeleton
@@ -82,7 +84,7 @@ const AvatarVendorHotel = ({
             "rounded-full",
             size === "sm" && "w-7 h-7",
             size === "md" && "w-10 h-10",
-            size === "lg" && "w-14 h-14"
+            size === "lg" && "w-14 h-14",
           )}
         />
       </div>
@@ -91,7 +93,7 @@ const AvatarVendorHotel = ({
           "w-32",
           size === "sm" && "h-5",
           size === "md" && "h-7",
-          size === "lg" && "h-10"
+          size === "lg" && "h-10",
         )}
       >
         <Skeleton
@@ -99,7 +101,7 @@ const AvatarVendorHotel = ({
             "w-32 rounded-full",
             size === "sm" && "h-5",
             size === "md" && "h-7",
-            size === "lg" && "h-10"
+            size === "lg" && "h-10",
           )}
         />
       </div>
@@ -121,7 +123,7 @@ const AvatarVendorHotel = ({
               "object-cover  rounded-full border",
               size === "sm" && "w-7 h-7",
               size === "md" && "w-10 h-10",
-              size === "lg" && "w-14 h-14"
+              size === "lg" && "w-14 h-14",
             )}
           />
           <p
@@ -129,7 +131,7 @@ const AvatarVendorHotel = ({
               " text-health normal-case line-clamp-1 -mb-0.5",
               size === "sm" && "text-xs!",
               size === "md" && "text-sm!",
-              size === "lg" && "text-base!"
+              size === "lg" && "text-base!",
             )}
           >
             {data.name}
@@ -144,7 +146,7 @@ const AvatarVendorHotel = ({
         "border rounded-full",
         size === "sm" && "w-7 h-7",
         size === "md" && "w-10 h-10",
-        size === "lg" && "w-14 h-14"
+        size === "lg" && "w-14 h-14",
       )}
       colors={["#3e77ab", "#22b26e", "#f2f26f", "#fff7bd", "#95cfb7"]}
       variant="beam"

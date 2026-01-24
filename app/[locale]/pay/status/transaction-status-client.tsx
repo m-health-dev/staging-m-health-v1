@@ -115,7 +115,7 @@ const TransactionStatusClient = ({
   return (
     <ContainerWrap size="md" className="my-20">
       {initialLoading ? (
-        <div className="flex flex-col space-y-5 p-10">
+        <div className="flex flex-col space-y-5">
           <Skeleton className="h-12 w-3/4" />
           <Skeleton className="h-24 w-1/2" />
           <Skeleton className="h-12 w-full" />

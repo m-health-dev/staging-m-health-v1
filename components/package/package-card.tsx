@@ -68,7 +68,11 @@ const PackageCard = ({
                 } // Ganti dengan slide.image_url saat tersedia
                 width={720}
                 height={403}
-                alt={locale === routing.defaultLocale ? slide.id_title : slide.en_title}
+                alt={
+                  locale === routing.defaultLocale
+                    ? slide.id_title
+                    : slide.en_title
+                }
                 onLoad={() => setImageLoaded(true)}
                 loading="lazy"
                 className={cn(
@@ -83,14 +87,18 @@ const PackageCard = ({
             <div className="">
               <div>
                 <h5 className="capitalize font-bold text-primary line-clamp-3">
-                  {locale === routing.defaultLocale ? slide.id_title : slide.en_title}
+                  {locale === routing.defaultLocale
+                    ? slide.id_title
+                    : slide.en_title}
                 </h5>
               </div>
             </div>
             <div className="mt-2 ">
               <div>
                 <p className="text-muted-foreground line-clamp-2">
-                  {locale === routing.defaultLocale ? slide.id_tagline : slide.en_tagline}
+                  {locale === routing.defaultLocale
+                    ? slide.id_tagline
+                    : slide.en_tagline}
                 </p>
               </div>
             </div>
@@ -142,7 +150,11 @@ const PackageCard = ({
               } // Ganti dengan slide.image_url saat tersedia
               width={720}
               height={403}
-              alt={locale === routing.defaultLocale ? slide.id_title : slide.en_title}
+              alt={
+                locale === routing.defaultLocale
+                  ? slide.id_title
+                  : slide.en_title
+              }
               onLoad={() => setImageLoaded(true)}
               loading="lazy"
               className={cn(
@@ -157,14 +169,18 @@ const PackageCard = ({
           <div className="">
             <div>
               <h5 className="capitalize font-bold text-primary line-clamp-3">
-                {locale === routing.defaultLocale ? slide.id_title : slide.en_title}
+                {locale === routing.defaultLocale
+                  ? slide.id_title
+                  : slide.en_title}
               </h5>
             </div>
           </div>
           <div className="mt-2 ">
             <div>
               <p className="text-muted-foreground line-clamp-2">
-                {locale === routing.defaultLocale ? slide.id_tagline : slide.en_tagline}
+                {locale === routing.defaultLocale
+                  ? slide.id_tagline
+                  : slide.en_tagline}
               </p>
             </div>
           </div>

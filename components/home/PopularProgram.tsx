@@ -13,8 +13,13 @@ import { Skeleton } from "../ui/skeleton";
 import { getLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 
-const PopularProgram = async () => {
-  const locale = await getLocale();
+const PopularProgram = async ({
+  data,
+  locale,
+}: {
+  data: any;
+  locale: string;
+}) => {
   return (
     <div className="bg-primary pt-[5vh] pb-[30vh] mt-[7vh] lg:rounded-t-[5rem] rounded-t-4xl">
       <ContainerWrap>
@@ -24,7 +29,7 @@ const PopularProgram = async () => {
             : "Wellness Programs"}
         </h2>
         <Suspense fallback={<SkeletonComponent />}>
-          <Content />
+          <Content data={data} locale={locale} />
         </Suspense>
       </ContainerWrap>
     </div>
@@ -46,13 +51,7 @@ const SkeletonComponent = () => {
   );
 };
 
-const Content = async () => {
-  const [wellnessResult, locale] = await Promise.all([
-    getAllWellness(1, 10),
-    getLocale(),
-  ]);
-  const wellness = Array.isArray(wellnessResult.data)
-    ? wellnessResult.data
-    : [];
+const Content = async ({ data, locale }: { data: any; locale: string }) => {
+  const wellness = Array.isArray(data) ? data : [];
   return <PopularProgramGrid data={wellness} locale={locale} />;
 };

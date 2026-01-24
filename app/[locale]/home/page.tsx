@@ -8,6 +8,7 @@ import PopularProgram from "@/components/home/PopularProgram";
 import CallToAction from "@/components/utility/CallToAction";
 import Wrapper from "@/components/utility/Wrapper";
 import { routing } from "@/i18n/routing";
+import { getAllHomeData } from "@/lib/home/get-home-data";
 import { Metadata, ResolvingMetadata } from "next";
 import { getLocale } from "next-intl/server";
 
@@ -63,10 +64,13 @@ export async function generateMetadata(
 }
 
 const HomePage = async () => {
+  const locale = await getLocale();
+  const { hero, packages, wellness, medical, events, articles } =
+    await getAllHomeData();
   return (
     <Wrapper>
       {/* Jumbotron tetap load langsung karena above the fold */}
-      <Jumbotron />
+      <Jumbotron data={hero} locale={locale} />
 
       {/* <PopularPackageSkeleton />
       <PopularMedicalSkeleton />
@@ -74,11 +78,11 @@ const HomePage = async () => {
       <CurrentEventsSkeleton />
       <OurNewsSkeleton /> */}
       <HomeLazySections
-        popularPackage={<PopularPackage />}
-        popularProgram={<PopularProgram />}
-        popularMedical={<PopularMedical />}
-        currentEvents={<CurrentEvents />}
-        ourNews={<OurNews />}
+        popularPackage={<PopularPackage data={packages} locale={locale} />}
+        popularProgram={<PopularProgram data={wellness} locale={locale} />}
+        popularMedical={<PopularMedical data={medical} locale={locale} />}
+        currentEvents={<CurrentEvents data={events} locale={locale} />}
+        ourNews={<OurNews data={articles} locale={locale} />}
         callToAction={<CallToAction />}
       />
     </Wrapper>

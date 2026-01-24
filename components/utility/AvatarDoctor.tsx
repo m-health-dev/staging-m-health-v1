@@ -128,7 +128,7 @@ const AvatarDoctor = ({
               width={80}
               height={80}
               className={cn(
-                "object-cover  rounded-full border",
+                "object-cover rounded-full border aspect-square",
                 size === "sm" && "w-7 h-7",
                 size === "md" && "w-10 h-10",
                 size === "lg" && "w-14 h-14",
@@ -151,7 +151,7 @@ const AvatarDoctor = ({
     </div>
   ) : (
     <Link href={`/doctor/${doctor}`}>
-      <div className="inline-flex gap-2 items-center">
+      <div className="inline-flex gap-1 items-center">
         <Avatar
           name={data.name ?? data.name ?? "Unknown"}
           className={cn(

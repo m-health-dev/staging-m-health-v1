@@ -9,9 +9,13 @@ import PopularMedSlide from "./PopularMedSlide";
 import { locale } from "dayjs";
 import { routing } from "@/i18n/routing";
 
-const CurrentEvents = async () => {
-  const { data } = await getAllEvents(1, 4);
-  const locale = await getLocale();
+const CurrentEvents = async ({
+  data,
+  locale,
+}: {
+  data: any;
+  locale: string;
+}) => {
   return (
     <div className="bg-background pt-[5vh] -mt-[25vh] lg:rounded-t-[5rem] pb-[5vh] rounded-t-4xl">
       <ContainerWrap>
@@ -20,8 +24,9 @@ const CurrentEvents = async () => {
             ? "Acara Terbaru"
             : "Current Events"}
         </h2>
+        {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         <Suspense fallback={<SkeletonComponent />}>
-          <Content />
+          <Content data={data} locale={locale} />
         </Suspense>
       </ContainerWrap>
     </div>
@@ -40,14 +45,9 @@ const SkeletonComponent = () => {
   );
 };
 
-const Content = async () => {
-  const [eventsResult, locale] = await Promise.all([
-    await getAllEvents(1, 10),
-    getLocale(),
-  ]);
-
+const Content = async ({ data, locale }: { data: any; locale: string }) => {
   const t = await getTranslations("utility");
 
-  const events = Array.isArray(eventsResult.data) ? eventsResult.data : [];
+  const events = Array.isArray(data) ? data : [];
   return <CurrentEventsGrid data={events} locale={locale} />;
 };

@@ -17,8 +17,13 @@ import { Skeleton } from "../ui/skeleton";
 import { getAllMedical } from "@/lib/medical/get-medical";
 import { routing } from "@/i18n/routing";
 
-const PopularMedical = async () => {
-  const locale = await getLocale();
+const PopularMedical = async ({
+  data,
+  locale,
+}: {
+  data: any;
+  locale: string;
+}) => {
   return (
     <div className="bg-health pt-[5vh] pb-[30vh] -mt-[20vh] lg:rounded-t-[5rem] rounded-t-4xl">
       <ContainerWrap>
@@ -29,7 +34,7 @@ const PopularMedical = async () => {
         </h2>
       </ContainerWrap>
       <Suspense fallback={<SkeletonComponent />}>
-        <Content />
+        <Content data={data} locale={locale} />
       </Suspense>
     </div>
   );
@@ -49,15 +54,10 @@ const SkeletonComponent = () => {
   );
 };
 
-const Content = async () => {
-  const [medicalResult, locale] = await Promise.all([
-    await getAllMedical(1, 10),
-    getLocale(),
-  ]);
-
+const Content = async ({ data, locale }: { data: any; locale: string }) => {
   const t = await getTranslations("utility");
 
-  const medical = Array.isArray(medicalResult.data) ? medicalResult.data : [];
+  const medical = Array.isArray(data) ? data : [];
   return (
     <PopularMedSlide
       data={medical}
