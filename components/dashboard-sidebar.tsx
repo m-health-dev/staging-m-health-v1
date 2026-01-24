@@ -91,7 +91,7 @@ export function DashboardSidebar({
             <Link href={"/home"}>
               <Image
                 src={
-                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/icon_mhealth_logo.PNG"
+                  "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/mhealth_logo_crop.PNG"
                 }
                 width={100}
                 height={100}

@@ -28,7 +28,7 @@ const Footer = () => {
             <Link href={`/${locale}/home`}>
               <Image
                 src={
-                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+                  "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/mhealth_logo.PNG"
                 }
                 width={250}
                 height={60}

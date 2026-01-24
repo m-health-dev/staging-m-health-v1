@@ -134,7 +134,7 @@ const SignUpClient = ({ image }: { image: any }) => {
             <Link href={`/${locale}`}>
               <Image
                 src={
-                  "https://irtyvkfjzojdkmtnstmd.supabase.co/storage/v1/object/public/m-health-public/logo/mhealth_logo.PNG"
+                  "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/mhealth_logo.PNG"
                 }
                 width={180}
                 height={60}
