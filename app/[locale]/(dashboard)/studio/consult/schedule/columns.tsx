@@ -242,7 +242,7 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
                     router.push(
-                      `/${locale}/studio/consult/schedule/update/${id}`
+                      `/${locale}/studio/consult/schedule/update/${id}`,
                     )
                   }
                 >

@@ -752,6 +752,7 @@ export function Studio1DataTable<TData, TValue>({
                           type !== "hero" &&
                           type !== "consult-schedule" &&
                           type !== "contact" &&
+                          type !== "payment-records" &&
                           type !== "error-logs" && (
                             <div className="flex justify-end mt-2 absolute bottom-4 right-4">
                               <StatusBadge status={row.getValue("status")} />
@@ -800,9 +801,8 @@ export function Studio1DataTable<TData, TValue>({
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id}>
                       {headerGroup.headers.map((header) => {
-                        const id = nanoid();
                         return (
-                          <TableHead key={id} className="bg-muted">
+                          <TableHead key={header.id} className="bg-muted">
                             {header.isPlaceholder
                               ? null
                               : flexRender(
@@ -816,14 +816,14 @@ export function Studio1DataTable<TData, TValue>({
                   ))}
                 </TableHeader>
                 <TableBody>
-                  {filteredRows.length ? (
-                    filteredRows.map((row) => (
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
                       <TableRow
-                        key={nanoid()}
+                        key={row.id}
                         data-state={row.getIsSelected() && "selected"}
                       >
                         {row.getVisibleCells().map((cell) => (
-                          <TableCell key={nanoid()}>
+                          <TableCell key={cell.id}>
                             <p className="text-sm!">
                               {flexRender(
                                 cell.column.columnDef.cell,
@@ -837,7 +837,7 @@ export function Studio1DataTable<TData, TValue>({
                   ) : (
                     <TableRow>
                       <TableCell
-                        colSpan={safeColumns.length}
+                        colSpan={columns?.length}
                         className="h-24 text-center"
                       >
                         {locale === routing.defaultLocale

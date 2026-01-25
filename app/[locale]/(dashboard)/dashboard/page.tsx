@@ -13,6 +13,15 @@ import { routing } from "@/i18n/routing";
 import DynamicGreeting from "@/components/utility/DynamicGreeting";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { getCurrentTime } from "@/lib/time/get-current-time";
+import { getPaymentsByUser } from "@/lib/transaction/get-payments-data";
+import UserTransactionHistoryCard from "./transactions/UserTransactionHistoryCard";
+import { TransactionType } from "@/types/transaction.types";
+import { nanoid } from "nanoid";
+import { getMyConsultations } from "@/lib/consult/get-consultation";
+import ConsultScheduleHistoryCard from "./consult/schedule/ConsultScheduleHistoryCard";
+import { ConsultScheduleType } from "@/types/consult.types";
+import ChatActivityCard from "./chat-activity/ChatActivityCard";
+import { getChatHistoryByUserID } from "@/lib/chatbot/getChatActivity";
 
 function getThreeWords(text: string | null): string {
   if (!text) return "";
@@ -44,6 +53,16 @@ const DashboardPage = async () => {
   const userData = await getUserInfo(session.access_token);
   const time = await getCurrentTime();
 
+  const { data } = (await getPaymentsByUser(userData?.id!, 1, 3)) || [];
+
+  const { data: consultData } = (await getMyConsultations(1, 2)) || [];
+  const { data: chatData } =
+    (await getChatHistoryByUserID(userData?.id!, 1, 3)) || [];
+
+  const history: TransactionType[] = data || [];
+  const consult: ConsultScheduleType[] = consultData || [];
+  const chat: any[] = chatData.data || [];
+
   return (
     <>
       <div className="flex flex-wrap justify-between my-20 gap-5">
@@ -74,8 +93,86 @@ const DashboardPage = async () => {
         </div>
       </div>
 
-      <div className="my-10">
-        <UnderConstruction element />
+      <div className="my-10 grid 3xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-5">
+        <div className="bg-white rounded-2xl p-4 h-auto">
+          <h4 className="font-semibold text-primary mt-2 mb-6">
+            {locale === routing.defaultLocale
+              ? "Riwayat Percakapan Terbaru"
+              : "Recent Conversation History"}
+          </h4>
+          <div className="flex flex-col gap-5 w-full">
+            {chat.length === 0 && (
+              <p className="text-start text-muted-foreground py-10">
+                {locale === routing.defaultLocale
+                  ? "Tidak ada riwayat percakapan."
+                  : "No conversation history."}
+              </p>
+            )}
+            {chat.map((h) => {
+              const id = nanoid();
+              return (
+                <ChatActivityCard
+                  key={id}
+                  history={h}
+                  locale={locale}
+                  account={userData}
+                />
+              );
+            })}
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl p-4 h-auto">
+          <h4 className="font-semibold text-primary mt-2 mb-6">
+            {locale === routing.defaultLocale
+              ? "Riwayat Konsultasi Terbaru"
+              : "Recent Consultation History"}
+          </h4>
+          <div className="flex flex-col gap-5 w-full">
+            {consult.length === 0 && (
+              <p className="text-start text-muted-foreground py-10">
+                {locale === routing.defaultLocale
+                  ? "Tidak ada riwayat konsultasi."
+                  : "No consultation history."}
+              </p>
+            )}
+            {consult.map((h) => {
+              const id = nanoid();
+              return (
+                <ConsultScheduleHistoryCard
+                  key={id}
+                  consult={h}
+                  locale={locale}
+                />
+              );
+            })}
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl p-4 h-auto">
+          <h4 className="font-semibold text-primary mt-2 mb-6">
+            {locale === routing.defaultLocale
+              ? "Riwayat Transaksi Terbaru"
+              : "Recent Transaction History"}
+          </h4>
+          <div className="flex flex-col gap-5 w-full">
+            {history.length === 0 && (
+              <p className="text-start text-muted-foreground py-10">
+                {locale === routing.defaultLocale
+                  ? "Tidak ada riwayat transaksi."
+                  : "No transaction history."}
+              </p>
+            )}
+            {history.map((h) => {
+              const id = nanoid();
+              return (
+                <UserTransactionHistoryCard
+                  key={id}
+                  history={h}
+                  locale={locale}
+                />
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* <div className="bg-white p-4 border rounded-2xl mt-10">

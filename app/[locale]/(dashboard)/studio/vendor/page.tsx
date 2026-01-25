@@ -46,12 +46,17 @@ const VendorData = async ({
         <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
           <div className="flex flex-col w-full">
             <h4 className="text-primary font-semibold">
-              {locale === routing.defaultLocale ? "Data Mitra & Rumah Sakit" : "Partner & Hospital Data"}
+              {locale === routing.defaultLocale
+                ? "Data Mitra & Rumah Sakit"
+                : "Partner & Hospital Data"}
             </h4>
           </div>
           <Link href={`/${locale}/studio/vendor/add`}>
             <Button className="rounded-2xl flex lg:w-fit w-full">
-              <Plus /> <p className="lg:block hidden">{locale === routing.defaultLocale ? "Tambah Baru" : "Add New"}</p>
+              <Plus />{" "}
+              <p className="lg:block hidden">
+                {locale === routing.defaultLocale ? "Tambah Baru" : "Add New"}
+              </p>
             </Button>
           </Link>
         </div>
@@ -70,13 +75,16 @@ const VendorData = async ({
           </p>
           <div className="flex flex-wrap gap-4 items-center">
             <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
-              {meta.total} {locale === routing.defaultLocale ? "Mitra" : "Partner"}
+              {meta.total}{" "}
+              {locale === routing.defaultLocale ? "Mitra" : "Partner"}
             </p>
             <p className=" bg-lime-300 rounded-xl px-3 py-1 text-sm! w-fit">
-              {countHospital} {locale === routing.defaultLocale ? "Rumah Sakit" : "Hospital"}
+              {countHospital}{" "}
+              {locale === routing.defaultLocale ? "Rumah Sakit" : "Hospital"}
             </p>
             <p className=" bg-amber-300 rounded-xl px-3 py-1 text-sm! w-fit">
-              {countCoach} {locale === routing.defaultLocale ? "Pelatih" : "Coach"}
+              {countCoach}{" "}
+              {locale === routing.defaultLocale ? "Pelatih" : "Coach"}
             </p>
           </div>
         </div>

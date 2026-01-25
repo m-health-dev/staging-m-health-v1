@@ -77,7 +77,7 @@ export async function updateDoctor(
     is_available: boolean;
     status: string;
   },
-  id: string
+  id: string,
 ) {
   try {
     console.log("Sending doctor/update to BE:", payload);
@@ -134,44 +134,44 @@ export async function assignDoctor(payload: { doctor_id: string }, id: string) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-      }
+      },
     );
 
-    const raw = await res.text();
-    let data: any = null;
-    try {
-      data = raw ? JSON.parse(raw) : null;
-    } catch {
-      data = null;
-    }
+    const data = await res.json();
+    // let data: any = null;
+    // try {
+    //   data = raw ? JSON.parse(raw) : null;
+    // } catch {
+    //   data = null;
+    // }
 
-    if (!res.ok) {
-      const contentType = res.headers.get("content-type") || "";
-      const snippet = raw?.slice(0, 200);
-      return {
-        success: false,
-        error: `Failed to sent consultation/assign-doctor data. Cause: ${
-          res.status
-        } - ${
-          data?.message ??
-          `Non-JSON response (${
-            contentType || "unknown content-type"
-          }): ${snippet}`
-        }`,
-      };
-    }
+    // if (!res.ok) {
+    //   const contentType = res.headers.get("content-type") || "";
+    //   const snippet = raw?.slice(0, 200);
+    //   return {
+    //     success: false,
+    //     error: `Failed to sent consultation/assign-doctor data. Cause: ${
+    //       res.status
+    //     } - ${
+    //       data?.message ??
+    //       `Non-JSON response (${
+    //         contentType || "unknown content-type"
+    //       }): ${snippet}`
+    //     }`,
+    //   };
+    // }
 
-    if (!data) {
-      const contentType = res.headers.get("content-type") || "";
-      return {
-        success: false,
-        error: `Failed to parse consultation/assign-doctor response as JSON. Received: ${
-          contentType || "unknown content-type"
-        }`,
-      };
-    }
+    // if (!data) {
+    //   const contentType = res.headers.get("content-type") || "";
+    //   return {
+    //     success: false,
+    //     error: `Failed to parse consultation/assign-doctor response as JSON. Received: ${
+    //       contentType || "unknown content-type"
+    //     }`,
+    //   };
+    // }
 
-    if (res.status !== 200) {
+    if (res.status !== 200 && res.status !== 201 && res.status !== 204) {
       return {
         success: false,
         error: `Failed to sent consultation/assign-doctor data. Cause: ${res.status} - ${data?.message}`,

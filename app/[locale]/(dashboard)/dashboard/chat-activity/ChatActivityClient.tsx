@@ -28,6 +28,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { Account } from "@/types/account.types";
+import ChatActivityCard from "./ChatActivityCard";
 
 type ChatActivityClientProps = {
   history: any[];
@@ -113,63 +114,66 @@ const ChatActivityClient = ({
           </p>
         )}
         {history.length >= 1 && (
-          <Dialog open={dialogOpen}>
-            <DialogTrigger asChild onClick={() => setDialogOpen(true)}>
-              <Button
-                variant={"destructive_outline"}
-                className="rounded-full w-fit"
-              >
-                <Trash2 className="size-3" />{" "}
-                <p className="text-xs!">
-                  {locale === routing.defaultLocale
-                    ? "Hapus Semua Riwayat Percakapan"
-                    : "Clear All Chat History"}
-                </p>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-white z-999 rounded-2xl">
-              <DialogHeader>
-                <DialogTitle asChild>
-                  <h5 className="text-red-600">
-                    {locale === routing.defaultLocale
-                      ? "Apakah kamu yakin untuk menghapus seluruh sesi percakapan?"
-                      : "Are you sure to delete all chat session?"}
-                  </h5>
-                </DialogTitle>
-                <DialogDescription asChild className="mt-3">
-                  <p>
-                    {locale === routing.defaultLocale
-                      ? "Aksi ini tidak dapat dibatalkan. Aksi ini akan menghapus sesi percakapan anda dari basis data kami. Lakukan dengan hati-hati."
-                      : "This action cannot be undone. This will permanently delete all of your chat and remove your data from our servers. Do it carefully."}
-                  </p>
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <DialogClose asChild onClick={() => setDialogOpen(false)}>
-                  <Button variant={"outline"}>
-                    <X className="size-4" />
-                    {t("cancel")}
-                  </Button>
-                </DialogClose>
-
+          <div className="flex justify-end">
+            <Dialog open={dialogOpen}>
+              <DialogTrigger asChild onClick={() => setDialogOpen(true)}>
                 <Button
-                  variant={"destructive"}
-                  onClick={() => {
-                    handleDeleteAllChatSession(account?.id);
-                  }}
+                  variant={"destructive_outline"}
+                  className="rounded-full w-fit"
                 >
-                  {loadDelete ? (
-                    <Spinner />
-                  ) : (
-                    <>
-                      <Trash className="size-4" />
-                      {t("delete")}
-                    </>
-                  )}
+                  <Trash2 className="size-4" />{" "}
+                  <p className="text-sm!">
+                    {locale === routing.defaultLocale
+                      ? "Hapus Semua Riwayat Percakapan"
+                      : "Clear All Chat History"}
+                  </p>
                 </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent className="bg-white z-999 rounded-2xl">
+                <DialogHeader>
+                  <DialogTitle asChild>
+                    <h5 className="text-red-600">
+                      {locale === routing.defaultLocale
+                        ? "Apakah kamu yakin untuk menghapus seluruh sesi percakapan?"
+                        : "Are you sure to delete all chat session?"}
+                    </h5>
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-3">
+                    <p>
+                      {locale === routing.defaultLocale
+                        ? "Aksi ini tidak dapat dibatalkan. Aksi ini akan menghapus sesi percakapan anda dari basis data kami. Lakukan dengan hati-hati."
+                        : "This action cannot be undone. This will permanently delete all of your chat and remove your data from our servers. Do it carefully."}
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild onClick={() => setDialogOpen(false)}>
+                    <Button variant={"outline"}>
+                      <X className="size-4" />
+                      {t("cancel")}
+                    </Button>
+                  </DialogClose>
+
+                  <Button
+                    variant={"destructive"}
+                    onClick={() => {
+                      handleDeleteAllChatSession(account?.id);
+                    }}
+                    disabled={loadDelete}
+                  >
+                    {loadDelete ? (
+                      <Spinner />
+                    ) : (
+                      <>
+                        <Trash className="size-4" />
+                        {t("delete")}
+                      </>
+                    )}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         )}
         {loading
           ? Array.from({ length: perPage }).map(() => {
@@ -181,52 +185,12 @@ const ChatActivityClient = ({
           : history.map((h, i) => {
               const id = nanoid();
               return (
-                <div
+                <ChatActivityCard
                   key={id}
-                  className="bg-white rounded-2xl border p-4 relative"
-                >
-                  <Link href={`/${locale}/c/${h.id}`} target="_blank">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        {h.urgent && (
-                          <p className="capitalize bg-red-50 border border-red-600 text-red-600 inline-flex px-2 py-1 rounded-full text-xs!">
-                            {locale === routing.defaultLocale
-                              ? "Darurat"
-                              : "Urgent"}
-                          </p>
-                        )}
-                        {h.status === "public" ? (
-                          <p className="capitalize bg-blue-50 border border-blue-600 text-blue-600 inline-flex px-2 py-1 rounded-full text-xs! items-center gap-1">
-                            <Eye className="size-3" />
-                            {locale === routing.defaultLocale
-                              ? "Publik"
-                              : "Public"}
-                          </p>
-                        ) : (
-                          <p className="capitalize bg-amber-50 border border-amber-600 text-amber-600 inline-flex px-2 py-1 rounded-full text-xs! items-center gap-1">
-                            <Lock className="size-3" />{" "}
-                            {locale === routing.defaultLocale
-                              ? "Pribadi"
-                              : "Private"}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <h5 className="text-primary font-semibold  capitalize">
-                      {h.title}
-                    </h5>
-                    <p className="text-sm! text-muted-foreground">
-                      <LocalDateTime date={h.created_at} />
-                    </p>
-                  </Link>
-                  <Button
-                    variant={"destructive_outline"}
-                    className="w-8 h-8 rounded-full absolute right-2 top-2"
-                    onClick={() => handleDeleteChatSession(h.id)}
-                  >
-                    {loadDelete ? <Spinner /> : <Trash className="size-3" />}
-                  </Button>
-                </div>
+                  history={h}
+                  locale={locale}
+                  account={account}
+                />
               );
             })}
       </div>

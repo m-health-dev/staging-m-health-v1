@@ -15,7 +15,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { VendorHotelDataTable } from "@/components/vendor-hotel/vendor-hotel-data-table";
 import { deleteHotel } from "@/lib/hotel/delete-hotel";
 import { getAllConsultations } from "@/lib/consult/get-consultation";
-import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
+import LiveConsultSchedule from "./LiveConsultSchedule";
 import { deleteConsultation } from "@/lib/consult/delete-consultation";
 
 const ConsultScheduleStudio = async ({
@@ -29,7 +29,7 @@ const ConsultScheduleStudio = async ({
 
   const { data, meta, links, total } = await getAllConsultations(
     page,
-    per_page
+    per_page,
   ); // nanti page bisa dynamic
 
   const locale = await getLocale();
@@ -54,34 +54,14 @@ const ConsultScheduleStudio = async ({
           </Button>
         </Link> */}
       </div>
-      <div className="summary bg-white p-4 rounded-2xl border mb-4 flex flex-wrap gap-4 items-center">
-        <p className="text-sm! text-muted-foreground inline-flex gap-2 items-center bg-accent px-3 py-1 rounded-xl">
-          <Database className="size-4" />
-          <span>
-            {locale === routing.defaultLocale
-              ? "Ringkasan Data"
-              : "Data Summary"}
-          </span>
-        </p>
-        <p className="font-light text-sm! text-muted-foreground">
-          <ChevronRight className="size-4 lg:flex hidden" />
-          <ChevronDown className="size-4 lg:hidden flex" />
-        </p>
-        <div className="flex flex-wrap gap-4 items-center">
-          <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
-            {meta.total} Schedules
-          </p>
-        </div>
-      </div>
 
-      <Studio1DataTable<ConsultScheduleType, unknown>
-        columns={columns}
-        data={(data ?? []) as ConsultScheduleType[]}
+      <LiveConsultSchedule
+        initialData={(data ?? []) as ConsultScheduleType[]}
+        page={page}
+        per_page={per_page}
         meta={meta}
         links={links}
         locale={locale}
-        type="consult-schedule"
-        deleteAction={deleteConsultation}
       />
       {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
     </ContainerWrap>

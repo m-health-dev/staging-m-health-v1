@@ -52,12 +52,13 @@ const AssignDoctorForm = ({
             locale === routing.defaultLocale
               ? "Pesan ke WhatsApp dan email pengguna serta dokter sedang dalam proses pengiriman."
               : "Message to WhatsApp and email of the user and doctor in progress to send.",
-        }
+        },
       );
       router.refresh();
     } else if (res.error) {
       setLoading(false);
       toast.error(res.error);
+      router.refresh();
     }
   }
   return (
@@ -81,8 +82,8 @@ const AssignDoctorForm = ({
                   ? "Menugaskan..."
                   : "Assigning..."
                 : locale === routing.defaultLocale
-                ? "Tugaskan Dokter"
-                : "Assign Doctor"}
+                  ? "Tugaskan Dokter"
+                  : "Assign Doctor"}
             </Button>
           </div>
         </form>
