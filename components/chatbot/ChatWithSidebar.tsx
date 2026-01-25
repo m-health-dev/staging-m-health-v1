@@ -42,6 +42,7 @@ interface ChatWithSidebarProps {
   chatResetKey: number;
   urgent?: boolean;
   consultSession?: any;
+  onRemoveChat?: (id: string) => void;
 }
 
 const ChatWithSidebar: React.FC<ChatWithSidebarProps> = ({
@@ -74,6 +75,7 @@ const ChatWithSidebar: React.FC<ChatWithSidebarProps> = ({
   chatResetKey,
   urgent,
   consultSession,
+  onRemoveChat,
 }) => {
   // Manage messages state locally for new chat transitions
   const [localMessages, setLocalMessages] = useState<Message[]>(selectedChat);
@@ -133,6 +135,7 @@ const ChatWithSidebar: React.FC<ChatWithSidebarProps> = ({
         total={total}
         labels={labels}
         defaultOpen={sidebarOpen}
+        onRemoveChat={onRemoveChat}
       />
       <SidebarInset className="p-0! m-0! ">
         <ChatNavHeader

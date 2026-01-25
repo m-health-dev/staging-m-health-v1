@@ -103,24 +103,37 @@ export default async function SessionPage({ params }: Props) {
     notFound();
   }
 
-  const historyData = checkUser
-    ? await getChatHistoryByUserID(userID!, 1, 50)
+  // const historyData = checkUser
+  //   ? await getChatHistoryByUserID(userID!, 1, 50)
+  //   : publicID
+  //     ? await getChatHistory(publicID, 1, 50)
+  //     : { data: { data: [] }, total: 0 }; // ✅ FIXED
+
+  const historyDataPromise = checkUser
+    ? getChatHistoryByUserID(userID!, 1, 50)
     : publicID
-      ? await getChatHistory(publicID, 1, 50)
-      : { data: [], total: 0 };
-  // console.log("History: ", historyData);
+      ? getChatHistory(publicID, 1, 50)
+      : Promise.resolve({ data: [], total: 0 });
+
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  let userData = null;
+  // let userData = null;
 
-  if (session?.access_token) {
-    try {
-      userData = await getUserInfo(session.access_token);
-    } catch (e) {
-      console.error("User info fetch failed:", e);
-    }
-  }
+  // if (session?.access_token) {
+  //   try {
+  //     userData = await getUserInfo(session.access_token);
+  //   } catch (e) {
+  //     console.error("User info fetch failed:", e);
+  //   }
+  // }
+
+  const userDataPromise = session?.access_token
+    ? getUserInfo(session.access_token).catch((e) => {
+        console.error("User info fetch failed:", e);
+        return null;
+      })
+    : Promise.resolve(null);
 
   const chatStatus = (await GetChatStatus(sessionID)).data;
 
@@ -131,18 +144,25 @@ export default async function SessionPage({ params }: Props) {
   //   "Is Same Public ID: ",
   //   publicID === sessionChat.all.data.public_id
   // );
+  const sessionData = sessionChat?.all?.data;
 
   const isPublicMatch =
-    Boolean(publicID) && publicID === sessionChat.all.data.public_id;
+    Boolean(publicID) && publicID === sessionData?.public_id;
 
-  const isUserMatch =
-    Boolean(userID) && userID === sessionChat.all.data.user_id;
+  const isUserMatch = Boolean(userID) && userID === sessionData?.user_id;
 
   if (!isPublicMatch && !isUserMatch) {
     return <PrivateChat />;
   }
 
   const urgent = sessionChat.urgent;
+
+  const consultSessionData = consultSession?.data ?? null;
+
+  const [historyData, userData] = await Promise.all([
+    historyDataPromise,
+    userDataPromise,
+  ]);
 
   // console.log({
   //   checkUser,
@@ -157,7 +177,7 @@ export default async function SessionPage({ params }: Props) {
   return (
     <>
       <ChatContent
-        initialHistory={historyData.data.data || []}
+        initialHistory={historyData?.data?.data ?? []}
         sessionID={sessionID}
         session={sessionChat.data}
         publicIDFetch={publicID}
@@ -171,7 +191,7 @@ export default async function SessionPage({ params }: Props) {
           delete: t("delete"),
           cancel: t("cancel"),
         }}
-        consultSession={consultSession.data}
+        consultSession={consultSessionData ?? null} // 👈 safe
       />
     </>
   );

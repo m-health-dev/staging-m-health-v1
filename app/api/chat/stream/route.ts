@@ -7,6 +7,9 @@ const apiBaseUrl =
     ? process.env.NEXT_PUBLIC_PROD_BACKEND_URL
     : process.env.NEXT_PUBLIC_DEV_BACKEND_URL;
 
+// export const runtime = "edge";
+// export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
@@ -66,7 +69,7 @@ export async function POST(req: NextRequest) {
     console.error("Streaming API error:", error);
     return NextResponse.json(
       { error: "Failed to process request" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

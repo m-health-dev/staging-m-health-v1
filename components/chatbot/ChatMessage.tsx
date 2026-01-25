@@ -78,7 +78,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   replyTo,
   sessionId,
   urgent,
-  isStreaming = false,
+  isStreaming,
   actions,
 }) => {
   const isUser = sender === "user";
@@ -90,7 +90,26 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const [chatID, setChatID] = useState("");
 
   useEffect(() => {
-    setChatID(window.location.pathname.split("/")[3] || "");
+    // Fungsi untuk mengambil ID dari URL
+    const updateChatID = () => {
+      const pathParts = window.location.pathname.split("/");
+      // Sesuaikan index-nya (biasanya index 3 untuk /[locale]/c/[id])
+      setChatID(pathParts[3] || "");
+    };
+
+    // Jalankan saat pertama kali mount
+    updateChatID();
+
+    // Dengarkan event custom 'urlchange' yang dikirim dari ChatStart
+    window.addEventListener("urlchange", updateChatID);
+
+    // Dengarkan juga popstate (untuk tombol back/forward browser)
+    window.addEventListener("popstate", updateChatID);
+
+    return () => {
+      window.removeEventListener("urlchange", updateChatID);
+      window.removeEventListener("popstate", updateChatID);
+    };
   }, []);
 
   let cleanMessage = message.trim();
@@ -730,7 +749,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           {!isUser && urgent && (
             <div className="mt-3 mb-5 bg-white py-10 px-3 rounded-2xl border w-full">
               <Link
-                href={`/${locale}/connect?session=${sessionId ?? chatID}`}
+                href={`/${locale}/connect?session=${sessionId || chatID}`}
                 className="flex items-center justify-center w-full gap-3 flex-col"
               >
                 <p className="text-center max-w-md">

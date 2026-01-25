@@ -78,6 +78,7 @@ interface ChatbotSidebarProps extends React.ComponentProps<typeof Sidebar> {
   total?: number;
   labels?: any;
   defaultOpen?: boolean;
+  onRemoveChat?: (id: string) => void;
 }
 
 export function ChatbotSidebar({
@@ -100,6 +101,7 @@ export function ChatbotSidebar({
   total,
   labels,
   defaultOpen = true,
+  onRemoveChat,
   ...props
 }: ChatbotSidebarProps) {
   const router = useRouter();
@@ -153,7 +155,7 @@ export function ChatbotSidebar({
         if (pathname.includes(sessionID)) {
           router.push("/");
         } else {
-          router.refresh();
+          onRemoveChat?.(sessionID); // 🔥 update UI langsung
         }
         setLoadDelete(false);
       } else {

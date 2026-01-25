@@ -18,7 +18,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -45,11 +45,11 @@ export async function generateMetadata(
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
-            locale === routing.defaultLocale ? "Pencarian" : "Search"
+            locale === routing.defaultLocale ? "Pencarian" : "Search",
           )}&description=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "M HEALTH adalah platform kesehatan digital yang dirancang untuk membantu Anda mendapatkan informasi medis yang cepat, akurat, dan terpercaya. Kami memahami bahwa mencari solusi kesehatan sering kali terasa membingungkan. Oleh karena itu, kami hadir sebagai `digital front door` — pintu gerbang kesehatan yang memudahkan siapa pun untuk bertanya, berkonsultasi, serta merencanakan perjalanan medis dan wellness secara sederhana, transparan, dan terjangkau."
-              : "M HEALTH is a digital health platform designed to help you access fast, accurate, and reliable medical information. We understand that finding the right health solutions can often feel overwhelming. That’s why we act as a `digital front door` — making it easier for anyone to ask questions, consult with professionals, and plan their medical and wellness journey in a simple, transparent, and affordable way."
+              : "M HEALTH is a digital health platform designed to help you access fast, accurate, and reliable medical information. We understand that finding the right health solutions can often feel overwhelming. That’s why we act as a `digital front door` — making it easier for anyone to ask questions, consult with professionals, and plan their medical and wellness journey in a simple, transparent, and affordable way.",
           )}&path=${encodeURIComponent("m-health.id/search")}`,
           width: 800,
           height: 450,
@@ -64,7 +64,7 @@ const SearchPage = async ({ searchParams }: Props) => {
 
   const params = await searchParams;
   const query = (params.q as string) || "";
-  const target = params.target as string | undefined;
+  const target = params.target as string | "";
 
   const locale = await getLocale();
 
@@ -130,32 +130,32 @@ const Content = async ({
   locale: string;
   target?: string;
 }) => {
-  let summary, results, total, meta;
+  // 1. Panggil fungsi
+  const searchResponse = target
+    ? await getAllSearchResultPublished(query, target)
+    : await getAllSearchResultPublished(query);
 
-  if (target) {
-    ({ summary, results, total, meta } = await getAllSearchResultPublished(
-      query,
-      target
-    ));
-  } else {
-    ({ summary, results, total, meta } = await getAllSearchResultPublished(
-      query
-    ));
-  }
+  // 2. Gunakan destructuring dengan nilai fallback (default value)
+  const {
+    summary = { by_type: [] },
+    results = [],
+    total = 0,
+  } = searchResponse || {};
 
-  const summaryData = Array.isArray(summary.by_type) ? summary.by_type : [];
+  // 3. Sekarang ini jauh lebih aman
+  const summaryData = Array.isArray(summary?.by_type) ? summary.by_type : [];
   const t = await getTranslations("utility");
 
   return (
     <>
       {total === 0 ? (
-        <div className="bg-white border rounded-2xl p-4 mb-20">
+        <div className="bg-white rounded-2xl p-4 mb-20">
           <h5 className="text-primary font-bold">
             {locale === routing.defaultLocale
               ? "Tidak ada data ditemukan"
               : "No data found"}
           </h5>
-          <p>
+          <p className="text-muted-foreground mt-2">
             {locale === routing.defaultLocale
               ? "Coba gunakan kata kunci lain untuk pencarian Anda."
               : "Try using different keywords for your search."}

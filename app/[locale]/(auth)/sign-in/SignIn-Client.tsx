@@ -57,6 +57,8 @@ const SignInClient = ({
   const params = useSearchParams();
   const path = usePathname();
   const redirectData = params.get("redirect") || `/${locale}/dashboard`;
+  const sessionData = params.get("session");
+  const orderIdData = params.get("order_id");
   const continueData = params.get("continue");
   const emailData = params.get("email");
   const resetData = params.get("reset");
@@ -67,7 +69,11 @@ const SignInClient = ({
 
   const redirectRecord = path.startsWith(`/${locale}/c`)
     ? path
-    : redirectData?.toString();
+    : sessionData
+      ? redirectData?.toString() + `?session=${sessionData.toString()}`
+      : orderIdData
+        ? redirectData?.toString() + `?order_id=${orderIdData.toString()}`
+        : redirectData?.toString();
 
   useEffect(() => {
     const newRequestCount = 3 - Number(recordResetData);
@@ -99,9 +105,7 @@ const SignInClient = ({
     defaultValues: {
       email: emailData || "",
       password: "",
-      redirect: path.startsWith(`/${locale}/c`)
-        ? path
-        : redirectData?.toString(),
+      redirect: redirectRecord || "",
     },
   });
 
@@ -158,6 +162,7 @@ const SignInClient = ({
         )}
       >
         <div>
+          <p>{redirectRecord}</p>
           <Link href={`/${locale}`}>
             <Image
               src={

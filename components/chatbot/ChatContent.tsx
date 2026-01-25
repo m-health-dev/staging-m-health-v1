@@ -71,6 +71,7 @@ const ChatContent = ({
     hasMore,
     displayedCount,
     total,
+    removeChat,
   } = useChatHistory(user?.id, initialHistory || []);
 
   // Realtime chat history polling - refresh every 10 seconds
@@ -152,6 +153,7 @@ const ChatContent = ({
         chatResetKey={chatResetKey}
         urgent={urgent}
         consultSession={consultSession}
+        onRemoveChat={removeChat}
       />
     );
   }

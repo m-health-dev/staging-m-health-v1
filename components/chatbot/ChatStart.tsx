@@ -47,6 +47,10 @@ const ChatStart = ({
   const [isLoading, setIsLoading] = useState(false);
   const [hasChat, setHasChat] = useState(chat.length > 0);
   const [text, setText] = useState("");
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(
+    sessionID ?? null,
+  );
+
   const [pendingSessionId, setPendingSessionId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -104,7 +108,8 @@ const ChatStart = ({
     setMessages((prev) => [...prev, botPlaceholder]);
 
     try {
-      const effectiveSessionId = sessionID ?? pendingSessionId ?? null;
+      // const effectiveSessionId = sessionID ?? pendingSessionId ?? null;
+      const effectiveSessionId = activeSessionId;
 
       const formattedMessages = [...messages, userMsg].map((m) => ({
         sender: m.sender === "bot" ? "assistant" : "user",
@@ -139,58 +144,291 @@ const ChatStart = ({
         throw new Error("Streaming response failed");
       }
 
+      // const reader = response.body.getReader();
+      // const decoder = new TextDecoder();
+      // let fullMessage = "";
+      // let actions: any[] = [];
+      // let sessionId = "";
+      // let isUrgent = false;
+      // let buffer = "";
+
+      // const processSSEEvent = (eventType: string, eventData: string) => {
+      //   try {
+      //     const data = JSON.parse(eventData);
+
+      //     switch (eventType) {
+      //       case "connected":
+      //         console.log("Stream connected:", data);
+      //         if (data.text) {
+      //           fullMessage += data.text;
+      //           setMessages((prev) =>
+      //             prev.map((msg) =>
+      //               msg.id === botMessageId
+      //                 ? { ...msg, message: fullMessage, isStreaming: true }
+      //                 : msg,
+      //             ),
+      //           );
+      //         }
+      //         break;
+
+      //       case "chunk":
+      //       case "": // default event type for text chunks
+      //         if (data.text) {
+      //           fullMessage += data.text;
+      //           setMessages((prev) =>
+      //             prev.map((msg) =>
+      //               msg.id === botMessageId
+      //                 ? { ...msg, message: fullMessage, isStreaming: true }
+      //                 : msg,
+      //             ),
+      //           );
+      //         }
+      //         break;
+
+      //       case "complete":
+      //         sessionId = data.session_id || sessionId;
+      //         isUrgent = data.urgent || false;
+      //         // Use the complete reply if provided, otherwise keep accumulated
+      //         if (data.reply) {
+      //           fullMessage = data.reply;
+      //         }
+
+      //         if (data.actions) {
+      //           actions = data.actions;
+      //         }
+
+      //         setMessages((prev) =>
+      //           prev.map((msg) =>
+      //             msg.id === botMessageId
+      //               ? {
+      //                   ...msg,
+      //                   message: fullMessage,
+      //                   urgent: isUrgent,
+      //                   isStreaming: false,
+      //                   actions: actions,
+      //                 }
+      //               : msg,
+      //           ),
+      //         );
+
+      //         // Update URL silently when new session is created
+      //         if (!sessionID && !pendingSessionId && sessionId) {
+      //           const newUrl = `/${locale}/c/${sessionId}`;
+      //           setPendingSessionId(sessionId);
+
+      //           // Use window.history.replaceState for silent update
+      //           window.history.replaceState(
+      //             { ...window.history.state, as: newUrl, url: newUrl },
+      //             "",
+      //             newUrl,
+      //           );
+
+      //           // startTransition(() => {
+      //           //   document.startViewTransition(() => {
+      //           //     router.replace(`/${locale}/c/${sessionId}`);
+      //           //   });
+      //           // });
+
+      //           // Dispatch custom event to notify URL change
+      //           window.dispatchEvent(new Event("urlchange"));
+      //         } else if (sessionId) {
+      //           // Just update pendingSessionId if already have session
+      //           setPendingSessionId(sessionId);
+      //         }
+      //         break;
+
+      //       case "error":
+      //         console.error("Stream error:", data);
+      //         setMessages((prev) =>
+      //           prev.map((msg) =>
+      //             msg.id === botMessageId
+      //               ? {
+      //                   ...msg,
+      //                   message: data.message || "Terjadi kesalahan.",
+      //                   isStreaming: false,
+      //                 }
+      //               : msg,
+      //           ),
+      //         );
+      //         break;
+
+      //       default:
+      //         // Handle unknown events or raw text
+      //         if (data.text) {
+      //           fullMessage += data.text;
+      //           setMessages((prev) =>
+      //             prev.map((msg) =>
+      //               msg.id === botMessageId
+      //                 ? { ...msg, message: fullMessage, isStreaming: true }
+      //                 : msg,
+      //             ),
+      //           );
+      //         }
+      //     }
+      //   } catch (e) {
+      //     // If JSON parse fails, might be plain text
+      //     console.warn("Failed to parse SSE data:", eventData, e);
+      //   }
+      // };
+      // Parse SSE format properly
+      // const parseSSEBuffer = (text: string): string => {
+      //   // Split by double newline (SSE event separator)
+      //   const parts = text.split(/\n\n/);
+
+      //   // Keep the last incomplete part in buffer
+      //   const incompletePart = parts.pop() || "";
+
+      //   for (const part of parts) {
+      //     if (!part.trim()) continue;
+
+      //     const lines = part.split("\n");
+      //     let currentEvent = ""; // default event type
+      //     let currentData = "";
+
+      //     for (const line of lines) {
+      //       if (line.startsWith("event:")) {
+      //         currentEvent = line.slice(6).trim();
+      //       } else if (line.startsWith("data:")) {
+      //         // Handle multi-line data by accumulating
+      //         const dataContent = line.slice(5).trim();
+      //         currentData += currentData ? "\n" + dataContent : dataContent;
+      //       } else if (line.startsWith(":")) {
+      //         // Comment line, ignore (often used for keep-alive)
+      //         continue;
+      //       }
+      //     }
+
+      //     if (currentData) {
+      //       processSSEEvent(currentEvent, currentData);
+      //     }
+      //   }
+
+      //   return incompletePart;
+      // };
+
+      // Read stream with proper buffer handling
+      // while (true) {
+      //   const { done, value } = await reader.read();
+
+      //   if (value) {
+      //     buffer += decoder.decode(value, { stream: true });
+      //     buffer = parseSSEBuffer(buffer);
+      //   }
+
+      //   if (done) {
+      //     // Process any remaining buffer after stream ends
+      //     if (buffer.trim()) {
+      //       // Flush decoder
+      //       buffer += decoder.decode();
+      //       parseSSEBuffer(buffer + "\n\n"); // Force parse remaining
+      //     }
+      //     break;
+      //   }
+      // }
+
       const reader = response.body.getReader();
-      const decoder = new TextDecoder();
+      const decoder = new TextDecoder("utf-8");
+
       let fullMessage = "";
       let actions: any[] = [];
       let sessionId = "";
       let isUrgent = false;
-      let buffer = "";
 
-      const processSSEEvent = (eventType: string, eventData: string) => {
-        try {
-          const data = JSON.parse(eventData);
+      let sseBuffer = "";
 
-          switch (eventType) {
-            case "connected":
-              console.log("Stream connected:", data);
-              if (data.text) {
-                fullMessage += data.text;
-                setMessages((prev) =>
-                  prev.map((msg) =>
-                    msg.id === botMessageId
-                      ? { ...msg, message: fullMessage, isStreaming: true }
-                      : msg,
-                  ),
-                );
-              }
-              break;
+      let renderBuffer = "";
+      let renderScheduled = false;
+      let lastRenderTime = 0;
 
-            case "chunk":
-            case "": // default event type for text chunks
-              if (data.text) {
-                fullMessage += data.text;
-                setMessages((prev) =>
-                  prev.map((msg) =>
-                    msg.id === botMessageId
-                      ? { ...msg, message: fullMessage, isStreaming: true }
-                      : msg,
-                  ),
-                );
-              }
-              break;
+      const scheduleRender = () => {
+        const now = performance.now();
+        if (renderScheduled || now - lastRenderTime < 33) return;
 
-            case "complete":
-              sessionId = data.session_id || sessionId;
-              isUrgent = data.urgent || false;
-              // Use the complete reply if provided, otherwise keep accumulated
-              if (data.reply) {
-                fullMessage = data.reply;
-              }
+        renderScheduled = true;
+        lastRenderTime = now;
 
-              if (data.actions) {
-                actions = data.actions;
-              }
+        requestAnimationFrame(() => {
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === botMessageId
+                ? { ...msg, message: fullMessage, isStreaming: true }
+                : msg,
+            ),
+          );
+          renderScheduled = false;
+        });
+      };
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        sseBuffer += decoder.decode(value, { stream: true });
+
+        let lines = sseBuffer.split("\n");
+        sseBuffer = lines.pop() || ""; // sisa incomplete line
+
+        for (let line of lines) {
+          line = line.trim();
+          if (!line) continue;
+
+          // only care about data lines
+          if (!line.startsWith("data:")) continue;
+
+          const jsonStr = line.replace(/^data:\s*/, "");
+
+          try {
+            const data = JSON.parse(jsonStr);
+
+            // STREAM TEXT CHUNKS HERE 🔥
+            // if (data.text) {
+            //   fullMessage += data.text;
+            //   await new Promise(requestAnimationFrame);
+
+            //   setMessages((prev) =>
+            //     prev.map((msg) =>
+            //       msg.id === botMessageId
+            //         ? { ...msg, message: fullMessage, isStreaming: true }
+            //         : msg,
+            //     ),
+            //   );
+            // }
+
+            if (data.session_id && !activeSessionId) {
+              const newId = data.session_id;
+
+              setActiveSessionId(newId); // 🔥 ini yang bikin message berikutnya lanjut
+
+              const newUrl = `/${locale}/c/${newId}`;
+
+              window.history.replaceState(
+                { ...window.history.state, as: newUrl, url: newUrl },
+                "",
+                newUrl,
+              );
+
+              // startTransition(() => {
+              //   router.replace(newUrl, { scroll: false });
+              // });
+
+              window.dispatchEvent(new Event("urlchange"));
+            }
+
+            if (data.text) {
+              renderBuffer += data.text;
+              fullMessage += renderBuffer;
+              renderBuffer = "";
+              await new Promise(requestAnimationFrame);
+
+              scheduleRender();
+            }
+
+            // FINAL MESSAGE
+            if (data.reply || data.session_id) {
+              if (data.reply) fullMessage = data.reply;
+              if (data.actions) actions = data.actions;
+              if (data.session_id) sessionId = data.session_id;
+              if (data.urgent) isUrgent = true;
 
               setMessages((prev) =>
                 prev.map((msg) =>
@@ -200,124 +438,15 @@ const ChatStart = ({
                         message: fullMessage,
                         urgent: isUrgent,
                         isStreaming: false,
-                        actions: actions,
+                        actions,
                       }
                     : msg,
                 ),
               );
-
-              // Update URL silently when new session is created
-              if (!sessionID && !pendingSessionId && sessionId) {
-                const newUrl = `/${locale}/c/${sessionId}`;
-                setPendingSessionId(sessionId);
-
-                // Use window.history.replaceState for silent update
-                window.history.replaceState(
-                  { ...window.history.state, as: newUrl, url: newUrl },
-                  "",
-                  newUrl,
-                );
-
-                // startTransition(() => {
-                //   document.startViewTransition(() => {
-                //     router.replace(`/${locale}/c/${sessionId}`);
-                //   });
-                // });
-
-                // Dispatch custom event to notify URL change
-                window.dispatchEvent(new Event("urlchange"));
-              } else if (sessionId) {
-                // Just update pendingSessionId if already have session
-                setPendingSessionId(sessionId);
-              }
-              break;
-
-            case "error":
-              console.error("Stream error:", data);
-              setMessages((prev) =>
-                prev.map((msg) =>
-                  msg.id === botMessageId
-                    ? {
-                        ...msg,
-                        message: data.message || "Terjadi kesalahan.",
-                        isStreaming: false,
-                      }
-                    : msg,
-                ),
-              );
-              break;
-
-            default:
-              // Handle unknown events or raw text
-              if (data.text) {
-                fullMessage += data.text;
-                setMessages((prev) =>
-                  prev.map((msg) =>
-                    msg.id === botMessageId
-                      ? { ...msg, message: fullMessage, isStreaming: true }
-                      : msg,
-                  ),
-                );
-              }
-          }
-        } catch (e) {
-          // If JSON parse fails, might be plain text
-          console.warn("Failed to parse SSE data:", eventData, e);
-        }
-      };
-      // Parse SSE format properly
-      const parseSSEBuffer = (text: string): string => {
-        // Split by double newline (SSE event separator)
-        const parts = text.split(/\n\n/);
-
-        // Keep the last incomplete part in buffer
-        const incompletePart = parts.pop() || "";
-
-        for (const part of parts) {
-          if (!part.trim()) continue;
-
-          const lines = part.split("\n");
-          let currentEvent = ""; // default event type
-          let currentData = "";
-
-          for (const line of lines) {
-            if (line.startsWith("event:")) {
-              currentEvent = line.slice(6).trim();
-            } else if (line.startsWith("data:")) {
-              // Handle multi-line data by accumulating
-              const dataContent = line.slice(5).trim();
-              currentData += currentData ? "\n" + dataContent : dataContent;
-            } else if (line.startsWith(":")) {
-              // Comment line, ignore (often used for keep-alive)
-              continue;
             }
+          } catch (err) {
+            console.warn("Bad JSON chunk:", jsonStr);
           }
-
-          if (currentData) {
-            processSSEEvent(currentEvent, currentData);
-          }
-        }
-
-        return incompletePart;
-      };
-
-      // Read stream with proper buffer handling
-      while (true) {
-        const { done, value } = await reader.read();
-
-        if (value) {
-          buffer += decoder.decode(value, { stream: true });
-          buffer = parseSSEBuffer(buffer);
-        }
-
-        if (done) {
-          // Process any remaining buffer after stream ends
-          if (buffer.trim()) {
-            // Flush decoder
-            buffer += decoder.decode();
-            parseSSEBuffer(buffer + "\n\n"); // Force parse remaining
-          }
-          break;
         }
       }
 

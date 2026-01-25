@@ -94,6 +94,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
   const [showNotice, setShowNotice] = useState(true);
 
+  // const [consult, setConsult] = useState<ConsultScheduleType | null>(null);
+
   const [isLoadingBuy, setIsLoadingBuy] = useState(false);
 
   // const [isExpanded, setIsExpanded] = useState(false);
@@ -256,19 +258,23 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
   const isShowInput = type === "preview" || type === "share";
 
-  const consult: ConsultScheduleType = consultSession.data;
+  const consult: ConsultScheduleType = consultSession;
 
   const payID = uuidv4();
 
   const handleBuy = async () => {
     setIsLoadingBuy(true);
+    if (!consult) return;
     router.push(
       `/${locale}/pay/${payID}?product=${consult.chat_session}&type=consultation`,
     );
   };
 
   const dateNow = new Date();
-  const consultExpiredAt = new Date(consult.reservation_expires_at);
+  let consultExpiredAt = new Date();
+  if (consult) {
+    consultExpiredAt = new Date(consult.reservation_expires_at);
+  }
 
   return (
     <div className="relative flex flex-col min-h-screen" ref={chatContainerRef}>
@@ -330,7 +336,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                 )}
                 {consult && (
                   <div>
-                    {/* <pre>{JSON.stringify(consult, null, 2)}</pre> */}
                     <div className="bg-white p-4 rounded-2xl border">
                       <p className="text-primary mb-4">
                         {locale === routing.defaultLocale
@@ -348,33 +353,41 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                         </p>
                       </div>
                       {consult.payment_status === "success" &&
-                        consult.doctor_id && (
-                          <div className="space-y-3">
-                            <div>
-                              <p className="text-sm! text-muted-foreground mb-1">
-                                {locale === routing.defaultLocale
-                                  ? "Dokter"
-                                  : "Doctor"}
-                              </p>
-                              <AvatarDoctor
-                                doctor={consult.doctor_id}
-                                locale={locale}
-                                size="md"
-                              />
-                            </div>
-
-                            <div>
-                              <p className="text-sm! text-muted-foreground mb-1">
-                                Meeting Link
-                              </p>
-                              <Link href={consult.meeting_link}>
-                                <p className="text-primary underline">
-                                  {consult.meeting_link}
-                                </p>
-                              </Link>
-                            </div>
+                      consult.doctor_id ? (
+                        <div className="space-y-3">
+                          <div>
+                            <p className="text-sm! text-muted-foreground mb-1">
+                              {locale === routing.defaultLocale
+                                ? "Dokter"
+                                : "Doctor"}
+                            </p>
+                            <AvatarDoctor
+                              doctor={consult.doctor_id}
+                              locale={locale}
+                              size="md"
+                            />
                           </div>
-                        )}
+
+                          <div>
+                            <p className="text-sm! text-muted-foreground mb-1">
+                              Meeting Link
+                            </p>
+                            <Link href={consult.meeting_link}>
+                              <p className="text-primary underline">
+                                {consult.meeting_link}
+                              </p>
+                            </Link>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-amber-50 border border-amber-500 px-3 py-1 rounded-full text-amber-500 inline-flex w-fit">
+                          <p className="text-sm!">
+                            {locale === routing.defaultLocale
+                              ? "Menunggu penugasan dokter oleh sistem"
+                              : "Waiting for doctor assignment by the system"}
+                          </p>
+                        </div>
+                      )}
 
                       {consult.payment_status !== "success" &&
                         (dateNow < consultExpiredAt ? (

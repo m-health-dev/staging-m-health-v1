@@ -63,6 +63,9 @@ import { createClient } from "@/utils/supabase/client";
 import { createConsultation } from "@/lib/consult/post-patch-consultation";
 import { se } from "date-fns/locale";
 import { routing } from "@/i18n/routing";
+import PriceInfo from "@/components/utility/PriceInfo";
+import { format } from "node:path";
+import { formatRupiah } from "@/helper/rupiah";
 
 type Step = 1 | 2 | 3;
 
@@ -88,6 +91,7 @@ const CWDComponent = ({
   checkSession,
   locale,
   labels,
+  price,
 }: {
   accounts?: Account;
   publicID: string;
@@ -96,6 +100,7 @@ const CWDComponent = ({
   checkSession?: boolean;
   locale: string;
   labels?: any;
+  price?: number;
 }) => {
   // console.log(dateBooked);
 
@@ -1001,6 +1006,17 @@ const CWDComponent = ({
                           />
                         </div>
 
+                        <div className="border p-4 rounded-2xl">
+                          <p>Biaya Konsultasi</p>
+                          <h6 className="font-semibold text-primary">
+                            {formatRupiah(price ?? 0)}
+                          </h6>
+                          <p className="text-muted-foreground text-sm! mt-3">
+                            {locale === routing.defaultLocale
+                              ? "Biaya ini akan ditagihkan pada halaman pembayaran selanjutnya. Harga diatas belum termasuk pajak."
+                              : "This fee will be charged on the next payment page. The price above does not include tax."}
+                          </p>
+                        </div>
                         <div>
                           <p className="text-muted-foreground text-xs!">
                             {locale === routing.defaultLocale
@@ -1023,9 +1039,7 @@ const CWDComponent = ({
                                 ? "Kebijakan Privasi"
                                 : "Privacy Policy"}
                             </span>{" "}
-                            {locale === routing.defaultLocale
-                              ? "kami. Melalui pendaftaran konsultasi ini anda akan secara otomatis terdaftar di M HEALTH. Untuk masuk ke akun anda silahkan klik tautan pada email yang telah kami kirimkan kepada anda. Password untuk masuk juga telah terkirim ke email anda."
-                              : "By submitting this consultation registration form, you will be automatically registered in M HEALTH. To access your account, please click the link in the email we have sent you. The password to log in has also been sent to your email."}
+                            {locale === routing.defaultLocale ? "kami." : "."}
                           </p>
                         </div>
                       </div>

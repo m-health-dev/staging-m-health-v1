@@ -2,7 +2,15 @@
 
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
-import { Mars, Venus, VenusAndMars } from "lucide-react";
+import {
+  Check,
+  Loader,
+  Mars,
+  Stethoscope,
+  Venus,
+  VenusAndMars,
+  X,
+} from "lucide-react";
 import { routing } from "@/i18n/routing";
 import Link from "next/link";
 import React, { useEffect, useState, useTransition } from "react";
@@ -55,24 +63,36 @@ const ConsultationDetailClient = ({
     <div className="mb-20">
       <ContainerWrap>
         <div className="my-10">
-          <div className="mb-4">
+          <div className="flex flex-wrap gap-2 mb-4">
             {c.payment_status === "success" ? (
-              <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
+              <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                <Check className="size-4" />
                 {locale === routing.defaultLocale
                   ? "Pembayaran Berhasil"
                   : "Payment Successful"}
               </p>
             ) : c.payment_status === "waiting" ? (
-              <p className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
+              <p className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                <Loader className="size-4" />
                 {locale === routing.defaultLocale
                   ? "Menunggu Pembayaran"
                   : "Waiting for Payment"}
               </p>
             ) : (
-              <p className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs!">
+              <p className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                <X className="size-4" />
                 {locale === routing.defaultLocale
                   ? "Pembayaran Gagal"
                   : "Payment Failed"}
+              </p>
+            )}
+
+            {c.doctor_id && (
+              <p className="text-sky-600 bg-sky-50 border-sky-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                <Stethoscope className="size-4" />
+                {locale === routing.defaultLocale
+                  ? "Dokter Ditugaskan"
+                  : "Doctor Assigned"}
               </p>
             )}
           </div>

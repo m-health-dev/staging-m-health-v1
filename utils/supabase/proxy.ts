@@ -122,13 +122,17 @@ export async function updateSession(
   }
 
   if (!user && request.nextUrl.pathname.startsWith(`/${locale}/connect`)) {
-    const url = request.nextUrl.clone();
-    url.pathname = `/${locale}/sign-in`;
+    // 1. Ambil path lengkap beserta query parameternya (?session=...)
+    const fullPath = request.nextUrl.pathname + request.nextUrl.search;
 
-    // Opsional: Simpan halaman yang ingin diakses untuk redirect balik nanti
-    url.searchParams.set("redirect", request.nextUrl.pathname);
+    // 2. Buat URL baru untuk halaman sign-in
+    const signInUrl = new URL(`/${locale}/sign-in`, request.url);
 
-    return NextResponse.redirect(url);
+    // 3. Set 'redirect' dengan path lengkap tadi
+    signInUrl.searchParams.set("redirect", fullPath);
+
+    // 4. Lakukan redirect
+    return NextResponse.redirect(signInUrl);
   }
 
   if (

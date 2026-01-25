@@ -103,19 +103,21 @@ export async function getConsultationByChatSessionID(session_id: string) {
     if (res.status !== 200) {
       return {
         success: false,
+        data: null,
         error: `Failed to receive consultation by session id data. Cause : ${json.message}`,
       };
     }
 
     // console.log({ json });
     return {
-      data: json,
+      data: json.data,
       success: true,
     };
   } catch (error) {
     console.error("Receive consultation data by session id Error:", error);
     return {
       success: false,
+      data: null,
       message: "Terjadi kesalahan saat terhubung ke server.",
     };
   }

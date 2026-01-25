@@ -3,6 +3,8 @@ import { createClient } from "@/utils/supabase/server";
 import CWDComponent from "./cwd-component";
 import { cookies } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
+import { get } from "node:http";
+import { getConsultationPrice } from "@/lib/consult/get-consultation";
 
 const CWDPage = async ({
   searchParams,
@@ -60,6 +62,8 @@ const CWDPage = async ({
   const locale = await getLocale();
   const t = await getTranslations("consult");
 
+  const { data: priceData } = await getConsultationPrice();
+
   return (
     <CWDComponent
       accounts={userData}
@@ -72,6 +76,7 @@ const CWDPage = async ({
         desc: t("desc"),
       }}
       locale={locale}
+      price={priceData?.price}
     />
   );
 };

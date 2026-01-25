@@ -38,7 +38,7 @@ function stripMarkdown(text: string): string {
       // Remove images ![alt](url)
       .replace(/!\[.*?\]\(.+?\)/g, "")
       // Remove horizontal rules (--- or ***)
-      .replace(/^[\-\*_]{3,}$/gm, "")
+      .replace(/^[\*_]{3,}$/gm, "")
       // Remove extra newlines
       .replace(/\n{3,}/g, "\n\n")
       .trim()
@@ -123,12 +123,12 @@ Buatlah rangkuman yang:
 
 Format rangkuman dalam paragraf yang jelas dan ringkas, gunakan bahasa yang mudah dipahami oleh tenaga medis. Jangan menambahkan informasi yang tidak ada dalam percakapan.
 
-Tambahkan tanda strip tiga kali "---" sebagai pemisah antara bahasa indonesia dan inggris.
+Tambahkan tanda strip tiga kali dengan spasi "- - -" sebagai pemisah antara bahasa indonesia dan inggris.
 
 FORMAT OUTPUT WAJIB:
-[Rangkuman dalam Bahasa Indonesia]
----
-[Summary in English]`;
+[Indonesia] : [Rangkuman dalam Bahasa Indonesia]
+- - -
+[English] : [Summary in English]`;
 
     const userPrompt = `Berikut adalah percakapan antara pasien dan asisten AI kesehatan:\n\n${chatMessages}\n\nBuatlah rangkuman keluhan kesehatan pasien berdasarkan percakapan di atas dalam DUA BAHASA. Tulis rangkuman Bahasa Indonesia terlebih dahulu, lalu pisahkan dengan "---", kemudian tulis rangkuman dalam Bahasa Inggris.`;
 
