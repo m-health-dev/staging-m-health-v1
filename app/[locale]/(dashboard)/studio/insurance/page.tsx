@@ -42,12 +42,17 @@ const InsuranceData = async ({
         <div className="my-10 flex items-center justify-between gap-5 sticky top-0 bg-linear-to-b from-background via-background z-20 py-5 w-full">
           <div className="flex flex-col w-full">
             <h4 className="text-primary font-semibold">
-              {locale === routing.defaultLocale ? "Data Asuransi" : "Insurance Data"}
+              {locale === routing.defaultLocale
+                ? "Produk Asuransi"
+                : "Insurance Products"}
             </h4>
           </div>
           <Link href={`/${locale}/studio/insurance/add`}>
             <Button className="rounded-2xl flex lg:w-fit w-full">
-              <Plus /> <p className="lg:block hidden">{locale === routing.defaultLocale ? "Tambah Baru" : "Add New"}</p>
+              <Plus />{" "}
+              <p className="lg:block hidden">
+                {locale === routing.defaultLocale ? "Tambah Baru" : "Add New"}
+              </p>
             </Button>
           </Link>
         </div>
@@ -66,7 +71,8 @@ const InsuranceData = async ({
           </p>
           <div className="flex flex-wrap gap-4 items-center">
             <p className=" bg-teal-300 rounded-xl px-3 py-1 text-sm! w-fit">
-              {meta.total} {locale === routing.defaultLocale ? "Asuransi" : "Insurance"}
+              {meta.total}{" "}
+              {locale === routing.defaultLocale ? "Asuransi" : "Insurance"}
             </p>
           </div>
         </div>

@@ -212,7 +212,7 @@ export default function ConsultationSchedulePicker({
       <div className="flex flex-col w-full gap-5">
         <div className="bg-white border p-4 rounded-3xl">
           {mode === "update" && currentSchedule && (
-            <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+            <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-lg border border-amber-200 dark:border-amber-800 mb-5">
               <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-2">
                 <CalendarDays className="size-4" />
                 {locale === routing.defaultLocale

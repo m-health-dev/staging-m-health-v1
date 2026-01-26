@@ -40,12 +40,11 @@ const Footer = () => {
               <h6 className="font-bold text-primary mb-2">
                 PT. Medika Integrasi Persada Indonesia
               </h6>
-              <div className="flex items-start gap-5 mb-2">
-                <div className="h-0.5 w-8 bg-primary mt-3" />
-                <h6 className="font-bold text-primary">
-                  PT. Medika Integrasi Klinik Indonesia
-                </h6>
-              </div>
+
+              <h6 className="font-bold text-primary">
+                PT. Medika Integrasi Klinik Indonesia
+              </h6>
+
               <div className="text-muted-foreground mt-4">
                 <p>
                   {locale === routing.defaultLocale
@@ -149,6 +148,14 @@ const Footer = () => {
               </p>
 
               <p>
+                <Link href={"/insurance"}>
+                  {locale === routing.defaultLocale
+                    ? "Produk Asuransi"
+                    : "Insurance Products"}{" "}
+                </Link>
+              </p>
+
+              <p>
                 <Link href={"/article"}>
                   {locale === routing.defaultLocale ? "Artikel" : "Articles"}
                 </Link>
@@ -172,14 +179,6 @@ const Footer = () => {
                   {locale === routing.defaultLocale
                     ? "Mitra Kolaborasi dan Rumah Sakit"
                     : "Partner & Hospital Partners"}{" "}
-                </Link>
-              </p>
-
-              <p>
-                <Link href={"/insurance"}>
-                  {locale === routing.defaultLocale
-                    ? "Mitra Asuransi"
-                    : "Insurance Partners"}{" "}
                 </Link>
               </p>
 
@@ -255,10 +254,8 @@ const Footer = () => {
           <Link href={"/changelog"}>
             <div className="flex lg:justify-center lg:items-center">
               <div className="flex lg:flex-row flex-col lg:items-center justify-center w-fit rounded-full">
-                <p className="text-xs! uppercase py-1 pr-3 font-mono italic text-primary">
-                  {buildId?.slice(0, 8) || "Local Build"} -{" "}
-                  {deployId?.split("_")[1].slice(0, 8) || "Local Deploy"} -{" "}
-                  {locale}
+                <p className="text-xs! py-1 pr-3 font-mono italic text-primary opacity-50">
+                  v1.0.0@beta-5
                 </p>
               </div>
             </div>

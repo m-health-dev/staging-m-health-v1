@@ -79,6 +79,8 @@ const NavHeader = ({
   const [openPublic, setOpenPublic] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const [scrolled, setScrolled] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [shareLink, setShareLink] = useState(shareSlug);
 
@@ -154,9 +156,24 @@ const NavHeader = ({
     fetchRole();
   }, []);
 
+  // Scroll effect for additionalNav
+  useEffect(() => {
+    const handleScroll = () => {
+      const nav = document.getElementById("additionalNav");
+      if (!nav) return;
+      if (window.scrollY > 0) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <ContainerWrap className="sticky top-8 z-99 hover:scale-101 transition-all duration-300 group">
-      <nav className="px-5 z-99 lg:border-b-0 border-b border-primary/10 bg-white transition-all duration-300 rounded-full mt-8">
+      <nav className="px-5 z-99 border bg-white transition-all duration-300 rounded-full mt-8">
         <header className="lg:py-4 py-3 flex w-full items-center justify-between">
           <Link href={`/${locale}/home`}>
             <Image
@@ -360,33 +377,13 @@ const NavHeader = ({
                 </p>
               </Link>
               <Link
-                href={`/${locale}/article`}
+                href={`/${locale}/insurance`}
                 className="group"
                 data-cursor-clickable
               >
                 <p className="text-primary">
                   {" "}
-                  {locale === routing.defaultLocale ? "Artikel" : "News"}
-                </p>
-              </Link>
-              <Link
-                href={`/${locale}/event`}
-                className="group"
-                data-cursor-clickable
-              >
-                <p className="text-primary">
-                  {" "}
-                  {locale === routing.defaultLocale ? "Acara" : "Events"}
-                </p>
-              </Link>
-              <Link
-                href={`/${locale}/contact`}
-                className="group"
-                data-cursor-clickable
-              >
-                <p className="text-primary">
-                  {" "}
-                  {locale === routing.defaultLocale ? "Kontak" : "Contact"}
+                  {locale === routing.defaultLocale ? "Asuransi" : "Insurance"}
                 </p>
               </Link>
 
@@ -442,6 +439,49 @@ const NavHeader = ({
           </div>
         </header>
       </nav>
+      <div
+        className={cn(
+          "md:flex justify-end relative -z-1 hidden",
+          scrolled ? "-translate-y-5 opacity-0" : "translate-y-0 opacity-100",
+          "transition-all duration-300",
+        )}
+        id="additionalNav"
+      >
+        <div className="bg-gray-50 border w-fit px-18 pt-20 pb-3 -mt-18 rounded-4xl">
+          <div className="flex items-center gap-10">
+            <Link
+              href={`/${locale}/article`}
+              className="group"
+              data-cursor-clickable
+            >
+              <p className="text-primary">
+                {" "}
+                {locale === routing.defaultLocale ? "Artikel" : "News"}
+              </p>
+            </Link>
+            <Link
+              href={`/${locale}/event`}
+              className="group"
+              data-cursor-clickable
+            >
+              <p className="text-primary">
+                {" "}
+                {locale === routing.defaultLocale ? "Acara" : "Events"}
+              </p>
+            </Link>
+            <Link
+              href={`/${locale}/contact`}
+              className="group"
+              data-cursor-clickable
+            >
+              <p className="text-primary">
+                {" "}
+                {locale === routing.defaultLocale ? "Kontak" : "Contact"}
+              </p>
+            </Link>
+          </div>
+        </div>
+      </div>
     </ContainerWrap>
   );
 };

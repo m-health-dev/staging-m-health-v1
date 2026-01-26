@@ -82,7 +82,9 @@ const AssignDoctorPage = async ({
               <div className="border-l-4 border-l-primary p-4 bg-white space-y-3">
                 <div>
                   <p className="text-muted-foreground mb-1">
-                    {locale === routing.defaultLocale ? "Dokter Ditugaskan" : "Doctor Assigned"}
+                    {locale === routing.defaultLocale
+                      ? "Dokter Ditugaskan"
+                      : "Doctor Assigned"}
                   </p>
                   {c.doctor_id ? (
                     <AvatarDoctor
@@ -100,7 +102,9 @@ const AssignDoctorPage = async ({
                 </div>
                 <div>
                   <p className="text-muted-foreground mb-1">
-                    {locale === routing.defaultLocale ? "Link Pertemuan" : "Meeting Link"}
+                    {locale === routing.defaultLocale
+                      ? "Link Pertemuan"
+                      : "Meeting Link"}
                   </p>
                   {c.meeting_link ? (
                     <Link href={c.meeting_link} target="_blank">

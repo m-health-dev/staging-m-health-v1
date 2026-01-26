@@ -368,12 +368,12 @@ const AddVendor = () => {
                         Highlight Image
                       </FormLabel>
                       <FormDescription>
-                        Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
-                        720x720px). Max. 5MB
+                        Rekomendasi: Aspek Rasio 16:9. (Ex. 1920x1080px /
+                        720x405px). Max. 5MB
                       </FormDescription>
                       {uploadLoadingHLImage ? (
-                        <Skeleton className="aspect-square w-full rounded-2xl mt-3 object-cover border" />
-                      ) : highlightPreview === null || highlightError ? (
+                        <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
+                      ) : !highlightPreview || highlightError ? (
                         <FormControl>
                           <div>
                             {highlightError && (
@@ -410,9 +410,9 @@ const AddVendor = () => {
                             <Image
                               src={highlightPreview}
                               width={320}
-                              height={320}
+                              height={180}
                               alt={highlightPreview}
-                              className="aspect-square w-full rounded-2xl mt-3 object-cover border"
+                              className="aspect-video w-full rounded-2xl mt-3 object-cover border"
                               onError={() => setHighlightError(true)}
                             />
                             <Button
@@ -569,7 +569,7 @@ const AddVendor = () => {
                                   </Dropzone>
                                 </div>
                               ) : (
-                                <>
+                                <div>
                                   <Image
                                     src={url}
                                     width={720}
@@ -602,7 +602,7 @@ const AddVendor = () => {
                                   >
                                     {loading ? <Spinner /> : <Trash />}
                                   </Button>
-                                </>
+                                </div>
                               )}
                             </div>
                           ))}

@@ -100,6 +100,14 @@ const getNavData = (locale: string) => ({
       icon: BriefcaseMedical,
     },
     {
+      title:
+        locale === routing.defaultLocale
+          ? "Produk Asuransi"
+          : "Insurance Products",
+      url: "/studio/insurance",
+      icon: ShieldPlus,
+    },
+    {
       title: locale === routing.defaultLocale ? "Acara" : "Events",
       url: "/studio/events",
       icon: PartyPopper,
@@ -181,11 +189,7 @@ const getNavData = (locale: string) => ({
       url: "/studio/vendor",
       icon: GalleryHorizontal,
     },
-    {
-      name: locale === routing.defaultLocale ? "Asuransi" : "Insurance",
-      url: "/studio/insurance",
-      icon: ShieldPlus,
-    },
+
     {
       name: "Hotel",
       url: "/studio/hotel",
@@ -309,7 +313,7 @@ export function StudioSidebar({ accounts, ...props }: StudioSidebarProps) {
   const locale = useLocale();
   const data = getNavData(locale);
   return (
-    <Sidebar collapsible="offcanvas" className="p-0" {...props}>
+    <Sidebar collapsible="offcanvas" className="p-0 z-998" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

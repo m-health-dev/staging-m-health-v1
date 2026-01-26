@@ -49,6 +49,18 @@ const SimplePagination = ({
     setLoading(true);
     onLoadingChange(true);
 
+    // window.location.href = `?page=${page}&per_page=${per_page || perPage}`;
+
+    window.location.replace(`?page=${page}&per_page=${per_page || perPage}`);
+
+    // const newUrl = `?page=${page}&per_page=${per_page || perPage}`;
+
+    // window.history.replaceState(
+    //   { ...window.history.state, as: newUrl, url: newUrl },
+    //   "",
+    //   newUrl,
+    // );
+
     router.push(`?page=${page}&per_page=${per_page || perPage}`, {
       scroll: false,
     });
@@ -82,7 +94,7 @@ const SimplePagination = ({
               meta.current_page > meta.last_page
                 ? meta.last_page
                 : meta.current_page,
-              Number(value)
+              Number(value),
             );
           }}
         >

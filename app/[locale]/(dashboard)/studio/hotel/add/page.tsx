@@ -277,34 +277,36 @@ const AddHotel = () => {
                         <Skeleton className="aspect-square w-2/6 rounded-full mt-3 object-cover border" />
                       ) : !logoPreview || logoError ? (
                         <FormControl>
-                          <Dropzone
-                            accept={{ "image/*": [] }}
-                            maxSize={1024 * 1024 * 5}
-                            onDrop={async (acceptedFiles) => {
-                              field.onChange(acceptedFiles);
-                              setLogoError(false);
+                          <>
+                            <Dropzone
+                              accept={{ "image/*": [] }}
+                              maxSize={1024 * 1024 * 5}
+                              onDrop={async (acceptedFiles) => {
+                                field.onChange(acceptedFiles);
+                                setLogoError(false);
 
-                              setUploadLoadingLogo(true);
-                              const url =
-                                await handleImageUpload(acceptedFiles);
+                                setUploadLoadingLogo(true);
+                                const url =
+                                  await handleImageUpload(acceptedFiles);
 
-                              if (url) {
-                                form.setValue("logo", url);
-                                setLogoPreview(url); // tampilkan preview
-                                setUploadLoadingLogo(false);
-                              }
-                            }}
-                            onError={console.error}
-                            className="hover:bg-muted bg-white rounded-2xl"
-                          >
-                            <DropzoneEmptyState />
-                            <DropzoneContent />
-                          </Dropzone>
-                          {logoError && (
-                            <div className="text-sm text-red-500 mt-2">
-                              Gambar gagal dimuat. Silakan upload ulang.
-                            </div>
-                          )}
+                                if (url) {
+                                  form.setValue("logo", url);
+                                  setLogoPreview(url); // tampilkan preview
+                                  setUploadLoadingLogo(false);
+                                }
+                              }}
+                              onError={console.error}
+                              className="hover:bg-muted bg-white rounded-2xl"
+                            >
+                              <DropzoneEmptyState />
+                              <DropzoneContent />
+                            </Dropzone>
+                            {logoError && (
+                              <div className="text-sm text-red-500 mt-2">
+                                Gambar gagal dimuat. Silakan upload ulang.
+                              </div>
+                            )}
+                          </>
                         </FormControl>
                       ) : (
                         logoPreview && (
@@ -353,39 +355,41 @@ const AddHotel = () => {
                         Highlight Image
                       </FormLabel>
                       <FormDescription>
-                        Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
-                        720x720px). Max. 5MB
+                        Rekomendasi: Aspek Rasio 16:9. (Ex. 1920x1080px /
+                        720x405px). Max. 5MB
                       </FormDescription>
                       {uploadLoadingHLImage ? (
                         <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
-                      ) : highlightPreview === null || highlightError ? (
+                      ) : !highlightPreview || highlightError ? (
                         <FormControl>
-                          <Dropzone
-                            accept={{ "image/*": [] }}
-                            maxSize={1024 * 1024 * 5}
-                            onDrop={async (acceptedFiles) => {
-                              setHighlightError(false);
-                              setUploadLoadingHLImage(true);
-                              const url =
-                                await handleImageUpload(acceptedFiles);
+                          <div>
+                            <Dropzone
+                              accept={{ "image/*": [] }}
+                              maxSize={1024 * 1024 * 5}
+                              onDrop={async (acceptedFiles) => {
+                                setHighlightError(false);
+                                setUploadLoadingHLImage(true);
+                                const url =
+                                  await handleImageUpload(acceptedFiles);
 
-                              if (url) {
-                                form.setValue("highlight_image", url);
-                                setHighlightPreview(url);
-                                setUploadLoadingHLImage(false);
-                              }
-                            }}
-                            onError={console.error}
-                            className="hover:bg-muted bg-white rounded-2xl"
-                          >
-                            <DropzoneEmptyState />
-                            <DropzoneContent />
-                          </Dropzone>
-                          {highlightError && (
-                            <div className="text-sm text-red-500 mt-2">
-                              Gambar gagal dimuat. Silakan upload ulang.
-                            </div>
-                          )}
+                                if (url) {
+                                  form.setValue("highlight_image", url);
+                                  setHighlightPreview(url);
+                                  setUploadLoadingHLImage(false);
+                                }
+                              }}
+                              onError={console.error}
+                              className="hover:bg-muted bg-white rounded-2xl"
+                            >
+                              <DropzoneEmptyState />
+                              <DropzoneContent />
+                            </Dropzone>
+                            {highlightError && (
+                              <div className="text-sm text-red-500 mt-2">
+                                Gambar gagal dimuat. Silakan upload ulang.
+                              </div>
+                            )}
+                          </div>
                         </FormControl>
                       ) : (
                         highlightPreview && (

@@ -355,7 +355,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                       {consult.payment_status === "success" &&
                       consult.doctor_id ? (
                         <div className="space-y-3">
-                          <div>
+                          {/* <div>
                             <p className="text-sm! text-muted-foreground mb-1">
                               {locale === routing.defaultLocale
                                 ? "Dokter"
@@ -366,7 +366,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                               locale={locale}
                               size="md"
                             />
-                          </div>
+                          </div> */}
 
                           <div>
                             <p className="text-sm! text-muted-foreground mb-1">

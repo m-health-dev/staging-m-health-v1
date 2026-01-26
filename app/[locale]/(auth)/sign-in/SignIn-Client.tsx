@@ -162,7 +162,7 @@ const SignInClient = ({
         )}
       >
         <div>
-          <p>{redirectRecord}</p>
+          {/* <p>{redirectRecord}</p> */}
           <Link href={`/${locale}`}>
             <Image
               src={

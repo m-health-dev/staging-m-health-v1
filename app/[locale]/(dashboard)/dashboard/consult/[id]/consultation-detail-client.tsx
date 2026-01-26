@@ -91,8 +91,8 @@ const ConsultationDetailClient = ({
               <p className="text-sky-600 bg-sky-50 border-sky-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
                 <Stethoscope className="size-4" />
                 {locale === routing.defaultLocale
-                  ? "Dokter Ditugaskan"
-                  : "Doctor Assigned"}
+                  ? "Tautan Telekonsultasi Tersedia"
+                  : "Meeting Link Available"}
               </p>
             )}
           </div>
@@ -111,7 +111,7 @@ const ConsultationDetailClient = ({
         <div className="space-y-5 w-full">
           {c.doctor_id && c.meeting_link && (
             <div className="border-l-4 border-l-primary p-4 bg-white space-y-3">
-              <div>
+              {/* <div>
                 <p className="text-muted-foreground mb-1">
                   {locale === routing.defaultLocale
                     ? "Dokter Ditugaskan"
@@ -130,7 +130,7 @@ const ConsultationDetailClient = ({
                       : "No doctor assigned."}
                   </p>
                 )}
-              </div>
+              </div> */}
               <div>
                 <p className="text-muted-foreground mb-1">
                   {locale === routing.defaultLocale

@@ -12,6 +12,7 @@ import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1
 import { getAllTermsOfService } from "@/lib/legal/get-legal";
 import { getAllContact } from "@/lib/contact/get-contact";
 import { getAllErrorLogs } from "@/lib/error-logs/get-error-logs";
+import LiveErrorLogs from "./LiveErrorLogs";
 
 const ErrorLogsStudioPage = async ({
   searchParams,
@@ -38,7 +39,7 @@ const ErrorLogsStudioPage = async ({
           </Button>
         </Link> */}
       </div>
-      <div className="summary bg-white p-4 rounded-2xl border mb-4 flex flex-wrap gap-4 items-center">
+      {/* <div className="summary bg-white p-4 rounded-2xl border mb-4 flex flex-wrap gap-4 items-center">
         <p className="text-sm! text-muted-foreground inline-flex gap-2 items-center bg-accent px-3 py-1 rounded-xl">
           <Database className="size-4" />
           <span>
@@ -56,13 +57,13 @@ const ErrorLogsStudioPage = async ({
             {total} Error Logs
           </p>
         </div>
-      </div>
-      <Studio1DataTable
-        columns={columns}
-        data={data}
+      </div> */}
+      <LiveErrorLogs
+        initialData={(data ?? []) as any[]}
+        page={page}
+        per_page={per_page}
         meta={meta}
         links={links}
-        type="error-logs"
         locale={locale}
       />
     </ContainerWrap>

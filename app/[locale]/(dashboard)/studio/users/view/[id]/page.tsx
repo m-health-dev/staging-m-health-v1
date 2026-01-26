@@ -39,7 +39,7 @@ const UserDetailPage = async ({
         {locale === routing.defaultLocale ? "Data Pengguna" : "Users Data"}
       </h2>
 
-      <div className="space-y-5 lg:col-span-2 w-full">
+      <div className="space-y-5 lg:col-span-2 w-full mb-[20vh]">
         {c.avatar_url ? (
           <Image
             src={c.avatar_url}

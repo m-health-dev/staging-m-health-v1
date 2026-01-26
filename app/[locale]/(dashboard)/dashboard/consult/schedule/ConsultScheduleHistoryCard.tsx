@@ -51,8 +51,8 @@ const ConsultScheduleHistoryCard = ({
             <p className="text-sky-600 bg-sky-50 border-sky-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
               <Stethoscope className="size-4" />
               {locale === routing.defaultLocale
-                ? "Dokter Ditugaskan"
-                : "Doctor Assigned"}
+                ? "Tautan Telekonsultasi Tersedia"
+                : "Meeting Link Available"}
             </p>
           )}
         </div>

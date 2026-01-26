@@ -42,6 +42,13 @@ export const NavigationLinks = [
     },
   },
   {
+    path: "insurance",
+    label: {
+      id: "Asuransi",
+      en: "Insurance",
+    },
+  },
+  {
     path: "article",
     label: {
       id: "Artikel",

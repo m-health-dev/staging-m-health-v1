@@ -855,7 +855,7 @@ export function Studio1DataTable<TData, TValue>({
       <SimplePagination
         meta={meta}
         links={links}
-        show={[10, 25, 50]}
+        show={[10, 25, 50, 100]}
         defaultPerPage={10}
         onLoadingChange={setLoading}
       />

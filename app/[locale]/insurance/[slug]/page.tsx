@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import UnderConstruction from "@/components/utility/under-construction";
@@ -10,6 +11,8 @@ import { getVendorByID, getVendorBySlug } from "@/lib/vendors/get-vendor";
 import { InsuranceType } from "@/types/insurance.types";
 import { VendorType } from "@/types/vendor.types";
 import { createClient } from "@/utils/supabase/client";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MapPin } from "lucide-react";
 import type { Metadata, ResolvingMetadata } from "next";
 import { getLocale } from "next-intl/server";
@@ -134,36 +137,6 @@ const InsurancePublicDetailPage = async ({
           ))}
         </div>
 
-        <div className="mt-10 mb-2">
-          <p className="text-sm! text-muted-foreground mb-2">
-            {locale === routing.defaultLocale ? "Agen Asuransi" : "Agent"}
-          </p>
-          <div className="inline-flex items-center gap-4 bg-white px-5 py-4 rounded-4xl">
-            {v.agent_photo_url && (
-              <Image
-                src={v.agent_photo_url}
-                width={720}
-                height={720}
-                alt={v.agent_name}
-                className="aspect-square w-14 h-14 rounded-full object-center object-cover border"
-              />
-            )}
-
-            <div>
-              <h6 className="text-base font-semibold! text-primary">
-                {v.agent_name}
-              </h6>
-              <p className="text-sm! text-muted-foreground">
-                {!user
-                  ? v.agent_number.slice(0, 3) +
-                    "*******" +
-                    v.agent_number.slice(7, 10)
-                  : v.agent_number}
-              </p>
-            </div>
-          </div>
-        </div>
-
         <p className="text-sm! text-muted-foreground mt-10 mb-2">
           {locale === routing.defaultLocale ? "Tentang" : "About"}
         </p>
@@ -177,6 +150,33 @@ const InsurancePublicDetailPage = async ({
                   : v.en_description,
             }}
           />
+        </div>
+
+        <div className="mt-10 mb-2">
+          <div className="flex w-full flex-col lg:items-center items-start bg-white px-5 py-7 rounded-4xl">
+            <h5 className="text-primary font-semibold mb-1">
+              {locale === routing.defaultLocale
+                ? "Tertarik dengan asuransi ini?"
+                : "Interested in this insurance?"}
+            </h5>
+            <p className="mb-4">
+              {locale === routing.defaultLocale
+                ? "Hubungi kami untuk informasi lebih lanjut dan konsultasi gratis."
+                : "Contact us for more information and free consultation."}
+            </p>
+            <Link
+              href={`/insurance/${v.slug}/contact`}
+              className="flex w-full lg:w-fit"
+            >
+              <Button className="rounded-full  w-full bg-health text-white hover:bg-health/90 h-12 px-8!">
+                <FontAwesomeIcon icon={faWhatsapp} className="size-5" />
+
+                {locale === routing.defaultLocale
+                  ? "Hubungi Kami"
+                  : "Contact Us"}
+              </Button>
+            </Link>
+          </div>
         </div>
       </ContainerWrap>
     </Wrapper>

@@ -82,7 +82,7 @@ export function VendorHotelDeleteCopyFunction({
         });
         setOpenConfirm(false);
         setInputName("");
-        router.refresh();
+        router.back();
       } else {
         toast.error(`Failed to delete ${resourceLabel}`, {
           description: res.error,

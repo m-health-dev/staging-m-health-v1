@@ -71,11 +71,17 @@ const nextConfig: NextConfig = {
         destination: "/studio",
         permanent: true,
       },
+      {
+        source: "/:locale/doctor/:path*",
+        destination: "/:locale/home",
+        permanent: true,
+      },
     ];
   },
   allowedDevOrigins: [
     "192.168.18.252",
     "192.168.18.253",
+    "192.168.240.1",
     "0.0.0.0:2026",
     "192.168.18.34:3030",
     "*.m-health.id",

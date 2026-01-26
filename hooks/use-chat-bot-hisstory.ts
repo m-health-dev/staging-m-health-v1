@@ -4,10 +4,10 @@ import { getChatHistoryByUserID } from "@/lib/chatbot/getChatActivity";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useChatHistory(userID?: string, initialData: any[] = []) {
-  const PER_PAGE = 10;
-  const INITIAL_LOAD = 20;
+  const PER_PAGE = 25;
+  // const INITIAL_LOAD = 50;
 
-  const [page, setPage] = useState(2);
+  const [page, setPage] = useState(1);
   const [allHistory, setAllHistory] = useState<any[]>(initialData);
   const [total, setTotal] = useState(0);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -25,7 +25,8 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
     const loadInitial = async () => {
       try {
         setIsInitialLoading(true);
-        const result = await getChatHistoryByUserID(userID, 1, INITIAL_LOAD);
+        const result = await getChatHistoryByUserID(userID, 1, PER_PAGE);
+        setPage(2);
 
         if (!isMounted.current) return;
 
@@ -60,11 +61,13 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
 
   // Load more function for infinite scroll
   const loadMore = useCallback(async () => {
-    if (!userID || isLoadingMore || allHistory.length >= total) return;
+    if (!userID || isLoadingMore || isInitialLoading) return;
+    if (total !== 0 && allHistory.length >= total) return;
 
     try {
       setIsLoadingMore(true);
       const result = await getChatHistoryByUserID(userID, page, PER_PAGE);
+      setPage((p) => p + 1);
 
       if (!isMounted.current) return;
 
@@ -141,7 +144,9 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
     setTotal((t) => Math.max(0, t - 1));
   }, []);
 
-  const hasMore = allHistory.length < total;
+  const hasMore = !isInitialLoading && total > 0 && allHistory.length < total;
+
+  console.log({ hasMore });
 
   return {
     history: allHistory,

@@ -494,7 +494,7 @@ export function ChatbotSidebar({
                           )}
                         </div>
                       )}
-
+                      {/* 
                       {!hasMore && history.length > 0 && (
                         <div className="px-3 bg-muted py-2 rounded-2xl text-center">
                           <p className="text-muted-foreground text-sm!">
@@ -503,9 +503,9 @@ export function ChatbotSidebar({
                               : "You have seen everything"}
                           </p>
                         </div>
-                      )}
+                      )} */}
 
-                      {history.length >= 1 && accounts?.id && (
+                      {/* {history.length >= 1 && accounts?.id && (
                         <Dialog open={dialogOpen}>
                           <DialogTrigger
                             asChild
@@ -566,7 +566,7 @@ export function ChatbotSidebar({
                             </DialogFooter>
                           </DialogContent>
                         </Dialog>
-                      )}
+                      )} */}
                     </>
                   )}
                 </div>

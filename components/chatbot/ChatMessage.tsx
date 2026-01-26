@@ -571,7 +571,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     </LazyActionItem>
                   )}
 
-                  {action.type === "vendors" && action.ids.length > 0 && (
+                  {/* {action.type === "vendors" && action.ids.length > 0 && (
                     <LazyActionItem
                       index={actionIndex}
                       delay={200}
@@ -610,7 +610,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                         </div>
                       </div>
                     </LazyActionItem>
-                  )}
+                  )} */}
 
                   {action.type === "insurance" && action.ids.length > 0 && (
                     <LazyActionItem
@@ -653,7 +653,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     </LazyActionItem>
                   )}
 
-                  {action.type === "hotels" && action.ids.length > 0 && (
+                  {/* {action.type === "hotels" && action.ids.length > 0 && (
                     <LazyActionItem
                       index={actionIndex}
                       delay={200}
@@ -692,9 +692,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                         </div>
                       </div>
                     </LazyActionItem>
-                  )}
+                  )} */}
 
-                  {action.type === "doctors" && action.ids.length > 0 && (
+                  {/* {action.type === "doctors" && action.ids.length > 0 && (
                     <LazyActionItem
                       index={actionIndex}
                       delay={200}
@@ -733,7 +733,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                         </div>
                       </div>
                     </LazyActionItem>
-                  )}
+                  )} */}
                 </div>
               ))}
             </div>

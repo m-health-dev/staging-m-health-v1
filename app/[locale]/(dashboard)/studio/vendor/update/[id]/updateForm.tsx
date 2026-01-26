@@ -395,12 +395,12 @@ const UpdateVendorForm = ({
                         Highlight Image
                       </FormLabel>
                       <FormDescription>
-                        Rekomendasi: Aspek Rasio 1:1. (Ex. 1080x1080px /
-                        720x720px). Max. 5MB
+                        Rekomendasi: Aspek Rasio 16:9. (Ex. 1920x1080px /
+                        720x405px). Max. 5MB
                       </FormDescription>
                       {uploadLoadingHLImage ? (
-                        <Skeleton className="aspect-square w-full rounded-2xl mt-3 object-cover border" />
-                      ) : highlightPreview === null || highlightError ? (
+                        <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
+                      ) : !highlightPreview || highlightError ? (
                         <FormControl>
                           <div>
                             {highlightError && (
@@ -597,7 +597,7 @@ const UpdateVendorForm = ({
                                   </Dropzone>
                                 </div>
                               ) : (
-                                <>
+                                <div>
                                   <Image
                                     src={url}
                                     width={720}
@@ -630,7 +630,7 @@ const UpdateVendorForm = ({
                                   >
                                     {loading ? <Spinner /> : <Trash />}
                                   </Button>
-                                </>
+                                </div>
                               )}
                             </div>
                           ))}

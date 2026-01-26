@@ -82,8 +82,8 @@ const InsurancePublicPage = async ({ searchParams }: Props) => {
           </h3>
           <p className="text-muted-foreground max-w-xl mt-1 text-sm!">
             {locale === routing.defaultLocale
-              ? "Kami berkolaborasi dengan perusahaan asuransi untuk memberikan perlindungan terbaik. Tanpa kolaborasi kami bukan apa-apa."
-              : "We collaborate with insurance companies to provide the best protection. Without collaboration we're nothing."}
+              ? "Kami memiliki beberapa produk asuransi untuk memberikan perlindungan terbaik. Dengan asuransi, Anda dapat merasa lebih aman dan tenang dalam menjalani hidup."
+              : "We have several insurance products to provide the best protection. With insurance, you can feel safer and more at ease in living your life."}
           </p>
         </div>
         <div>

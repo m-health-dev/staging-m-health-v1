@@ -92,7 +92,7 @@ const ClientInsurancePublic = ({
                           {v.name}
                         </h5>
                         <div className="flex justify-start items-center flex-wrap gap-2">
-                          {v.specialist?.slice(0, 2).map((s, i) => (
+                          {v.category?.slice(0, 2).map((s, i) => (
                             <div
                               key={i}
                               className={cn(
@@ -102,9 +102,9 @@ const ClientInsurancePublic = ({
                               <p className="text-xs!">{s}</p>
                             </div>
                           ))}
-                          {v.specialist.length > 2 && (
+                          {v.category.length > 2 && (
                             <p className="text-white text-xs!">
-                              + {v.specialist.length - 2}
+                              + {v.category.length - 2}
                             </p>
                           )}
                         </div>
