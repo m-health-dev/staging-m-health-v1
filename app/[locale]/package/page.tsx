@@ -80,7 +80,7 @@ const PackagePage = async ({ searchParams }: Props) => {
   const locale = await getLocale();
   return (
     <Wrapper>
-      <div className="font-bold text-white mb-20 pt-40 pb-20 -mt-28 text-center bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
+      <div className="font-bold text-white mb-20 pt-52 pb-20 -mt-42 text-start bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
         <ContainerWrap>
           <h1>
             {locale === routing.defaultLocale

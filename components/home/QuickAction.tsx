@@ -37,6 +37,7 @@ const QuickAction = ({
   target,
   className,
   forPhone,
+  start = false,
 }: {
   includeSearchBar?: boolean;
   withoutQuickLinks?: boolean;
@@ -44,6 +45,7 @@ const QuickAction = ({
   target?: string;
   className?: string;
   forPhone?: boolean;
+  start?: boolean;
 }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -230,7 +232,9 @@ const QuickAction = ({
   };
 
   return (
-    <div className="flex w-full justify-center">
+    <div
+      className={cn("flex w-full", start ? "justify-start" : "justify-center")}
+    >
       <div className={cn("max-w-full w-full", className)}>
         {/* Search Bar */}
         {includeSearchBar && (

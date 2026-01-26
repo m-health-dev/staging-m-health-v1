@@ -131,9 +131,7 @@ const SearchArea = ({ target }: { target: string }) => {
           <DialogTitle className="hidden" />
           <div className="search_anything">
             <h5 className="text-primary font-bold mb-5 capitalize">
-              {locale === routing.defaultLocale
-                ? `Cari Paket ${target} M HEALTH`
-                : `Search ${target} Packages in M HEALTH`}
+              {locale === routing.defaultLocale ? `Cari` : `Search`}
             </h5>
             <form
               onSubmit={handleSubmit}

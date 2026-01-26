@@ -59,7 +59,8 @@ export function LanguageSwitcher({
     const searchString = searchParams.toString();
     const fullPath = searchString ? `${newPath}?${searchString}` : newPath;
 
-    router.push(fullPath);
+    // router.push(fullPath);
+    window.location.replace(fullPath);
 
     // Panggil callback jika ada (untuk menutup dialog)
     if (onLanguageChange) {
@@ -84,7 +85,7 @@ export function LanguageSwitcher({
         className={cn(
           "border border-primary font-sans rounded-full bg-white relative z-9999 w-full h-12! px-5",
           isChanging && "opacity-50 cursor-not-allowed",
-          className
+          className,
         )}
       >
         {isChanging ? (

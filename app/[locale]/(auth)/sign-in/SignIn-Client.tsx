@@ -162,7 +162,6 @@ const SignInClient = ({
         )}
       >
         <div>
-          {/* <p>{redirectRecord}</p> */}
           <Link href={`/${locale}`}>
             <Image
               src={
@@ -192,6 +191,10 @@ const SignInClient = ({
                 : "You must be logged in to continue your conversation."}
             </p>
           )}
+
+          <div className="bg-gray-50 px-3 py-3 rounded-2xl mt-4 text-muted-foreground inline-flex w-fit">
+            <p className="text-xs!">{redirectRecord}</p>
+          </div>
 
           {error && (
             <div className="bg-red-50 text-red-500 p-4 border border-red-500 rounded-2xl mb-2 mt-2">

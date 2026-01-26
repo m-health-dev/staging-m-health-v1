@@ -29,7 +29,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -62,11 +62,11 @@ export async function generateMetadata(
           url: `/api/og?title=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "Paket Kebugaran"
-              : "Our Wellness Packages"
+              : "Our Wellness Packages",
           )}&description=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "Informasi mengenai berbagai paket kebugaran yang tersedia."
-              : "Information about various wellness packages available."
+              : "Information about various wellness packages available.",
           )}&path=${encodeURIComponent(`m-health.id/wellness/${slug}`)}`,
           width: 800,
           height: 450,
@@ -84,7 +84,7 @@ const WellnessPage = async ({ searchParams }: Props) => {
   const locale = await getLocale();
   return (
     <Wrapper>
-      <div className="font-bold text-white mb-20 pt-40 pb-20 -mt-28 text-center bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
+      <div className="font-bold text-white mb-20 pt-52 pb-20 -mt-42 text-start bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
         <ContainerWrap>
           <h1>
             {locale === routing.defaultLocale
@@ -132,7 +132,7 @@ const Content = async ({
 }) => {
   const { data, total, links, meta } = await getAllPublicWellness(
     page,
-    per_page
+    per_page,
   ); // nanti page bisa dynamic
 
   const wellness = Array.isArray(data) ? data : [];

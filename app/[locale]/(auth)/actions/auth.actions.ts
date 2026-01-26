@@ -306,6 +306,13 @@ export const signInAction = async (
           en: "Your account has been suspended. For more information, please contact us on the help page. - 0X2BAN",
         },
       };
+    } else if (error?.code === "captcha_failed") {
+      return {
+        error: {
+          id: "Verifikasi captcha gagal, silahkan mulai ulang halaman untuk melanjutkan. - 0X2CF",
+          en: "Captcha verification failed, please reload the page to continue. - 0X2CF",
+        },
+      };
     } else if (error.code) {
       return {
         error: {

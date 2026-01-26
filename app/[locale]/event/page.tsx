@@ -26,7 +26,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -53,11 +53,11 @@ export async function generateMetadata(
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
-            locale === routing.defaultLocale ? "Acara" : "Our Events"
+            locale === routing.defaultLocale ? "Acara" : "Our Events",
           )}&description=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "Deskripsi acara dan informasi terkait lainnya."
-              : "Event descriptions and other related information."
+              : "Event descriptions and other related information.",
           )}&path=${encodeURIComponent("m-health.id/event")}`,
           width: 800,
           height: 450,
@@ -75,7 +75,7 @@ const EventsPage = async ({ searchParams }: Props) => {
   const locale = await getLocale();
   return (
     <Wrapper>
-      <div className="font-bold text-white mb-20 pt-40 pb-20 -mt-28 text-center bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
+      <div className="font-bold text-white mb-20 pt-52 pb-20 -mt-42 text-start bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
         <ContainerWrap>
           <h1>{locale === routing.defaultLocale ? "Acara" : "Our Events"}</h1>
         </ContainerWrap>

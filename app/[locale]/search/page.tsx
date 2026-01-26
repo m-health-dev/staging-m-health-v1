@@ -70,7 +70,7 @@ const SearchPage = async ({ searchParams }: Props) => {
 
   return (
     <Wrapper>
-      <div className="mb-20 pt-40 pb-20 -mt-28 text-center bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
+      <div className="mb-20 pt-52 pb-20 -mt-42 text-start bg-primary rounded-b-4xl shadow-[inset_0px_-10px_10px_-2px_rgba(0,0,0,0.1)]">
         <ContainerWrap>
           <h1 className="font-bold text-white">
             {locale === routing.defaultLocale ? "Pencarian" : "Search"}
@@ -80,16 +80,15 @@ const SearchPage = async ({ searchParams }: Props) => {
             {query}"
           </p>
 
-          <div className="flex w-full justify-center">
-            <div className="mt-5 w-full">
-              <QuickAction
-                includeSearchBar
-                withoutQuickLinks
-                query={query}
-                target={target}
-                className="max-w-2xl"
-              />
-            </div>
+          <div className="flex w-full justify-start items-start mt-5">
+            <QuickAction
+              includeSearchBar
+              withoutQuickLinks
+              query={query}
+              target={target}
+              start
+              className="max-w-2xl"
+            />
           </div>
         </ContainerWrap>
       </div>

@@ -31,6 +31,7 @@ import HotelCard from "@/components/vendor-hotel/hotel-card";
 import MedicalCard from "@/components/medical/medical-card";
 import { MedicalEquipmentType } from "@/types/medical-equipment.types";
 import EquipmentCard from "@/components/equipment/equipment-card";
+import EventCard from "@/components/events/event-card";
 
 // "articles",
 // "events",
@@ -63,6 +64,7 @@ const SearchPageClient = ({
   const wellnessResults: WellnessType[] = results?.wellness;
   const equipmentResults: MedicalEquipmentType[] =
     results?.["medical-equipment"];
+  const eventResults: EventsType[] = results?.events;
 
   const router = useRouter();
   return (
@@ -190,6 +192,20 @@ const SearchPageClient = ({
           <div className="grid lg:grid-cols-4 grid-cols-1 gap-5">
             {articleResults.map((n, index) => {
               return <ArticleCard key={n.id} n={n} locale={locale} />;
+            })}
+          </div>
+        </div>
+      )}
+
+      {eventResults && eventResults.length > 0 && (
+        <div>
+          <h4 className="text-primary font-bold mb-10">
+            {locale === routing.defaultLocale ? "Acara" : "Events"}
+          </h4>
+
+          <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
+            {eventResults.map((n, index) => {
+              return <EventCard key={n.id} e={n} locale={locale} />;
             })}
           </div>
         </div>

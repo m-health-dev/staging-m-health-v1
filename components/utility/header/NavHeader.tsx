@@ -447,7 +447,7 @@ const NavHeader = ({
         )}
         id="additionalNav"
       >
-        <div className="bg-gray-50 border w-fit px-18 pt-20 pb-3 -mt-18 rounded-4xl">
+        <div className="bg-gray-50 border w-fit px-12 pt-20 pb-3 -mt-18 rounded-4xl">
           <div className="flex items-center gap-10">
             <Link
               href={`/${locale}/article`}
