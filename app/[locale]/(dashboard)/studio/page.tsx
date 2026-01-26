@@ -9,6 +9,7 @@ import { routing } from "@/i18n/routing";
 import DynamicGreeting from "@/components/utility/DynamicGreeting";
 import { getCurrentTime } from "@/lib/time/get-current-time";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
+import { getAITokenUsageStats } from "@/lib/chatbot/token-usage";
 
 function getThreeWords(text: string | null): string {
   if (!text) return "";
@@ -47,6 +48,7 @@ const StudioDashboard = async () => {
     { count: TOS },
     { count: Privacy },
     { count: Insurance },
+    aiTokenStats,
   ] = await Promise.all([
     supabase.from("accounts").select("*").eq("id", user?.id).maybeSingle(),
     supabase.from("accounts").select("id", { count: "exact", head: true }),
@@ -80,6 +82,7 @@ const StudioDashboard = async () => {
       .from("privacy_policy")
       .select("id", { count: "exact", head: true }),
     supabase.from("insurance").select("id", { count: "exact", head: true }),
+    getAITokenUsageStats(),
   ]);
 
   return (
@@ -340,6 +343,222 @@ const StudioDashboard = async () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="bg-white p-4 rounded-2xl mt-10">
+        <h6 className="font-bold text-primary mb-4">
+          {locale === routing.defaultLocale
+            ? "Statistik Penggunaan Token Gemini API"
+            : "Gemini API Token Usage Statistics"}
+        </h6>
+
+        <div className="md:grid lg:grid-cols-3 md:grid-cols-2 flex flex-col gap-5">
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">
+                  {aiTokenStats.totals?.total_requests}
+                </h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Permintaan AI Chat"
+                    : "AI Chat Requests"}
+                </p>
+                <p className="text-sm! text-white/50">
+                  {locale === routing.defaultLocale
+                    ? "Percakapan"
+                    : "Conversations"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">
+                  {aiTokenStats.totals?.total_all_tokens}
+                </h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Token AI Digunakan"
+                    : "AI Tokens Used"}
+                </p>
+                <p className="text-sm! text-white/50">
+                  {locale === routing.defaultLocale
+                    ? "Input + Output & Thinking + Candidates"
+                    : "Input + Output & Thinking + Candidates"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">
+                  {aiTokenStats.totals?.total_thoughts_tokens}
+                </h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Token Berpikir Digunakan"
+                    : "AI Thinking Tokens Used"}
+                </p>
+                <p className="text-sm! text-white/50">
+                  {locale === routing.defaultLocale
+                    ? "Berpikir/ Proses + Output"
+                    : "Thinking/ Processing + Output"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">
+                  {aiTokenStats.totals?.total_prompt_tokens}
+                </h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Token Prompt AI Digunakan"
+                    : "AI Prompt Tokens Used"}
+                </p>
+                <p className="text-sm! text-white/50">
+                  {locale === routing.defaultLocale
+                    ? "Prompt/ Input"
+                    : "Prompt/ Input"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">
+                  {aiTokenStats.totals?.total_candidates_tokens}
+                </h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Token Kandidat AI Digunakan"
+                    : "AI Candidate Tokens Used"}
+                </p>
+                <p className="text-sm! text-white/50">
+                  {locale === routing.defaultLocale
+                    ? "Kandidat Jawaban"
+                    : "Answer Candidates"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 w-full mt-10">
+          <div className="max-h-96 overflow-y-auto">
+            <div className="sticky top-0 bg-background/20 backdrop-blur-md z-50 p-4 border rounded-2xl mb-4">
+              <p className="text-sm! text-primary">
+                {locale === routing.defaultLocale
+                  ? "Statistik Penggunaan Harian"
+                  : "DailyToken Usage Statistics"}
+              </p>
+            </div>
+            <div>
+              {aiTokenStats.daily?.length > 0 &&
+                aiTokenStats.daily.map((dayStat: any) => (
+                  <div className="group/stats" key={dayStat.date}>
+                    <div className="bg-white rounded-2xl overflow-hidden relative border">
+                      <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm md:grid md:grid-cols-2 grid-cols-1 gap-5 md:space-y-0 space-y-5 items-center">
+                        <div>
+                          <h3 className="text-primary font-semibold">
+                            {dayStat.total_tokens}
+                          </h3>
+                          <p className="text-sm! text-muted-foreground mt-2">
+                            {locale === routing.defaultLocale
+                              ? "Total Token Digunakan"
+                              : "Total Tokens Used"}
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="text-primary font-semibold">
+                            {dayStat.request_count}
+                          </h3>
+                          <p className="text-sm! text-muted-foreground mt-2">
+                            {locale === routing.defaultLocale
+                              ? "Jumlah Permintaan"
+                              : "Request Count"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                        <p>
+                          <LocalDateTime
+                            date={dayStat.date}
+                            specificFormat="DD MMMM YYYY"
+                          />
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+          <div className="max-h-96 overflow-y-auto">
+            <div className="sticky top-0 bg-background/20 backdrop-blur-md z-50 p-4 border rounded-2xl mb-4">
+              <p className="text-sm! text-primary">
+                {locale === routing.defaultLocale
+                  ? "Statistik Penggunaan Model"
+                  : "Model Usage Statistics"}
+              </p>
+            </div>
+            <div>
+              {aiTokenStats.by_model?.length > 0 &&
+                aiTokenStats.by_model.map((stat: any) => (
+                  <div className="group/stats" key={stat.model_version}>
+                    <div className="bg-white rounded-2xl overflow-hidden relative border">
+                      <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm md:grid md:grid-cols-2 grid-cols-1 gap-5 md:space-y-0 space-y-5 items-center">
+                        <div>
+                          <h3 className="text-primary font-semibold">
+                            {stat.total_tokens}
+                          </h3>
+                          <p className="text-sm! text-muted-foreground mt-2">
+                            {locale === routing.defaultLocale
+                              ? "Total Token Digunakan"
+                              : "Total Tokens Used"}
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="text-primary font-semibold">
+                            {stat.request_count}
+                          </h3>
+                          <p className="text-sm! text-muted-foreground mt-2">
+                            {locale === routing.defaultLocale
+                              ? "Jumlah Permintaan"
+                              : "Request Count"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                        <p className="capitalize">
+                          {stat.model_version.replaceAll("-", " ")}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+
+        {/* <pre className="text-wrap wrap-anywhere text-sm!">
+          {JSON.stringify(aiTokenStats, null, 2)}
+        </pre> */}
       </div>
       <div className="bg-white p-4 border rounded-2xl mt-10">
         <p className="text-sm! text-primary mb-1">

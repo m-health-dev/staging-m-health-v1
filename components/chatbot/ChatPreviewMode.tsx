@@ -50,9 +50,9 @@ const ChatPreviewMode: React.FC<ChatPreviewModeProps> = ({
           </div>
         </div>
       )}
-      <ContainerWrap>
+      <ContainerWrap size="md">
         {userID && (
-          <div className="flex w-full flex-col bg-white p-3 border rounded-2xl mt-5">
+          <div className="flex w-full flex-col bg-white p-5 rounded-2xl mt-5">
             <p className="text-muted-foreground text-sm! mb-2">
               {locale === routing.defaultLocale
                 ? "Dibuat oleh."

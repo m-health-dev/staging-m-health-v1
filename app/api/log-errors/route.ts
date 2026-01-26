@@ -6,6 +6,11 @@ const supabase = createClient();
 
 export async function POST(request: NextRequest) {
   try {
+    const origin = request.headers.get("origin");
+    if (origin && !origin.includes(process.env.NEXT_PUBLIC_BASE_URL!)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const {
       pathname,
       error_code,
@@ -34,7 +39,7 @@ export async function POST(request: NextRequest) {
       console.error(error.code + " " + error.message);
       return NextResponse.json(
         { error: "Error inserting data" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -42,7 +47,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { error: "Error logging not found" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

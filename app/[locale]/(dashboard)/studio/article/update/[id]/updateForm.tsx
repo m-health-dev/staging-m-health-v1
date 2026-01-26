@@ -172,7 +172,7 @@ const UpdateArticleForm = ({ data, id }: { data: ArticleType; id: string }) => {
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5 flex lg:flex-row flex-col justify-between lg:items-center gap-3">
+      <div className="my-10 bg-linear-to-b from-background via-background z-10 w-full py-5 flex lg:flex-row flex-col justify-between lg:items-center gap-3">
         <div>
           {name && (
             <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">

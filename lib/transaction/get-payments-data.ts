@@ -18,7 +18,7 @@ export async function getAllPaymentsRecord(
   try {
     const accessToken = await getAccessToken();
     const res = await fetch(
-      `${apiBaseUrl}/api/v1/payments?page=${page}&per_page=${per_page}`,
+      `${apiBaseUrl}/api/v1/payments?page=${page}&per_page=${per_page}&sort_by=created_at&order=desc`,
       {
         method: "GET",
         headers: {

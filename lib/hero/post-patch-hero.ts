@@ -66,7 +66,7 @@ export async function updateHero(
     display_order?: string;
     is_active?: boolean;
   },
-  id: string
+  id: string,
 ) {
   try {
     console.log("Sending hero/update to BE:", payload);

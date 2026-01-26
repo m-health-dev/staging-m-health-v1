@@ -238,7 +238,7 @@ const getNavData = (locale: string) => ({
     {
       name:
         locale === routing.defaultLocale ? "Harga Konsultasi" : "Consult Price",
-      url: "/dashboard/consult/price",
+      url: "/studio/consult/price",
       icon: HandCoins,
     },
   ],

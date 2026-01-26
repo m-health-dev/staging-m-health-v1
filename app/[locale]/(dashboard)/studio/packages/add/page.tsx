@@ -412,7 +412,9 @@ const AddPackage = () => {
                         </FormDescription>
                         {uploadLoadingHLImage ? (
                           <Skeleton className="aspect-square w-full rounded-2xl mt-3 object-cover border" />
-                        ) : highlightPreview === null || highlightError ? (
+                        ) : !highlightPreview ||
+                          highlightPreview === null ||
+                          highlightError ? (
                           <FormControl>
                             <div>
                               {highlightError && (

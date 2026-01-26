@@ -71,11 +71,11 @@ const nextConfig: NextConfig = {
         destination: "/studio",
         permanent: true,
       },
-      {
-        source: "/:locale/doctor/:path*",
-        destination: "/:locale/home",
-        permanent: true,
-      },
+      // {
+      //   source: "/:locale/doctor/:path*",
+      //   destination: "/:locale/home",
+      //   permanent: true,
+      // },
     ];
   },
   allowedDevOrigins: [

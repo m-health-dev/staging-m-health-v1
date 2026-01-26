@@ -80,7 +80,7 @@ const CreateTermsOfService = () => {
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
+      <div className="my-10 bg-linear-to-b from-background via-background z-10 w-full py-5">
         {name && (
           <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
             Renew Terms of Service
@@ -184,6 +184,7 @@ const CreateTermsOfService = () => {
                 <Button
                   type="submit"
                   size={"lg"}
+                  disabled={loading}
                   className="rounded-full flex lg:w-fit w-full"
                 >
                   {loading ? <Spinner /> : "Renew"}

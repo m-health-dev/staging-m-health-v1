@@ -194,7 +194,7 @@ const AddVendor = () => {
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
+      <div className="my-10 bg-linear-to-b from-background via-background z-10 w-full py-5">
         {name && (
           <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
             Add Insurance
@@ -344,7 +344,9 @@ const AddVendor = () => {
                       </FormDescription>
                       {uploadLoadingHLImage ? (
                         <Skeleton className="aspect-video w-full rounded-2xl mt-3 object-cover border" />
-                      ) : highlightPreview === null || highlightError ? (
+                      ) : !highlightPreview ||
+                        highlightPreview === null ||
+                        highlightError ? (
                         <FormControl>
                           <div>
                             {highlightError && (

@@ -303,7 +303,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         </DialogContent>
       </Dialog>
       <div className="flex-1 pb-4">
-        <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
+        <div className="w-full max-w-3xl mx-auto px-2 lg:px-6">
           <div className={cn(type === "preview" ? "py-0" : "py-6")}>
             {messages.length === 0 ? (
               <div className="flex items-center justify-center min-h-[60vh]">
@@ -500,7 +500,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     />
                   </div>
                 ))}
-                <div ref={messagesEndRef} className="h-[50vh]" />
+                <div ref={messagesEndRef} className="h-[20vh]" />
               </div>
             )}
           </div>
@@ -521,8 +521,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         </button>
       </div>
       <div className="sticky bottom-0 bg-linear-to-t from-background via-background to-transparent pt-10 z-20">
-        <div className="w-full max-w-4xl mx-auto px-2 lg:px-6">
-          <div className="py-3">
+        <div className="w-full max-w-3xl mx-auto px-0 md:px-2 lg:px-6">
+          <div className="md:py-3 py-0">
             {!isShowInput && (
               <>
                 {replyMessage && (
@@ -547,7 +547,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                 )}
 
                 <div className="flex w-full">
-                  <div className="w-full rounded-3xl border border-primary bg-white shadow px-2 pt-2 pb-1">
+                  <div className="w-full md:rounded-3xl rounded-t-3xl border border-primary bg-white shadow px-2 pt-2 pb-1">
                     <Textarea
                       ref={textareaRef}
                       placeholder={
@@ -589,7 +589,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                 </div>
               </>
             )}
-            <p className="text-xs! text-muted-foreground mt-2 text-center">
+            <p className="text-xs! text-muted-foreground mt-2 text-center md:block hidden">
               {locale === routing.defaultLocale
                 ? "M-HEALTH AI dapat membuat kesalahan. Periksa info penting."
                 : "M HEALTH AI can make mistakes. Check important information."}

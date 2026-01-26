@@ -87,7 +87,7 @@ const UpdatePackageForm = ({
 
   async function onSubmit(data: z.infer<typeof ConsultationPriceSchema>) {
     setLoading(true);
-    const res = await updateConsultationPrice(data, id);
+    const res = await updateConsultationPrice(data);
 
     if (res.success) {
       setLoading(false);

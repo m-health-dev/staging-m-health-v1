@@ -47,9 +47,13 @@ export default function JumbotronSlide({ data }: { data: any[] }) {
               const id = nanoid();
               return (
                 <SwiperSlide key={id} className="border">
-                  <Link href={slide.link} target="_blank">
+                  {slide.link == "" || !slide.link ? (
                     <SlideImage slide={slide} />
-                  </Link>
+                  ) : (
+                    <Link href={slide.link} target="_blank">
+                      <SlideImage slide={slide} />
+                    </Link>
+                  )}
                 </SwiperSlide>
               );
             })}

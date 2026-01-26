@@ -544,6 +544,7 @@ export function Studio1DataTable<TData, TValue>({
                             type !== "article-category" &&
                             type !== "hero" &&
                             type !== "consult-schedule" &&
+                            type !== "doctor" &&
                             type !== "payment-records" &&
                             type !== "contact" && (
                               <p className="text-muted-foreground text-sm! mt-2">
@@ -753,8 +754,10 @@ export function Studio1DataTable<TData, TValue>({
                           type !== "consult-schedule" &&
                           type !== "contact" &&
                           type !== "payment-records" &&
+                          type !== "doctor" &&
+                          type !== "legal" &&
                           type !== "error-logs" && (
-                            <div className="flex justify-end mt-2 absolute bottom-4 right-4">
+                            <div className="flex justify-end mt-3">
                               <StatusBadge status={row.getValue("status")} />
                             </div>
                           )}

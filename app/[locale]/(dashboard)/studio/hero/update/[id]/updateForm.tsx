@@ -55,7 +55,7 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
     defaultValues: {
       title: hero.title || "",
       image: hero.image || "",
-      link: hero.link || "",
+      link: hero.link ?? undefined,
       display_order: hero.display_order || 1,
       is_active: hero.is_active || true,
     },
@@ -125,7 +125,7 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
 
     if (res.success) {
       setLoading(false);
-      toast.success(`${data.title} hero banner added successfully!`);
+      toast.success(`${data.title} hero banner updated successfully!`);
       router.push(`/${locale}/studio/hero`);
     } else if (res.error) {
       setLoading(false);
@@ -135,7 +135,7 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5">
+      <div className="my-10 bg-linear-to-b from-background via-background z-10 w-full py-5">
         {name && (
           <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
             Update Hero Banner
@@ -184,7 +184,7 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
                         Link
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} type="url" className="h-12" />
+                        <Input {...field} className="h-12" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

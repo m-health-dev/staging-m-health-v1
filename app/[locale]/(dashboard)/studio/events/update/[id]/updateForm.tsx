@@ -233,7 +233,7 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
 
   return (
     <ContainerWrap className="pb-20">
-      <div className="my-10 sticky top-0 bg-linear-to-b from-background via-background z-10 w-full py-5 flex justify-between items-center">
+      <div className="my-10 bg-linear-to-b from-background via-background z-10 w-full py-5 flex justify-between items-center">
         <div>
           {name && (
             <p className="bg-health inline-flex text-white px-2 rounded-md text-sm! py-1">
@@ -465,7 +465,9 @@ const UpdateEventForm = ({ id, data }: UpdateForm) => {
                       </FormDescription>
                       {uploadLoadingHLImage ? (
                         <Skeleton className="aspect-square w-full rounded-2xl mt-3 object-cover border" />
-                      ) : highlightPreview === null || highlightError ? (
+                      ) : !highlightPreview ||
+                        highlightPreview === null ||
+                        highlightError ? (
                         <FormControl>
                           <div>
                             {highlightError && (

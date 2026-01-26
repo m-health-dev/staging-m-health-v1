@@ -84,6 +84,11 @@ async function getChatSessionData(sessionId: string) {
 
 export async function POST(req: Request) {
   try {
+    const origin = req.headers.get("origin");
+    if (origin && !origin.includes(process.env.NEXT_PUBLIC_BASE_URL!)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { sessionId, locale } = await req.json();
 
     if (!sessionId) {

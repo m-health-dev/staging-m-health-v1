@@ -21,15 +21,15 @@ const ContactDetailMessage = async ({
             Contact Detail Message
           </h2>
         </div>
-        <div className="space-y-5">
+        <div className="space-y-5 bg-white p-6 rounded-2xl">
           <div>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm!">
               {locale === routing.defaultLocale ? "Subjek" : "Subject"}
             </p>
-            <h5 className="text-health font-semibold">{data.subject}</h5>
+            <h5 className="text-primary font-semibold">{data.subject}</h5>
           </div>
           <div>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm!">
               {locale === routing.defaultLocale ? "Pengirim" : "Sender"}
             </p>
             <p>
@@ -39,7 +39,7 @@ const ContactDetailMessage = async ({
             </p>
           </div>
           <div>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm!">
               {locale === routing.defaultLocale ? "Pesan" : "Message"}
             </p>
             <p>{data.message}</p>

@@ -355,6 +355,7 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
                 <Button
                   type="submit"
                   size={"lg"}
+                  disabled={loading}
                   className="rounded-full flex lg:w-fit w-full"
                 >
                   {loading ? <Spinner /> : "Update"}

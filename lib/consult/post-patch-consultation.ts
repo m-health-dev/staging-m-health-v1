@@ -6,6 +6,7 @@ import { error } from "console";
 import { success } from "zod";
 import { patchAccount } from "../users/post-patch-users";
 import { toUtcMidnightFromLocalDate } from "@/helper/toUTCMidnight";
+import { apiSecretKey } from "@/helper/api-secret-key";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -138,20 +139,16 @@ export async function updateConsultation(
   }
 }
 
-export async function updateConsultationPrice(
-  payload: {
-    price: number;
-  },
-  id: string,
-) {
+export async function updateConsultationPrice(payload: { price: number }) {
   try {
     console.log("Sending consultation/update price to BE:", payload);
     const accessToken = await getAccessToken();
 
-    const res = await fetch(`${apiBaseUrl}/api/v1/consultation-price/${id} `, {
+    const res = await fetch(`${apiBaseUrl}/api/v1/consultation-price `, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),

@@ -235,7 +235,9 @@ const UpdateArticleCategoryForm = ({ id, data }: UpdateForm) => {
           resourceLabel="Category"
           router={router}
           slug={`${baseUrl}/${locale}/article?category=${
-            locale === routing.defaultLocale ? data.id_category : data.en_category
+            locale === routing.defaultLocale
+              ? data.id_category
+              : data.en_category
           }`}
         />
       </div>
@@ -324,6 +326,7 @@ const UpdateArticleCategoryForm = ({ id, data }: UpdateForm) => {
                 <Button
                   type="submit"
                   size={"lg"}
+                  disabled={loading}
                   className="rounded-full flex lg:w-fit w-full"
                 >
                   {loading ? <Spinner /> : "Update"}

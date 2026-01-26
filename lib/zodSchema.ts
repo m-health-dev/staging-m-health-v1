@@ -229,7 +229,7 @@ export const ArticleSchema = z.object({
 export const HeroSchema = z.object({
   title: z.string().min(3),
   image: z.string().min(1),
-  link: z.url(), // Seharusnya link bisa nullable atau optional
+  link: z.string().url().optional().or(z.literal("")), // Seharusnya link bisa nullable atau optional
   display_order: z.string(),
   is_active: z.boolean(),
 });

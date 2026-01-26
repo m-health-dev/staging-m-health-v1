@@ -12,6 +12,11 @@ const apiBaseUrl =
 
 export async function POST(req: NextRequest) {
   try {
+    const origin = req.headers.get("origin");
+    if (origin && !origin.includes(process.env.NEXT_PUBLIC_BASE_URL!)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const payload = await req.json();
 
     const accessToken = await getAccessToken();
