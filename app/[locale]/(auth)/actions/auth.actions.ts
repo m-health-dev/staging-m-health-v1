@@ -10,38 +10,32 @@ import { createClientAdmin } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 
 import { getLocale } from "next-intl/server";
-import { AuthSignUpSchema, ForgotPassSchema } from "@/lib/zodSchema";
+import {
+  AuthSignInSchema,
+  AuthSignUpSchema,
+  ForgotPassSchema,
+} from "@/lib/zodSchema";
 
 import sha1 from "crypto-js/sha1";
 import { NextResponse } from "next/server";
 import { use } from "react";
 
-const signInSchema = z.object({
-  email: z
-    .string()
-    .min(5)
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
-  password: z
-    .string()
-    .min(8)
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/),
-  redirect: z.string(),
-});
+// const signInSchema = z.object({
+//   email: z
+//     .string()
+//     .min(5)
+//     .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
+//   password: z
+//     .string()
+//     .min(8)
+//     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/),
+//   redirect: z.string(),
+// });
 const magicSchema = z.object({
   email: z
     .string()
     .min(5)
     .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
-});
-
-// Zod schemas
-const emailSchema = z.object({
-  email: z.email(),
-});
-
-const otpSchema = z.object({
-  email: z.email(),
-  otp: z.string().min(6),
 });
 
 const resetPasswordSchema = z.object({
@@ -228,7 +222,7 @@ export const signInAction = async (
   captchaToken: string,
 ) => {
   const supabase = await createClient();
-  const validatedData = signInSchema.safeParse(data);
+  const validatedData = AuthSignInSchema.safeParse(data);
   const locale = await getLocale();
 
   // console.log("validatedData:", validatedData);

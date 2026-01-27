@@ -1,5 +1,6 @@
 import PackageDetailClient from "@/components/package/PackageDetailClient";
 import ContainerWrap from "@/components/utility/ContainerWrap";
+import NotFoundContent from "@/components/utility/NotFoundContent";
 import Wrapper from "@/components/utility/Wrapper";
 import WellnessDetailClient from "@/components/wellness/WellnessDetailClient";
 import { stripHtml } from "@/helper/removeHTMLTag";
@@ -22,13 +23,24 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
   const locale = await getLocale();
 
-  const data: WellnessType = (await getWellnessBySlug(slug)).data.data;
+  let data: WellnessType | null = null;
+
+  try {
+    const res = await getWellnessBySlug(slug);
+    data = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Wellness fetch error:", error);
+  }
+
+  if (!data) {
+    return {};
+  }
 
   const rawContent =
     locale === routing.defaultLocale ? data.id_tagline : data.en_tagline;
@@ -48,9 +60,9 @@ export async function generateMetadata(
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(
-            locale === routing.defaultLocale ? data.id_title : data.en_title
+            locale === routing.defaultLocale ? data.id_title : data.en_title,
           )}&description=${encodeURIComponent(
-            plainDescription
+            plainDescription,
           )}&path=${encodeURIComponent(`m-health.id/wellness/${slug}`)}`,
           width: 800,
           height: 450,
@@ -68,7 +80,19 @@ const WellnessDetailSlug = async ({
   const { slug } = await params;
 
   const locale = await getLocale();
-  const data = (await getWellnessBySlug(slug)).data.data;
+  let data: WellnessType | null = null;
+
+  try {
+    const res = await getWellnessBySlug(slug);
+    data = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Wellness fetch error:", error);
+  }
+
+  if (!data || data.status === "archived" || data.status === "draft") {
+    return <NotFoundContent messageNoData />;
+  }
+
   const t = await getTranslations("utility");
 
   const supabase = await createClient();

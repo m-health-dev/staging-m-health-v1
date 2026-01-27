@@ -1,5 +1,6 @@
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import ContainerWrap from "@/components/utility/ContainerWrap";
+import NotFoundContent from "@/components/utility/NotFoundContent";
 import UnderConstruction from "@/components/utility/under-construction";
 import Wrapper from "@/components/utility/Wrapper";
 import { stripHtml } from "@/helper/removeHTMLTag";
@@ -30,7 +31,21 @@ export async function generateMetadata(
 
   const locale = await getLocale();
 
-  const v: HotelType = (await getHotelBySlug(slug)).data.data;
+  // const v: HotelType = (await getHotelBySlug(slug)).data.data;
+
+  let v: HotelType | null = null;
+
+  try {
+    const res = await getHotelBySlug(slug);
+    v = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Hotel fetch error:", error);
+  }
+
+  // 🔥 kalau data ga ada → 404 page, bukan 500
+  if (!v) {
+    return {};
+  }
 
   const rawContent =
     locale === routing.defaultLocale ? v.id_description : v.en_description;
@@ -67,7 +82,21 @@ const HotelPublicDetailPage = async ({ params }: Props) => {
 
   const locale = await getLocale();
 
-  const v: HotelType = (await getHotelBySlug(slug)).data.data;
+  // const v: HotelType = (await getHotelBySlug(slug)).data.data;
+
+  let v: HotelType | null = null;
+
+  try {
+    const res = await getHotelBySlug(slug);
+    v = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Hotel fetch error:", error);
+  }
+
+  if (!v) {
+    return <NotFoundContent messageNoData />;
+  }
+
   return (
     <Wrapper>
       <ContainerWrap className="mt-10">
@@ -96,7 +125,9 @@ const HotelPublicDetailPage = async ({ params }: Props) => {
             <Link href={v.location_map}>
               <div className="inline-flex items-center gap-1 bg-health text-white lg:px-4 px-2 py-2 lg:w-fit lg:h-fit rounded-full">
                 <MapPin className="size-5" />
-                <p className="block">{locale === routing.defaultLocale ? "Lokasi" : "Location"}</p>
+                <p className="block">
+                  {locale === routing.defaultLocale ? "Lokasi" : "Location"}
+                </p>
               </div>
             </Link>
           </div>
@@ -111,7 +142,9 @@ const HotelPublicDetailPage = async ({ params }: Props) => {
             <p className="mb-5">{v.location}</p>
           </>
         )}
-        <p className="text-sm! text-muted-foreground mt-10 mb-2">{locale === routing.defaultLocale ? "Tentang" : "About"}</p>
+        <p className="text-sm! text-muted-foreground mt-10 mb-2">
+          {locale === routing.defaultLocale ? "Tentang" : "About"}
+        </p>
         <div>
           <div
             className="prose max-w-none"

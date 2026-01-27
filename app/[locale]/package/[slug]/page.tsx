@@ -14,6 +14,9 @@ import { getAccessToken, getUser } from "../../(auth)/actions/auth.actions";
 import { getUserDetail } from "@/lib/auth/getUserDetail";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { createClient } from "@/utils/supabase/server";
+import { notFound } from "next/navigation";
+import FailedGetDataNotice from "@/components/utility/FailedGetDataNotice";
+import NotFoundContent from "@/components/utility/NotFoundContent";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -22,13 +25,25 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
   const locale = await getLocale();
 
-  const data: PackageType = (await getPackageBySlug(slug)).data.data;
+  let data: PackageType | null = null;
+
+  try {
+    const res = await getPackageBySlug(slug);
+    data = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Package fetch error:", error);
+  }
+
+  // 🔥 kalau data ga ada → 404 page, bukan 500
+  if (!data) {
+    return {};
+  }
 
   const rawContent =
     locale === routing.defaultLocale ? data.id_tagline : data.en_tagline;
@@ -50,9 +65,9 @@ export async function generateMetadata(
           url:
             data.highlight_image ||
             `/api/og?title=${encodeURIComponent(
-              locale === routing.defaultLocale ? data.id_title : data.en_title
+              locale === routing.defaultLocale ? data.id_title : data.en_title,
             )}&description=${encodeURIComponent(
-              plainDescription
+              plainDescription,
             )}&path=${encodeURIComponent(`m-health.id/package/${slug}`)}`,
           width: 800,
           height: 450,
@@ -70,7 +85,21 @@ const PackageDetailSlug = async ({
   const { slug } = await params;
 
   const locale = await getLocale();
-  const data = (await getPackageBySlug(slug)).data.data;
+
+  let data: PackageType | null = null;
+
+  try {
+    const res = await getPackageBySlug(slug);
+    data = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Package fetch error:", error);
+  }
+
+  // 🔥 kalau data ga ada → 404 page, bukan 500
+  if (!data || data.status === "archived" || data.status === "draft") {
+    return <NotFoundContent messageNoData />;
+  }
+
   const t = await getTranslations("utility");
 
   const supabase = await createClient();

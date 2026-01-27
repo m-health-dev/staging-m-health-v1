@@ -1,6 +1,7 @@
 import MedicalDetailClient from "@/components/medical/MedicalDetailClient";
 import PackageDetailClient from "@/components/package/PackageDetailClient";
 import ContainerWrap from "@/components/utility/ContainerWrap";
+import NotFoundContent from "@/components/utility/NotFoundContent";
 import Wrapper from "@/components/utility/Wrapper";
 import { stripHtml } from "@/helper/removeHTMLTag";
 import { routing } from "@/i18n/routing";
@@ -22,13 +23,24 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
   const locale = await getLocale();
 
-  const data: MedicalType = (await getMedicalBySlug(slug)).data.data;
+  let data: MedicalType | null = null;
+
+  try {
+    const res = await getMedicalBySlug(slug);
+    data = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Medical fetch error:", error);
+  }
+
+  if (!data) {
+    return {};
+  }
 
   const rawContent =
     locale === routing.defaultLocale ? data.id_tagline : data.en_tagline;
@@ -50,9 +62,9 @@ export async function generateMetadata(
           url:
             data.highlight_image ||
             `/api/og?title=${encodeURIComponent(
-              locale === routing.defaultLocale ? data.id_title : data.en_title
+              locale === routing.defaultLocale ? data.id_title : data.en_title,
             )}&description=${encodeURIComponent(
-              plainDescription
+              plainDescription,
             )}&path=${encodeURIComponent(`m-health.id/medical/${slug}`)}`,
           width: 800,
           height: 450,
@@ -66,7 +78,22 @@ const MedicalDetailSlug = async ({ params }: Props) => {
   const { slug } = await params;
 
   const locale = await getLocale();
-  const data = (await getMedicalBySlug(slug)).data.data;
+  // const data = (await getMedicalBySlug(slug)).data.data;
+
+  let data: MedicalType | null = null;
+
+  try {
+    const res = await getMedicalBySlug(slug);
+    data = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Medical fetch error:", error);
+  }
+
+  // 🔥 kalau data ga ada → 404 page, bukan 500
+  if (!data || data.status === "archived" || data.status === "draft") {
+    return <NotFoundContent messageNoData />;
+  }
+
   const t = await getTranslations("utility");
 
   const supabase = await createClient();

@@ -15,6 +15,7 @@ import { routing } from "@/i18n/routing";
 import { stripHtml } from "@/helper/removeHTMLTag";
 import { createClient } from "@/utils/supabase/server";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
+import NotFoundContent from "@/components/utility/NotFoundContent";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -23,14 +24,27 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
   const locale = await getLocale();
 
-  const data: MedicalEquipmentType = (await getMedicalEquipmentBySlug(slug))
-    .data.data;
+  // const data: MedicalEquipmentType = (await getMedicalEquipmentBySlug(slug))
+  //   .data.data;
+
+  let data: MedicalEquipmentType | null = null;
+
+  try {
+    const res = await getMedicalEquipmentBySlug(slug);
+    data = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Medical Equipment fetch error:", error);
+  }
+
+  if (!data) {
+    return {};
+  }
 
   const rawContent =
     locale === routing.defaultLocale
@@ -54,9 +68,9 @@ export async function generateMetadata(
           url:
             data.highlight_image ||
             `/api/og?title=${encodeURIComponent(
-              locale === routing.defaultLocale ? data.id_title : data.en_title
+              locale === routing.defaultLocale ? data.id_title : data.en_title,
             )}&description=${encodeURIComponent(
-              plainDescription
+              plainDescription,
             )}&path=${encodeURIComponent(`m-health.id/equipment/${slug}`)}`,
           width: 800,
           height: 450,
@@ -70,7 +84,20 @@ const PackageDetailSlug = async ({ params }: Props) => {
   const { slug } = await params;
 
   const locale = await getLocale();
-  const data = (await getMedicalEquipmentBySlug(slug)).data.data;
+  // const data = (await getMedicalEquipmentBySlug(slug)).data.data;
+
+  let data: MedicalEquipmentType | null = null;
+
+  try {
+    const res = await getMedicalEquipmentBySlug(slug);
+    data = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Medical Equipment fetch error:", error);
+  }
+
+  if (!data || data.status === "archived" || data.status === "draft") {
+    return <NotFoundContent messageNoData />;
+  }
   const t = await getTranslations("utility");
 
   const supabase = await createClient();

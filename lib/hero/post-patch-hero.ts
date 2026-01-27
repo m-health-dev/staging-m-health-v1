@@ -16,7 +16,7 @@ export async function addHero(payload: {
   title: string;
   image: string;
   link?: string;
-  display_order: string;
+  display_order?: string;
   is_active: boolean;
 }) {
   try {

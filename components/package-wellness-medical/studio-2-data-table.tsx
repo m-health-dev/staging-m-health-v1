@@ -79,7 +79,7 @@ export function Studio2DataTable<TData, TValue>({
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
 
   const { open } = useSidebar();
@@ -153,7 +153,11 @@ export function Studio2DataTable<TData, TValue>({
         <>
           <div className="flex lg:flex-row flex-col lg:items-center items-end justify-center lg:justify-between pb-4 gap-4">
             <Input
-              placeholder={locale === routing.defaultLocale ? "Filter berdasarkan nama" : "Filter by Name"}
+              placeholder={
+                locale === routing.defaultLocale
+                  ? "Filter berdasarkan nama"
+                  : "Filter by Name"
+              }
               value={
                 (table.getColumn("title")?.getFilterValue() as string) ?? ""
               }
@@ -286,29 +290,31 @@ export function Studio2DataTable<TData, TValue>({
                           <div className="absolute top-1 right-1 z-10">
                             {flexRender(
                               actionCell.column.columnDef.cell,
-                              actionCell.getContext()
+                              actionCell.getContext(),
                             )}
                           </div>
                         )}
                         <div>
                           <div className="mb-2">
                             {new Date(
-                              row.getValue("created_at")
+                              row.getValue("created_at"),
                             ).getFullYear() === now.getFullYear() &&
                               new Date(
-                                row.getValue("created_at")
+                                row.getValue("created_at"),
                               ).getMonth() === now.getMonth() &&
                               new Date(row.getValue("created_at")).getDate() ===
                                 now.getDate() && (
                                 <p className="bg-health px-1.5 py-0.5 rounded-lg text-white text-xs! inline-flex w-fit">
-                                  {locale === routing.defaultLocale ? "Baru" : "New"}
+                                  {locale === routing.defaultLocale
+                                    ? "Baru"
+                                    : "New"}
                                 </p>
                               )}
                           </div>
                           <p className="text-sm! text-muted-foreground uppercase mb-5">
                             {String(row.getValue("id")).slice(0, 8) || "N/A"}
                           </p>
-                          <h5 className="font-semibold text-primary text-lg">
+                          <h5 className="font-semibold text-primary text-lg capitalize">
                             {row.getValue("title")}
                           </h5>
                           {/* <p className="text-muted-foreground text-sm! mt-2">
@@ -335,7 +341,9 @@ export function Studio2DataTable<TData, TValue>({
                       <div className="space-y-2 mt-3">
                         <div>
                           <p className="text-xs! text-muted-foreground">
-                            {locale === routing.defaultLocale ? "Dibuat pada" : "Created at"}
+                            {locale === routing.defaultLocale
+                              ? "Dibuat pada"
+                              : "Created at"}
                           </p>
                           <p className="text-sm!">
                             <LocalDateTime date={row.getValue("created_at")} />
@@ -343,7 +351,9 @@ export function Studio2DataTable<TData, TValue>({
                         </div>
                         <div>
                           <p className="text-xs! text-muted-foreground">
-                            {locale === routing.defaultLocale ? "Diperbarui pada" : "Updated at"}
+                            {locale === routing.defaultLocale
+                              ? "Diperbarui pada"
+                              : "Updated at"}
                           </p>
                           <p className="text-sm!">
                             <LocalDateTime date={row.getValue("updated_at")} />
@@ -359,7 +369,11 @@ export function Studio2DataTable<TData, TValue>({
                 })
               ) : (
                 <div className="h-24 text-center col-span-3 bg-white border rounded-2xl flex justify-center items-center">
-                  <p className="text-muted-foreground">{locale === routing.defaultLocale ? "Tidak ada hasil." : "No results."}</p>
+                  <p className="text-muted-foreground">
+                    {locale === routing.defaultLocale
+                      ? "Tidak ada hasil."
+                      : "No results."}
+                  </p>
                 </div>
               )}
             </div>
@@ -368,7 +382,7 @@ export function Studio2DataTable<TData, TValue>({
             <div
               className={cn(
                 "overflow-hidden rounded-md border bg-white",
-                open ? "2xl:min-w-full 2xl:max-w-full max-w-6xl" : "w-full"
+                open ? "2xl:min-w-full 2xl:max-w-full max-w-6xl" : "w-full",
               )}
             >
               <Table>
@@ -382,7 +396,7 @@ export function Studio2DataTable<TData, TValue>({
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext()
+                                  header.getContext(),
                                 )}
                           </TableHead>
                         );
@@ -402,7 +416,7 @@ export function Studio2DataTable<TData, TValue>({
                             <p className="text-sm!">
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext()
+                                cell.getContext(),
                               )}
                             </p>
                           </TableCell>
@@ -415,7 +429,9 @@ export function Studio2DataTable<TData, TValue>({
                         colSpan={columns.length}
                         className="h-24 text-center"
                       >
-                        {locale === routing.defaultLocale ? "Tidak ada hasil." : "No results."}
+                        {locale === routing.defaultLocale
+                          ? "Tidak ada hasil."
+                          : "No results."}
                       </TableCell>
                     </TableRow>
                   )}

@@ -16,6 +16,8 @@ import { getLocale } from "next-intl/server";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import NotFound from "../../not-found";
+import NotFoundContent from "@/components/utility/NotFoundContent";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -30,7 +32,21 @@ export async function generateMetadata(
 
   const locale = await getLocale();
 
-  const v: VendorType = (await getVendorBySlug(slug)).data.data;
+  // const v: VendorType = (await getVendorBySlug(slug)).data.data;
+
+  let v: VendorType | null = null;
+
+  try {
+    const res = await getVendorBySlug(slug);
+    v = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Vendor fetch error:", error);
+  }
+
+  // 🔥 kalau data ga ada → 404 page, bukan 500
+  if (!v) {
+    return {};
+  }
 
   const rawContent =
     locale === routing.defaultLocale ? v.id_description : v.en_description;
@@ -76,7 +92,21 @@ const VendorPublicDetailPage = async ({
     .eq("slug", slug)
     .maybeSingle();
 
-  const v: VendorType = (await getVendorBySlug(slug)).data.data;
+  // const v: VendorType = (await getVendorBySlug(slug)).data.data;
+
+  let v: VendorType | null = null;
+
+  try {
+    const res = await getVendorBySlug(slug);
+    v = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Vendor fetch error:", error);
+  }
+
+  if (!v) {
+    return <NotFoundContent messageNoData />;
+  }
+
   return (
     <Wrapper>
       <ContainerWrap className="mt-10">

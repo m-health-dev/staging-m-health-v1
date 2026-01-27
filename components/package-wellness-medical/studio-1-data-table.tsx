@@ -552,7 +552,7 @@ export function Studio1DataTable<TData, TValue>({
                               </p>
                             )
                           )}
-                          <h5 className="font-semibold text-primary text-lg">
+                          <h5 className="font-semibold text-primary text-lg capitalize">
                             {row.getValue(
                               `${
                                 type === "users"

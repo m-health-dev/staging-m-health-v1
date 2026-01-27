@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import ContainerWrap from "@/components/utility/ContainerWrap";
+import NotFoundContent from "@/components/utility/NotFoundContent";
 import UnderConstruction from "@/components/utility/under-construction";
 import Wrapper from "@/components/utility/Wrapper";
 import { stripHtml } from "@/helper/removeHTMLTag";
@@ -33,7 +34,20 @@ export async function generateMetadata(
 
   const locale = await getLocale();
 
-  const v: InsuranceType = (await getInsuranceBySlug(slug)).data.data;
+  // const v: InsuranceType = (await getInsuranceBySlug(slug)).data.data;
+
+  let v: InsuranceType | null = null;
+
+  try {
+    const res = await getInsuranceBySlug(slug);
+    v = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Insurance fetch error:", error);
+  }
+
+  if (!v) {
+    return {};
+  }
 
   const rawContent =
     locale === routing.defaultLocale ? v.id_description : v.en_description;
@@ -75,7 +89,21 @@ const InsurancePublicDetailPage = async ({
 
   const { data: user } = await supabase.auth.getUser();
 
-  const v: InsuranceType = (await getInsuranceBySlug(slug)).data.data;
+  // const v: InsuranceType = (await getInsuranceBySlug(slug)).data.data;
+
+  let v: InsuranceType | null = null;
+
+  try {
+    const res = await getInsuranceBySlug(slug);
+    v = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Insurance fetch error:", error);
+  }
+
+  if (!v) {
+    return <NotFoundContent messageNoData />;
+  }
+
   return (
     <Wrapper>
       <ContainerWrap className="mt-10">

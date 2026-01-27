@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import CarouselEvent from "./CarouselEvent";
 import type { Metadata, ResolvingMetadata } from "next";
 import { stripHtml } from "@/helper/removeHTMLTag";
+import NotFoundContent from "@/components/utility/NotFoundContent";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -22,14 +23,27 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
   const locale = await getLocale();
 
-  const { data } = await getEventBySlug(slug);
-  const e: EventsType = data.data;
+  // const { data } = await getEventBySlug(slug);
+  // const e: EventsType = data.data;
+
+  let e: EventsType | null = null;
+
+  try {
+    const res = await getEventBySlug(slug);
+    e = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Event fetch error:", error);
+  }
+
+  if (!e) {
+    return {};
+  }
 
   const rawContent =
     locale === routing.defaultLocale ? e.id_description : e.en_description;
@@ -51,9 +65,9 @@ export async function generateMetadata(
           url:
             e.highlight_image ||
             `/api/og?title=${encodeURIComponent(
-              locale === routing.defaultLocale ? e.id_title : e.en_title
+              locale === routing.defaultLocale ? e.id_title : e.en_title,
             )}&description=${encodeURIComponent(
-              plainDescription
+              plainDescription,
             )}&path=${encodeURIComponent(`m-health.id/event/${slug}`)}`,
           width: 800,
           height: 450,
@@ -67,8 +81,21 @@ const EventsContent = async ({ params }: Props) => {
   const { slug } = await params;
   const locale = await getLocale();
 
-  const { data } = await getEventBySlug(slug);
-  const e: EventsType = data.data;
+  // const { data } = await getEventBySlug(slug);
+  // const e: EventsType = data.data;
+
+  let e: EventsType | null = null;
+
+  try {
+    const res = await getEventBySlug(slug);
+    e = res?.data?.data ?? null;
+  } catch (error) {
+    console.error("Event fetch error:", error);
+  }
+
+  if (!e) {
+    return <NotFoundContent messageNoData />;
+  }
 
   const carousel = [e.highlight_image, ...e.reference_image];
   return (
@@ -190,12 +217,19 @@ const EventsContent = async ({ params }: Props) => {
                   <Link href={e.registration_url} target="_blank">
                     <Button className="rounded-full lg:w-fit w-full font-medium cursor-pointer">
                       <ArrowUpRight className="size-5" />{" "}
-                      <p>{locale === routing.defaultLocale ? "Daftar ke Acara Ini" : "Register to this Event"}</p>
+                      <p>
+                        {locale === routing.defaultLocale
+                          ? "Daftar ke Acara Ini"
+                          : "Register to this Event"}
+                      </p>
                     </Button>
                   </Link>
                 ) : (
                   <p className="bg-gray-100 inline-flex py-2 px-4 rounded-full lg:w-fit w-full text-muted-foreground font-medium items-center gap-3 justify-center">
-                    <PencilLine className="size-4" /> {locale === routing.defaultLocale ? "Pendaftaran di Lokasi" : "On Site Registration"}
+                    <PencilLine className="size-4" />{" "}
+                    {locale === routing.defaultLocale
+                      ? "Pendaftaran di Lokasi"
+                      : "On Site Registration"}
                   </p>
                 )}
               </div>

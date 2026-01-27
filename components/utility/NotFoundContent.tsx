@@ -17,9 +17,13 @@ import { routing } from "@/i18n/routing";
 
 type NotFoundContentProps = {
   locale?: string;
+  messageNoData?: boolean;
 };
 
-const NotFoundContent = ({ locale: localeProp }: NotFoundContentProps) => {
+const NotFoundContent = ({
+  locale: localeProp,
+  messageNoData = false,
+}: NotFoundContentProps) => {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -132,6 +136,22 @@ const NotFoundContent = ({ locale: localeProp }: NotFoundContentProps) => {
     >
       <div className="flex flex-col items-center justify-center min-h-screen w-full">
         <div className="max-w-sm">
+          <div>
+            {messageNoData && (
+              <div className="mb-2 p-5 bg-white rounded-3xl border">
+                <p className="font-semibold mb-1  text-primary">
+                  {locale === routing.defaultLocale
+                    ? "Maaf atas ketidaknyamanan ini,"
+                    : "Sorry for the inconvenience,"}
+                </p>
+                <p className="text-sm! text-muted-foreground">
+                  {locale === routing.defaultLocale
+                    ? "Data ini sudah tidak ada dalam data kami/ sudah diarsipkan."
+                    : "This data is no longer in our data/ has been archived."}
+                </p>
+              </div>
+            )}
+          </div>
           <div className="bg-white border p-4 rounded-3xl">
             <Image
               src={
