@@ -467,7 +467,7 @@ const StudioDashboard = async () => {
                   : "DailyToken Usage Statistics"}
               </p>
             </div>
-            <div>
+            <div className="space-y-5">
               {aiTokenStats.daily?.length > 0 &&
                 aiTokenStats.daily.map((dayStat: any) => (
                   <div className="group/stats" key={dayStat.date}>
@@ -516,7 +516,7 @@ const StudioDashboard = async () => {
                   : "Model Usage Statistics"}
               </p>
             </div>
-            <div>
+            <div className="space-y-5">
               {aiTokenStats.by_model?.length > 0 &&
                 aiTokenStats.by_model.map((stat: any) => (
                   <div className="group/stats" key={stat.model_version}>
