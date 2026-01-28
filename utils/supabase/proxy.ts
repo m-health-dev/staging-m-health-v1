@@ -70,6 +70,16 @@ export async function updateSession(
 
   // --- LOGIC PROTEKSI ROUTE ---
 
+  if (
+    process.env.MAINTENANCE_MODE === "true" &&
+    !request.nextUrl.pathname.startsWith(`/${locale}/maintenance`)
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}/maintenance`;
+
+    return NextResponse.redirect(url);
+  }
+
   // 1. Jika User BELUM login dan mencoba akses Dashboard
   if (!user && request.nextUrl.pathname.startsWith(`/${locale}/dashboard`)) {
     const url = request.nextUrl.clone();

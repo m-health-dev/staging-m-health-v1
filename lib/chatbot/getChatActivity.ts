@@ -14,7 +14,7 @@ const apiBaseUrl =
 
 export async function getAllChatActivity(
   page: number = 1,
-  per_page: number = 10
+  per_page: number = 10,
 ) {
   const accessToken = await getAccessToken();
   try {
@@ -27,7 +27,7 @@ export async function getAllChatActivity(
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();
@@ -98,7 +98,7 @@ export async function getShareSlug(session_id: string) {
 export async function getChatHistory(
   public_id: string,
   page: number,
-  per_page: number
+  per_page: number,
 ) {
   if (!public_id) {
     return { data: [], total: 0 };
@@ -114,7 +114,7 @@ export async function getChatHistory(
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!res.ok) {
@@ -142,7 +142,7 @@ export async function getChatHistory(
 export async function getChatHistoryByUserID(
   user_id: string,
   page: number,
-  per_page: number
+  per_page: number,
 ) {
   if (!user_id) {
     return { data: [], total: 0 };
@@ -158,7 +158,7 @@ export async function getChatHistoryByUserID(
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!res.ok) {
@@ -200,7 +200,7 @@ export async function getChatSession(session_id: string) {
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!res.ok) {
