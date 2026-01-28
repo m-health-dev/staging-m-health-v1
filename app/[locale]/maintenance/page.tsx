@@ -83,10 +83,10 @@ const MaintenanceMode = () => {
         }
 
         // kalau masih maintenance → ulang lagi 10 detik
-        timer = setTimeout(runCycle, 10000);
+        timer = setTimeout(runCycle, 30000);
       } catch (err) {
         console.error(err);
-        timer = setTimeout(runCycle, 10000);
+        timer = setTimeout(runCycle, 30000);
       }
     };
 
