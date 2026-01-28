@@ -22,6 +22,7 @@ import ConsultScheduleHistoryCard from "./consult/schedule/ConsultScheduleHistor
 import { ConsultScheduleType } from "@/types/consult.types";
 import ChatActivityCard from "./chat-activity/ChatActivityCard";
 import { getChatHistoryByUserID } from "@/lib/chatbot/getChatActivity";
+import { forbidden } from "next/navigation";
 
 function getThreeWords(text: string | null): string {
   if (!text) return "";
@@ -38,13 +39,7 @@ const DashboardPage = async () => {
   } = await supabase.auth.getSession();
 
   if (!session) {
-    return (
-      <div className="p-6 text-red-600 font-medium">
-        {locale === routing.defaultLocale
-          ? "Gagal mendapatkan sesi pengguna"
-          : "Failed to get user session"}
-      </div>
-    );
+    forbidden();
   }
 
   const role = await getUserRole();

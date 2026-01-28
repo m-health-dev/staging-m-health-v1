@@ -10,22 +10,30 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatRupiah } from "@/helper/rupiah";
 import { Check, Loader, X } from "lucide-react";
 import { TransactionType } from "@/types/transaction.types";
+import Avatar from "boring-avatars";
+import AvatarUser from "@/components/utility/AvatarUser";
 
 type UserTransactionHistoryClientProps = {
   history: TransactionType;
   locale: string;
+  adminView?: boolean;
 };
 
 const UserTransactionHistoryCard = ({
   history: h,
   locale,
+  adminView = false,
 }: UserTransactionHistoryClientProps) => {
   const [loading, setLoading] = React.useState(false);
   const id = nanoid();
   return (
     <div key={id} className="bg-white rounded-2xl border p-4 ">
       <Link
-        href={`/${locale}/pay/status?order_id=${h.transaction_id}`}
+        href={
+          !adminView
+            ? `/${locale}/pay/status?order_id=${h.transaction_id}`
+            : `/${locale}/studio/payment/${h.transaction_id}`
+        }
         target="_blank"
         className="flex flex-col md:flex-row md:justify-between gap-4"
       >
@@ -59,6 +67,17 @@ const UserTransactionHistoryCard = ({
           <h6 className="text-primary font-semibold mb-4">
             {h.product_data.name}
           </h6>
+
+          {adminView && h.user_id && (
+            <div className="mb-4">
+              <p className="text-muted-foreground mb-1 text-xs!">
+                {locale === routing.defaultLocale
+                  ? "Nama Pembeli/ Pengguna"
+                  : "Buyer/ User Name"}
+              </p>
+              <AvatarUser user={h.user_id} locale={locale} />
+            </div>
+          )}
           <p className="text-xs! text-muted-foreground">
             {locale === routing.defaultLocale ? "Dibuat pada" : "Created at"}
           </p>

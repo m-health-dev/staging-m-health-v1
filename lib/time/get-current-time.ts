@@ -1,6 +1,3 @@
-import { getLocale } from "next-intl/server";
-import { revalidatePath } from "next/cache";
-
 export async function getCurrentTime(): Promise<string> {
   const now = await fetch("https://time.now/developer/api/ip", {
     next: { revalidate: 10, tags: ["time"] },

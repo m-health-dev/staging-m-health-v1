@@ -546,6 +546,7 @@ export function Studio1DataTable<TData, TValue>({
                             type !== "consult-schedule" &&
                             type !== "doctor" &&
                             type !== "payment-records" &&
+                            type !== "error-logs" &&
                             type !== "contact" && (
                               <p className="text-muted-foreground text-sm! mt-2">
                                 {row.getValue("en_title")}

@@ -37,23 +37,25 @@ import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { Account } from "@/types/account.types";
 import { ChatHistory } from "@/types/chat.types";
+import AvatarUser from "@/components/utility/AvatarUser";
 
 type ChatActivityClientProps = {
   history: any;
   locale: string;
-  account: Account;
+  account?: Account;
+  adminView?: boolean;
 };
 
 const ChatActivityCard = ({
   history: h,
   locale,
   account,
+  adminView = false,
 }: ChatActivityClientProps) => {
   const [loading, setLoading] = React.useState(false);
   const [loadDelete, setLoadDelete] = React.useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const t = useTranslations("utility");
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const handleDeleteChatSession = async (sessionID: string) => {
@@ -107,7 +109,14 @@ const ChatActivityCard = ({
   };
   return (
     <div key={h.id} className="bg-white rounded-2xl border p-4 relative">
-      <Link href={`/${locale}/c/${h.id}`} target="_blank">
+      <Link
+        href={
+          !adminView
+            ? `/${locale}/c/${h.id}`
+            : `/${locale}/studio/chat-activity/preview/${h.id}`
+        }
+        target="_blank"
+      >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             {h.urgent && (
@@ -129,6 +138,11 @@ const ChatActivityCard = ({
           </div>
         </div>
         <h5 className="text-primary font-semibold  capitalize">{h.title}</h5>
+        {adminView && h.user_id && (
+          <div className="mt-2">
+            <AvatarUser user={h.user_id} locale={locale} />
+          </div>
+        )}
         <p className="text-sm! text-muted-foreground mt-1">
           <LocalDateTime date={h.created_at} />
         </p>

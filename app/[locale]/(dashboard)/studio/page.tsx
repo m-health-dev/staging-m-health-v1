@@ -10,6 +10,16 @@ import DynamicGreeting from "@/components/utility/DynamicGreeting";
 import { getCurrentTime } from "@/lib/time/get-current-time";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { getAITokenUsageStats } from "@/lib/chatbot/token-usage";
+import {
+  getAllPaymentsRecord,
+  getPaymentsByUser,
+} from "@/lib/transaction/get-payments-data";
+import { getAllConsultations } from "@/lib/consult/get-consultation";
+import { TransactionType } from "@/types/transaction.types";
+import { ConsultScheduleType } from "@/types/consult.types";
+import StudioComponent from "./studio-component";
+import { getAllChatActivity } from "@/lib/chatbot/getChatActivity";
+import { ChatHistory } from "@/types/chat.types";
 
 function getThreeWords(text: string | null): string {
   if (!text) return "";
@@ -84,6 +94,16 @@ const StudioDashboard = async () => {
     supabase.from("insurance").select("id", { count: "exact", head: true }),
     getAITokenUsageStats(),
   ]);
+
+  const { data } = (await getAllPaymentsRecord(1, 3)) || [];
+
+  const { data: consultData } = (await getAllConsultations(1, 2)) || [];
+
+  const { data: chatData } = (await getAllChatActivity(1, 3)) || [];
+
+  const transaction: TransactionType[] = data || [];
+  const consult: ConsultScheduleType[] = consultData || [];
+  const chat: ChatHistory[] = chatData || [];
 
   return (
     <ContainerWrap>
@@ -459,7 +479,7 @@ const StudioDashboard = async () => {
           </div>
         </div>
         <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 w-full mt-10">
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-98 overflow-y-auto pr-2">
             <div className="sticky top-0 bg-background/20 backdrop-blur-md z-50 p-4 border rounded-2xl mb-4">
               <p className="text-sm! text-primary">
                 {locale === routing.defaultLocale
@@ -508,7 +528,7 @@ const StudioDashboard = async () => {
                 ))}
             </div>
           </div>
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-98 overflow-y-auto pr-2">
             <div className="sticky top-0 bg-background/20 backdrop-blur-md z-50 p-4 border rounded-2xl mb-4">
               <p className="text-sm! text-primary">
                 {locale === routing.defaultLocale
@@ -559,6 +579,14 @@ const StudioDashboard = async () => {
         {/* <pre className="text-wrap wrap-anywhere text-sm!">
           {JSON.stringify(aiTokenStats, null, 2)}
         </pre> */}
+      </div>
+      <div>
+        <StudioComponent
+          locale={locale}
+          initialDataConsult={consult}
+          initialDataTransaction={transaction}
+          initialChatData={chat}
+        />
       </div>
       <div className="bg-white p-4 border rounded-2xl mt-10">
         <p className="text-sm! text-primary mb-1">

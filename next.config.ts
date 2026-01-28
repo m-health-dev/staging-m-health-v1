@@ -123,6 +123,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     globalNotFound: true,
+    authInterrupts: true,
   },
   // cacheComponents: true,
 };

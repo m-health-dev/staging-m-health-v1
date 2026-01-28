@@ -19,7 +19,7 @@ export async function getAllChatActivity(
   const accessToken = await getAccessToken();
   try {
     const res = await fetch(
-      `${apiBaseUrl}/api/v1/chat-activities?page=${page}&per_page=${per_page}`,
+      `${apiBaseUrl}/api/v1/chat-activities?page=${page}&per_page=${per_page}&sort_by=created_at&order=desc`,
       {
         method: "GET",
         headers: {

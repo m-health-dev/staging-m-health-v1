@@ -14,15 +14,23 @@ import { Check, Loader, Stethoscope, X } from "lucide-react";
 type ConsultScheduleHistoryClientProps = {
   consult: ConsultScheduleType;
   locale: string;
+  adminView?: boolean;
 };
 
 const ConsultScheduleHistoryCard = ({
   consult: cons,
   locale,
+  adminView = false,
 }: ConsultScheduleHistoryClientProps) => {
   return (
     <div key={cons.id} className="bg-white rounded-2xl border p-4">
-      <Link href={`/${locale}/dashboard/consult/${cons.id}`}>
+      <Link
+        href={
+          !adminView
+            ? `/${locale}/dashboard/consult/${cons.id}`
+            : `/${locale}/studio/consult/assign-doctor/${cons.id}`
+        }
+      >
         <div className="flex flex-wrap gap-2">
           {cons.payment_status === "success" ? (
             <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
@@ -57,18 +65,30 @@ const ConsultScheduleHistoryCard = ({
           )}
         </div>
 
+        {adminView && cons.fullname && (
+          <>
+            <p className="text-muted-foreground mb-0 text-sm! mt-5">
+              {locale === routing.defaultLocale
+                ? "Nama Pasien/ Pengguna"
+                : "Patient/ User Name"}
+            </p>
+            <h6 className="text-health font-semibold">{cons.fullname}</h6>
+          </>
+        )}
+
         <p className="text-muted-foreground mb-0 text-sm! mt-5">
           {locale === routing.defaultLocale
             ? "Tanggal dan Waktu Terjadwal"
             : "Scheduled Date and Time"}
         </p>
+
         <h5 className="text-primary font-semibold mb-4">
           <LocalDateTime date={cons.scheduled_datetime} />
         </h5>
         <p className="text-sm! text-muted-foreground mt-5">
           {locale === routing.defaultLocale ? "Keluhan" : "Complaint"}
         </p>
-        <p className="text-health text-sm! line-clamp-3">{cons.complaint}</p>
+        <p className="text-gray-700 text-sm! line-clamp-3">{cons.complaint}</p>
 
         {/* <div className="mb-5 border-l-4 border-l-primary bg-blue-50 p-4">
                       <p className="text-sm! text-muted-foreground">

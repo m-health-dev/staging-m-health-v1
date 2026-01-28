@@ -76,6 +76,7 @@ export async function updateSession(
   ) {
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}/maintenance`;
+    url.searchParams.set("redirect", request.nextUrl.pathname);
 
     return NextResponse.redirect(url);
   }
