@@ -5,7 +5,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { ArrowLeft, ChevronDown, ChevronUp, Home } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import * as UAParserModule from "ua-parser-js";
 import {
   Collapsible,
@@ -26,6 +26,7 @@ const NotFoundContent = ({
 }: NotFoundContentProps) => {
   const pathname = usePathname();
   const router = useRouter();
+  const params = useSearchParams();
 
   // Detect locale from pathname or use prop or default to "en"
   const detectedLocale = pathname?.split("/")[1];
@@ -84,7 +85,7 @@ const NotFoundContent = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pathname,
+          pathname: pathname + (params ? "?" + params.toString() : ""),
           rayId: newRayId,
           error_code: errorCodeNote,
           error_message: errorMessage,
@@ -226,7 +227,9 @@ const NotFoundContent = ({
                     ? "Tidak tersedia"
                     : "Not available")}
               </p>
-              <p className="text-xs!">{pathname}</p>
+              <p className="text-xs!">
+                {pathname + (params ? "?" + params.toString() : "")}
+              </p>
             </CollapsibleContent>
           </Collapsible>
         </div>

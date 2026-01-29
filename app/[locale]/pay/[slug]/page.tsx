@@ -18,7 +18,7 @@ import { getWellnessByID } from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { notFound } from "next/navigation";
+import { forbidden, notFound } from "next/navigation";
 import Image from "next/image";
 import { Mars, Stethoscope, Venus, VenusAndMars } from "lucide-react";
 import {
@@ -52,21 +52,54 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
   }
 
   if (productType === "package") {
-    data = (await getPackageByID(productId as string)).data;
+    const packageRes = await getPackageByID(productId as string);
+    data = packageRes.data ? packageRes.data : null;
+
     productTypeTitle = locale === routing.defaultLocale ? "Program" : "Program";
+
+    if (!data || data === undefined) {
+      return notFound();
+    }
   } else if (productType === "medical_equipment") {
-    data = (await getMedicalEquipmentByID(productId as string)).data.data;
-    productTypeTitle = locale === routing.defaultLocale ? "Peralatan Medis" : "Medical Products";
+    const medicalEquipmentRes = await getMedicalEquipmentByID(
+      productId as string,
+    );
+    data = medicalEquipmentRes.data ? medicalEquipmentRes.data.data : null;
+    productTypeTitle =
+      locale === routing.defaultLocale ? "Peralatan Medis" : "Medical Products";
+
+    if (!data || data === undefined) {
+      return notFound();
+    }
   } else if (productType === "medical") {
-    data = (await getMedicalByID(productId as string)).data.data;
-    productTypeTitle = locale === routing.defaultLocale ? "Paket Medis" : "Medical Package";
+    const medicalRes = await getMedicalByID(productId as string);
+    data = medicalRes.data ? medicalRes.data.data : null;
+    productTypeTitle =
+      locale === routing.defaultLocale ? "Paket Medis" : "Medical Package";
+
+    if (!data || data === undefined) {
+      return notFound();
+    }
   } else if (productType === "wellness") {
-    data = (await getWellnessByID(productId as string)).data.data;
-    productTypeTitle = locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness Package";
+    const wellnessRes = await getWellnessByID(productId as string);
+    data = wellnessRes.data ? wellnessRes.data.data : null;
+    productTypeTitle =
+      locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness Package";
+
+    if (!data || data === undefined) {
+      return notFound();
+    }
   } else if (productType === "consultation") {
-    data = (await getConsultationByID(productId as string)).data;
+    const consultationRes = await getConsultationByID(productId as string);
+    data = consultationRes.data ? consultationRes.data : null;
+
     priceConsultation = (await getConsultationPrice()).data.price;
-    productTypeTitle = locale === routing.defaultLocale ? "Konsultasi" : "Consultation";
+    productTypeTitle =
+      locale === routing.defaultLocale ? "Konsultasi" : "Consultation";
+
+    if (!data || data === undefined) {
+      return notFound();
+    }
   }
 
   let account = null;
@@ -132,7 +165,9 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                     <div className="text-end">
                       <div className="flex flex-col items-end mt-2">
                         <p className="text-sm! text-muted-foreground">
-                          {locale === routing.defaultLocale ? "Subtotal" : "Subtotal"}
+                          {locale === routing.defaultLocale
+                            ? "Subtotal"
+                            : "Subtotal"}
                         </p>
                         <h5 className="text-primary font-bold">
                           {formatRupiah(priceConsultation)}
@@ -146,7 +181,11 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                   <div className="md:col-span-1 w-full">
                     <Image
                       src={data.highlight_image}
-                      alt={locale === routing.defaultLocale ? "Gambar Produk" : "Product Image"}
+                      alt={
+                        locale === routing.defaultLocale
+                          ? "Gambar Produk"
+                          : "Product Image"
+                      }
                       width={300}
                       height={300}
                       className="w-full h-auto aspect-square rounded-2xl object-center object-cover"
@@ -174,9 +213,15 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                       )}
                     </div>
                     <h5 className="font-bold text-primary text-lg">
-                      {locale === routing.defaultLocale ? data.id_title : data.en_title}
+                      {locale === routing.defaultLocale
+                        ? data.id_title
+                        : data.en_title}
                     </h5>
-                    <p>{locale === routing.defaultLocale ? data.id_tagline : data.en_tagline}</p>
+                    <p>
+                      {locale === routing.defaultLocale
+                        ? data.id_tagline
+                        : data.en_tagline}
+                    </p>
                     <div className="mt-4">
                       <AvatarVendorHotel
                         size="sm"
@@ -207,7 +252,9 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
 
                           <div className="flex flex-col items-start mt-2">
                             <p className="text-sm! text-muted-foreground">
-                              {locale === routing.defaultLocale ? "Subtotal" : "Subtotal"}
+                              {locale === routing.defaultLocale
+                                ? "Subtotal"
+                                : "Subtotal"}
                             </p>
                             <h5 className="text-primary font-bold">
                               {formatRupiah(

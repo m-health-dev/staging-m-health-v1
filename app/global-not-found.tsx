@@ -8,6 +8,8 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import NotFoundContent from "@/components/utility/NotFoundContent";
+import { Suspense } from "react";
+import LoadingComponent from "@/components/utility/loading-component";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -26,7 +28,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "M HEALTH - v1.0.0-beta.7",
+  title: "M HEALTH - v1.0.0-beta.8",
   description:
     "M HEALTH adalah platform kesehatan digital yang dirancang untuk membantu Anda mendapatkan informasi medis yang cepat, akurat, dan terpercaya. Kami memahami bahwa mencari solusi kesehatan sering kali terasa membingungkan. Oleh karena itu, kami hadir sebagai 'digital front door' — pintu gerbang kesehatan yang memudahkan siapa pun untuk bertanya, berkonsultasi, serta merencanakan perjalanan medis dan wellness secara sederhana, transparan, dan terjangkau.",
 };
@@ -37,7 +39,9 @@ export default async function GlobalNotFound() {
       <body
         className={`${manrope.variable} ${vietnamPro.variable} ${geistMono.variable} antialiased`}
       >
-        <NotFoundContent />
+        <Suspense fallback={<LoadingComponent />}>
+          <NotFoundContent />
+        </Suspense>
       </body>
     </html>
   );

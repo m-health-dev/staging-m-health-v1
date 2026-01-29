@@ -146,6 +146,20 @@ export async function updateSession(
     return NextResponse.redirect(signInUrl);
   }
 
+  if (!user && request.nextUrl.pathname.startsWith(`/${locale}/sign-out`)) {
+    // 1. Ambil path lengkap beserta query parameternya (?session=...)
+    const fullPath = request.nextUrl.pathname + request.nextUrl.search;
+
+    // 2. Buat URL baru untuk halaman sign-in
+    const signInUrl = new URL(`/${locale}/sign-in`, request.url);
+
+    // 3. Set 'redirect' dengan path lengkap tadi
+    signInUrl.searchParams.set("redirect", fullPath);
+
+    // 4. Lakukan redirect
+    return NextResponse.redirect(signInUrl);
+  }
+
   if (
     user &&
     request.nextUrl.pathname.startsWith(`/${locale}/studio`) &&

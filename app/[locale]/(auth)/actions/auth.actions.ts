@@ -274,7 +274,13 @@ export const signInAction = async (
 
   let redirectTo = "";
 
-  if (validatedData.data.redirect.startsWith(`/${locale}/c`)) {
+  if (
+    validatedData.data.redirect.startsWith(`/${locale}/c`) ||
+    validatedData.data.redirect.includes("product") ||
+    validatedData.data.redirect.includes("order_id") ||
+    validatedData.data.redirect.includes("pay") ||
+    validatedData.data.redirect.includes("session")
+  ) {
     redirectTo = validatedData.data.redirect;
   } else if (userRole === "admin") {
     redirectTo = `/${locale}/studio`;

@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import * as UAParserModule from "ua-parser-js";
 import {
   Collapsible,
@@ -34,6 +34,7 @@ const ErrorContent = ({
 }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const params = useSearchParams();
 
   // Detect locale from pathname as fallback when not provided
   const detectedLocale = pathname?.split("/")[1] || "en";
@@ -92,7 +93,7 @@ const ErrorContent = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pathname,
+          pathname: pathname + (params ? "?" + params.toString() : ""),
           rayId: newRayId,
           error_code: errorCodeNote,
           error_message: `${digest} - ${message}`,
@@ -217,22 +218,24 @@ const ErrorContent = ({
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-2 text-muted-foreground space-y-1">
               <p className="text-xs!">
-                Ray ID :{" "}
+                {" "}
                 {rayId ||
                   (locale === routing.defaultLocale
                     ? "Tidak tersedia"
                     : "Not available")}
               </p>
               <p className="text-xs!">
-                IP :{" "}
+                {" "}
                 {dataIP ||
                   (locale === routing.defaultLocale
                     ? "Tidak tersedia"
                     : "Not available")}
               </p>
-              <p className="text-xs!">Path : {pathname}</p>
               <p className="text-xs!">
-                Detail : {digest} - {message}
+                {pathname + (params ? "?" + params.toString() : "")}
+              </p>
+              <p className="text-xs!">
+                {digest} - {message}
               </p>
             </CollapsibleContent>
           </Collapsible>

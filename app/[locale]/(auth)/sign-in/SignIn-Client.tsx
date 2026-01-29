@@ -60,6 +60,8 @@ const SignInClient = ({
   const redirectData = params.get("redirect") || `/${locale}/dashboard`;
   const sessionData = params.get("session");
   const orderIdData = params.get("order_id");
+  const productIdData = params.get("product");
+  const productTypeData = params.get("type");
   const continueData = params.get("continue");
   const emailData = params.get("email");
   const resetData = params.get("reset");
@@ -76,7 +78,10 @@ const SignInClient = ({
       ? redirectData?.toString() + `?session=${sessionData.toString()}`
       : orderIdData
         ? redirectData?.toString() + `?order_id=${orderIdData.toString()}`
-        : redirectData?.toString();
+        : productIdData
+          ? redirectData?.toString() +
+            `?product=${productIdData.toString()}&type=${productTypeData?.toString()}`
+          : redirectData?.toString();
 
   useEffect(() => {
     const newRequestCount = 3 - Number(recordResetData);
@@ -674,6 +679,9 @@ const SignInClient = ({
                 >
                   {locale === routing.defaultLocale ? "Daftar." : "Sign Up."}
                 </span>{" "}
+              </p>
+              <p>
+                {redirectData}-{redirectRecord}
               </p>
             </div>
           </div>

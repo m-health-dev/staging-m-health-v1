@@ -78,14 +78,14 @@ export function NavUser({
         throw error;
       }
 
+      // Redirect to login page after successful sign out
+      router.refresh();
+
       toast.success(
         locale === routing.defaultLocale
           ? "Kamu Berhasil Keluar!"
-          : "Signed out successfully!"
+          : "Signed out successfully!",
       );
-
-      // Redirect to login page after successful sign out
-      router.refresh();
     } catch (err: any) {
       setError(err.message || "An error occurred while signing out");
       toast.error(
@@ -94,7 +94,7 @@ export function NavUser({
           : "Failed to sign out",
         {
           description: err.message || "An error occurred while signing out",
-        }
+        },
       );
     } finally {
       setIsLoading(false);
@@ -114,7 +114,7 @@ export function NavUser({
               className={cn(
                 type === "side"
                   ? "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible::bg-sidebar-accent focus-visible::text-sidebar-accent-foreground rounded-2xl! focus:outline focus-visible:outline hover:outline px-2 py-2 flex gap-3 items-center w-full"
-                  : ""
+                  : "",
               )}
             >
               {user.avatar_url ? (
@@ -122,7 +122,7 @@ export function NavUser({
                   src={user.avatar_url}
                   height={100}
                   width={100}
-                  alt={user.fullname}
+                  alt={user.fullname || user.google_fullname || user.email}
                   className="aspect-square object-cover w-10 h-10 rounded-full"
                 />
               ) : user.google_avatar ? (
@@ -130,12 +130,12 @@ export function NavUser({
                   src={user.google_avatar}
                   height={100}
                   width={100}
-                  alt={user.fullname}
+                  alt={user.fullname || user.google_fullname || user.email}
                   className="aspect-square object-cover w-10 h-10 rounded-full"
                 />
               ) : (
                 <Avatar
-                  name={user.fullname}
+                  name={user.fullname || user.google_fullname || user.email}
                   className="w-10! h-10!"
                   colors={[
                     "#3e77ab",
@@ -151,9 +151,13 @@ export function NavUser({
               {type === "side" && (
                 <>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">
-                      {user.fullname}
-                    </span>
+                    {user.fullname ||
+                      (user.google_fullname && (
+                        <span className="truncate font-medium">
+                          {user.fullname || user.google_fullname}
+                        </span>
+                      ))}
+
                     <span className="text-muted-foreground truncate text-xs">
                       {user.email}
                     </span>
@@ -176,12 +180,12 @@ export function NavUser({
                     src={user.avatar_url || user.google_avatar!}
                     height={100}
                     width={100}
-                    alt={user.fullname}
+                    alt={user.fullname || user.google_fullname || user.email}
                     className="aspect-square object-cover w-10 h-10 rounded-full"
                   />
                 ) : (
                   <Avatar
-                    name={user.fullname}
+                    name={user.fullname || user.google_fullname || user.email}
                     className="w-10! h-10!"
                     colors={[
                       "#3e77ab",
@@ -195,9 +199,13 @@ export function NavUser({
                   />
                 )}
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <p className="truncate font-medium text-sm!">
-                    {user.fullname}
-                  </p>
+                  {user.fullname ||
+                    (user.google_fullname && (
+                      <p className="truncate font-medium text-sm!">
+                        {user.fullname || user.google_fullname}
+                      </p>
+                    ))}
+
                   <p className="text-muted-foreground truncate text-xs!">
                     {user.email}
                   </p>

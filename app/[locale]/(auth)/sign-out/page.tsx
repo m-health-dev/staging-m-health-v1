@@ -38,14 +38,14 @@ export default function SignOutPage() {
         throw error;
       }
 
+      // Redirect to login page after successful sign out
+      router.push("/");
+
       toast.success(
         locale === routing.defaultLocale
           ? "Kamu Berhasil Keluar!"
           : "You have successfully signed out!",
       );
-
-      // Redirect to login page after successful sign out
-      router.push("/?sign_out=success");
     } catch (err: any) {
       setError(err.message || "An error occurred while signing out");
       toast.error(

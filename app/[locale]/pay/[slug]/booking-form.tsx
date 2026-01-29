@@ -207,7 +207,9 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
     return (
       <div className="bg-white p-5 border rounded-2xl">
         <h3 className="text-primary font-bold mb-4">
-          {locale === routing.defaultLocale ? "Formulir Pemesanan" : "Booking Form"}
+          {locale === routing.defaultLocale
+            ? "Formulir Pemesanan"
+            : "Booking Form"}
         </h3>
         <p className="mb-5 text-primary text-xs! bg-blue-50 border-l-4 border-blue-500 px-4 py-2">
           {locale === routing.defaultLocale
@@ -230,6 +232,7 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                       <FormControl>
                         <Input
                           readOnly
+                          disabled
                           {...field}
                           type="email"
                           className="h-12"
@@ -267,7 +270,9 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === routing.defaultLocale ? "Nama Lengkap" : "Full Name"}
+                      {locale === routing.defaultLocale
+                        ? "Nama Lengkap"
+                        : "Full Name"}
                     </FormLabel>
                     <FormControl>
                       <Input {...field} className="h-12" />
@@ -284,7 +289,9 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === routing.defaultLocale ? "Kota/ Provinsi" : "Province/ City"}
+                        {locale === routing.defaultLocale
+                          ? "Kota/ Provinsi"
+                          : "Province/ City"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} className="h-12" />
@@ -299,7 +306,9 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === routing.defaultLocale ? "Kecamatan" : "District"}
+                        {locale === routing.defaultLocale
+                          ? "Kecamatan"
+                          : "District"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} className="h-12" />
@@ -314,7 +323,9 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold!">
-                        {locale === routing.defaultLocale ? "Kode Pos" : "Postal Code"}
+                        {locale === routing.defaultLocale
+                          ? "Kode Pos"
+                          : "Postal Code"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} type="number" className="h-12" />
@@ -330,7 +341,9 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-primary font-semibold!">
-                      {locale === routing.defaultLocale ? "Alamat Lengkap" : "Full Address"}
+                      {locale === routing.defaultLocale
+                        ? "Alamat Lengkap"
+                        : "Full Address"}
                     </FormLabel>
                     <FormControl>
                       <Textarea {...field} className="min-h-32" />

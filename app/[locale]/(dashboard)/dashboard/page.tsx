@@ -48,22 +48,27 @@ const DashboardPage = async () => {
   const userData = await getUserInfo(session.access_token);
   const time = await getCurrentTime();
 
-  const { data } = (await getPaymentsByUser(userData?.id!, 1, 3)) || [];
+  const paymentRes = await getPaymentsByUser(userData?.id!, 1, 3);
+  const history: TransactionType[] = paymentRes?.data ?? [];
 
-  const { data: consultData } = (await getMyConsultations(1, 2)) || [];
-  const { data: chatData } =
-    (await getChatHistoryByUserID(userData?.id!, 1, 3)) || [];
+  const consultRes = await getMyConsultations(1, 2);
+  const consult: ConsultScheduleType[] = consultRes?.data ?? [];
 
-  const history: TransactionType[] = data || [];
-  const consult: ConsultScheduleType[] = consultData || [];
-  const chat: any[] = chatData.data || [];
+  const chatRes = await getChatHistoryByUserID(userData?.id!, 1, 3);
+  const chat: any[] = chatRes?.data?.data ?? [];
 
   return (
     <>
       <div className="flex flex-wrap justify-between my-20 gap-5">
         <div>
           <DynamicGreeting
-            name={getThreeWords(userData?.fullname)}
+            name={
+              userData.fullname
+                ? getThreeWords(userData?.fullname)
+                : userData.google_fullname
+                  ? getThreeWords(userData?.google_fullname)
+                  : userData.email
+            }
             locale={locale}
           />{" "}
           <div className="bg-white border border-primary px-3 py-1 inline-flex rounded-full text-primary">
@@ -96,24 +101,25 @@ const DashboardPage = async () => {
               : "Recent Conversation History"}
           </h4>
           <div className="flex flex-col gap-5 w-full">
-            {chat.length === 0 && (
+            {chat.length === 0 ? (
               <p className="text-start text-muted-foreground py-10">
                 {locale === routing.defaultLocale
                   ? "Tidak ada riwayat percakapan."
                   : "No conversation history."}
               </p>
+            ) : (
+              chat.map((h) => {
+                const id = nanoid();
+                return (
+                  <ChatActivityCard
+                    key={h.id}
+                    history={h}
+                    locale={locale}
+                    account={userData}
+                  />
+                );
+              })
             )}
-            {chat.map((h) => {
-              const id = nanoid();
-              return (
-                <ChatActivityCard
-                  key={id}
-                  history={h}
-                  locale={locale}
-                  account={userData}
-                />
-              );
-            })}
           </div>
         </div>
         <div className="bg-white rounded-2xl p-4 h-auto">
@@ -123,23 +129,24 @@ const DashboardPage = async () => {
               : "Recent Consultation History"}
           </h4>
           <div className="flex flex-col gap-5 w-full">
-            {consult.length === 0 && (
+            {consult.length === 0 ? (
               <p className="text-start text-muted-foreground py-10">
                 {locale === routing.defaultLocale
                   ? "Tidak ada riwayat konsultasi."
                   : "No consultation history."}
               </p>
+            ) : (
+              consult.map((h) => {
+                const id = nanoid();
+                return (
+                  <ConsultScheduleHistoryCard
+                    key={h.id}
+                    consult={h}
+                    locale={locale}
+                  />
+                );
+              })
             )}
-            {consult.map((h) => {
-              const id = nanoid();
-              return (
-                <ConsultScheduleHistoryCard
-                  key={id}
-                  consult={h}
-                  locale={locale}
-                />
-              );
-            })}
           </div>
         </div>
         <div className="bg-white rounded-2xl p-4 h-auto">
@@ -149,23 +156,24 @@ const DashboardPage = async () => {
               : "Recent Transaction History"}
           </h4>
           <div className="flex flex-col gap-5 w-full">
-            {history.length === 0 && (
+            {history.length === 0 ? (
               <p className="text-start text-muted-foreground py-10">
                 {locale === routing.defaultLocale
                   ? "Tidak ada riwayat transaksi."
                   : "No transaction history."}
               </p>
+            ) : (
+              history.map((h) => {
+                const id = nanoid();
+                return (
+                  <UserTransactionHistoryCard
+                    key={h.id}
+                    history={h}
+                    locale={locale}
+                  />
+                );
+              })
             )}
-            {history.map((h) => {
-              const id = nanoid();
-              return (
-                <UserTransactionHistoryCard
-                  key={id}
-                  history={h}
-                  locale={locale}
-                />
-              );
-            })}
           </div>
         </div>
       </div>

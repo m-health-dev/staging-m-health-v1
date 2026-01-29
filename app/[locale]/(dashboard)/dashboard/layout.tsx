@@ -1,7 +1,7 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { hasLocale } from "next-intl";
-import { notFound } from "next/navigation";
+import { forbidden, notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
@@ -24,11 +24,7 @@ export default async function Page({ children }: Props) {
   } = await supabase.auth.getSession();
 
   if (!session) {
-    return (
-      <div className="p-6 text-red-600 font-medium">
-        Failed to get user session
-      </div>
-    );
+    forbidden();
   }
 
   const userData = await getUserInfo(session?.access_token);

@@ -146,7 +146,7 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
 
   const hasMore = !isInitialLoading && total > 0 && allHistory.length < total;
 
-  console.log({ hasMore });
+  // console.log({ hasMore });
 
   return {
     history: allHistory,
