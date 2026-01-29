@@ -36,6 +36,7 @@ import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Turnstile } from "@marsidev/react-turnstile";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const SignInClient = ({
@@ -66,6 +67,8 @@ const SignInClient = ({
 
   const [captchaInToken, setCaptchaInToken] = React.useState<string>("");
   const [captchaReady, setCaptchaReady] = React.useState(false);
+
+  const captcha = React.useRef<any>(null);
 
   const redirectRecord = path.startsWith(`/${locale}/c`)
     ? path
@@ -136,14 +139,24 @@ const SignInClient = ({
       setError(
         locale === routing.defaultLocale ? res?.error.id : res?.error.en,
       );
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
     } else if (res?.warning) {
       setLoading(false);
       setWarning(
         locale === routing.defaultLocale ? res?.warning.id : res?.warning.en,
       );
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
     } else {
       setLoading(false);
       onSignInSuccess?.();
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
+      form.reset();
       return;
     }
     // } else {
@@ -301,7 +314,26 @@ const SignInClient = ({
                   )}
                 />
 
+                {/* <HCaptcha
+                    ref={captcha}
+                    sitekey="d3e80ba8-85b0-46e2-8960-eb4a2afcbb64"
+                    onVerify={(token) => {
+                      setCaptchaInToken(token);
+                    }}
+                    theme="light"
+                    size="normal"
+                    languageOverride={
+                      locale === routing.defaultLocale ? "id" : "en"
+                    }
+                    onLoad={() => {
+                      setCaptchaReady(true);
+                    }}
+                    onExpire={() => setCaptchaInToken("")}
+                    onError={() => setCaptchaInToken("")}
+                  /> */}
+
                 <Turnstile
+                  ref={captcha}
                   siteKey="0x4AAAAAACOWvPh9bptcSxI4"
                   onSuccess={(token: any) => {
                     setCaptchaInToken(token);
@@ -314,6 +346,8 @@ const SignInClient = ({
                   onWidgetLoad={() => {
                     setCaptchaReady(true);
                   }}
+                  onExpire={() => setCaptchaInToken("")}
+                  onError={() => setCaptchaInToken("")}
                 />
               </div>
               <Button
@@ -540,7 +574,26 @@ const SignInClient = ({
                       )}
                     />
 
+                    {/* <HCaptcha
+                    ref={captcha}
+                    sitekey="d3e80ba8-85b0-46e2-8960-eb4a2afcbb64"
+                    onVerify={(token) => {
+                      setCaptchaInToken(token);
+                    }}
+                    theme="light"
+                    size="normal"
+                    languageOverride={
+                      locale === routing.defaultLocale ? "id" : "en"
+                    }
+                    onLoad={() => {
+                      setCaptchaReady(true);
+                    }}
+                    onExpire={() => setCaptchaInToken("")}
+                    onError={() => setCaptchaInToken("")}
+                  /> */}
+
                     <Turnstile
+                      ref={captcha}
                       siteKey="0x4AAAAAACOWvPh9bptcSxI4"
                       onSuccess={(token: any) => {
                         setCaptchaInToken(token);

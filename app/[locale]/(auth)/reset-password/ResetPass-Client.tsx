@@ -36,6 +36,7 @@ import { routing } from "@/i18n/routing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Turnstile } from "@marsidev/react-turnstile";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const ResetPassClient = ({ locale }: { locale: string }) => {
   const [showPass, setShowPass] = React.useState(false);
@@ -50,6 +51,8 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
 
   const [captchaResetToken, setCaptchaResetToken] = React.useState<string>("");
   const [captchaReady, setCaptchaReady] = React.useState(false);
+
+  const captcha = React.useRef<any>(null);
 
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
@@ -71,6 +74,9 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
           ? response.warning.id
           : response.warning.en,
       );
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
     } else if (response?.error) {
       setLoading(false);
       setError(
@@ -78,10 +84,18 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
           ? response.error.id
           : response.error.en,
       );
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
     } else if (response?.success) {
       setLoading(false);
+
       setSuccess(`${response.success}`);
       toast.success(`${response.success}`);
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
+      form.reset();
     }
     setLoading(false);
   }
@@ -238,7 +252,26 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
                     )}
                   />
 
+                  {/* <HCaptcha
+                    ref={captcha}
+                    sitekey="d3e80ba8-85b0-46e2-8960-eb4a2afcbb64"
+                    onVerify={(token) => {
+                      setCaptchaResetToken(token);
+                    }}
+                    theme="light"
+                    size="normal"
+                    languageOverride={
+                      locale === routing.defaultLocale ? "id" : "en"
+                    }
+                    onLoad={() => {
+                      setCaptchaReady(true);
+                    }}
+                    onExpire={() => setCaptchaResetToken("")}
+                    onError={() => setCaptchaResetToken("")}
+                  /> */}
+
                   <Turnstile
+                    ref={captcha}
                     siteKey="0x4AAAAAACOWvPh9bptcSxI4"
                     onSuccess={(token: any) => {
                       setCaptchaResetToken(token);
@@ -251,6 +284,8 @@ const ResetPassClient = ({ locale }: { locale: string }) => {
                     onWidgetLoad={() => {
                       setCaptchaReady(true);
                     }}
+                    onExpire={() => setCaptchaResetToken("")}
+                    onError={() => setCaptchaResetToken("")}
                   />
                 </div>
 

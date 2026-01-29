@@ -30,6 +30,7 @@ import { locale } from "dayjs";
 import { routing } from "@/i18n/routing";
 import Link from "next/link";
 import { Turnstile } from "@marsidev/react-turnstile";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Undo2 } from "lucide-react";
@@ -47,6 +48,8 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
 
   const [captchaMagicToken, setCaptchaMagicToken] = React.useState<string>("");
   const [captchaReady, setCaptchaReady] = React.useState(false);
+
+  const captcha = React.useRef<any>(null);
 
   const router = useRouter();
   const params = useSearchParams();
@@ -85,6 +88,12 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
 
   function handleResponse(response: any) {
     if (!response) return;
+
+    // if (captcha.current) {
+    //   captcha.current.resetCaptcha();
+    // }
+
+    form.reset();
 
     if (response.error)
       setError(
@@ -201,7 +210,26 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
                     )}
                   />
 
+                  {/* <HCaptcha
+                    ref={captcha}
+                    sitekey="d3e80ba8-85b0-46e2-8960-eb4a2afcbb64"
+                    onVerify={(token) => {
+                      setCaptchaMagicToken(token);
+                    }}
+                    theme="light"
+                    size="normal"
+                    languageOverride={
+                      locale === routing.defaultLocale ? "id" : "en"
+                    }
+                    onLoad={() => {
+                      setCaptchaReady(true);
+                    }}
+                    onExpire={() => setCaptchaMagicToken("")}
+                    onError={() => setCaptchaMagicToken("")}
+                  /> */}
+
                   <Turnstile
+                    ref={captcha}
                     siteKey="0x4AAAAAACOWvPh9bptcSxI4"
                     onSuccess={(token: any) => {
                       setCaptchaMagicToken(token);
@@ -214,6 +242,8 @@ const MagicLinkClient = ({ locale }: { locale: string }) => {
                     onWidgetLoad={() => {
                       setCaptchaReady(true);
                     }}
+                    onExpire={() => setCaptchaMagicToken("")}
+                    onError={() => setCaptchaMagicToken("")}
                   />
                 </div>
 

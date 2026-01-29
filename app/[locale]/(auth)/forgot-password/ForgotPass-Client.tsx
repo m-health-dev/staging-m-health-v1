@@ -29,6 +29,7 @@ import { forgotPasswordAction } from "../actions/auth.actions";
 import Link from "next/link";
 import { routing } from "@/i18n/routing";
 import { Turnstile } from "@marsidev/react-turnstile";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +45,7 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
   const [captchaForgotToken, setCaptchaForgotToken] =
     React.useState<string>("");
   const [captchaReady, setCaptchaReady] = React.useState(false);
+  const captcha = React.useRef<any>(null);
 
   const form = useForm<z.infer<typeof ForgotPassSchema>>({
     resolver: zodResolver(ForgotPassSchema),
@@ -64,6 +66,9 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
           ? response.warning.id
           : response.warning.en,
       );
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
     } else if (response?.error) {
       setLoading(false);
       setError(
@@ -71,11 +76,18 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
           ? response.error.id
           : response.error.en,
       );
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
     } else if (response?.success && response?.message) {
       setLoading(false);
       setSuccess(
         `${locale === routing.defaultLocale ? response.message.id : response.message.en}`,
       );
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
+      form.reset();
     }
     setLoading(false);
   }
@@ -174,7 +186,26 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
                     )}
                   />
 
+                  {/* <HCaptcha
+                    ref={captcha}
+                    sitekey="d3e80ba8-85b0-46e2-8960-eb4a2afcbb64"
+                    onVerify={(token) => {
+                      setCaptchaForgotToken(token);
+                    }}
+                    theme="light"
+                    size="normal"
+                    languageOverride={
+                      locale === routing.defaultLocale ? "id" : "en"
+                    }
+                    onLoad={() => {
+                      setCaptchaReady(true);
+                    }}
+                    onExpire={() => setCaptchaForgotToken("")}
+                    onError={() => setCaptchaForgotToken("")}
+                  /> */}
+
                   <Turnstile
+                    ref={captcha}
                     siteKey="0x4AAAAAACOWvPh9bptcSxI4"
                     onSuccess={(token: any) => {
                       setCaptchaForgotToken(token);
@@ -187,6 +218,8 @@ const ForgotPassClient = ({ locale }: { locale: string }) => {
                     onWidgetLoad={() => {
                       setCaptchaReady(true);
                     }}
+                    onExpire={() => setCaptchaForgotToken("")}
+                    onError={() => setCaptchaForgotToken("")}
                   />
                 </div>
                 <Button

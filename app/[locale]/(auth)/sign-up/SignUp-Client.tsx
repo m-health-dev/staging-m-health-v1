@@ -15,7 +15,7 @@ import { AuthSignUpSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye, Undo2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z, { set } from "zod";
@@ -27,6 +27,7 @@ import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 import { Turnstile } from "@marsidev/react-turnstile";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import { useLocale } from "next-intl";
 import { signUpAction, signWithGoogle } from "../actions/auth.actions";
@@ -47,6 +48,8 @@ const SignUpClient = ({ image }: { image: any }) => {
 
   const [captchaUpToken, setCaptchaUpToken] = React.useState<string>("");
   const [captchaReady, setCaptchaReady] = React.useState(false);
+
+  const captcha = React.useRef<any>(null);
 
   const apiBaseUrl =
     process.env.NODE_ENV === "production"
@@ -82,7 +85,7 @@ const SignUpClient = ({ image }: { image: any }) => {
 
   async function onSubmit(data: z.infer<typeof AuthSignUpSchema>) {
     setLoading(true);
-    const response = await signUpAction(data, captchaUpToken as string);
+    const response = await signUpAction(data, captchaUpToken);
 
     if (response?.error) {
       setLoading(false);
@@ -91,6 +94,9 @@ const SignUpClient = ({ image }: { image: any }) => {
           ? response.error.id
           : response.error.en,
       );
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
       // toast.error(`Registrasi Gagal`, {
       //   description: `${response.error}`,
       // });
@@ -101,6 +107,9 @@ const SignUpClient = ({ image }: { image: any }) => {
           ? response.warning.id
           : response.warning.en,
       );
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
       // toast.warning(`Registrasi Gagal`, {
       //   description: `${response.warning}`,
       // });
@@ -111,6 +120,10 @@ const SignUpClient = ({ image }: { image: any }) => {
           ? response.success.id
           : response.success.en,
       );
+      form.reset();
+      // if (captcha.current) {
+      //   captcha.current.resetCaptcha();
+      // }
       // toast.success(`Registrasi Berhasil`, {
       //   description: `${response.success}`,
       // });
@@ -283,7 +296,26 @@ const SignUpClient = ({ image }: { image: any }) => {
                     )}
                   />
 
+                  {/* <HCaptcha
+                    ref={captcha}
+                    sitekey="d3e80ba8-85b0-46e2-8960-eb4a2afcbb64"
+                    onVerify={(token) => {
+                      setCaptchaUpToken(token);
+                    }}
+                    theme="light"
+                    size="normal"
+                    languageOverride={
+                      locale === routing.defaultLocale ? "id" : "en"
+                    }
+                    onLoad={() => {
+                      setCaptchaReady(true);
+                    }}
+                    onExpire={() => setCaptchaUpToken("")}
+                    onError={() => setCaptchaUpToken("")}
+                  /> */}
+
                   <Turnstile
+                    ref={captcha}
                     siteKey="0x4AAAAAACOWvPh9bptcSxI4"
                     onSuccess={(token: any) => {
                       setCaptchaUpToken(token);
@@ -296,6 +328,8 @@ const SignUpClient = ({ image }: { image: any }) => {
                     onWidgetLoad={() => {
                       setCaptchaReady(true);
                     }}
+                    onExpire={() => setCaptchaUpToken("")}
+                    onError={() => setCaptchaUpToken("")}
                   />
                 </div>
                 <Button

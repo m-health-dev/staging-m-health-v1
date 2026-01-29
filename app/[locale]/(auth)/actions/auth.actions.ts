@@ -150,24 +150,10 @@ export const signUpAction = async (
     email: validatedData.data.email,
     password: validatedData.data.password,
     options: {
-      emailRedirectTo: `${origin}/auth/callback`,
       captchaToken,
+      emailRedirectTo: `${origin}/auth/callback`,
     },
   });
-
-  const { data: insertFullname, error: errInsertFullname } = await supabase
-    .from("accounts")
-    .update({ fullname: validatedData.data.fullname })
-    .eq("id", signUpData.user?.id);
-
-  if (errInsertFullname) {
-    console.error(
-      `${errInsertFullname.code}: ${
-        errInsertFullname.message ||
-        "Terjadi kesalahan saat melakukan pengiriman nama."
-      }`,
-    );
-  }
 
   if (signUpError) {
     console.error(
@@ -181,6 +167,13 @@ export const signUpAction = async (
         warning: {
           id: "Password yang kamu gunakan terlalu lemah. Silahkan gunakan kombinasi huruf besar, huruf kecil, angka, dan karakter spesial dengan minimal 8 karakter. - 0X1WP",
           en: "The password you used is too weak. Please use a combination of uppercase letters, lowercase letters, numbers, and special characters with a minimum of 8 characters. - 0X1WP",
+        },
+      };
+    } else if (signUpError?.code === "captcha_failed") {
+      return {
+        error: {
+          id: "Verifikasi captcha gagal, silahkan mulai ulang halaman untuk melanjutkan. - 0X2CF",
+          en: "Captcha verification failed, please reload the page to continue. - 0X2CF",
         },
       };
     }
@@ -202,6 +195,30 @@ export const signUpAction = async (
         en: "Registration failed. Please try again or use another sign-up method. - 0X1SF",
       },
     };
+  }
+
+  if (!signUpData.user?.id) {
+    return {
+      error: {
+        id: "Terjadi kesalahan saat melakukan pendaftaran. Silahkan coba lagi. - 0X1NOU",
+        en: "An error occurred during registration. Please try again. - 0X1NOU",
+      },
+    };
+  }
+
+  const { data: insertFullname, error: errInsertFullname } = await supabase
+    .from("accounts")
+    .update({ fullname: validatedData.data.fullname })
+    .eq("id", signUpData.user?.id)
+    .single();
+
+  if (errInsertFullname) {
+    console.error(
+      `${errInsertFullname.code}: ${
+        errInsertFullname.message ||
+        "Terjadi kesalahan saat melakukan pengiriman nama."
+      }`,
+    );
   } else {
     return {
       success: {
