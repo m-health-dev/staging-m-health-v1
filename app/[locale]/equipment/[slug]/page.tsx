@@ -106,13 +106,10 @@ const PackageDetailSlug = async ({ params }: Props) => {
   } = await supabase.auth.getSession();
 
   let account = null;
-  if (!session) {
-    return (account = null);
-  } else {
+  if (session) {
     const accessToken = session.access_token;
     account = await getUserInfo(accessToken);
   }
-
   return (
     <Wrapper>
       <EquipmentDetailClient
