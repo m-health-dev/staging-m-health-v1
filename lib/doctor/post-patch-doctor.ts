@@ -138,7 +138,9 @@ export async function assignDoctor(payload: { doctor_id: string }, id: string) {
     );
 
     const data = await res.json();
-    // let data: any = null;
+
+    // console.log("Response assign-doctor:", data);
+    // / let data: any = null;
     // try {
     //   data = raw ? JSON.parse(raw) : null;
     // } catch {
@@ -189,7 +191,7 @@ export async function assignDoctor(payload: { doctor_id: string }, id: string) {
     console.error("Sent consultation/assign-doctor Error:", error);
     return {
       success: false,
-      error: true,
+      error: error,
       message: "Terjadi kesalahan saat terhubung ke server.",
     };
   }

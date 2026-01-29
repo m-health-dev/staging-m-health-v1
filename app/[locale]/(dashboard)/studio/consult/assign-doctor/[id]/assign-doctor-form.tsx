@@ -57,7 +57,13 @@ const AssignDoctorForm = ({
       router.refresh();
     } else if (res.error) {
       setLoading(false);
-      toast.error(res.error);
+      toast.error(
+        typeof res.error === "string"
+          ? res.error
+          : locale === routing.defaultLocale
+            ? "Terjadi kesalahan yang tidak diketahui. Silakan cek apakah area status sudah berubah, sebelum mencoba menugaskan dokter kembali."
+            : "An unknown error occurred. Please check if the status area has changed, before trying to assign the doctor again.",
+      );
       router.refresh();
     }
   }
