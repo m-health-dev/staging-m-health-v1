@@ -680,9 +680,11 @@ const SignInClient = ({
                   {locale === routing.defaultLocale ? "Daftar." : "Sign Up."}
                 </span>{" "}
               </p>
+              {/* 
               <p>
                 {redirectData}-{redirectRecord}
               </p>
+              */}
             </div>
           </div>
         </div>
