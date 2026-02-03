@@ -691,6 +691,7 @@ export const forgotPasswordAction = async (
 
     {
       redirectTo: `${origin}/auth/callback?redirect=/${locale}/reset-password`,
+      captchaToken,
     },
   );
 
@@ -842,7 +843,7 @@ export const resetPasswordAction = async (
 export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  return redirect("/?sign_out=success");
+  return redirect("/");
 };
 
 export async function deleteUser() {

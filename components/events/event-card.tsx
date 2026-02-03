@@ -113,9 +113,13 @@ const EventCard = ({ e, locale }: { e: EventsType; locale: string }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full">
           {e.registration_url ? (
-            <Link href={`${e.registration_url}`} target="_blank">
+            <Link
+              href={`${e.registration_url}`}
+              target="_blank"
+              className="flex w-full"
+            >
               <Button className="rounded-full lg:w-fit w-full font-medium cursor-pointer">
                 <ArrowUpRight className="size-5" />{" "}
                 <p>

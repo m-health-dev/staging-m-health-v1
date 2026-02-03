@@ -527,8 +527,11 @@ const ChatStart = ({
         const start = textarea.selectionStart ?? textarea.value.length;
         const end = textarea.selectionEnd ?? textarea.value.length;
 
-        textarea.value =
+        const newValue =
           textarea.value.slice(0, start) + e.key + textarea.value.slice(end);
+
+        textarea.value = newValue;
+        setText(newValue); // Update React state agar tombol Send aktif
 
         const pos = start + 1;
         textarea.setSelectionRange(pos, pos);
