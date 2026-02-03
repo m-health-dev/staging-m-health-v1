@@ -148,7 +148,14 @@ const ChatActivityCard = ({
         </p>
       </Link>
       <div className="mt-4 flex lg:justify-end justify-between gap-4">
-        <Link href={`/${locale}/c/${h.id}`}>
+        <Link
+          href={
+            !adminView
+              ? `/${locale}/c/${h.id}`
+              : `/${locale}/studio/chat-activity/preview/${h.id}`
+          }
+          target="_blank"
+        >
           <Button
             variant={"outline"}
             className="w-fit h-10 rounded-full text-primary"
