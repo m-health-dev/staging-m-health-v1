@@ -91,7 +91,7 @@ export async function updateMedical(
     discount_price?: number;
     status: string;
   },
-  id: string
+  id: string,
 ) {
   try {
     console.log("Sending medical/update to BE:", payload);

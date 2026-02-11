@@ -377,7 +377,7 @@ const UpdateMedicalForm = ({
                             type="number"
                             className="h-12"
                             onChange={(e) => {
-                              field.onChange(e); // sync ke react-hook-form
+                              field.onChange(Number(e.target.value || 0)); // sync ke react-hook-form
                             }}
                           />
                         </FormControl>
@@ -399,7 +399,7 @@ const UpdateMedicalForm = ({
                             type="number"
                             className="h-12"
                             onChange={(e) => {
-                              field.onChange(e); // sync ke react-hook-form
+                              field.onChange(Number(e.target.value || 0)); // sync ke react-hook-form
                             }}
                           />
                         </FormControl>
