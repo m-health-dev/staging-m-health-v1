@@ -114,9 +114,12 @@ const UpdateEquipmentForm = ({ id, data }: UpdateForm) => {
 
   const [percentage, setPercentage] = useState(0);
 
+  const watchRealPrice = form.watch("real_price");
+  const watchDiscountPrice = form.watch("discount_price");
+
   useEffect(() => {
-    const real = Number(form.getValues("real_price"));
-    const disc = Number(form.getValues("discount_price"));
+    const real = Number(watchRealPrice);
+    const disc = Number(watchDiscountPrice);
 
     const handler = setTimeout(() => {
       if (real > 0 && disc > 0) {
@@ -128,7 +131,7 @@ const UpdateEquipmentForm = ({ id, data }: UpdateForm) => {
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [form.watch("real_price"), form.watch("discount_price")]);
+  }, [watchRealPrice, watchDiscountPrice]);
 
   async function handleImageUpload(files: File[]) {
     const formData = new FormData();

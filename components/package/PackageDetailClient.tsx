@@ -51,7 +51,7 @@ const PackageDetailClient = ({
   account?: any;
 }) => {
   const swiperRef = useRef<any>(null);
-  const sliderImage = [p.highlight_image, ...p.reference_image];
+  const sliderImage = p.reference_image;
 
   // const t = useTranslations("utility");
 
@@ -115,7 +115,13 @@ const PackageDetailClient = ({
               </SwiperSlide>
             ))}
           </Swiper>
-          <div className="lg:px-5 px-3 absolute top-0 left-0 z-20 flex h-full items-center transition-all duration-300 translate-x-20 group-hover/slide:translate-x-0 opacity-0 group-hover/slide:opacity-100">
+          <div
+            className={cn(
+              sliderImage.length > 1
+                ? "lg:px-5 px-3 absolute top-0 left-0 z-20 flex h-full items-center transition-all duration-300 translate-x-20 group-hover/slide:translate-x-0 opacity-0 group-hover/slide:opacity-100"
+                : "hidden",
+            )}
+          >
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -143,7 +149,13 @@ const PackageDetailClient = ({
               <div className="absolute -left-0.5 h-16 w-16 rounded-full bg-primary translate-x-50 group-hover:translate-x-0 transition-transform duration-500  ease-in-out z-19"></div>
             </button>
           </div>
-          <div className="lg:px-5 px-3 absolute top-0 right-0 z-10 flex h-full items-center transition-all duration-300 -translate-x-20 group-hover/slide:translate-x-0 opacity-0 group-hover/slide:opacity-100">
+          <div
+            className={cn(
+              sliderImage.length > 1
+                ? "lg:px-5 px-3 absolute top-0 right-0 z-10 flex h-full items-center transition-all duration-300 -translate-x-20 group-hover/slide:translate-x-0 opacity-0 group-hover/slide:opacity-100"
+                : "hidden",
+            )}
+          >
             <button
               onClick={(e) => {
                 e.preventDefault();
