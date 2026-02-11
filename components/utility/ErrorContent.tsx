@@ -93,7 +93,8 @@ const ErrorContent = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pathname: pathname + (params ? "?" + params.toString() : ""),
+          pathname:
+            pathname + (params.toString() ? "?" + params.toString() : ""),
           rayId: newRayId,
           error_code: errorCodeNote,
           error_message: `${digest} - ${message}`,
@@ -232,7 +233,7 @@ const ErrorContent = ({
                     : "Not available")}
               </p>
               <p className="text-xs!">
-                {pathname + (params ? "?" + params.toString() : "")}
+                {pathname + (params.toString() ? "?" + params.toString() : "")}
               </p>
               <p className="text-xs!">
                 {digest} - {message}

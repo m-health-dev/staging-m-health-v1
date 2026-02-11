@@ -2,10 +2,7 @@
 
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 import { apiSecretKey } from "@/helper/api-secret-key";
-import { createClient } from "@/utils/supabase/client";
-import { link } from "node:fs";
-import { success } from "zod";
-import { meta } from "zod/v4/core";
+import { createClient } from "@/utils/supabase/server";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"

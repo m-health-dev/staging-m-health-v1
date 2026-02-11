@@ -46,7 +46,7 @@ export default function PopularMedSlide({
   }
 
   return (
-    <ContainerWrap type={data.length >= 5 ? "carousel" : "default"}>
+    <ContainerWrap type={data.length >= 10 ? "carousel" : "default"}>
       <div className="lg:my-10 my-8 overflow-hidden">
         {data.length >= 10 ? (
           <div className="w-full flex-col items-center relative group/slide">
@@ -75,13 +75,15 @@ export default function PopularMedSlide({
               className="w-full "
             >
               {data.map((slide, key) => (
-                <MedicalCard
-                  key={slide.id}
-                  slide={slide}
-                  locale={locale}
-                  labels={labels}
-                  type="swiper"
-                />
+                <SwiperSlide className="max-w-[300px] h-full" key={slide.id}>
+                  <MedicalCard
+                    key={slide.id}
+                    slide={slide}
+                    locale={locale}
+                    labels={labels}
+                    type="swiper"
+                  />
+                </SwiperSlide>
               ))}
             </Swiper>
             {/* <div className="absolute right-0 top-0 lg:w-32 w-5 h-full bg-linear-to-l from-background z-10"></div>
@@ -144,7 +146,7 @@ export default function PopularMedSlide({
             </div>
           </div>
         ) : (
-          <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 lg:pb-0 px-2">
+          <div className="grid 3xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5 lg:pb-0 px-2">
             {data.map((slide, key) => (
               <MedicalCard
                 key={slide.id}

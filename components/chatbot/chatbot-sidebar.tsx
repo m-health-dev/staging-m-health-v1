@@ -116,15 +116,15 @@ export function ChatbotSidebar({
 
   // Infinite scroll observer
   React.useEffect(() => {
-    if (!hasMore || !onLoadMore || isLoadingMore) return;
+    if (!hasMore || !onLoadMore) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+        if (entries[0].isIntersecting && hasMore) {
           onLoadMore();
         }
       },
-      { threshold: 0.1, rootMargin: "100px" },
+      { threshold: 0.1, rootMargin: "200px" },
     );
 
     const sentinel = loadMoreRef.current;
@@ -137,7 +137,7 @@ export function ChatbotSidebar({
         observer.unobserve(sentinel);
       }
     };
-  }, [hasMore, onLoadMore, isLoadingMore]);
+  }, [hasMore, onLoadMore]);
 
   // React.useEffect(() => {
   //   if (pathname === `/${locale}` || pathname === `/${locale}/`) {

@@ -5,14 +5,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useChatHistory(userID?: string, initialData: any[] = []) {
   const PER_PAGE = 25;
-  // const INITIAL_LOAD = 50;
 
-  const [page, setPage] = useState(1);
   const [allHistory, setAllHistory] = useState<any[]>(initialData);
   const [total, setTotal] = useState(0);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<any>(null);
+
+  // Use ref for page to avoid stale closures in callbacks
+  const pageRef = useRef(initialData.length > 0 ? 2 : 1);
 
   // Track if initial data was already loaded to prevent re-fetching
   const initialLoadDone = useRef(false);
@@ -26,7 +27,7 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
       try {
         setIsInitialLoading(true);
         const result = await getChatHistoryByUserID(userID, 1, PER_PAGE);
-        setPage(2);
+        pageRef.current = 2;
 
         if (!isMounted.current) return;
 
@@ -66,8 +67,12 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
 
     try {
       setIsLoadingMore(true);
-      const result = await getChatHistoryByUserID(userID, page, PER_PAGE);
-      setPage((p) => p + 1);
+      const currentPage = pageRef.current;
+      const result = await getChatHistoryByUserID(
+        userID,
+        currentPage,
+        PER_PAGE,
+      );
 
       if (!isMounted.current) return;
 
@@ -82,7 +87,7 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
           );
           return [...prev, ...uniqueNewItems];
         });
-        setPage((p) => p + 1);
+        pageRef.current = currentPage + 1;
       }
 
       setTotal(result?.meta?.total ?? 0);
@@ -95,7 +100,7 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
         setIsLoadingMore(false);
       }
     }
-  }, [userID, page, isLoadingMore, allHistory.length, total]);
+  }, [userID, isLoadingMore, isInitialLoading, allHistory.length, total]);
 
   // Add new chat to the top (for real-time updates)
   const addNewChat = useCallback((newChat: any) => {
@@ -158,7 +163,7 @@ export function useChatHistory(userID?: string, initialData: any[] = []) {
     loadMore,
     refresh,
     addNewChat,
-    currentPage: page,
+    currentPage: pageRef.current,
     displayedCount: allHistory.length,
     removeChat,
   };

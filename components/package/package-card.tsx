@@ -26,7 +26,7 @@ const PackageCard = ({
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
   return type === "swiper" ? (
-    <SwiperSlide
+    <div
       key={slide.id}
       className="justify-between rounded-2xl max-w-[300px] pb-2 group cursor-pointer flex grow"
       // onMouseEnter={() => setHoveredIndex(key)}
@@ -112,7 +112,7 @@ const PackageCard = ({
           </div>
         </Link>
       </div>
-    </SwiperSlide>
+    </div>
   ) : (
     <div
       key={slide.id}

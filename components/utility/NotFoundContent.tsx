@@ -85,7 +85,8 @@ const NotFoundContent = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pathname: pathname + (params ? "?" + params.toString() : ""),
+          pathname:
+            pathname + (params.toString() ? "?" + params.toString() : ""),
           rayId: newRayId,
           error_code: errorCodeNote,
           error_message: errorMessage,
@@ -190,7 +191,7 @@ const NotFoundContent = ({
               </Button>
               <Button
                 className="rounded-2xl"
-                onClick={() => router.replace("/")}
+                onClick={() => window.location.replace("/home")}
               >
                 <Home />
                 {locale === routing.defaultLocale ? "Beranda" : "Home"}
@@ -228,7 +229,7 @@ const NotFoundContent = ({
                     : "Not available")}
               </p>
               <p className="text-xs!">
-                {pathname + (params ? "?" + params.toString() : "")}
+                {pathname + (params.toString() ? "?" + params.toString() : "")}
               </p>
             </CollapsibleContent>
           </Collapsible>

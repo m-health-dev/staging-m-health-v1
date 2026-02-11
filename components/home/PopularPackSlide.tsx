@@ -45,7 +45,7 @@ export default function PopularPackSlide({
   }
 
   return (
-    <ContainerWrap type={packages.length >= 5 ? "carousel" : "default"}>
+    <ContainerWrap type={packages.length >= 10 ? "carousel" : "default"}>
       <div className="lg:my-10 my-8 overflow-hidden">
         {packages.length >= 10 ? (
           <div className="w-full flex-col items-center relative group/slide">
@@ -74,13 +74,15 @@ export default function PopularPackSlide({
               className="w-full "
             >
               {packages.map((slide, key) => (
-                <PackageCard
-                  key={slide.id}
-                  slide={slide}
-                  locale={locale}
-                  labels={labels}
-                  type="swiper"
-                />
+                <SwiperSlide className="max-w-[300px] h-full" key={slide.id}>
+                  <PackageCard
+                    key={slide.id}
+                    slide={slide}
+                    locale={locale}
+                    labels={labels}
+                    type="swiper"
+                  />
+                </SwiperSlide>
               ))}
             </Swiper>
             {/* <div className="absolute right-0 top-0 lg:w-32 w-5 h-full bg-linear-to-l from-background z-10"></div>

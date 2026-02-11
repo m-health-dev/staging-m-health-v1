@@ -22,7 +22,7 @@ const MedicalCard = ({
 }) => {
   const [imageLoaded, setImageLoaded] = React.useState(false);
   return type === "swiper" ? (
-    <SwiperSlide
+    <div
       key={slide.id}
       className="justify-between rounded-2xl max-w-[300px] pb-2 group cursor-pointer flex grow"
       // onMouseEnter={() => setHoveredIndex(key)}
@@ -64,7 +64,11 @@ const MedicalCard = ({
                 } // Ganti dengan slide.image_url saat tersedia
                 width={720}
                 height={403}
-                alt={locale === routing.defaultLocale ? slide.id_title : slide.en_title}
+                alt={
+                  locale === routing.defaultLocale
+                    ? slide.id_title
+                    : slide.en_title
+                }
                 onLoad={() => setImageLoaded(true)}
                 loading="lazy"
                 className={cn(
@@ -79,14 +83,18 @@ const MedicalCard = ({
             <div className="">
               <div>
                 <h5 className="capitalize font-bold text-primary line-clamp-3">
-                  {locale === routing.defaultLocale ? slide.id_title : slide.en_title}
+                  {locale === routing.defaultLocale
+                    ? slide.id_title
+                    : slide.en_title}
                 </h5>
               </div>
             </div>
             <div className="mt-2 ">
               <div>
                 <p className="text-muted-foreground line-clamp-2">
-                  {locale === routing.defaultLocale ? slide.id_tagline : slide.en_tagline}
+                  {locale === routing.defaultLocale
+                    ? slide.id_tagline
+                    : slide.en_tagline}
                 </p>
               </div>
             </div>
@@ -100,7 +108,7 @@ const MedicalCard = ({
           </div>
         </Link>
       </div>
-    </SwiperSlide>
+    </div>
   ) : (
     <div
       key={slide.id}
@@ -138,7 +146,11 @@ const MedicalCard = ({
               } // Ganti dengan slide.image_url saat tersedia
               width={720}
               height={403}
-              alt={locale === routing.defaultLocale ? slide.id_title : slide.en_title}
+              alt={
+                locale === routing.defaultLocale
+                  ? slide.id_title
+                  : slide.en_title
+              }
               onLoad={() => setImageLoaded(true)}
               loading="lazy"
               className={cn(
@@ -153,14 +165,18 @@ const MedicalCard = ({
           <div className="">
             <div>
               <h5 className="capitalize font-bold text-primary line-clamp-3">
-                {locale === routing.defaultLocale ? slide.id_title : slide.en_title}
+                {locale === routing.defaultLocale
+                  ? slide.id_title
+                  : slide.en_title}
               </h5>
             </div>
           </div>
           <div className="mt-2 ">
             <div>
               <p className="text-muted-foreground line-clamp-2">
-                {locale === routing.defaultLocale ? slide.id_tagline : slide.en_tagline}
+                {locale === routing.defaultLocale
+                  ? slide.id_tagline
+                  : slide.en_tagline}
               </p>
             </div>
           </div>
