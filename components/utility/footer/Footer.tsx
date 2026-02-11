@@ -255,7 +255,7 @@ const Footer = () => {
             <div className="flex lg:justify-center lg:items-center">
               <div className="flex lg:flex-row flex-col lg:items-center justify-center w-fit rounded-full">
                 <p className="text-xs! py-1 pr-3 font-mono italic text-primary opacity-50">
-                  v1.0.0-beta.10
+                  v1.0.0-beta.10.1
                 </p>
               </div>
             </div>

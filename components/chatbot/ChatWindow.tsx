@@ -91,6 +91,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const [dialogSignIn, setDialogSignIn] = useState(false);
   const [hasSignedIn, setHasSignedIn] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const [showNotice, setShowNotice] = useState(true);
 
@@ -105,6 +106,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const inputContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const path = usePathname();
 
@@ -117,6 +119,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
   const isExpanded = inputValue.length > 40 || inputValue.includes("\n");
   const isNotRedirect = type !== "share";
+  const isShowInput = type === "preview" || type === "share";
 
   // useEffect(() => {
   //   if (!sessionId) return;
@@ -186,6 +189,48 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [messages.length]);
 
+  // Detect mobile keyboard using visualViewport API
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.visualViewport) return;
+
+    const viewport = window.visualViewport;
+
+    const handleResize = () => {
+      // Keyboard height = full window height - visual viewport height
+      const currentKeyboardHeight = window.innerHeight - viewport.height;
+      setKeyboardHeight(currentKeyboardHeight > 0 ? currentKeyboardHeight : 0);
+    };
+
+    viewport.addEventListener("resize", handleResize);
+    viewport.addEventListener("scroll", handleResize);
+    handleResize();
+
+    return () => {
+      viewport.removeEventListener("resize", handleResize);
+      viewport.removeEventListener("scroll", handleResize);
+    };
+  }, []);
+
+  // Scroll to input area and focus after AI finishes responding
+  useEffect(() => {
+    if (!isLoading && messages.length > 0 && !isShowInput) {
+      const timer = setTimeout(() => {
+        // Scroll to input container
+        if (inputContainerRef.current) {
+          inputContainerRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+        }
+
+        // Focus textarea untuk memunculkan keyboard di mobile
+        textareaRef.current?.focus();
+      }, 300);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, messages.length, isShowInput]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -198,6 +243,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       onSendMessage(inputValue, replyMessage ?? null);
       setInputValue("");
       setReplyMessage(null);
+
+      // Keep textarea focused after sending message
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 100);
     }
   };
 
@@ -258,8 +308,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       window.removeEventListener("keydown", handleGlobalKeyDown);
     };
   }, []);
-
-  const isShowInput = type === "preview" || type === "share";
 
   const consult: ConsultScheduleType = consultSession;
 
@@ -523,7 +571,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           <ArrowDown className="size-5" />
         </button>
       </div>
-      <div className="sticky bottom-0 bg-linear-to-t from-background via-background to-transparent pt-10 z-20">
+      <div
+        ref={inputContainerRef}
+        className="sticky bg-linear-to-t from-background via-background to-transparent pt-10 z-20"
+        style={{ bottom: keyboardHeight > 0 ? `${keyboardHeight}px` : 0 }}
+      >
         <div className="w-full max-w-3xl mx-auto px-0 md:px-2 lg:px-6">
           <div className="md:py-3 py-0">
             {!isShowInput && (
@@ -550,7 +602,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                 )}
 
                 <div className="flex w-full">
-                  <div className="w-full md:rounded-3xl rounded-t-3xl border border-primary bg-white shadow px-2 pt-2 pb-1">
+                  <div className="w-full md:rounded-3xl rounded-t-3xl border-x border-t border-primary bg-white shadow px-2 pt-2 pb-1">
                     <Textarea
                       ref={textareaRef}
                       placeholder={
