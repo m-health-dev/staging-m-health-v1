@@ -14,6 +14,7 @@ import React from "react";
 import TransactionStatusClientAdmin from "./transaction-client-admin";
 import { formatRupiah } from "@/helper/rupiah";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
+import { Check, Loader, X } from "lucide-react";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -41,25 +42,32 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
     if (productType === "package") {
       const res = await getPackageByID(productId as string);
       dataProduct = res?.data ?? null;
-      productTypeTitle = locale === routing.defaultLocale ? "Program" : "Program";
+      productTypeTitle =
+        locale === routing.defaultLocale ? "Program" : "Program";
     } else if (productType === "medical_equipment") {
       const res = await getMedicalEquipmentByID(productId as string);
       dataProduct = res?.data?.data ?? null;
       productTypeTitle =
-        locale === routing.defaultLocale ? "Peralatan Medis" : "Medical Products";
+        locale === routing.defaultLocale
+          ? "Peralatan Medis"
+          : "Medical Products";
     } else if (productType === "medical") {
       const res = await getMedicalByID(productId as string);
       dataProduct = res?.data?.data ?? null;
-      productTypeTitle = locale === routing.defaultLocale ? "Paket Medis" : "Medical Package";
+      productTypeTitle =
+        locale === routing.defaultLocale ? "Paket Medis" : "Medical Package";
     } else if (productType === "wellness") {
       const res = await getWellnessByID(productId as string);
       dataProduct = res?.data?.data ?? null;
       productTypeTitle =
-        locale === routing.defaultLocale ? "Paket Kebugaran" : "Wellness Package";
+        locale === routing.defaultLocale
+          ? "Paket Kebugaran"
+          : "Wellness Package";
     } else if (productType === "consultation") {
       const res = await getConsultationByID(productId as string);
       dataProduct = res?.data ?? null;
-      productTypeTitle = locale === routing.defaultLocale ? "Konsultasi" : "Consultation";
+      productTypeTitle =
+        locale === routing.defaultLocale ? "Konsultasi" : "Consultation";
     }
   } catch (err) {
     // API error → tetap aman tanpa 500
@@ -78,16 +86,25 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
         <div className="inline-flex mt-2">
           {data.payment_status === "settlement" ||
           data.payment_status === "capture" ? (
-            <p className="bg-green-50 border border-green-500 px-3 py-1 rounded-full capitalize text-green-500">
-              {data.payment_status}
+            <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+              <Check className="size-4" />
+              {locale === routing.defaultLocale
+                ? "Pembayaran Berhasil"
+                : "Payment Successful"}
             </p>
           ) : data.payment_status === "pending" ? (
-            <p className="bg-amber-50 border border-amber-500 px-3 py-1 rounded-full capitalize text-amber-500">
-              {data.payment_status}
+            <p className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+              <Loader className="size-4" />
+              {locale === routing.defaultLocale
+                ? "Menunggu Pembayaran"
+                : "Waiting for Payment"}
             </p>
           ) : (
-            <p className="bg-red-50 border border-red-500 px-3 py-1 rounded-full capitalize text-red-500">
-              {data.payment_status}
+            <p className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+              <X className="size-4" />
+              {locale === routing.defaultLocale
+                ? "Pembayaran Gagal"
+                : "Payment Failed"}
             </p>
           )}
         </div>
@@ -110,7 +127,9 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
         </div>
         <div>
           <p className="text-muted-foreground mb-1">
-            {locale === routing.defaultLocale ? "Diperbarui pada" : "Updated at"}
+            {locale === routing.defaultLocale
+              ? "Diperbarui pada"
+              : "Updated at"}
           </p>
           <p>
             <LocalDateTime date={data.updated_at} />
@@ -118,7 +137,9 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
         </div>
         <div>
           <p className="text-muted-foreground mb-1">
-            {locale === routing.defaultLocale ? "Data Pelanggan" : "Customer Data"}
+            {locale === routing.defaultLocale
+              ? "Data Pelanggan"
+              : "Customer Data"}
           </p>
           <div className="bg-white grid lg:grid-cols-2 grid-cols-1 w-full gap-5 p-4 rounded-2xl border">
             <div>
@@ -133,7 +154,9 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
             </div>
             <div>
               <p className="text-muted-foreground mb-1">
-                {locale === routing.defaultLocale ? "Nama Lengkap" : "Full Name"}
+                {locale === routing.defaultLocale
+                  ? "Nama Lengkap"
+                  : "Full Name"}
               </p>
               <p>{data.customer.fullname}</p>
             </div>
@@ -147,7 +170,9 @@ const TransactionDetailAdmin = async ({ params }: Props) => {
         </div>
         <div>
           <p className="text-muted-foreground mb-1">
-            {locale === routing.defaultLocale ? "Total Pembayaran" : "Total Payment"}
+            {locale === routing.defaultLocale
+              ? "Total Pembayaran"
+              : "Total Payment"}
           </p>
           <h4 className="text-primary font-bold">
             {formatRupiah(data.product_data.total)}

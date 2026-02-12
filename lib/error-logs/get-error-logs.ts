@@ -57,7 +57,7 @@ export async function getErrorLogByID(id: string) {
     const accessToken = await getAccessToken();
     const res = await fetch(`${apiBaseUrl}/api/v1/error-logs/${id}`, {
       method: "GET",
-      next: { revalidate: 60 },
+      // next: { revalidate: 60 },
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "X-API-Key": apiSecretKey,

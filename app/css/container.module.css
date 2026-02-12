@@ -34,7 +34,7 @@
 }
 
 .car_xl {
-  @apply container mx-auto lg:max-w-full 3xl:max-w-7/12 lg:px-0 3xl:px-7;
+  @apply container mx-auto lg:max-w-full 3xl:max-w-8/12 lg:px-0 3xl:px-7;
 }
 
 .car_xxl {

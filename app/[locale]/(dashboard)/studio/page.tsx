@@ -20,6 +20,11 @@ import { ConsultScheduleType } from "@/types/consult.types";
 import StudioComponent from "./studio-component";
 import { getAllChatActivity } from "@/lib/chatbot/getChatActivity";
 import { ChatHistory } from "@/types/chat.types";
+import ScrollReveal from "@/components/utility/ScrollReveal";
+import {
+  DailyTokenChart,
+  ModelUsageChart,
+} from "@/components/studio/ai-token-charts";
 
 function getThreeWords(text: string | null): string {
   if (!text) return "";
@@ -118,6 +123,7 @@ const StudioDashboard = async () => {
         </p>
       </div>
 
+      <ScrollReveal variant="fade-up" duration={600}>
       <div className="md:grid lg:grid-cols-4 md:grid-cols-2 flex flex-col gap-5">
         <div className="group/stats">
           <div className="bg-white rounded-2xl overflow-hidden relative border">
@@ -364,6 +370,8 @@ const StudioDashboard = async () => {
           </div>
         </div>
       </div>
+      </ScrollReveal>
+      <ScrollReveal variant="fade-up" duration={600}>
       <div className="bg-white p-4 rounded-2xl mt-10">
         <h6 className="font-bold text-primary mb-4">
           {locale === routing.defaultLocale
@@ -478,101 +486,16 @@ const StudioDashboard = async () => {
             </div>
           </div>
         </div>
-        <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 w-full mt-10">
-          <div className="max-h-98 overflow-y-auto pr-2">
-            <div className="sticky top-0 bg-background/20 backdrop-blur-md z-50 p-4 border rounded-2xl mb-4">
-              <p className="text-sm! text-primary">
-                {locale === routing.defaultLocale
-                  ? "Statistik Penggunaan Harian"
-                  : "DailyToken Usage Statistics"}
-              </p>
-            </div>
-            <div className="space-y-5">
-              {aiTokenStats.daily?.length > 0 &&
-                aiTokenStats.daily.map((dayStat: any) => (
-                  <div className="group/stats" key={dayStat.date}>
-                    <div className="bg-white rounded-2xl overflow-hidden relative border">
-                      <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm md:grid md:grid-cols-2 grid-cols-1 gap-5 md:space-y-0 space-y-5 items-center">
-                        <div>
-                          <h3 className="text-primary font-semibold">
-                            {dayStat.total_tokens}
-                          </h3>
-                          <p className="text-sm! text-muted-foreground mt-2">
-                            {locale === routing.defaultLocale
-                              ? "Total Token Digunakan"
-                              : "Total Tokens Used"}
-                          </p>
-                        </div>
-
-                        <div>
-                          <h3 className="text-primary font-semibold">
-                            {dayStat.request_count}
-                          </h3>
-                          <p className="text-sm! text-muted-foreground mt-2">
-                            {locale === routing.defaultLocale
-                              ? "Jumlah Permintaan"
-                              : "Request Count"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-                        <p>
-                          <LocalDateTime
-                            date={dayStat.date}
-                            specificFormat="DD MMMM YYYY"
-                          />
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-            </div>
+        <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 w-full mt-6">
+          <div>
+            {aiTokenStats.daily?.length > 0 && (
+              <DailyTokenChart data={aiTokenStats.daily} locale={locale} />
+            )}
           </div>
-          <div className="max-h-98 overflow-y-auto pr-2">
-            <div className="sticky top-0 bg-background/20 backdrop-blur-md z-50 p-4 border rounded-2xl mb-4">
-              <p className="text-sm! text-primary">
-                {locale === routing.defaultLocale
-                  ? "Statistik Penggunaan Model"
-                  : "Model Usage Statistics"}
-              </p>
-            </div>
-            <div className="space-y-5">
-              {aiTokenStats.by_model?.length > 0 &&
-                aiTokenStats.by_model.map((stat: any) => (
-                  <div className="group/stats" key={stat.model_version}>
-                    <div className="bg-white rounded-2xl overflow-hidden relative border">
-                      <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm md:grid md:grid-cols-2 grid-cols-1 gap-5 md:space-y-0 space-y-5 items-center">
-                        <div>
-                          <h3 className="text-primary font-semibold">
-                            {stat.total_tokens}
-                          </h3>
-                          <p className="text-sm! text-muted-foreground mt-2">
-                            {locale === routing.defaultLocale
-                              ? "Total Token Digunakan"
-                              : "Total Tokens Used"}
-                          </p>
-                        </div>
-
-                        <div>
-                          <h3 className="text-primary font-semibold">
-                            {stat.request_count}
-                          </h3>
-                          <p className="text-sm! text-muted-foreground mt-2">
-                            {locale === routing.defaultLocale
-                              ? "Jumlah Permintaan"
-                              : "Request Count"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-                        <p className="capitalize">
-                          {stat.model_version.replaceAll("-", " ")}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-            </div>
+          <div>
+            {aiTokenStats.by_model?.length > 0 && (
+              <ModelUsageChart data={aiTokenStats.by_model} locale={locale} />
+            )}
           </div>
         </div>
 
@@ -580,6 +503,8 @@ const StudioDashboard = async () => {
           {JSON.stringify(aiTokenStats, null, 2)}
         </pre> */}
       </div>
+      </ScrollReveal>
+      <ScrollReveal variant="fade-up" duration={600}>
       <div>
         <StudioComponent
           locale={locale}
@@ -588,6 +513,8 @@ const StudioDashboard = async () => {
           initialChatData={chat}
         />
       </div>
+      </ScrollReveal>
+      <ScrollReveal variant="fade-up" duration={600}>
       <div className="bg-white p-4 border rounded-2xl mt-10">
         <p className="text-sm! text-primary mb-1">
           {locale === routing.defaultLocale
@@ -598,9 +525,12 @@ const StudioDashboard = async () => {
           {JSON.stringify(accessToken, null, 2)}
         </pre>
       </div>
+      </ScrollReveal>
+      <ScrollReveal variant="fade" duration={600}>
       <div className="my-10">
         <UnderConstruction element />
       </div>
+      </ScrollReveal>
     </ContainerWrap>
   );
 };

@@ -52,7 +52,7 @@ export async function getAllVendor(page: number = 1, per_page: number = 10) {
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();
@@ -84,7 +84,7 @@ export async function getVendorByID(id: string) {
   try {
     const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${id}`, {
       method: "GET",
-      next: { revalidate: 60 },
+      // next: { revalidate: 60 },
       headers: {
         "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
@@ -118,7 +118,7 @@ export async function getVendorBySlug(slug: string) {
   try {
     const res = await fetch(`${apiBaseUrl}/api/v1/vendors/${slug}`, {
       method: "GET",
-      next: { revalidate: 60 },
+      // next: { revalidate: 60 },
       headers: {
         "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",

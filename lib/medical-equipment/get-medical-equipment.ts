@@ -11,19 +11,19 @@ const apiBaseUrl =
 
 export async function getAllPublicMedicalEquipment(
   page: number = 1,
-  per_page: number = 10
+  per_page: number = 10,
 ) {
   try {
     const res = await fetch(
       `${apiBaseUrl}/api/v1/medical-equipment?status=published&page=${page}&per_page=${per_page}`,
       {
-        next: { revalidate: 60 },
+        // next: { revalidate: 60 },
         method: "GET",
         headers: {
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();
@@ -54,7 +54,7 @@ export async function getAllPublicMedicalEquipment(
 
 export async function getAllMedicalEquipment(
   page: number = 1,
-  per_page: number = 10
+  per_page: number = 10,
 ) {
   try {
     const res = await fetch(
@@ -66,7 +66,7 @@ export async function getAllMedicalEquipment(
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();

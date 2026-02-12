@@ -156,36 +156,49 @@ const UpdateInsuranceForm = ({
     index?: number,
   ) {
     setLoading(true);
-    const deletedPath = url; // url relative yg dikirim ke API
 
-    setDeletedImages((prev) => [...prev, deletedPath]); // ⬅ tambahkan ini
+    setDeletedImages((prev) => [...prev, url]);
 
-    const res = await fetch("/api/image/delete", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: url }),
-    });
+    // Optimistic UI update
+    if (field === "logo") {
+      setLogoPreview(null);
+      form.setValue("logo", "");
+    } else if (field === "highlight") {
+      setHighlightPreview(null);
+      form.setValue("highlight_image", "");
+    } else if (field === "agent") {
+      setAgentPhotoPreview(null);
+      form.setValue("agent_photo_url", "");
+    }
 
-    const data = await res.json();
+    try {
+      const res = await fetch("/api/image/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: url }),
+      });
 
-    if (data.message) {
-      setLoading(false);
-      if (field === "logo") {
-        setLogoPreview(null);
-        form.setValue("logo", "");
-        toast.success("Image Logo Deleted!");
-      } else if (field === "highlight") {
-        setHighlightPreview(null);
-        form.setValue("highlight_image", "");
-        toast.success("Highlight Image Deleted!");
-      } else if (field === "agent") {
-        setAgentPhotoPreview(null);
-        form.setValue("agent_photo_url", "");
-        toast.success("Agent Photo Deleted!");
+      const data = await res.json();
+
+      if (data.message) {
+        toast.success(
+          field === "logo"
+            ? "Image Logo Deleted!"
+            : field === "highlight"
+              ? "Highlight Image Deleted!"
+              : "Agent Photo Deleted!",
+        );
+      } else {
+        console.warn("S3 delete issue:", data.error);
+        toast.warning(
+          "Image removed from form. Storage cleanup may be needed.",
+        );
       }
-    } else {
+    } catch (error) {
+      console.error("Delete request failed:", error);
+      toast.warning("Image removed from form. Storage cleanup may be needed.");
+    } finally {
       setLoading(false);
-      toast.error(data.error || "Failed to delete");
     }
   }
 
@@ -596,6 +609,7 @@ const UpdateInsuranceForm = ({
                 <Button
                   type="submit"
                   size={"lg"}
+                  disabled={loading}
                   className="rounded-full flex lg:w-fit w-full"
                 >
                   {loading ? <Spinner /> : "Udpate"}

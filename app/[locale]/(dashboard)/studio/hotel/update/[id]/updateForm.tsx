@@ -148,39 +148,52 @@ const UpdateHotelForm = ({
     index?: number,
   ) {
     setLoading(true);
-    const deletedPath = url; // url relative yg dikirim ke API
 
-    setDeletedImages((prev) => [...prev, deletedPath]); // ⬅ tambahkan ini
+    setDeletedImages((prev) => [...prev, url]);
 
-    const res = await fetch("/api/image/delete", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: url }),
-    });
+    // Optimistic UI update
+    if (field === "logo") {
+      setLogoPreview(null);
+      form.setValue("logo", "");
+    } else if (field === "highlight") {
+      setHighlightPreview(null);
+      form.setValue("highlight_image", "");
+    } else if (field === "reference") {
+      setReferencePreview((prev) => {
+        const newArr = prev.filter((_, i) => i !== index);
+        form.setValue("reference_image", newArr);
+        return newArr;
+      });
+    }
 
-    const data = await res.json();
+    try {
+      const res = await fetch("/api/image/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: url }),
+      });
 
-    if (data.message) {
-      setLoading(false);
-      if (field === "logo") {
-        setLogoPreview(null);
-        form.setValue("logo", "");
-        toast.success("Image Logo Deleted!");
-      } else if (field === "highlight") {
-        setHighlightPreview(null);
-        form.setValue("highlight_image", "");
-        toast.success("Highlight Image Deleted!");
-      } else if (field === "reference") {
-        setReferencePreview((prev) => {
-          const newArr = prev.filter((_, i) => i !== index);
-          form.setValue("reference_image", newArr);
-          return newArr;
-        });
-        toast.success("Referenced Image Deleted!");
+      const data = await res.json();
+
+      if (data.message) {
+        toast.success(
+          field === "logo"
+            ? "Image Logo Deleted!"
+            : field === "highlight"
+              ? "Highlight Image Deleted!"
+              : "Referenced Image Deleted!",
+        );
+      } else {
+        console.warn("S3 delete issue:", data.error);
+        toast.warning(
+          "Image removed from form. Storage cleanup may be needed.",
+        );
       }
-    } else {
+    } catch (error) {
+      console.error("Delete request failed:", error);
+      toast.warning("Image removed from form. Storage cleanup may be needed.");
+    } finally {
       setLoading(false);
-      toast.error(data.error || "Failed to delete");
     }
   }
 
@@ -659,6 +672,7 @@ const UpdateHotelForm = ({
               <div className="lg:col-span-2 col-span-1 flex w-full items-center justify-center mt-5">
                 <Button
                   type="submit"
+                  disabled={loading}
                   className="rounded-full flex lg:w-fit w-full"
                 >
                   {loading ? <Spinner /> : "Update"}

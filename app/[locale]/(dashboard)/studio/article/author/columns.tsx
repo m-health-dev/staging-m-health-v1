@@ -312,7 +312,7 @@ export const columns: ColumnDef<ArticleAuthorType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== name}
+                  disabled={inputName !== name || loading}
                   onClick={async () => {
                     await handleDelete();
                     setOpenConfirm(false);

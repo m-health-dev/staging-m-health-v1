@@ -236,6 +236,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               ? "bg-primary text-primary-foreground rounded-br-none max-w-xs lg:max-w-md lg:px-5 px-3 lg:pt-5 pt-3 lg:pb-3 pb-0.5"
               : `${
                   message ? "bg-white" : "bg-transparent"
+                  // "bg-transparent"
                 } text-foreground rounded-bl-none max-w-full lg:px-5 px-3 lg:pt-5 pt-3 lg:pb-3 pb-0.5`
           }`}
         >
@@ -805,7 +806,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           )}
         >
           <div
-            className={`action_button  inline-flex gap-0.5 bg-white  px-2 py-1.5 shadow-sm ${
+            className={`action_button  inline-flex gap-0.5 bg-white  px-2 py-1.5 ${
               isUser
                 ? "rounded-b-full rounded-tl-full"
                 : "rounded-b-full rounded-tr-full"
@@ -816,7 +817,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               className="text-muted-foreground pointer-events-auto cursor-pointer hover:bg-white p-1 rounded-full"
               title="Reply"
             >
-              <Undo2 className="size-4.5" />
+              <Undo2 className="size-4" />
             </button>
 
             <button
@@ -825,9 +826,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               title="Salin pesan"
             >
               {copied ? (
-                <Check className="size-4 text-green-500" />
+                <Check className="size-3.5 text-green-500" />
               ) : (
-                <Copy className="size-4" />
+                <Copy className="size-3.5" />
               )}
             </button>
           </div>

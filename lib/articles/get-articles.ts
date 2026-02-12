@@ -52,7 +52,7 @@ export async function getAllArticles(page: number = 1, per_page: number = 10) {
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();
@@ -82,19 +82,19 @@ export async function getAllArticles(page: number = 1, per_page: number = 10) {
 
 export async function getAllPublicArticles(
   page: number = 1,
-  per_page: number = 10
+  per_page: number = 10,
 ) {
   try {
     const res = await fetch(
       `${apiBaseUrl}/api/v1/articles?status=published&page=${page}&per_page=${per_page}`,
       {
-        next: { revalidate: 60 },
+        // next: { revalidate: 60 },
         method: "GET",
         headers: {
           "X-API-Key": apiSecretKey,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const json = await res.json();

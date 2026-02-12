@@ -349,7 +349,7 @@ export const columns: ColumnDef<VendorType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== vendorName}
+                  disabled={inputName !== vendorName || loading}
                   onClick={async () => {
                     await handleDeleteVendor();
                     setOpenConfirm(false);

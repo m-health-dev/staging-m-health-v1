@@ -158,7 +158,7 @@ export const columns: ColumnDef<DoctorType>[] = [
           className={cn(
             is_available
               ? "text-green-600 bg-green-50 border border-green-600 rounded-full px-2 py-1 text-xs"
-              : "text-red-600 bg-red-50 border border-red-600 rounded-full px-2 py-1 text-xs"
+              : "text-red-600 bg-red-50 border border-red-600 rounded-full px-2 py-1 text-xs",
           )}
         >
           {is_available ? "Available" : "Not Available"}
@@ -386,7 +386,7 @@ export const columns: ColumnDef<DoctorType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== name}
+                  disabled={inputName !== name || loading}
                   onClick={async () => {
                     await handleDeleteDoctor();
                     setOpenConfirm(false);

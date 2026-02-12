@@ -50,6 +50,7 @@ const MedicalDetailClient = ({
   labels: any;
   account?: any;
 }) => {
+  const [imageError, setImageError] = useState(false);
   const swiperRef = useRef<any>(null);
   const sliderImage = p.reference_image;
 
@@ -99,12 +100,14 @@ const MedicalDetailClient = ({
                   <ImageZoom>
                     <Image
                       src={
-                        img ||
-                        "https://placehold.co/720x403.png?text=IMAGE+NOT+FOUND"
+                        imageError
+                          ? "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/m-health-placeholder.png"
+                          : img
                       } // Ganti dengan slide.image_url saat tersedia
                       width={720}
                       height={403}
                       alt={img}
+                      onError={() => setImageError(true)}
                       onLoad={() => setImageLoaded(true)}
                       loading="lazy"
                       className={cn(

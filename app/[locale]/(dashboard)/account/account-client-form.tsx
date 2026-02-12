@@ -200,19 +200,23 @@ const AccountClientForm = ({
     index?: number,
   ) {
     setLoading(true);
-    const deletedPath = url; // url relative yg dikirim ke API
 
-    setDeletedImages((prev) => [...prev, deletedPath]); // ⬅ tambahkan ini
+    setDeletedImages((prev) => [...prev, url]);
 
-    const res = await fetch("/api/image/delete", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: url }),
-    });
+    // Optimistic UI update
+    if (field === "avatar") {
+      setAvatarPreview(null);
+      form.setValue("avatar_url", "");
+    }
 
-    const data = await res.json();
+    try {
+      // Fire S3 delete (non-blocking for UI)
+      fetch("/api/image/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: url }),
+      }).catch((err) => console.warn("S3 delete issue:", err));
 
-    if (data.message) {
       if (field === "avatar") {
         // Auto-save empty avatar to database
         let patchRes;
@@ -259,8 +263,6 @@ const AccountClientForm = ({
         }
 
         if (patchRes.success) {
-          setAvatarPreview(null);
-          form.setValue("avatar_url", "");
           toast.success(
             locale === routing.defaultLocale
               ? "Avatar berhasil dihapus!"
@@ -275,10 +277,11 @@ const AccountClientForm = ({
           );
         }
       }
+    } catch (error) {
+      console.error("Delete request failed:", error);
+      toast.warning("Image removed from form. Storage cleanup may be needed.");
+    } finally {
       setLoading(false);
-    } else {
-      setLoading(false);
-      toast.error(data.error || "Failed to delete");
     }
   }
 

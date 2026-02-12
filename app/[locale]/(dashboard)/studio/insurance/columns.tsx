@@ -375,7 +375,7 @@ export const columns: ColumnDef<InsuranceType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== vendorName}
+                  disabled={inputName !== vendorName || loading}
                   onClick={async () => {
                     await handleDeleteInsurance();
                     setOpenConfirm(false);

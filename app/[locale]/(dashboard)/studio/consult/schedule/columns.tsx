@@ -370,7 +370,7 @@ export const columns: ColumnDef<ConsultScheduleType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== fullname}
+                  disabled={inputName !== fullname || loading}
                   onClick={async () => {
                     await handleDeleteConsultation();
                     setOpenConfirm(false);

@@ -132,7 +132,7 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
           <div className="grid lg:grid-cols-3 grid-cols-1 gap-10 items-start">
             <div className="lg:col-span-2 w-full product_information_and_booking_data">
               {productType === "consultation" ? (
-                <div className="bg-white rounded-2xl p-5 border">
+                <div className="bg-white rounded-2xl p-6 border">
                   <h5 className="font-bold text-primary text-lg">
                     <Stethoscope className="inline-block mr-2 size-5" />
                     {locale === routing.defaultLocale
@@ -177,7 +177,7 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                   </div>
                 </div>
               ) : (
-                <div className="bg-white rounded-2xl p-5 border grid md:grid-cols-4 grid-cols-1 gap-5">
+                <div className="bg-white rounded-2xl p-6 border grid md:grid-cols-4 grid-cols-1 gap-5">
                   <div className="md:col-span-1 w-full">
                     <Image
                       src={data.highlight_image}
@@ -276,7 +276,7 @@ const PaymentPage = async ({ params, searchParams }: Props) => {
                 </div>
               )}
             </div>
-            <div className="lg:col-span-1 w-full bg-white border rounded-2xl p-5">
+            <div className="lg:col-span-1 w-full bg-white border rounded-2xl p-6">
               <PaymentSection
                 locale={locale}
                 payID={payID}

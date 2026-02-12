@@ -205,7 +205,7 @@ const BookingClientForm = forwardRef<BookingFormHandle, BookingClientFormProps>(
     }, [form, setBookingSubmit]);
 
     return (
-      <div className="bg-white p-5 border rounded-2xl">
+      <div className="bg-white p-6 border rounded-2xl">
         <h3 className="text-primary font-bold mb-4">
           {locale === routing.defaultLocale
             ? "Formulir Pemesanan"

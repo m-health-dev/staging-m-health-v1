@@ -105,6 +105,8 @@ const PackageCard = ({
             <div className="inline-flex gap-2 items-center mt-4">
               <AvatarVendorHotel
                 type="vendor"
+                dataIsReady
+                initialData={slide.vendor}
                 vendor_id={slide.vendor_id}
                 locale={locale}
               />
@@ -187,6 +189,8 @@ const PackageCard = ({
           <div className="inline-flex gap-2 items-center mt-4">
             <AvatarVendorHotel
               type="vendor"
+              dataIsReady
+              initialData={slide.vendor}
               vendor_id={slide.vendor_id}
               locale={locale}
             />

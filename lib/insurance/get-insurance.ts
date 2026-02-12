@@ -84,7 +84,7 @@ export async function getInsuranceByID(id: string) {
   try {
     const res = await fetch(`${apiBaseUrl}/api/v1/insurance/${id}`, {
       method: "GET",
-      next: { revalidate: 60 },
+      // next: { revalidate: 60 },
       headers: {
         "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",
@@ -118,7 +118,7 @@ export async function getInsuranceBySlug(slug: string) {
   try {
     const res = await fetch(`${apiBaseUrl}/api/v1/insurance/${slug}`, {
       method: "GET",
-      next: { revalidate: 60 },
+      // next: { revalidate: 60 },
       headers: {
         "X-API-Key": apiSecretKey,
         "Content-Type": "application/json",

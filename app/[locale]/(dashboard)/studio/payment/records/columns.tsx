@@ -35,16 +35,20 @@ import {
   Copy,
   CopyCheck,
   Eye,
+  Loader,
   MoreHorizontal,
   PenSquare,
   Stethoscope,
   Trash2,
+  X,
 } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+
+// const locale = useLocale();
 
 export const columns: ColumnDef<TransactionType>[] = [
   {
@@ -75,16 +79,19 @@ export const columns: ColumnDef<TransactionType>[] = [
     cell: ({ row }) => {
       const payment_status: string = row.getValue("payment_status");
       return payment_status === "settlement" || payment_status === "capture" ? (
-        <span className="text-green-600 font-medium capitalize bg-green-50 px-2 py-1 rounded-full border border-green-500">
-          {payment_status}
+        <span className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+          <Check className="size-4" />
+          {"Payment Successful"}
         </span>
-      ) : payment_status === "canceled" ? (
-        <span className="text-red-600 font-medium capitalize bg-red-50 px-2 py-1 rounded-full border border-red-500">
-          {payment_status}
+      ) : payment_status === "pending" ? (
+        <span className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+          <Loader className="size-4" />
+          {"Waiting for Payment"}
         </span>
       ) : (
-        <span className="text-yellow-600 font-medium capitalize bg-yellow-50 px-2 py-1 rounded-full border border-yellow-500">
-          {payment_status}
+        <span className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+          <X className="size-4" />
+          {"Payment Failed"}
         </span>
       );
     },

@@ -352,7 +352,7 @@ export const columns: ColumnDef<VendorType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== title}
+                  disabled={inputName !== title || loading}
                   onClick={async () => {
                     await handleDeleteChatSession();
                     setOpenConfirm(false);

@@ -602,7 +602,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                 )}
 
                 <div className="flex w-full">
-                  <div className="w-full md:rounded-3xl rounded-t-3xl border-x border-t border-primary bg-white shadow px-2 pt-2 pb-1">
+                  <div className="w-full md:rounded-3xl rounded-t-3xl lg:border border-x border-t border-primary bg-white shadow px-2 pt-2 pb-1">
                     <Textarea
                       ref={textareaRef}
                       placeholder={

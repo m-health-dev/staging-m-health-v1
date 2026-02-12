@@ -2,13 +2,11 @@ const intApiBaseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
 
 export async function deleteSingleFile(path: string) {
   try {
-    const clearPath = path.replaceAll(
-      process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL!,
-      ""
-    );
+    // Pass the full path/URL — the API will extract the correct S3 key
     const res = await fetch(`${intApiBaseUrl}/api/image/delete`, {
       method: "DELETE",
-      body: JSON.stringify({ path: clearPath }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path }),
     });
 
     return res.ok;
@@ -20,13 +18,11 @@ export async function deleteSingleFile(path: string) {
 
 export async function deleteMultipleFiles(paths: string[]) {
   try {
-    const clearPaths = paths.map((p) =>
-      p.replaceAll(process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL!, "")
-    );
-
+    // Pass the full paths/URLs — the API will extract the correct S3 keys
     const res = await fetch(`${intApiBaseUrl}/api/image/delete/batch`, {
       method: "DELETE",
-      body: JSON.stringify({ paths: clearPaths }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ paths }),
     });
 
     return res.ok;

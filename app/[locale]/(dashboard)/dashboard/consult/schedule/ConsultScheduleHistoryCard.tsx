@@ -85,10 +85,17 @@ const ConsultScheduleHistoryCard = ({
         <h5 className="text-primary font-semibold mb-4">
           <LocalDateTime date={cons.scheduled_datetime} />
         </h5>
-        <p className="text-sm! text-muted-foreground mt-5">
-          {locale === routing.defaultLocale ? "Keluhan" : "Complaint"}
-        </p>
-        <p className="text-gray-700 text-sm! line-clamp-3">{cons.complaint}</p>
+
+        {cons.complaint && (
+          <>
+            <p className="text-sm! text-muted-foreground mt-5">
+              {locale === routing.defaultLocale ? "Keluhan" : "Complaint"}
+            </p>
+            <p className="text-gray-700 text-sm! line-clamp-3">
+              {cons.complaint}
+            </p>
+          </>
+        )}
 
         {/* <div className="mb-5 border-l-4 border-l-primary bg-blue-50 p-4">
                       <p className="text-sm! text-muted-foreground">

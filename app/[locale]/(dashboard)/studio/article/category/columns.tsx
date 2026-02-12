@@ -199,7 +199,7 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
                   className="text-sm! text-muted-foreground"
                   onClick={() =>
                     router.push(
-                      `/${locale}/studio/article/category/update/${id}`
+                      `/${locale}/studio/article/category/update/${id}`,
                     )
                   }
                 >
@@ -292,7 +292,7 @@ export const columns: ColumnDef<ArticleCategoryType>[] = [
                   variant="destructive"
                   className="rounded-2xl"
                   type="submit"
-                  disabled={inputName !== id_category}
+                  disabled={inputName !== id_category || loading}
                   onClick={async () => {
                     await handleDelete();
                     setOpenConfirm(false);

@@ -113,7 +113,9 @@ const AvatarUser = ({
       </div>
     </div>
   ) : // Jika data ada dan memiliki logo
-  data.avatar_url ? (
+  data.avatar_url !== null &&
+    data.avatar_url !== "" &&
+    data.avatar_url !== undefined ? (
     <div>
       <button
         type="button"

@@ -1,4 +1,6 @@
 import { Gender, StatusContent } from "./enum.types";
+import { HotelType } from "./hotel.types";
+import { VendorType } from "./vendor.types";
 
 export type PackageType = {
   id: string;
@@ -26,4 +28,6 @@ export type PackageType = {
   real_price: number;
   discount_price: number;
   status: StatusContent;
+  vendor: VendorType;
+  hotel: HotelType;
 };

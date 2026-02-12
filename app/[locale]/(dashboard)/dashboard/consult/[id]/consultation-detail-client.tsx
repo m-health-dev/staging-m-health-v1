@@ -256,45 +256,50 @@ const ConsultationDetailClient = ({
               <p>{c.chat_session}</p>
             )}
           </div>
-          <div>
-            <p className="text-muted-foreground mb-1">
-              {locale === routing.defaultLocale
-                ? "Kondisi Kesehatan"
-                : "Health Condition"}
-            </p>
-            <div className=" bg-white py-4 px-4 min-h-12 flex items-center text-gray-800 rounded-2xl text-wrap">
-              <p>{c.complaint}</p>
-            </div>
-          </div>
-          <div>
-            <p className="text-muted-foreground mb-1">
-              {locale === routing.defaultLocale
-                ? "Gambar Referensi"
-                : "Referenced Image"}
-            </p>
-            {c.reference_image && c.reference_image.length > 0 ? (
-              <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
-                {c.reference_image.map((img: string, index: number) => (
-                  <ImageZoom key={index}>
-                    <Image
-                      key={index}
-                      src={img}
-                      alt={`Reference Image ${index + 1}`}
-                      width={400}
-                      height={400}
-                      className="w-full h-auto object-cover aspect-video rounded-2xl border"
-                    />
-                  </ImageZoom>
-                ))}
-              </div>
-            ) : (
-              <p>
+          {c.complaint && (
+            <div>
+              <p className="text-muted-foreground mb-1">
                 {locale === routing.defaultLocale
-                  ? "Tidak ada gambar referensi tersedia."
-                  : "No reference images available."}
+                  ? "Kondisi Kesehatan"
+                  : "Health Condition"}
               </p>
-            )}
-          </div>
+              <div className=" bg-white py-4 px-4 min-h-12 flex items-center text-gray-800 rounded-2xl text-wrap">
+                <p>{c.complaint}</p>
+              </div>
+            </div>
+          )}
+
+          {c.reference_image && c.reference_image.length > 0 && (
+            <div>
+              <p className="text-muted-foreground mb-1">
+                {locale === routing.defaultLocale
+                  ? "Gambar Referensi"
+                  : "Referenced Image"}
+              </p>
+              {c.reference_image && c.reference_image.length > 0 ? (
+                <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+                  {c.reference_image.map((img: string, index: number) => (
+                    <ImageZoom key={index}>
+                      <Image
+                        key={index}
+                        src={img}
+                        alt={`Reference Image ${index + 1}`}
+                        width={400}
+                        height={400}
+                        className="w-full h-auto object-cover aspect-video rounded-2xl border"
+                      />
+                    </ImageZoom>
+                  ))}
+                </div>
+              ) : (
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Tidak ada gambar referensi tersedia."
+                    : "No reference images available."}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </ContainerWrap>
     </div>

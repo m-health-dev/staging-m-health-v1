@@ -20,6 +20,8 @@ const AvatarVendorHotel = ({
   size = "sm",
   locale,
   arranged,
+  dataIsReady,
+  initialData,
 }: {
   type: "vendor" | "hotel";
   hotel_id?: string;
@@ -27,11 +29,22 @@ const AvatarVendorHotel = ({
   size?: "sm" | "md" | "lg";
   locale: string;
   arranged?: boolean;
+  dataIsReady?: boolean;
+  initialData?: any;
 }) => {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<any>(initialData ?? null);
+  const [loading, setLoading] = useState(!dataIsReady);
+
+  const [imageError, setImageError] = useState(false);
   const router = useRouter();
   useEffect(() => {
+    // Skip fetch if data is already provided via props
+    if (dataIsReady && initialData) {
+      setData(initialData);
+      setLoading(false);
+      return;
+    }
+
     const loadData = async () => {
       const key = `${type}-${vendor_id || hotel_id}`;
 
@@ -67,7 +80,7 @@ const AvatarVendorHotel = ({
     };
 
     loadData();
-  }, [type, vendor_id, hotel_id]);
+  }, [type, vendor_id, hotel_id, dataIsReady, initialData]);
 
   // fallback avatar ketika loading atau logo tidak tersedia
   return loading ? (
@@ -106,16 +119,19 @@ const AvatarVendorHotel = ({
         />
       </div>
     </div>
-  ) : // Jika data ada dan memiliki logo
-  data.logo !== null && data.logo !== undefined ? (
+  ) : data?.logo ? (
     <div>
       <button
         onClick={() => router.push(`/${locale}/${type}/${data.slug}`)}
         className="cursor-pointer"
       >
-        <div className="inline-flex gap-2 items-center">
+        <div className="inline-flex  gap-2 items-center">
           <Image
-            src={data.logo}
+            src={
+              imageError
+                ? "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/m-health-placeholder.png"
+                : data.logo
+            }
             alt={data.slug || "vendor-hotel-logo"}
             width={80}
             height={80}
@@ -125,10 +141,11 @@ const AvatarVendorHotel = ({
               size === "md" && "w-10 h-10",
               size === "lg" && "w-14 h-14",
             )}
+            onError={() => setImageError(true)}
           />
           <p
             className={cn(
-              " text-health normal-case line-clamp-1 -mb-0.5",
+              " text-health normal-case -mb-0.5 line-clamp-1 text-start",
               size === "sm" && "text-xs!",
               size === "md" && "text-sm!",
               size === "lg" && "text-base!",

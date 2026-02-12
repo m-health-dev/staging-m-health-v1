@@ -46,7 +46,11 @@ const EquipmentCard = ({
               } // Ganti dengan slide.image_url saat tersedia
               width={720}
               height={403}
-              alt={locale === routing.defaultLocale ? slide.id_title : slide.en_title}
+              alt={
+                locale === routing.defaultLocale
+                  ? slide.id_title
+                  : slide.en_title
+              }
               onLoad={() => setImageLoaded(true)}
               loading="lazy"
               className={cn(
@@ -61,7 +65,9 @@ const EquipmentCard = ({
           <div>
             <div>
               <h5 className="capitalize font-bold text-primary line-clamp-3">
-                {locale === routing.defaultLocale ? slide.id_title : slide.en_title}
+                {locale === routing.defaultLocale
+                  ? slide.id_title
+                  : slide.en_title}
               </h5>
             </div>
           </div>
@@ -69,6 +75,8 @@ const EquipmentCard = ({
             <div className="inline-flex gap-2 items-center">
               <AvatarVendorHotel
                 type="vendor"
+                dataIsReady
+                initialData={slide.vendor}
                 vendor_id={slide.vendor_id}
                 locale={locale}
               />

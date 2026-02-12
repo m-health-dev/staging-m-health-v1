@@ -7,9 +7,9 @@ export async function getPublicPackagesClient(page = 1, limit = 3) {
   try {
     const response = await fetch(
       `/api/packages/public?page=${page}&limit=${limit}`,
-      {
-        next: { revalidate: 300 }, // Cache for 5 minutes
-      }
+      // {
+      //   next: { revalidate: 300 }, // Cache for 5 minutes
+      // }
     );
 
     if (!response.ok) {

@@ -178,7 +178,7 @@ export function VendorHotelDeleteCopyFunction({
               variant="destructive"
               className="rounded-2xl"
               type="submit"
-              disabled={inputName !== name}
+              disabled={inputName !== name || loading}
               onClick={handleDelete}
             >
               {loading ? <Spinner /> : "Delete"}

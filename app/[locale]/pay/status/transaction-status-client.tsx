@@ -10,7 +10,15 @@ import { stripHtml } from "@/helper/removeHTMLTag";
 import { formatRupiah } from "@/helper/rupiah";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
-import { Mars, Stethoscope, Venus, VenusAndMars } from "lucide-react";
+import {
+  Check,
+  Loader,
+  Mars,
+  Stethoscope,
+  Venus,
+  VenusAndMars,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -147,7 +155,7 @@ const TransactionStatusClient = ({
         </div>
       ) : (
         <div className="text-start bg-white p-5 rounded-2xl border">
-          <p
+          {/* <p
             className={cn(
               "mb-2 capitalize  px-3 py-1 border rounded-full w-fit inline-flex",
               data.payment_status === "settlement" ||
@@ -159,29 +167,32 @@ const TransactionStatusClient = ({
             )}
           >
             {data.payment_status}
-          </p>
-          {data.payment_status === "settlement" ||
-            (data.payment_status === "capture" && (
-              <h2 className="text-3xl font-semibold mb-4 text-health">
+          </p> */}
+          <div className="inline-flex mt-2 mb-4">
+            {data.payment_status === "settlement" ||
+            data.payment_status === "capture" ? (
+              <p className="text-health bg-green-50 border-green-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                <Check className="size-4" />
                 {locale === routing.defaultLocale
                   ? "Pembayaran Berhasil"
                   : "Payment Successful"}
-              </h2>
-            ))}
-          {data.payment_status === "pending" && (
-            <h2 className="text-3xl font-semibold mb-4 text-amber-500">
-              {locale === routing.defaultLocale
-                ? "Pembayaran Gagal"
-                : "Payment Failed"}
-            </h2>
-          )}
-          {data.payment_status === "expire" && (
-            <h2 className="text-3xl font-semibold mb-4 text-red-500">
-              {locale === routing.defaultLocale
-                ? "Pembayaran Gagal"
-                : "Payment Failed"}
-            </h2>
-          )}
+              </p>
+            ) : data.payment_status === "pending" ? (
+              <p className="text-yellow-600 bg-yellow-50 border-yellow-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                <Loader className="size-4" />
+                {locale === routing.defaultLocale
+                  ? "Menunggu Pembayaran"
+                  : "Waiting for Payment"}
+              </p>
+            ) : (
+              <p className="text-red-600 bg-red-50 border-red-600 border px-3 py-1 capitalize inline-flex rounded-full text-xs! gap-2 items-center">
+                <X className="size-4" />
+                {locale === routing.defaultLocale
+                  ? "Pembayaran Gagal"
+                  : "Payment Failed"}
+              </p>
+            )}
+          </div>
 
           <p className="mb-2 text-primary">
             <span className="text-muted-foreground text-sm!">
@@ -271,7 +282,7 @@ const TransactionStatusClient = ({
                     </p>
                     <Button
                       variant={"outline"}
-                      className="h-12 rounded-full mt-2"
+                      className="h-12 rounded-full mt-2 text-base!"
                     >
                       <Link
                         href={`/${locale}/dashboard/consult/${data.product_data.id}`}

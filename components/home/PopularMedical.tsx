@@ -33,6 +33,7 @@ const PopularMedical = async ({
             : "Medical Packages"}
         </h2>
       </ContainerWrap>
+      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
       <Suspense fallback={<SkeletonComponent />}>
         <Content data={data} locale={locale} />
       </Suspense>

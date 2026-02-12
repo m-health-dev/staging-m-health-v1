@@ -94,28 +94,37 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
 
   async function handleDelete(url: string, field: "image", index?: number) {
     setLoading(true);
-    const deletedPath = url; // url relative yg dikirim ke API
 
-    setDeletedImages((prev) => [...prev, deletedPath]); // ⬅ tambahkan ini
+    setDeletedImages((prev) => [...prev, url]);
 
-    const res = await fetch("/api/image/delete", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: url }),
-    });
+    // Optimistic UI update
+    if (field === "image") {
+      setImagePreview(null);
+      form.setValue("image", "");
+    }
 
-    const data = await res.json();
+    try {
+      const res = await fetch("/api/image/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: url }),
+      });
 
-    if (data.message) {
-      setLoading(false);
-      if (field === "image") {
-        setImagePreview(null);
-        form.setValue("image", "");
+      const data = await res.json();
+
+      if (data.message) {
         toast.success("Image Deleted!");
+      } else {
+        console.warn("S3 delete issue:", data.error);
+        toast.warning(
+          "Image removed from form. Storage cleanup may be needed.",
+        );
       }
-    } else {
+    } catch (error) {
+      console.error("Delete request failed:", error);
+      toast.warning("Image removed from form. Storage cleanup may be needed.");
+    } finally {
       setLoading(false);
-      toast.error(data.error || "Failed to delete");
     }
   }
 
@@ -313,6 +322,7 @@ const UpdateHeroClient = ({ hero, locale }: { hero: any; locale: string }) => {
                 <Button
                   type="submit"
                   size={"lg"}
+                  disabled={loading}
                   className="rounded-full flex lg:w-fit w-full"
                 >
                   {loading ? <Spinner /> : "Update"}

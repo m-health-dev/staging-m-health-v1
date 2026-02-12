@@ -568,7 +568,7 @@ export const createZodSchemas = (locale: Locale = "id") => {
     end_date: z.date(msg("end_date_required")),
     location_name: z.string().min(1, msg("location_name_required")),
     location_map: z.string().min(1, msg("location_map_required")),
-    registration_url: z.string().url().optional(),
+    registration_url: z.string().optional(), // Seharusnya registration_url bisa nullable atau optional
     status: z.string().min(3, msg("status_required")),
   });
 

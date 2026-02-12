@@ -1,4 +1,5 @@
 import { Gender, StatusContent } from "./enum.types";
+import { VendorType } from "./vendor.types";
 
 export type MedicalType = {
   id: string;
@@ -22,4 +23,5 @@ export type MedicalType = {
   real_price: number;
   discount_price: number;
   status: StatusContent;
+  vendor: VendorType;
 };

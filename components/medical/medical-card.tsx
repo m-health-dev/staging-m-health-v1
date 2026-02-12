@@ -21,6 +21,9 @@ const MedicalCard = ({
   type?: "default" | "swiper";
 }) => {
   const [imageLoaded, setImageLoaded] = React.useState(false);
+  const [imageError, setImageError] = React.useState(false);
+
+  // console.log("Medical Card slide data:", slide);
   return type === "swiper" ? (
     <div
       key={slide.id}
@@ -59,8 +62,9 @@ const MedicalCard = ({
             <div className="aspect-square w-full h-auto rounded-2xl overflow-hidden">
               <Image
                 src={
-                  slide.highlight_image ||
-                  "https://placehold.co/720x403.png?text=IMAGE+NOT+FOUND"
+                  imageError
+                    ? "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/m-health-placeholder.png"
+                    : slide.highlight_image
                 } // Ganti dengan slide.image_url saat tersedia
                 width={720}
                 height={403}
@@ -69,6 +73,7 @@ const MedicalCard = ({
                     ? slide.id_title
                     : slide.en_title
                 }
+                onError={() => setImageError(true)}
                 onLoad={() => setImageLoaded(true)}
                 loading="lazy"
                 className={cn(
@@ -101,6 +106,8 @@ const MedicalCard = ({
             <div className="inline-flex gap-2 items-center mt-4">
               <AvatarVendorHotel
                 type="vendor"
+                dataIsReady
+                initialData={slide.vendor}
                 vendor_id={slide.vendor_id}
                 locale={locale}
               />
@@ -141,8 +148,9 @@ const MedicalCard = ({
           <div className="aspect-square w-full h-auto rounded-2xl overflow-hidden">
             <Image
               src={
-                slide.highlight_image ||
-                "https://placehold.co/720x403.png?text=IMAGE+NOT+FOUND"
+                imageError
+                  ? "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/m-health-placeholder.png"
+                  : slide.highlight_image
               } // Ganti dengan slide.image_url saat tersedia
               width={720}
               height={403}
@@ -151,6 +159,7 @@ const MedicalCard = ({
                   ? slide.id_title
                   : slide.en_title
               }
+              onError={() => setImageError(true)}
               onLoad={() => setImageLoaded(true)}
               loading="lazy"
               className={cn(
@@ -183,7 +192,9 @@ const MedicalCard = ({
           <div className="inline-flex gap-2 items-center mt-4">
             <AvatarVendorHotel
               type="vendor"
+              dataIsReady
               vendor_id={slide.vendor_id}
+              initialData={slide.vendor}
               locale={locale}
             />
           </div>

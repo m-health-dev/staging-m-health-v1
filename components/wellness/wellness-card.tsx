@@ -33,7 +33,7 @@ const WellnessCard = ({
         <div
           className={cn(
             "absolute inset-0 z-10 bg-white/20 backdrop-blur-2xl rounded-2xl flex w-full justify-center items-center transition-all duration-500",
-            imageLoaded ? "opacity-0" : "opacity-100"
+            imageLoaded ? "opacity-0" : "opacity-100",
           )}
         >
           <Spinner />
@@ -51,7 +51,7 @@ const WellnessCard = ({
           loading="lazy"
           className={cn(
             "w-full aspect-4/5 object-center object-cover rounded-2xl z-10 transition-all duration-500",
-            imageLoaded ? "opacity-100" : "opacity-0"
+            imageLoaded ? "opacity-100" : "opacity-0",
           )}
         />
       </div>
@@ -86,6 +86,8 @@ const WellnessCard = ({
             <div className="flex w-full! mt-5">
               <AvatarVendorHotel
                 type="vendor"
+                dataIsReady
+                initialData={d.vendor}
                 vendor_id={d.vendor_id}
                 locale={locale}
               />

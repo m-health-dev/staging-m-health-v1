@@ -7,7 +7,7 @@ const apiBaseUrl =
 
 export async function getUserInfo(token: string) {
   const res = await fetch(`${apiBaseUrl}/api/v1/me`, {
-    next: { revalidate: 1 },
+    // next: { revalidate: 1 },
     headers: {
       "X-API-Key": apiSecretKey,
       Authorization: `Bearer ${token}`,
