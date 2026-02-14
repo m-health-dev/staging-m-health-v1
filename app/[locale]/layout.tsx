@@ -121,8 +121,8 @@ export default async function RootLayout({ children, params }: Props) {
               }}
             />
             <GoogleAnalytics gaId="G-P8LGDRYY19" />
-            <Analytics />
-            <SpeedInsights />
+            {/* <Analytics />
+            <SpeedInsights /> */}
             <ScrollToTop />
             <DialogSwitchLang />
             {children}
