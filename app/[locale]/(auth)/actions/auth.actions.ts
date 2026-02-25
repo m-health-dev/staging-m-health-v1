@@ -17,8 +17,6 @@ import {
 } from "@/lib/zodSchema";
 
 import sha1 from "crypto-js/sha1";
-import { NextResponse } from "next/server";
-import { use } from "react";
 
 // const signInSchema = z.object({
 //   email: z

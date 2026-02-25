@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,34 +10,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
+
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { formatRupiah } from "@/helper/rupiah";
-import { routing } from "@/i18n/routing";
-import { deleteConsultation } from "@/lib/consult/delete-consultation";
-import { deleteHotel } from "@/lib/hotel/delete-hotel";
-import { deleteVendor } from "@/lib/vendors/delete-vendor";
-import { ConsultScheduleType } from "@/types/consult.types";
+
 import { TransactionType } from "@/types/transaction.types";
-import { VendorType } from "@/types/vendor.types";
+
 import { ColumnDef } from "@tanstack/react-table";
-import Avatar from "boring-avatars";
-import {
-  Check,
-  Copy,
-  CopyCheck,
-  Eye,
-  Loader,
-  MoreHorizontal,
-  PenSquare,
-  Stethoscope,
-  Trash2,
-  X,
-} from "lucide-react";
+
+import { Check, Copy, Eye, Loader, MoreHorizontal, X } from "lucide-react";
 import { useLocale } from "next-intl";
-import Image from "next/image";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

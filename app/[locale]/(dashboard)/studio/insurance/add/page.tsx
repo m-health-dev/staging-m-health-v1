@@ -26,10 +26,10 @@ import { useForm } from "react-hook-form";
 
 import { toast } from "sonner";
 import z from "zod";
-import { ComboBoxVendor } from "../ComboBox";
+
 import { Button } from "@/components/ui/button";
 import { DynamicInputField } from "@/components/Form/DynamicInputField";
-import { addVendor } from "@/lib/vendors/post-patch-vendor";
+
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
@@ -37,7 +37,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { addInsurance } from "@/lib/insurance/post-patch-insurance";
-import { routing } from "@/i18n/routing";
+
 import { PhoneInput } from "@/components/Form/phone-input";
 
 const AddVendor = () => {

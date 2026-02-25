@@ -51,7 +51,8 @@ const WellnessDetailClient = ({
   account?: any;
 }) => {
   const swiperRef = useRef<any>(null);
-  const sliderImage = p.reference_image;
+  const sliderImage =
+    p.reference_image.length >= 1 ? p.reference_image : [p.highlight_image];
 
   const payID = uuidv4();
 

@@ -1,8 +1,7 @@
 "use server";
 
 import { apiSecretKey } from "@/helper/api-secret-key";
-import { error } from "console";
-import { success } from "zod";
+import { fetchWithTimeout } from "@/helper/fetchWithTimeout";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -11,7 +10,7 @@ const apiBaseUrl =
 
 export async function getAllHomeData() {
   try {
-    const res = await fetch(`${apiBaseUrl}/api/v1/home`, {
+    const res = await fetchWithTimeout(`${apiBaseUrl}/api/v1/home`, {
       method: "GET",
       headers: {
         "X-API-Key": apiSecretKey,

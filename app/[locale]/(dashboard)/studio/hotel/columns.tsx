@@ -22,7 +22,7 @@ import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
 import { deleteHotel } from "@/lib/hotel/delete-hotel";
-import { deleteVendor } from "@/lib/vendors/delete-vendor";
+
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Avatar from "boring-avatars";

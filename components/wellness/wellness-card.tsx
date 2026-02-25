@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { routing } from "@/i18n/routing";
 
 import React from "react";

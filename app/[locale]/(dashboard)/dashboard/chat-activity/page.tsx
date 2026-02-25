@@ -1,15 +1,11 @@
-import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { routing } from "@/i18n/routing";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { getChatHistoryByUserID } from "@/lib/chatbot/getChatActivity";
-import { ChatHistory } from "@/types/chat.types";
+
 import { createClient } from "@/utils/supabase/server";
 import { getLocale } from "next-intl/server";
-import { nanoid } from "nanoid";
-import React from "react";
-import Link from "next/link";
+
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import SimplePagination from "@/components/utility/simple-pagination";
 import ChatActivityClient from "./ChatActivityClient";
 
 const ChatActivityDash = async ({

@@ -1,8 +1,5 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-import { hasLocale } from "next-intl";
-import { notFound } from "next/navigation";
-import { routing } from "@/i18n/routing";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { SiteHeaderDashboard } from "@/components/site-header-dashboard";

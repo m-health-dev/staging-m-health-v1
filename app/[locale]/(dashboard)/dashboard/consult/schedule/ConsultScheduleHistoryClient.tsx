@@ -2,14 +2,12 @@
 
 import React from "react";
 import { nanoid } from "nanoid";
-import Link from "next/link";
-import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
-import { routing } from "@/i18n/routing";
+
 import SimplePagination from "@/components/utility/simple-pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatRupiah } from "@/helper/rupiah";
+
 import { ConsultScheduleType } from "@/types/consult.types";
-import { Check, Loader, Stethoscope, X } from "lucide-react";
+
 import ConsultScheduleHistoryCard from "./ConsultScheduleHistoryCard";
 
 type ConsultScheduleHistoryClientProps = {

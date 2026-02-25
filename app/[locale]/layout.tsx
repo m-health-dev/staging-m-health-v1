@@ -13,7 +13,7 @@ import { notFound } from "next/navigation";
 import { LanguageProvider } from "@/components/utility/lang/LanguageContext";
 import Image from "next/image";
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getMessages } from "next-intl/server";
@@ -46,7 +46,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "M HEALTH - v1.0.0-beta.14",
+  title: "M HEALTH - v1.0.0-beta.15",
   description:
     "M HEALTH adalah platform kesehatan digital yang dirancang untuk membantu Anda mendapatkan informasi medis yang cepat, akurat, dan terpercaya. Kami memahami bahwa mencari solusi kesehatan sering kali terasa membingungkan. Oleh karena itu, kami hadir sebagai 'digital front door' — pintu gerbang kesehatan yang memudahkan siapa pun untuk bertanya, berkonsultasi, serta merencanakan perjalanan medis dan wellness secara sederhana, transparan, dan terjangkau.",
 };

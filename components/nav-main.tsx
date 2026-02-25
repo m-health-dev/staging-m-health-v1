@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useRealPathname } from "@/hooks/use-real-pathname";
 
 export function NavMain({
   items,
@@ -21,6 +22,7 @@ export function NavMain({
     icon?: React.ComponentType<any>;
   }[];
 }) {
+  const path = useRealPathname();
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -28,7 +30,15 @@ export function NavMain({
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <Link href={item.url}>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  className={
+                    path.split("/")[3] === item.url.split("/")[2] ||
+                    path === item.url
+                      ? "bg-primary text-white hover:bg-primary/90 hover:text-white"
+                      : ""
+                  }
+                >
                   {item.icon && <item.icon className="size-5" />}
                   <span>{item.title}</span>
                 </SidebarMenuButton>

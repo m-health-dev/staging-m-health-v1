@@ -1,6 +1,4 @@
 import React from "react";
-import ForgotPassClient from "./ResetPass-Client";
-import { get5ImageWellness } from "@/lib/unsplashImage";
 import ResetPassClient from "./ResetPass-Client";
 import { getLocale } from "next-intl/server";
 import type { Metadata, ResolvingMetadata } from "next";
@@ -13,7 +11,7 @@ type Props = {
 
 export async function generateMetadata(
   { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
@@ -42,11 +40,11 @@ export async function generateMetadata(
           url: `/api/og?title=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "Pemulihan Akun"
-              : "Reset Password"
+              : "Reset Password",
           )}&description=${encodeURIComponent(
             locale === routing.defaultLocale
               ? "M HEALTH adalah platform kesehatan digital yang dirancang untuk membantu Anda mendapatkan informasi medis yang cepat, akurat, dan terpercaya. Kami memahami bahwa mencari solusi kesehatan sering kali terasa membingungkan. Oleh karena itu, kami hadir sebagai `digital front door` — pintu gerbang kesehatan yang memudahkan siapa pun untuk bertanya, berkonsultasi, serta merencanakan perjalanan medis dan wellness secara sederhana, transparan, dan terjangkau."
-              : "M HEALTH is a digital health platform designed to help you access fast, accurate, and reliable medical information. We understand that finding the right health solutions can often feel overwhelming. That’s why we act as a `digital front door` — making it easier for anyone to ask questions, consult with professionals, and plan their medical and wellness journey in a simple, transparent, and affordable way."
+              : "M HEALTH is a digital health platform designed to help you access fast, accurate, and reliable medical information. We understand that finding the right health solutions can often feel overwhelming. That’s why we act as a `digital front door` — making it easier for anyone to ask questions, consult with professionals, and plan their medical and wellness journey in a simple, transparent, and affordable way.",
           )}&path=${encodeURIComponent("m-health.id/reset-password")}`,
           width: 800,
           height: 450,

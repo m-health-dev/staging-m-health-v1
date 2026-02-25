@@ -1,6 +1,6 @@
 "use client";
 
-import { delay, motion } from "framer-motion";
+import { delay, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import {
   MessagesSquare,

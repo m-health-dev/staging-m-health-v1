@@ -1,22 +1,13 @@
-import { getAllVendor } from "@/lib/vendors/get-vendor";
-import { Account } from "@/types/account.types";
 import React from "react";
-import { columns } from "./columns";
-import { VendorType } from "@/types/vendor.types";
+
 import { ConsultScheduleType } from "@/types/consult.types";
-import Link from "next/link";
-import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { getLocale } from "next-intl/server";
-import { routing } from "@/i18n/routing";
-import { createClient } from "@/utils/supabase/server";
-import { getAllHotel } from "@/lib/hotel/get-hotel";
+
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import { VendorHotelDataTable } from "@/components/vendor-hotel/vendor-hotel-data-table";
-import { deleteHotel } from "@/lib/hotel/delete-hotel";
+
 import { getAllConsultations } from "@/lib/consult/get-consultation";
 import LiveConsultSchedule from "./LiveConsultSchedule";
-import { deleteConsultation } from "@/lib/consult/delete-consultation";
 
 const ConsultScheduleStudio = async ({
   searchParams,

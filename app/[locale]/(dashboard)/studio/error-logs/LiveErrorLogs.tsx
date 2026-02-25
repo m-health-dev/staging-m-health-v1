@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
 import { Switch } from "@/components/ui/switch";
-import { TransactionType } from "@/types/transaction.types";
+
 import { columns } from "./columns";
 import { ChevronDown, ChevronRight, Database } from "lucide-react";
 import { routing } from "@/i18n/routing";

@@ -7,7 +7,7 @@ import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
 import { getLocale } from "next-intl/server";
 import Link from "next/link";
 import { columns } from "./columns";
-import { getAllMedical } from "@/lib/medical/get-medical";
+
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { getAllPackages } from "@/lib/packages/get-packages";
 

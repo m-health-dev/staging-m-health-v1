@@ -1,6 +1,5 @@
 "use client";
 
-import AvatarUserDetail from "@/components/auth/AvatarUserDetail";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,15 +19,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
-import StatusBadge from "@/components/utility/status-badge";
+
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
 import { DeleteChatSession } from "@/lib/chatbot/delete-chat-activity";
-import { deleteMedical } from "@/lib/medical/delete-medical";
-import { deletePackage } from "@/lib/packages/delete-packages";
+
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
-import Avatar from "boring-avatars";
+
 import {
   Check,
   Copy,
@@ -39,7 +37,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useLocale } from "next-intl";
-import Image from "next/image";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

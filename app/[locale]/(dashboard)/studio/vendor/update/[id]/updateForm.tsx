@@ -22,7 +22,6 @@ import { EyeClosed, Eye, Trash } from "lucide-react";
 import React, { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Label } from "recharts";
 import { toast } from "sonner";
 import z from "zod";
 import { ComboBoxVendor } from "../../ComboBox";

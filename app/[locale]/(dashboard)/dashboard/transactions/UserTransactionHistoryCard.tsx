@@ -5,12 +5,11 @@ import { nanoid } from "nanoid";
 import Link from "next/link";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { routing } from "@/i18n/routing";
-import SimplePagination from "@/components/utility/simple-pagination";
-import { Skeleton } from "@/components/ui/skeleton";
+
 import { formatRupiah } from "@/helper/rupiah";
 import { Check, Loader, X } from "lucide-react";
 import { TransactionType } from "@/types/transaction.types";
-import Avatar from "boring-avatars";
+
 import AvatarUser from "@/components/utility/AvatarUser";
 
 type UserTransactionHistoryClientProps = {

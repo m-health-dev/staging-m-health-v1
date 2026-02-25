@@ -22,12 +22,11 @@ import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import StatusBadge from "@/components/utility/status-badge";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
-import { deleteVendor } from "@/lib/vendors/delete-vendor";
+
 import { deleteWellness } from "@/lib/wellness/delete-wellness";
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
-import Avatar from "boring-avatars";
+
 import {
   Check,
   Copy,
@@ -37,7 +36,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useLocale } from "next-intl";
-import Image from "next/image";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

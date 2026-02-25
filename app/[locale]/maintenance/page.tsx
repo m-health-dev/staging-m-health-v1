@@ -6,7 +6,7 @@ import { Settings, Telescope, Unplug, Wrench } from "lucide-react";
 import { getLocale } from "next-intl/server";
 import React, { use, useEffect, useState } from "react";
 import Image from "next/image";
-import { motion, Variants } from "framer-motion";
+import { motion, Variants } from "motion/react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";

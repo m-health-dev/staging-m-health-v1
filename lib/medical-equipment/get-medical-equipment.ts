@@ -1,8 +1,7 @@
 "use server";
 
 import { apiSecretKey } from "@/helper/api-secret-key";
-import { error } from "console";
-import { success } from "zod";
+import { fetchWithTimeout } from "@/helper/fetchWithTimeout";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -14,10 +13,9 @@ export async function getAllPublicMedicalEquipment(
   per_page: number = 10,
 ) {
   try {
-    const res = await fetch(
+    const res = await fetchWithTimeout(
       `${apiBaseUrl}/api/v1/medical-equipment?status=published&page=${page}&per_page=${per_page}`,
       {
-        // next: { revalidate: 60 },
         method: "GET",
         headers: {
           "X-API-Key": apiSecretKey,

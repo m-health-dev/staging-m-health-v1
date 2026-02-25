@@ -1,6 +1,5 @@
 "use client";
 
-import { RichEditor } from "@/components/Form/RichEditor";
 import {
   Form,
   FormControl,
@@ -13,18 +12,12 @@ import {
 import { Input } from "@/components/ui/input";
 
 import {
-  Dropzone,
-  DropzoneEmptyState,
-  DropzoneContent,
-} from "@/components/ui/shadcn-io/dropzone";
-
-import {
   ArticleAuthorSchema,
   ArticleCategorySchema,
   EventSchema,
 } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye, Trash, Percent } from "lucide-react";
+
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -34,22 +27,16 @@ import { Button } from "@/components/ui/button";
 
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
-import Image from "next/image";
-import { Skeleton } from "@/components/ui/skeleton";
+
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 
-import { addEvent, updateEvent } from "@/lib/events/post-patch-events";
-import { CalendarCheckInOut } from "@/components/Form/CalendarCheckInOut";
-import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
-import { EventsType } from "@/types/events.types";
 import { Studio1DeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
 import { deleteEvent } from "@/lib/events/delete-events";
 import { baseUrl } from "@/helper/baseUrl";
-import { ArticleAuthorType, ArticleCategoryType } from "@/types/articles.types";
-import { updateArticleAuthor } from "@/lib/article-author/post-patch-article-author";
-import { ComboBoxArticleAuthorJob } from "@/components/Form/ComboBoxArticleAuthorJob";
+import { ArticleCategoryType } from "@/types/articles.types";
+
 import { updateArticleCategory } from "@/lib/article-category/post-patch-article-category";
 import { Textarea } from "@/components/ui/textarea";
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { RichEditor } from "@/components/Form/RichEditor";
 import {
   Form,
   FormControl,
@@ -16,7 +15,7 @@ import {
   DropzoneEmptyState,
   DropzoneContent,
 } from "@/components/ui/shadcn-io/dropzone";
-import { HeroSchema, HotelSchema, VendorSchema } from "@/lib/zodSchema";
+import { HeroSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye, Trash } from "lucide-react";
 import React, { useState } from "react";
@@ -29,9 +28,9 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
-import { addHotel } from "@/lib/hotel/post-patch-hotel";
+
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+
 import { addHero, updateHero } from "@/lib/hero/post-patch-hero";
 import { Switch } from "@/components/ui/switch";
 

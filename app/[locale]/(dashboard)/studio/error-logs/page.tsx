@@ -1,16 +1,9 @@
 import React from "react";
-import { columns } from "./columns";
-import Link from "next/link";
-import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { getLocale } from "next-intl/server";
-import { routing } from "@/i18n/routing";
 
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
 
-import { getAllTermsOfService } from "@/lib/legal/get-legal";
-import { getAllContact } from "@/lib/contact/get-contact";
 import { getAllErrorLogs } from "@/lib/error-logs/get-error-logs";
 import LiveErrorLogs from "./LiveErrorLogs";
 

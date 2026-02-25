@@ -20,9 +20,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z, { set } from "zod";
 
-import { v4 as uuid } from "uuid";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";

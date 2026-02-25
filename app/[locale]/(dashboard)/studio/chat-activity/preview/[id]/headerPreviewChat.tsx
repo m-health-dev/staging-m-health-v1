@@ -1,7 +1,7 @@
 "use client";
 
 import { Studio1DeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
-import AvatarUser from "@/components/utility/AvatarUser";
+
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { baseUrl } from "@/helper/baseUrl";
 import { DeleteChatSession } from "@/lib/chatbot/delete-chat-activity";

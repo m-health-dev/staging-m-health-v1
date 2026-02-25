@@ -1,7 +1,5 @@
 import React from "react";
-import UpdateVendorForm from "./updateForm";
-import { getVendorByID } from "@/lib/vendors/get-vendor";
-import { toast } from "sonner";
+
 import { notFound } from "next/navigation";
 import UpdateInsuranceForm from "./updateForm";
 import { getInsuranceByID } from "@/lib/insurance/get-insurance";

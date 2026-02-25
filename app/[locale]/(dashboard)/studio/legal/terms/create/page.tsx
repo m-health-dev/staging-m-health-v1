@@ -12,15 +12,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import {
-  Dropzone,
-  DropzoneEmptyState,
-  DropzoneContent,
-} from "@/components/ui/shadcn-io/dropzone";
-
 import { ArticleSchema, LegalSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye, Trash, Percent } from "lucide-react";
+
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -30,18 +24,11 @@ import { Button } from "@/components/ui/button";
 
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
-import Image from "next/image";
-import { Skeleton } from "@/components/ui/skeleton";
+
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
-import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
-import { addArticles } from "@/lib/articles/post-patch-articles";
-import { ComboBoxArticleAuthorJob } from "@/components/Form/ComboBoxArticleAuthorJob";
-import {
-  postPrivacyPolicy,
-  postTermsOfService,
-} from "@/lib/legal/post-patch-legal";
+import { postTermsOfService } from "@/lib/legal/post-patch-legal";
 
 const CreateTermsOfService = () => {
   const [highlightPreview, setHighlightPreview] = useState<string | null>(null);

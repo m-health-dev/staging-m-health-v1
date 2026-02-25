@@ -1,7 +1,6 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { getEventByID } from "@/lib/events/get-events";
-import UpdateEventForm from "./updateForm";
+
 import { getDoctorsByID } from "@/lib/doctor/get-doctor";
 import UpdateDoctorForm from "./updateForm";
 

@@ -26,8 +26,7 @@ import { Plus, Trash2 } from "lucide-react";
 import Avatar from "boring-avatars";
 import { cn } from "@/lib/utils";
 import LoadingComponent from "@/components/utility/loading-component";
-import { getAllArticleAuthorWithoutPagination } from "@/lib/article-author/get-article-author";
-import type { ArticleAuthorType } from "@/types/articles.types";
+
 import { InsuranceType } from "@/types/insurance.types";
 import { getAllInsuranceWithoutPagination } from "@/lib/insurance/get-insurance";
 import Image from "next/image";

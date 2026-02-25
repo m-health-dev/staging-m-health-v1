@@ -23,12 +23,11 @@ import StatusBadge from "@/components/utility/status-badge";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
 import { deleteEvent } from "@/lib/events/delete-events";
-import { deleteMedical } from "@/lib/medical/delete-medical";
-import { deletePackage } from "@/lib/packages/delete-packages";
+
 import { EventsType } from "@/types/events.types";
-import { VendorType } from "@/types/vendor.types";
+
 import { ColumnDef } from "@tanstack/react-table";
-import Avatar from "boring-avatars";
+
 import {
   Check,
   Copy,

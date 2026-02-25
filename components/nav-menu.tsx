@@ -24,6 +24,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
+import { useRealPathname } from "@/hooks/use-real-pathname";
 
 export function NavMenu({
   title,
@@ -38,18 +40,29 @@ export function NavMenu({
 }) {
   // const { isMobile } = useSidebar();
 
+  const path = useRealPathname();
+
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
-              <a href={item.url}>
-                {item.icon && <item.icon className="size-5" />}
-                <span>{item.name}</span>
-              </a>
-            </SidebarMenuButton>
+            <Link href={item.url}>
+              <SidebarMenuButton
+                asChild
+                className={
+                  path.includes(item.url)
+                    ? "bg-primary text-white hover:bg-primary/90 hover:text-white"
+                    : ""
+                }
+              >
+                <span>
+                  {item.icon && <item.icon className="size-5" />}
+                  <span>{item.name}</span>
+                </span>
+              </SidebarMenuButton>
+            </Link>
             {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction

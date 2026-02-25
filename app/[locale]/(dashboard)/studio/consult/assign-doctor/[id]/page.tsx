@@ -4,7 +4,7 @@ import { getConsultationByID } from "@/lib/consult/get-consultation";
 import { Check, Mars, Venus, VenusAndMars, X } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
-import { get } from "node:http";
+
 import React from "react";
 import Image from "next/image";
 import Avatar from "boring-avatars";

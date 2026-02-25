@@ -1,8 +1,6 @@
-import { getAllVendor } from "@/lib/vendors/get-vendor";
-import { Account } from "@/types/account.types";
 import React from "react";
 import { columns } from "./columns";
-import { VendorType } from "@/types/vendor.types";
+
 import Link from "next/link";
 import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,7 +41,12 @@ const Hotel = async ({
         </div>
         <Link href={`/${locale}/studio/hotel/add`}>
           <Button className="rounded-2xl flex lg:w-fit w-full">
-            <Plus /> <p className="lg:block hidden">{locale === routing.defaultLocale ? "Tambah Hotel Baru" : "Add New Hotel"}</p>
+            <Plus />{" "}
+            <p className="lg:block hidden">
+              {locale === routing.defaultLocale
+                ? "Tambah Hotel Baru"
+                : "Add New Hotel"}
+            </p>
           </Button>
         </Link>
       </div>

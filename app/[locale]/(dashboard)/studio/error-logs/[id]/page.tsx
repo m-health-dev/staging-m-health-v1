@@ -1,8 +1,7 @@
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import { routing } from "@/i18n/routing";
-import { getContactByID } from "@/lib/contact/get-contact";
+
 import { getErrorLogByID } from "@/lib/error-logs/get-error-logs";
-import { ContactType } from "@/types/contact.types";
+
 import { ErrorLogType } from "@/types/error-logs.types";
 import { getLocale } from "next-intl/server";
 import React from "react";

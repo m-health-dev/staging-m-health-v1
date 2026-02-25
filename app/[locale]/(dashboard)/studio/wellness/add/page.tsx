@@ -37,7 +37,6 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { addWellness } from "@/lib/wellness/post-patch-wellness";
 
-import { Checkbox } from "@/components/ui/checkbox";
 import { RupiahInput } from "@/components/Form/PriceInput";
 import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
 import { ComboBoxGender } from "@/components/Form/ComboBoxGender";

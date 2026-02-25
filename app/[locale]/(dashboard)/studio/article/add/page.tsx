@@ -20,7 +20,7 @@ import {
 
 import { ArticleSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye, Trash, Percent } from "lucide-react";
+import { Trash, Percent } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -37,7 +37,6 @@ import { useLocale } from "next-intl";
 
 import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
 import { addArticles } from "@/lib/articles/post-patch-articles";
-import { ComboBoxArticleAuthorJob } from "@/components/Form/ComboBoxArticleAuthorJob";
 import { AuthorMultiSelectField } from "../ComboBoxAuthor";
 import { CategoryMultiSelectField } from "../ComboBoxCategory";
 

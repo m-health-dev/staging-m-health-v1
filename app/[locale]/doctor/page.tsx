@@ -1,20 +1,13 @@
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import SimplePagination from "@/components/utility/simple-pagination";
 import Wrapper from "@/components/utility/Wrapper";
-import { cn } from "@/lib/utils";
-import { getAllVendor } from "@/lib/vendors/get-vendor";
-import { VendorType } from "@/types/vendor.types";
-import Avatar from "boring-avatars";
 import { getLocale } from "next-intl/server";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-import ClientVendorPublic from "./client-doctor";
+import React, { Suspense } from "react";
 import { routing } from "@/i18n/routing";
 import type { Metadata, ResolvingMetadata } from "next";
 import ClientDoctorPublic from "./client-doctor";
 import { DoctorType } from "@/types/doctor.types";
 import { getAllAvailableDoctors } from "@/lib/doctor/get-doctor";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -64,16 +57,12 @@ export async function generateMetadata(
   };
 }
 
-const VendorPublicPage = async ({ searchParams }: Props) => {
+const DoctorPublicPage = async ({ searchParams }: Props) => {
   const params = await searchParams;
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 9);
 
-  const { data, meta, links } = await getAllAvailableDoctors(page, per_page);
-
   const locale = await getLocale();
-
-  const doctor: DoctorType[] = data;
   return (
     <Wrapper>
       <ContainerWrap>
@@ -87,18 +76,44 @@ const VendorPublicPage = async ({ searchParams }: Props) => {
               : "Our doctors are ready to serve you."}
           </p>
         </div>
-        <div>
-          <ClientDoctorPublic
-            doctor={doctor}
-            meta={meta}
-            locale={locale}
-            links={links}
-            perPage={per_page}
-          />
-        </div>
+        <Suspense fallback={<DoctorSkeleton perPage={per_page} />}>
+          <DoctorContent page={page} perPage={per_page} locale={locale} />
+        </Suspense>
       </ContainerWrap>
     </Wrapper>
   );
 };
 
-export default VendorPublicPage;
+export default DoctorPublicPage;
+
+const DoctorSkeleton = ({ perPage }: { perPage: number }) => (
+  <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 pb-20">
+    {[...Array(perPage)].map((_, i) => (
+      <Skeleton key={i} className="h-[280px] w-full rounded-2xl" />
+    ))}
+  </div>
+);
+
+const DoctorContent = async ({
+  page,
+  perPage,
+  locale,
+}: {
+  page: number;
+  perPage: number;
+  locale: string;
+}) => {
+  const { data, meta, links } = await getAllAvailableDoctors(page, perPage);
+  const doctor: DoctorType[] = data;
+  return (
+    <div>
+      <ClientDoctorPublic
+        doctor={doctor}
+        meta={meta}
+        locale={locale}
+        links={links}
+        perPage={perPage}
+      />
+    </div>
+  );
+};

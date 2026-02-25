@@ -19,16 +19,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
-import StatusBadge from "@/components/utility/status-badge";
+
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
 import { deleteDoctor } from "@/lib/doctor/delete-doctor";
-import { deleteEvent } from "@/lib/events/delete-events";
-import { deleteMedical } from "@/lib/medical/delete-medical";
-import { deletePackage } from "@/lib/packages/delete-packages";
+
 import { cn } from "@/lib/utils";
 import { DoctorType } from "@/types/doctor.types";
-import { VendorType } from "@/types/vendor.types";
+
 import { ColumnDef } from "@tanstack/react-table";
 import Avatar from "boring-avatars";
 import {

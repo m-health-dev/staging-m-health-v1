@@ -1,6 +1,5 @@
 "use client";
 
-import { RichEditor } from "@/components/Form/RichEditor";
 import {
   Form,
   FormControl,
@@ -13,18 +12,12 @@ import {
 import { Input } from "@/components/ui/input";
 
 import {
-  Dropzone,
-  DropzoneEmptyState,
-  DropzoneContent,
-} from "@/components/ui/shadcn-io/dropzone";
-
-import {
   ArticleAuthorSchema,
   ArticleCategorySchema,
   EventSchema,
 } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye, Trash, Percent } from "lucide-react";
+
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -34,14 +27,10 @@ import { Button } from "@/components/ui/button";
 
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
-import Image from "next/image";
-import { Skeleton } from "@/components/ui/skeleton";
+
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
-import { CalendarCheckInOut } from "@/components/Form/CalendarCheckInOut";
-import { addArticleAuthor } from "@/lib/article-author/post-patch-article-author";
-import { ComboBoxArticleAuthorJob } from "@/components/Form/ComboBoxArticleAuthorJob";
 import { addArticleCategory } from "@/lib/article-category/post-patch-article-category";
 import { Textarea } from "@/components/ui/textarea";
 

@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/shadcn-io/dropzone";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
-import { getAgeDetail } from "@/helper/getAge";
 import {
   patchAccount,
   patchAccountByAdmin,

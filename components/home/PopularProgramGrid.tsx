@@ -1,16 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import Avatar from "boring-avatars";
+
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { WellnessType } from "@/types/wellness.types";
-import { useLocale } from "next-intl";
-import { routing } from "@/i18n/routing";
-import AvatarVendorHotel from "../utility/AvatarVendorHotel";
-import Link from "next/link";
-import ContainerWrap from "../utility/ContainerWrap";
+
 import WellnessCard from "../wellness/wellness-card";
 
 const PopularProgramGrid = ({

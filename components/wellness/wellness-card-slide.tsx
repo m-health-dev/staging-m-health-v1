@@ -13,7 +13,7 @@ import AvatarVendorHotel from "../utility/AvatarVendorHotel";
 import { getWellnessByID } from "@/lib/wellness/get-wellness";
 import { WellnessType } from "@/types/wellness.types";
 import { Spinner } from "../ui/spinner";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { routing } from "@/i18n/routing";
 
 const WellnessCardSlide = ({
@@ -91,7 +91,7 @@ const Content = ({
         <div
           className={cn(
             "absolute inset-0 z-10 bg-white/20 backdrop-blur-2xl rounded-2xl flex w-full justify-center items-center transition-all duration-500",
-            imageLoaded ? "opacity-0" : "opacity-100"
+            imageLoaded ? "opacity-0" : "opacity-100",
           )}
         >
           <Spinner />
@@ -109,7 +109,7 @@ const Content = ({
           loading="lazy"
           className={cn(
             "w-full aspect-4/5 object-center object-cover rounded-2xl z-10 transition-all duration-500",
-            imageLoaded ? "opacity-100" : "opacity-0"
+            imageLoaded ? "opacity-100" : "opacity-0",
           )}
         />
       </div>

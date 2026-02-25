@@ -1,19 +1,13 @@
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import SimplePagination from "@/components/utility/simple-pagination";
 import Wrapper from "@/components/utility/Wrapper";
-import { cn } from "@/lib/utils";
-import { getAllVendor } from "@/lib/vendors/get-vendor";
-import { VendorType } from "@/types/vendor.types";
-import Avatar from "boring-avatars";
 import { getLocale } from "next-intl/server";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 import { routing } from "@/i18n/routing";
 import type { Metadata, ResolvingMetadata } from "next";
 import { getAllInsurance } from "@/lib/insurance/get-insurance";
 import { InsuranceType } from "@/types/insurance.types";
 import ClientInsurancePublic from "./client-insurance";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -68,11 +62,7 @@ const InsurancePublicPage = async ({ searchParams }: Props) => {
   const page = Number(params.page ?? 1);
   const per_page = Number(params.per_page ?? 9);
 
-  const { data, meta, links } = await getAllInsurance(page, per_page);
-
   const locale = await getLocale();
-
-  const insurance: InsuranceType[] = data;
   return (
     <Wrapper>
       <ContainerWrap>
@@ -86,18 +76,44 @@ const InsurancePublicPage = async ({ searchParams }: Props) => {
               : "We have several insurance products to provide the best protection. With insurance, you can feel safer and more at ease in living your life."}
           </p>
         </div>
-        <div>
-          <ClientInsurancePublic
-            insurance={insurance}
-            meta={meta}
-            locale={locale}
-            links={links}
-            perPage={per_page}
-          />
-        </div>
+        <Suspense fallback={<InsuranceSkeleton perPage={per_page} />}>
+          <InsuranceContent page={page} perPage={per_page} locale={locale} />
+        </Suspense>
       </ContainerWrap>
     </Wrapper>
   );
 };
 
 export default InsurancePublicPage;
+
+const InsuranceSkeleton = ({ perPage }: { perPage: number }) => (
+  <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 pb-20">
+    {[...Array(perPage)].map((_, i) => (
+      <Skeleton key={i} className="h-[280px] w-full rounded-2xl" />
+    ))}
+  </div>
+);
+
+const InsuranceContent = async ({
+  page,
+  perPage,
+  locale,
+}: {
+  page: number;
+  perPage: number;
+  locale: string;
+}) => {
+  const { data, meta, links } = await getAllInsurance(page, perPage);
+  const insurance: InsuranceType[] = data;
+  return (
+    <div>
+      <ClientInsurancePublic
+        insurance={insurance}
+        meta={meta}
+        locale={locale}
+        links={links}
+        perPage={perPage}
+      />
+    </div>
+  );
+};

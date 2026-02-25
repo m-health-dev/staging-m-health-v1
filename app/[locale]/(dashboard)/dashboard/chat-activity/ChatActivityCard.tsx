@@ -5,38 +5,20 @@ import { nanoid } from "nanoid";
 import Link from "next/link";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { routing } from "@/i18n/routing";
-import SimplePagination from "@/components/utility/simple-pagination";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Eye,
-  Lock,
-  MessageCircle,
-  Trash,
-  Trash2,
-  Unlock,
-  X,
-} from "lucide-react";
+
+import { Eye, Lock, MessageCircle, Trash } from "lucide-react";
 import {
   DeleteAllChatSession,
   DeleteChatSession,
 } from "@/lib/chatbot/delete-chat-activity";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
+
 import { Account } from "@/types/account.types";
-import { ChatHistory } from "@/types/chat.types";
+
 import AvatarUser from "@/components/utility/AvatarUser";
 
 type ChatActivityClientProps = {

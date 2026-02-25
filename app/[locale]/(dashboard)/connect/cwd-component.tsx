@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CalendarRangeField } from "@/components/Form/CalendarRangeField";
-import CalendarSchedule from "@/components/Form/CalendarSchedule";
-import { ComboBoxField } from "@/components/Form/ComboBox";
 import { PhoneInput } from "@/components/Form/phone-input";
-import { RupiahInput } from "@/components/Form/PriceInput";
-import { RichEditor } from "@/components/Form/RichEditor";
 import {
   Form,
   FormControl,
@@ -22,18 +17,13 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { cn } from "@/lib/utils";
 import { emailSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Checkbox } from "@radix-ui/react-checkbox";
-import { Switch } from "@radix-ui/react-switch";
 import { EyeClosed, Eye, Trash } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { Label } from "recharts";
 import { toast } from "sonner";
 import z, { check } from "zod";
 import {
@@ -50,21 +40,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ConsultationSchedulePicker from "@/components/Form/ConsultationSchedulePicker";
-import { baseUrl } from "@/helper/baseUrl";
-import { signUpAction } from "../../(auth)/actions/auth.actions";
+
 import { nanoid } from "nanoid";
-import { sendMail } from "@/lib/mail/send-mail";
+
 import { Account } from "@/types/account.types";
 import { getAgeDetail } from "@/helper/getAge";
 import { generatePassword } from "@/helper/getPassword";
 import Link from "next/link";
 import { v4 as uuidv4 } from "uuid";
-import { createClient } from "@/utils/supabase/client";
+
 import { createConsultation } from "@/lib/consult/post-patch-consultation";
-import { se } from "date-fns/locale";
+
 import { routing } from "@/i18n/routing";
-import PriceInfo from "@/components/utility/PriceInfo";
-import { format } from "node:path";
+
 import { formatRupiah } from "@/helper/rupiah";
 
 type Step = 1 | 2 | 3;

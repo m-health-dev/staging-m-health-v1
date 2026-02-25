@@ -7,13 +7,16 @@ import PopularPackage from "@/components/home/PopularPackage";
 import PopularProgram from "@/components/home/PopularProgram";
 import CallToAction from "@/components/utility/CallToAction";
 import Wrapper from "@/components/utility/Wrapper";
+import { Skeleton } from "@/components/ui/skeleton";
+import ContainerWrap from "@/components/utility/ContainerWrap";
 import { routing } from "@/i18n/routing";
 import { getAllHomeData } from "@/lib/home/get-home-data";
 import { Metadata, ResolvingMetadata } from "next";
 import { getLocale } from "next-intl/server";
+import { Suspense } from "react";
 
-// Add revalidation for better performance
-export const revalidate = 60; // Revalidate every 60 seconds
+// Force dynamic rendering - no cache
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -65,18 +68,37 @@ export async function generateMetadata(
 
 const HomePage = async () => {
   const locale = await getLocale();
+  return (
+    <Wrapper>
+      {/* Suspense wraps data-dependent content for instant shell render + streaming */}
+      <Suspense fallback={<HomePageSkeleton />}>
+        <HomeContent locale={locale} />
+      </Suspense>
+    </Wrapper>
+  );
+};
+
+export default HomePage;
+
+const HomePageSkeleton = () => (
+  <ContainerWrap size="xl" className="py-20">
+    <Skeleton className="w-full h-[400px] rounded-2xl mb-8" />
+    <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 mt-10">
+      {[...Array(4)].map((_, i) => (
+        <Skeleton key={i} className="h-[300px] w-full rounded-2xl" />
+      ))}
+    </div>
+  </ContainerWrap>
+);
+
+const HomeContent = async ({ locale }: { locale: string }) => {
   const { hero, packages, wellness, medical, events, articles } =
     await getAllHomeData();
   return (
-    <Wrapper>
+    <>
       {/* Jumbotron tetap load langsung karena above the fold */}
       <Jumbotron data={hero} locale={locale} />
 
-      {/* <PopularPackageSkeleton />
-      <PopularMedicalSkeleton />
-      <PopularProgramSkeleton />
-      <CurrentEventsSkeleton />
-      <OurNewsSkeleton /> */}
       <HomeLazySections
         popularPackage={<PopularPackage data={packages} locale={locale} />}
         popularProgram={<PopularProgram data={wellness} locale={locale} />}
@@ -85,8 +107,6 @@ const HomePage = async () => {
         ourNews={<OurNews data={articles} locale={locale} />}
         callToAction={<CallToAction />}
       />
-    </Wrapper>
+    </>
   );
 };
-
-export default HomePage;

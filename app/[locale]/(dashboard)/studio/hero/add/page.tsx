@@ -1,6 +1,5 @@
 "use client";
 
-import { RichEditor } from "@/components/Form/RichEditor";
 import {
   Form,
   FormControl,
@@ -29,7 +28,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
-import { addHotel } from "@/lib/hotel/post-patch-hotel";
+
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { addHero } from "@/lib/hero/post-patch-hero";

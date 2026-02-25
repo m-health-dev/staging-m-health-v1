@@ -25,7 +25,7 @@ import { routing } from "@/i18n/routing";
 import { deleteMedical } from "@/lib/medical/delete-medical";
 import { VendorType } from "@/types/vendor.types";
 import { ColumnDef } from "@tanstack/react-table";
-import Avatar from "boring-avatars";
+
 import {
   Check,
   Copy,
@@ -35,7 +35,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useLocale } from "next-intl";
-import Image from "next/image";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

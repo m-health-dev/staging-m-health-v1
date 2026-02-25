@@ -18,13 +18,7 @@ import {
   DropzoneContent,
 } from "@/components/ui/shadcn-io/dropzone";
 
-import {
-  ArticleSchema,
-  MedicalSchema,
-  PackageSchema,
-  VendorSchema,
-  WellnessSchema,
-} from "@/lib/zodSchema";
+import { ArticleSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye, Trash, Percent } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -42,10 +36,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
-import { deleteWellness } from "@/lib/wellness/delete-wellness";
 import { baseUrl } from "@/helper/baseUrl";
-import { MedicalType } from "@/types/medical.types";
-import { updateMedical } from "@/lib/medical/post-patch-medical";
+
 import { Studio1DeleteCopyFunction } from "@/components/package-wellness-medical/package-wellness-medical-delete-copy-function";
 
 import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";

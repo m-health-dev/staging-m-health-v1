@@ -1,18 +1,15 @@
 import { Button } from "@/components/ui/button";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { routing } from "@/i18n/routing";
-import { createClient } from "@/utils/supabase/client";
+
 import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
 import { getLocale } from "next-intl/server";
 import Link from "next/link";
 import { columns } from "./columns";
-import { getAllMedical } from "@/lib/medical/get-medical";
-import { deleteMedical } from "@/lib/medical/delete-medical";
-import { getAllPackages } from "@/lib/packages/get-packages";
+
 import { getAllChatActivity } from "@/lib/chatbot/getChatActivity";
 import { DeleteChatSession } from "@/lib/chatbot/delete-chat-activity";
 import { Studio2DataTable } from "@/components/package-wellness-medical/studio-2-data-table";
-import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
 
 const ChatActivityStudio = async ({
   searchParams,

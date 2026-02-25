@@ -4,7 +4,7 @@ import { Spinner } from "@/components/ui/spinner";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { routing } from "@/i18n/routing";
 
 const LoadingChat = ({
@@ -40,12 +40,12 @@ const LoadingChat = ({
         ? "Memuat"
         : "Loading"
       : phase === 1
-      ? locale === routing.defaultLocale
-        ? "Membaca Data"
-        : "Read Data"
-      : locale === routing.defaultLocale
-      ? "Menggali Informasi"
-      : "Searching Information";
+        ? locale === routing.defaultLocale
+          ? "Membaca Data"
+          : "Read Data"
+        : locale === routing.defaultLocale
+          ? "Menggali Informasi"
+          : "Searching Information";
 
   return (
     <motion.div
@@ -53,7 +53,7 @@ const LoadingChat = ({
       transition={{ duration: 0.3 }}
       className={cn(
         "inline-flex items-center justify-start rounded-2xl gap-2 text-primary opacity-75",
-        "min-w-52"
+        "min-w-52",
       )}
     >
       <Spinner />

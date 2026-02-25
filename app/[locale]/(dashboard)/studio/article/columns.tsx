@@ -23,12 +23,11 @@ import StatusBadge from "@/components/utility/status-badge";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
 import { routing } from "@/i18n/routing";
 import { deleteArticles } from "@/lib/articles/delete-articles";
-import { deleteMedical } from "@/lib/medical/delete-medical";
-import { deletePackage } from "@/lib/packages/delete-packages";
+
 import { ArticleType } from "@/types/articles.types";
-import { VendorType } from "@/types/vendor.types";
+
 import { ColumnDef } from "@tanstack/react-table";
-import Avatar from "boring-avatars";
+
 import {
   Check,
   Copy,
@@ -38,7 +37,6 @@ import {
   Trash2,
 } from "lucide-react";
 import { useLocale } from "next-intl";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

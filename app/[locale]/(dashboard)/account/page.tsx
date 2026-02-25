@@ -3,11 +3,9 @@ import React from "react";
 import AccountClientForm from "./account-client-form";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { getAccessToken } from "../../(auth)/actions/auth.actions";
-import ContainerWrap from "@/components/utility/ContainerWrap";
 import { routing } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Heading5 } from "lucide-react";
 
 const AccountPage = async () => {
   const locale = await getLocale();

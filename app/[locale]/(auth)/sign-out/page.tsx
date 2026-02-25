@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
-import { locale } from "dayjs";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 

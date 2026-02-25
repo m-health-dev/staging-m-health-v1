@@ -21,18 +21,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z, { set } from "zod";
 
-import { v4 as uuid } from "uuid";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
-import { Sign, sign } from "crypto";
 import { useLocale } from "next-intl";
-import {
-  forgotPasswordAction,
-  signInAction,
-  signWithGoogle,
-} from "../actions/auth.actions";
+import { signInAction, signWithGoogle } from "../actions/auth.actions";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

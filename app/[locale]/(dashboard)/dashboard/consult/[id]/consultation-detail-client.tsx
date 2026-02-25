@@ -16,7 +16,6 @@ import Link from "next/link";
 import React, { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
-import AvatarDoctor from "@/components/utility/AvatarDoctor";
 
 interface ConsultationDetailClientProps {
   id: string;

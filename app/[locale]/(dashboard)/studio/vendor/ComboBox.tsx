@@ -22,7 +22,7 @@ import {
   CommandGroup,
   CommandItem,
 } from "@/components/ui/command";
-import { nanoid } from "nanoid";
+
 import { cn } from "@/lib/utils";
 
 const options = [
@@ -51,7 +51,8 @@ export function ComboBoxVendor() {
                 variant="outline"
                 className={cn(
                   "justify-between w-full border border-input bg-white text-muted-foreground text-base! rounded-2xl px-3! h-12 font-normal hover:bg-white hover:text-foreground hover:ring-2 hover:ring-primary focus:ring-2 focus:ring-primary",
-                  field.value && "text-primary font-semibold hover:text-primary"
+                  field.value &&
+                    "text-primary font-semibold hover:text-primary",
                 )}
               >
                 {field.value

@@ -2,15 +2,12 @@ import { Button } from "@/components/ui/button";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Studio1DataTable } from "@/components/package-wellness-medical/studio-1-data-table";
 import { routing } from "@/i18n/routing";
-import { createClient } from "@/utils/supabase/client";
+
 import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
 import { getLocale } from "next-intl/server";
 import Link from "next/link";
 import { columns } from "./columns";
-import { deleteMedical } from "@/lib/medical/delete-medical";
-import { getAllEvents } from "@/lib/events/get-events";
-import { getAllArticleAuthor } from "@/lib/article-author/get-article-author";
-import { deleteArticleAuthor } from "@/lib/article-author/delete-article-author";
+
 import { getAllArticleCategory } from "@/lib/article-category/get-article-category";
 import { deleteArticleCategory } from "@/lib/article-category/delete-article-category";
 

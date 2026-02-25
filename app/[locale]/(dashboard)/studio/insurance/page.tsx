@@ -1,8 +1,6 @@
-import { getAllVendor } from "@/lib/vendors/get-vendor";
-import { Account } from "@/types/account.types";
 import React from "react";
 import { columns } from "./columns";
-import { VendorType } from "@/types/vendor.types";
+
 import Link from "next/link";
 import { ChevronDown, ChevronRight, Database, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,9 +9,7 @@ import { routing } from "@/i18n/routing";
 import { createClient } from "@/utils/supabase/server";
 import { VendorHotelDataTable } from "@/components/vendor-hotel/vendor-hotel-data-table";
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import { deleteVendor } from "@/lib/vendors/delete-vendor";
-import Loading from "./loading";
-import SearchOnAll from "./serach-on-all";
+
 import { getAllInsurance } from "@/lib/insurance/get-insurance";
 import { deleteInsurance } from "@/lib/insurance/delete-insurance";
 

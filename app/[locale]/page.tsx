@@ -7,21 +7,10 @@ import {
   getChatHistory,
   getChatHistoryByUserID,
 } from "@/lib/chatbot/getChatActivity";
-import { getAllMedical, getAllPublicMedical } from "@/lib/medical/get-medical";
-import {
-  getAllPackages,
-  getAllPublicPackages,
-} from "@/lib/packages/get-packages";
-import {
-  getAllPublicWellness,
-  getAllWellness,
-} from "@/lib/wellness/get-wellness";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata, ResolvingMetadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
-import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
 
 // Use ISR with longer revalidation for better performance and caching
@@ -70,28 +59,6 @@ export async function generateMetadata(
     },
   };
 }
-
-// Cache public data fetching to reduce database load
-// const getCachedPublicData = unstable_cache(
-//   async () => {
-//     const [packagesResult, medicalResult, wellnessResult] = await Promise.all([
-//       getAllPublicPackages(1, 3),
-//       getAllPublicMedical(1, 3),
-//       getAllPublicWellness(1, 3),
-//     ]);
-
-//     return {
-//       packages: Array.isArray(packagesResult?.data) ? packagesResult.data : [],
-//       medical: Array.isArray(medicalResult?.data) ? medicalResult.data : [],
-//       wellness: Array.isArray(wellnessResult?.data) ? wellnessResult.data : [],
-//     };
-//   },
-//   ["public-data-home"],
-//   {
-//     revalidate: 60, // Cache for 60 seconds
-//     tags: ["public-data"],
-//   },
-// );
 
 export default async function Home() {
   const cookieStore = await cookies();

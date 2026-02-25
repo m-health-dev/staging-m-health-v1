@@ -22,22 +22,21 @@ import { EyeClosed, Eye, Trash } from "lucide-react";
 import React, { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Label } from "recharts";
 import { toast } from "sonner";
 import z from "zod";
-import { ComboBoxVendor } from "../../ComboBox";
+
 import { Button } from "@/components/ui/button";
 import { DynamicInputField } from "@/components/Form/DynamicInputField";
-import { addVendor, updateVendor } from "@/lib/vendors/post-patch-vendor";
+
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
-import { VendorType } from "@/types/vendor.types";
+
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { VendorHotelDeleteCopyFunction } from "@/components/vendor-hotel/vendor-hotel-delete-copy-function";
-import { deleteVendor } from "@/lib/vendors/delete-vendor";
+
 import { baseUrl } from "@/helper/baseUrl";
 import { InsuranceType } from "@/types/insurance.types";
 import { updateInsurance } from "@/lib/insurance/post-patch-insurance";

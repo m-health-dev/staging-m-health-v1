@@ -11,11 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import ContainerWrap from "@/components/utility/ContainerWrap";
-import {
-  AuthSignInSchema,
-  ForgotPassSchema,
-  resetPasswordSchema,
-} from "@/lib/zodSchema";
+import { resetPasswordSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye, EyeOff, Undo2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -24,13 +20,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z, { set } from "zod";
 
-import { v4 as uuid } from "uuid";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { resetPasswordAction } from "../actions/auth.actions";
-import { locale } from "dayjs";
 import Link from "next/link";
 import { routing } from "@/i18n/routing";
 import { Skeleton } from "@/components/ui/skeleton";

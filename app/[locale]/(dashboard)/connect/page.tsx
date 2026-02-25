@@ -3,7 +3,6 @@ import { createClient } from "@/utils/supabase/server";
 import CWDComponent from "./cwd-component";
 import { cookies } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
-import { get } from "node:http";
 import { getConsultationPrice } from "@/lib/consult/get-consultation";
 
 const CWDPage = async ({

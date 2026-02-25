@@ -1,8 +1,6 @@
 "use server";
 
 import { apiSecretKey } from "@/helper/api-secret-key";
-import { error } from "console";
-import { success } from "zod";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -28,7 +26,7 @@ export async function getAllInsuranceWithoutPagination() {
       };
     }
 
-    console.log({ json });
+    // console.log({ json });
     return {
       data: json.data,
       success: true,

@@ -5,22 +5,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { Star, StarOff } from "lucide-react";
-import { Button } from "../ui/button";
+
 import ContainerWrap from "../utility/ContainerWrap";
-import Avatar from "boring-avatars";
-import { motion, AnimatePresence } from "framer-motion";
 
 import "swiper/css";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
-import { RumahSakit } from "@/lib/dummyRS";
-import { routing } from "@/i18n/routing";
+
 import { MedicalType } from "@/types/medical.types";
-import AvatarVendorHotel from "../utility/AvatarVendorHotel";
-import { useTranslations } from "next-intl";
+
 import MedicalCard from "../medical/medical-card";
 
 export default function PopularMedSlide({

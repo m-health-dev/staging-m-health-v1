@@ -2,16 +2,16 @@ import React from "react";
 
 import { notFound } from "next/navigation";
 import { getUserByID } from "@/lib/users/get-users";
-import AccountClientForm from "@/app/[locale]/(dashboard)/account/account-client-form";
+
 import { getLocale, getTranslations } from "next-intl/server";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import Image from "next/image";
 import { Account } from "@/types/account.types";
-import { cn } from "@/lib/utils";
+
 import Avatar from "boring-avatars";
 import Link from "next/link";
 import { Mars, Venus, VenusAndMars } from "lucide-react";
-import UnderConstruction from "@/components/utility/under-construction";
+
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { routing } from "@/i18n/routing";
 
@@ -101,12 +101,17 @@ const UserDetailPage = async ({
           </div>
         </div>
         <div className="grid md:grid-cols-2 w-full grid-cols-1 gap-5">
-          {c.fullname && (
+          {c.fullname ? (
             <div>
               <p className="text-muted-foreground">Fullname</p>
               <p>{c.fullname ?? "N/A"}</p>
             </div>
-          )}
+          ) : c.google_fullname ? (
+            <div>
+              <p className="text-muted-foreground">Google Account Name</p>
+              <p>{c.google_fullname ?? "N/A"}</p>
+            </div>
+          ) : null}
           {c.weight && (
             <div>
               <p className="text-muted-foreground">Weight</p>

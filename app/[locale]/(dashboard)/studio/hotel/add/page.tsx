@@ -16,9 +16,9 @@ import {
   DropzoneEmptyState,
   DropzoneContent,
 } from "@/components/ui/shadcn-io/dropzone";
-import { HotelSchema, VendorSchema } from "@/lib/zodSchema";
+import { HotelSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosed, Eye, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 

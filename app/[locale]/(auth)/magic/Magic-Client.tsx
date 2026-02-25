@@ -18,15 +18,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
 import { handleSendMagicLinkAction } from "../actions/auth.actions";
 import Image from "next/image";
 import z from "zod";
-import { locale } from "dayjs";
 import { routing } from "@/i18n/routing";
 import Link from "next/link";
 import { Turnstile } from "@marsidev/react-turnstile";

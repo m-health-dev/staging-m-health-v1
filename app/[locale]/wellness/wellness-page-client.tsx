@@ -1,15 +1,11 @@
 "use client";
 
 import SimplePagination from "@/components/utility/simple-pagination";
-import { PackageType } from "@/types/packages.types";
-import Link from "next/link";
-import Image from "next/image";
-import AvatarVendorHotel from "@/components/utility/AvatarVendorHotel";
+
 import React from "react";
-import { MedicalType } from "@/types/medical.types";
+
 import { WellnessType } from "@/types/wellness.types";
-import { AnimatePresence, motion } from "framer-motion";
-import { routing } from "@/i18n/routing";
+
 import WellnessCard from "@/components/wellness/wellness-card";
 import SearchArea from "@/components/utility/SearchArea";
 import FailedGetDataNotice from "@/components/utility/FailedGetDataNotice";

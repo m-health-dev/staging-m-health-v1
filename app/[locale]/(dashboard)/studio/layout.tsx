@@ -12,6 +12,7 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { createClient } from "@/utils/supabase/server";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import type { Metadata } from "next";
+import PageTransition from "@/components/utility/PageTransition";
 type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
@@ -50,7 +51,7 @@ export default async function Page({ children, params }: Props) {
       <StudioSidebar variant="inset" accounts={userData} />
       <SidebarInset className="p-0! m-0! flex flex-col">
         <SiteHeaderStudio accounts={userData} />
-        {children}
+        <PageTransition>{children}</PageTransition>
       </SidebarInset>
     </SidebarProvider>
   );

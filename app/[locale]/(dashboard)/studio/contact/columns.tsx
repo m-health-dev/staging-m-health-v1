@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,16 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
+
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
-import { routing } from "@/i18n/routing";
-import { deleteUsers } from "@/lib/users/delete-users";
-import { UsersType } from "@/types/account.types";
+
 import { ContactType } from "@/types/contact.types";
 import { ColumnDef } from "@tanstack/react-table";
-import Avatar from "boring-avatars";
+
 import {
   Check,
   Copy,
@@ -35,10 +26,8 @@ import {
   Trash2,
 } from "lucide-react";
 import { useLocale } from "next-intl";
-import Image from "next/image";
+
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
 
 export const columns: ColumnDef<ContactType>[] = [
   {

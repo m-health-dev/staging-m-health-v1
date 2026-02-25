@@ -2,8 +2,6 @@
 
 import { apiSecretKey } from "@/helper/api-secret-key";
 import { createClientAdmin } from "@/utils/supabase/admin";
-import { error } from "console";
-import { success } from "zod";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"

@@ -1,22 +1,8 @@
-import {
-  get5Image,
-  get5ImageMedical,
-  get5ImageWellness,
-} from "@/lib/unsplashImage";
 import React, { Suspense } from "react";
-
 import { getLocale, getTranslations } from "next-intl/server";
-import {
-  getAllPackages,
-  getAllPublicPackages,
-} from "@/lib/packages/get-packages";
-import { PackageType } from "@/types/packages.types";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Skeleton } from "@/components/ui/skeleton";
-import PackageClientPage from "./wellness-page-client";
 import Wrapper from "@/components/utility/Wrapper";
-import { getAllPublicMedical } from "@/lib/medical/get-medical";
-import MedicalClientPage from "./wellness-page-client";
 import { routing } from "@/i18n/routing";
 import { getAllPublicWellness } from "@/lib/wellness/get-wellness";
 import WellnessClientPage from "./wellness-page-client";

@@ -18,12 +18,7 @@ import {
   DropzoneContent,
 } from "@/components/ui/shadcn-io/dropzone";
 
-import {
-  MedicalSchema,
-  PackageSchema,
-  VendorSchema,
-  WellnessSchema,
-} from "@/lib/zodSchema";
+import { PackageSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye, Trash, Percent } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -33,20 +28,20 @@ import { toast } from "sonner";
 import z from "zod";
 import { Button } from "@/components/ui/button";
 import { DynamicInputField } from "@/components/Form/DynamicInputField";
-import { addVendor } from "@/lib/vendors/post-patch-vendor";
+
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { addWellness } from "@/lib/wellness/post-patch-wellness";
+
 import { ComboBoxVendorListOption } from "@/components/Form/ComboBoxVendorListOption";
 import { ComboBoxHotelListOption } from "@/components/Form/ComboBoxHotelListOption";
 import { ComboBoxGender } from "@/components/Form/ComboBoxGender";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import { RupiahInput } from "@/components/Form/PriceInput";
-import { addMedical } from "@/lib/medical/post-patch-medical";
+
 import { addPackage } from "@/lib/packages/post-patch-packages";
 import { ComboBoxStatus } from "@/components/Form/ComboBoxStatus";
 

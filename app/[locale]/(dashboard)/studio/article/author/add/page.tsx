@@ -1,6 +1,5 @@
 "use client";
 
-import { RichEditor } from "@/components/Form/RichEditor";
 import {
   Form,
   FormControl,
@@ -35,7 +34,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
-import { CalendarCheckInOut } from "@/components/Form/CalendarCheckInOut";
 import { addArticleAuthor } from "@/lib/article-author/post-patch-article-author";
 import { ComboBoxArticleAuthorJob } from "@/components/Form/ComboBoxArticleAuthorJob";
 
@@ -154,7 +152,9 @@ const AddArticleAuthorPage = () => {
         toast.success("Profile Image Deleted!");
       } else {
         console.warn("S3 delete issue:", data.error);
-        toast.warning("Image removed from form. Storage cleanup may be needed.");
+        toast.warning(
+          "Image removed from form. Storage cleanup may be needed.",
+        );
       }
     } catch (error) {
       console.error("Delete request failed:", error);

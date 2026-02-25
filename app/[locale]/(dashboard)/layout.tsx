@@ -1,19 +1,8 @@
-import type { Metadata } from "next";
-import {
-  Be_Vietnam_Pro,
-  Geist,
-  Geist_Mono,
-  Instrument_Sans,
-  Manrope,
-} from "next/font/google";
 import "../../globals.css";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { LanguageProvider } from "@/components/utility/lang/LanguageContext";
-import Image from "next/image";
-import ContainerWrap from "@/components/utility/ContainerWrap";
-import { Toaster } from "sonner";
 
 type Props = {
   children: React.ReactNode;

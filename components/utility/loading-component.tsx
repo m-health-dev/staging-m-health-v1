@@ -4,7 +4,7 @@ import { Spinner } from "@/components/ui/spinner";
 import ContainerWrap from "@/components/utility/ContainerWrap";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 
 const LoadingComponent = ({ className }: { className?: string }) => {
   const [dot, setDot] = useState("");
@@ -39,7 +39,7 @@ const LoadingComponent = ({ className }: { className?: string }) => {
         transition={{ duration: 0.3 }}
         className={cn(
           "inline-flex items-center justify-center px-3 py-4 rounded-2xl gap-2 text-primary",
-          "min-w-40"
+          "min-w-40",
         )}
       >
         <Spinner />
