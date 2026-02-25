@@ -77,23 +77,24 @@ const DashboardPage = async () => {
             </p>
           </div> */}
         </div>
-        <div className="flex items-center lg:flex-row flex-col gap-5">
-          {role === "admin" && (
+        {role === "admin" && (
+          <div className="flex items-center lg:flex-row flex-col gap-5">
             <Link href={"/std"} className="w-full">
               <Button variant={"outline"} className="rounded-full h-12 w-full">
                 Studio
               </Button>
             </Link>
-          )}
-          <Link href={"/sign-out"} className="w-full">
-            <Button
-              variant={"destructive"}
-              className="rounded-full h-12 w-full"
-            >
-              {locale === routing.defaultLocale ? "Keluar" : "Sign Out"}
-            </Button>
-          </Link>
-        </div>
+
+            <Link href={"/sign-out"} className="w-full">
+              <Button
+                variant={"destructive"}
+                className="rounded-full h-12 w-full"
+              >
+                {locale === routing.defaultLocale ? "Keluar" : "Sign Out"}
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
 
       <div className="my-10 grid 3xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-5">
