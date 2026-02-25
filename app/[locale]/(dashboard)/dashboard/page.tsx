@@ -59,7 +59,7 @@ const DashboardPage = async () => {
 
   return (
     <>
-      <div className="flex flex-wrap justify-between my-20 gap-5">
+      <div className="flex lg:flex-wrap lg:flex-row flex-col justify-between my-20 gap-5">
         <div>
           <DynamicGreeting
             name={
@@ -71,22 +71,25 @@ const DashboardPage = async () => {
             }
             locale={locale}
           />{" "}
-          <div className="bg-white border border-primary px-3 py-1 inline-flex rounded-full text-primary">
+          {/* <div className="bg-white border border-primary px-3 py-1 inline-flex rounded-full text-primary">
             <p className="text-xs!">
               <LocalDateTime date={time} withSeconds />
             </p>
-          </div>
+          </div> */}
         </div>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center lg:flex-row flex-col gap-5">
           {role === "admin" && (
-            <Link href={"/std"}>
-              <Button variant={"outline"} className="rounded-full h-12">
+            <Link href={"/std"} className="w-full">
+              <Button variant={"outline"} className="rounded-full h-12 w-full">
                 Studio
               </Button>
             </Link>
           )}
-          <Link href={"/sign-out"}>
-            <Button variant={"destructive"} className="rounded-full h-12">
+          <Link href={"/sign-out"} className="w-full">
+            <Button
+              variant={"destructive"}
+              className="rounded-full h-12 w-full"
+            >
               {locale === routing.defaultLocale ? "Keluar" : "Sign Out"}
             </Button>
           </Link>

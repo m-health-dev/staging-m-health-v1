@@ -10,7 +10,8 @@ import { useSidebarState } from "@/hooks/use-sidebar-state";
 import ChatPreviewMode from "./ChatPreviewMode";
 import ChatWithSidebar from "./ChatWithSidebar";
 import type { Account } from "@/types/account.types";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useRealPathname } from "@/hooks/use-real-pathname";
 import { toast } from "sonner";
 import { routing } from "@/i18n/routing";
 
@@ -50,7 +51,7 @@ const ChatContent = ({
   const { sidebarOpen, setSidebarOpen } = useSidebarState();
 
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = useRealPathname();
   const params = useSearchParams();
 
   const {

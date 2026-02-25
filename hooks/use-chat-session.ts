@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { usePathname } from "next/navigation";
+import { useRealPathname } from "@/hooks/use-real-pathname";
 import type { Message } from "@/components/chatbot/ChatWindow";
 
 export function useChatSession(
@@ -12,7 +12,7 @@ export function useChatSession(
   const [selectedChat, setSelectedChat] = useState<Message[]>(session || []);
   const [isPending, startTransition] = useTransition();
   const [chatResetKey, setChatResetKey] = useState(0);
-  const pathname = usePathname();
+  const pathname = useRealPathname();
 
   // Extract actual sessionID from pathname
   const currentSessionID = pathname.includes("/c/")

@@ -20,7 +20,8 @@ import { Spinner } from "../ui/spinner";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import type { Account } from "@/types/account.types";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useRealPathname } from "@/hooks/use-real-pathname";
 import { cn } from "@/lib/utils";
 import { SetChatStatus } from "@/lib/chatbot/chat-status";
 import { toast } from "sonner";
@@ -108,7 +109,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const inputContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const path = usePathname();
+  const path = useRealPathname();
 
   useEffect(() => {
     const el = textareaRef.current;

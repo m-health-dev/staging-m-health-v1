@@ -380,7 +380,6 @@ const ChatStart = ({
           try {
             const data = JSON.parse(jsonStr);
 
-            // STREAM TEXT CHUNKS HERE 🔥
             // if (data.text) {
             //   fullMessage += data.text;
             //   await new Promise(requestAnimationFrame);
@@ -397,7 +396,7 @@ const ChatStart = ({
             if (data.session_id && !activeSessionId) {
               const newId = data.session_id;
 
-              setActiveSessionId(newId); // 🔥 ini yang bikin message berikutnya lanjut
+              setActiveSessionId(newId);
 
               const newUrl = `/${locale}/c/${newId}`;
 

@@ -220,7 +220,10 @@ const AddVendor = () => {
 
       <div className="flex flex-col w-full justify-center items-center">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-5xl">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="lg:max-w-5xl w-full"
+          >
             <div className="space-y-5">
               <FormField
                 control={form.control}

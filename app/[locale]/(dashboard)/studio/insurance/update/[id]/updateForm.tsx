@@ -243,7 +243,10 @@ const UpdateInsuranceForm = ({
 
       <div className="flex flex-col w-full justify-center items-center">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-5xl">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="lg:max-w-5xl w-full"
+          >
             <div className="space-y-5">
               <FormField
                 control={form.control}
@@ -268,7 +271,7 @@ const UpdateInsuranceForm = ({
                   </FormItem>
                 )}
               />
-              <div className="lg:grid flex flex-col grid-cols-2 gap-5 items-start">
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start">
                 <DynamicInputField
                   form={form}
                   name="category"
@@ -281,7 +284,7 @@ const UpdateInsuranceForm = ({
                 />
               </div>
 
-              <div className="lg:grid grid-cols-2 flex flex-col gap-5 items-start">
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start">
                 <FormField
                   control={form.control}
                   name="logo"
@@ -452,7 +455,7 @@ const UpdateInsuranceForm = ({
                 />
               </div>
 
-              <div className="lg:grid grid-cols-2 flex flex-col gap-5 items-start">
+              <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 items-start">
                 <FormField
                   control={form.control}
                   name="agent_photo_url"

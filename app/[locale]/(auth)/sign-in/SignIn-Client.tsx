@@ -14,7 +14,8 @@ import ContainerWrap from "@/components/utility/ContainerWrap";
 import { AuthSignInSchema, ForgotPassSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye, ChevronsRight, Undo2 } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useRealPathname } from "@/hooks/use-real-pathname";
 import React, { Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -56,7 +57,7 @@ const SignInClient = ({
   const router = useRouter();
   const locale = useLocale();
   const params = useSearchParams();
-  const path = usePathname();
+  const path = useRealPathname();
   const redirectData = params.get("redirect") || `/${locale}/dashboard`;
   const sessionData = params.get("session");
   const orderIdData = params.get("order_id");

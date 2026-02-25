@@ -27,7 +27,8 @@ import { Button } from "../ui/button";
 
 import { Skeleton } from "../ui/skeleton";
 import { Spinner } from "../ui/spinner";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useRealPathname } from "@/hooks/use-real-pathname";
 import FailedGetDataNotice from "../utility/FailedGetDataNotice";
 import { useTranslations } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -109,7 +110,7 @@ export function ChatbotSidebar({
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [isLoadingNewChat, setIsLoadingNewChat] = React.useState(false);
   const [createNewChat, setCreateNewChat] = React.useState(false);
-  const pathname = usePathname();
+  const pathname = useRealPathname();
 
   // Ref for infinite scroll sentinel
   const loadMoreRef = React.useRef<HTMLDivElement>(null);
@@ -267,49 +268,53 @@ export function ChatbotSidebar({
             {locale === routing.defaultLocale ? "Program" : "Programs"}
           </p>
           <div className="space-y-5">
-            {packages.map((img, i) => (
-              <Link
-                key={img.id}
-                href={`/package/${img.slug}`}
-                className="group/pack"
-              >
-                <div
-                  className={`grid grid-cols-3 items-center group-hover/pack:bg-muted group-hover/pack:shadow-sm transition-all duration-300 rounded-xl py-2 group-hover/pack:outline ${
-                    i + 1 === packages.length ? "mb-0" : "mb-4"
-                  }`}
+            {sidebarDataLoading ? (
+              <SidebarItemSkeleton count={3} />
+            ) : (
+              packages.map((img, i) => (
+                <Link
+                  key={img.id}
+                  href={`/package/${img.slug}`}
+                  className="group/pack"
                 >
-                  <div className="px-2 col-span-1">
-                    <React.Suspense fallback={<Spinner />}>
-                      <Image
-                        src={img.highlight_image || "/placeholder.svg"}
-                        alt={img.slug}
-                        width={200}
-                        height={200}
-                        loading="lazy"
-                        className="aspect-square object-cover object-center rounded-xl"
-                      />
-                    </React.Suspense>
-                  </div>
-                  <div className="col-span-2 pr-3">
-                    <div className="">
-                      <p className="font-extrabold text-primary line-clamp-2 ">
-                        {locale === routing.defaultLocale
-                          ? img.id_title
-                          : img.en_title}
-                      </p>
+                  <div
+                    className={`grid grid-cols-3 items-center group-hover/pack:bg-muted group-hover/pack:shadow-sm transition-all duration-300 rounded-xl py-2 group-hover/pack:outline ${
+                      i + 1 === packages.length ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <div className="px-2 col-span-1">
+                      <React.Suspense fallback={<Spinner />}>
+                        <Image
+                          src={img.highlight_image || "/placeholder.svg"}
+                          alt={img.slug}
+                          width={200}
+                          height={200}
+                          loading="lazy"
+                          className="aspect-square object-cover object-center rounded-xl"
+                        />
+                      </React.Suspense>
                     </div>
-                    <div className="mt-1">
-                      <p className="text-sm! text-muted-foreground line-clamp-1">
-                        {locale === routing.defaultLocale
-                          ? img.id_tagline
-                          : img.en_tagline}
-                      </p>
+                    <div className="col-span-2 pr-3">
+                      <div className="">
+                        <p className="font-extrabold text-primary line-clamp-2 ">
+                          {locale === routing.defaultLocale
+                            ? img.id_title
+                            : img.en_title}
+                        </p>
+                      </div>
+                      <div className="mt-1">
+                        <p className="text-sm! text-muted-foreground line-clamp-1">
+                          {locale === routing.defaultLocale
+                            ? img.id_tagline
+                            : img.en_tagline}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
-            {sidebarDataLoading && <SidebarItemSkeleton count={3} />}
+                </Link>
+              ))
+            )}
+
             {!sidebarDataLoading && packages.length === 0 && (
               <FailedGetDataNotice size="sm" />
             )}
@@ -323,49 +328,53 @@ export function ChatbotSidebar({
             {locale === routing.defaultLocale ? "Kebugaran" : "Wellness"}
           </p>
           <div className="space-y-5">
-            {wellness.map((img, i) => (
-              <Link
-                key={img.id}
-                href={`/wellness/${img.slug}`}
-                className="group/pack"
-              >
-                <div
-                  className={`grid grid-cols-3 items-center group-hover/pack:bg-muted group-hover/pack:shadow-sm transition-all duration-300 rounded-xl py-2 group-hover/pack:outline ${
-                    i + 1 === wellness.length ? "mb-0" : "mb-4"
-                  }`}
+            {sidebarDataLoading ? (
+              <SidebarItemSkeleton count={3} />
+            ) : (
+              wellness.map((img, i) => (
+                <Link
+                  key={img.id}
+                  href={`/wellness/${img.slug}`}
+                  className="group/pack"
                 >
-                  <div className="px-2 col-span-1">
-                    <React.Suspense fallback={<Spinner />}>
-                      <Image
-                        src={img.highlight_image || "/placeholder.svg"}
-                        alt={img.slug}
-                        width={200}
-                        height={200}
-                        loading="lazy"
-                        className="aspect-square object-cover object-center rounded-xl"
-                      />
-                    </React.Suspense>
-                  </div>
-                  <div className="col-span-2 pr-3">
-                    <div className="">
-                      <p className="font-extrabold text-primary line-clamp-2 ">
-                        {locale === routing.defaultLocale
-                          ? img.id_title
-                          : img.en_title}
-                      </p>
+                  <div
+                    className={`grid grid-cols-3 items-center group-hover/pack:bg-muted group-hover/pack:shadow-sm transition-all duration-300 rounded-xl py-2 group-hover/pack:outline ${
+                      i + 1 === wellness.length ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <div className="px-2 col-span-1">
+                      <React.Suspense fallback={<Spinner />}>
+                        <Image
+                          src={img.highlight_image || "/placeholder.svg"}
+                          alt={img.slug}
+                          width={200}
+                          height={200}
+                          loading="lazy"
+                          className="aspect-square object-cover object-center rounded-xl"
+                        />
+                      </React.Suspense>
                     </div>
-                    <div className="mt-1">
-                      <p className="text-sm! text-muted-foreground line-clamp-1">
-                        {locale === routing.defaultLocale
-                          ? img.id_tagline
-                          : img.en_tagline}
-                      </p>
+                    <div className="col-span-2 pr-3">
+                      <div className="">
+                        <p className="font-extrabold text-primary line-clamp-2 ">
+                          {locale === routing.defaultLocale
+                            ? img.id_title
+                            : img.en_title}
+                        </p>
+                      </div>
+                      <div className="mt-1">
+                        <p className="text-sm! text-muted-foreground line-clamp-1">
+                          {locale === routing.defaultLocale
+                            ? img.id_tagline
+                            : img.en_tagline}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
-            {sidebarDataLoading && <SidebarItemSkeleton count={3} />}
+                </Link>
+              ))
+            )}
+
             {!sidebarDataLoading && wellness.length === 0 && (
               <FailedGetDataNotice size="sm" />
             )}
@@ -379,49 +388,53 @@ export function ChatbotSidebar({
             {locale === routing.defaultLocale ? "Medis" : "Medical"}
           </p>
           <div className="space-y-5">
-            {medical.map((img, i) => (
-              <Link
-                key={img.id}
-                href={`/medical/${img.slug}`}
-                className="group/pack"
-              >
-                <div
-                  className={`grid grid-cols-3 items-center group-hover/pack:bg-muted group-hover/pack:shadow-sm transition-all duration-300 rounded-xl py-2 group-hover/pack:outline ${
-                    i + 1 === medical.length ? "mb-0" : "mb-4"
-                  }`}
+            {sidebarDataLoading ? (
+              <SidebarItemSkeleton count={3} />
+            ) : (
+              medical.map((img, i) => (
+                <Link
+                  key={img.id}
+                  href={`/medical/${img.slug}`}
+                  className="group/pack"
                 >
-                  <div className="px-2 col-span-1">
-                    <React.Suspense fallback={<Spinner />}>
-                      <Image
-                        src={img.highlight_image || "/placeholder.svg"}
-                        alt={img.slug}
-                        width={200}
-                        height={200}
-                        loading="lazy"
-                        className="aspect-square object-cover object-center rounded-xl"
-                      />
-                    </React.Suspense>
-                  </div>
-                  <div className="col-span-2 pr-3">
-                    <div className="">
-                      <p className="font-extrabold text-primary line-clamp-2 ">
-                        {locale === routing.defaultLocale
-                          ? img.id_title
-                          : img.en_title}
-                      </p>
+                  <div
+                    className={`grid grid-cols-3 items-center group-hover/pack:bg-muted group-hover/pack:shadow-sm transition-all duration-300 rounded-xl py-2 group-hover/pack:outline ${
+                      i + 1 === medical.length ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <div className="px-2 col-span-1">
+                      <React.Suspense fallback={<Spinner />}>
+                        <Image
+                          src={img.highlight_image || "/placeholder.svg"}
+                          alt={img.slug}
+                          width={200}
+                          height={200}
+                          loading="lazy"
+                          className="aspect-square object-cover object-center rounded-xl"
+                        />
+                      </React.Suspense>
                     </div>
-                    <div className="mt-1">
-                      <p className="text-sm! text-muted-foreground line-clamp-1">
-                        {locale === routing.defaultLocale
-                          ? img.id_tagline
-                          : img.en_tagline}
-                      </p>
+                    <div className="col-span-2 pr-3">
+                      <div className="">
+                        <p className="font-extrabold text-primary line-clamp-2 ">
+                          {locale === routing.defaultLocale
+                            ? img.id_title
+                            : img.en_title}
+                        </p>
+                      </div>
+                      <div className="mt-1">
+                        <p className="text-sm! text-muted-foreground line-clamp-1">
+                          {locale === routing.defaultLocale
+                            ? img.id_tagline
+                            : img.en_tagline}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
-            {sidebarDataLoading && <SidebarItemSkeleton count={3} />}
+                </Link>
+              ))
+            )}
+
             {!sidebarDataLoading && medical.length === 0 && (
               <FailedGetDataNotice size="sm" />
             )}
