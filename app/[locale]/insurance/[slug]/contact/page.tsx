@@ -93,7 +93,7 @@ const InsurancePublicDetailPage = async ({
   const plainDesc = desc ? `\n${stripHtml(desc)}` : "";
   const msg = `${intro}${name}${slugData}${category}${plainDesc}`;
   const encodedMsg = encodeURIComponent(msg);
-  const waUrl = `whatsapp://send?phone=6282310172457&text=${encodedMsg}`;
+  const waUrl = `https://wa.me/628113061173?text=${encodedMsg}`;
 
   // Render loading and redirect on client
   return <WhatsAppRedirect waUrl={waUrl} locale={locale} />;

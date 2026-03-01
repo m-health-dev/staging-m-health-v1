@@ -75,10 +75,7 @@ const UserDetailPage = async ({
           {c.phone && (
             <div>
               <Link
-                href={`whatsapp://send?phone=${String(c.phone).replaceAll(
-                  "+",
-                  "",
-                )}`}
+                href={`https://wa.me/${String(c.phone).replaceAll("+", "")}`}
               >
                 <p className="text-muted-foreground">Phone Number</p>
                 <p>{c.phone ?? "N/A"}</p>

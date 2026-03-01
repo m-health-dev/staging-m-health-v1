@@ -130,10 +130,7 @@ const AssignDoctorPage = async ({
               </div>
               <div>
                 <Link
-                  href={`whatsapp://send?phone=${c.phone_number.replaceAll(
-                    "+",
-                    "",
-                  )}`}
+                  href={`https://wa.me/${c.phone_number.replaceAll("+", "")}`}
                 >
                   <p className="text-muted-foreground">
                     {locale === routing.defaultLocale

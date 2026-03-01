@@ -9,6 +9,7 @@ import { Account } from "@/types/account.types";
 import { calculateDiscount, calculateTaxes } from "@/helper/rupiah";
 import { Spinner } from "../ui/spinner";
 import { routing } from "@/i18n/routing";
+import { useRouter } from "next/navigation";
 
 export type PaymentActionProps = {
   locale: string;
@@ -31,6 +32,7 @@ const PaymentActionCard = ({
 }: PaymentActionProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const addressData = `${account?.domicile?.address || ""}, ${
     account?.domicile?.district || ""
@@ -99,6 +101,10 @@ const PaymentActionCard = ({
     }
   };
 
+  const handlePayWhatsapp = () => {
+    router.push(`/pay/${productId}/whatsapp?type=${productType}`);
+  };
+
   return (
     <>
       <h4 className="font-bold text-primary text-2xl mb-5">
@@ -145,7 +151,7 @@ const PaymentActionCard = ({
         </div>
         <Button
           className="h-12 bg-health hover:bg-health rounded-full w-full"
-          onClick={handlePay}
+          onClick={handlePayWhatsapp}
           disabled={isLoading || bookingLoading}
         >
           {(isLoading || bookingLoading) && <Spinner />}
@@ -154,8 +160,8 @@ const PaymentActionCard = ({
               ? "Memproses..."
               : "Processing..."
             : locale === routing.defaultLocale
-              ? "Lanjutkan ke Pembayaran"
-              : "Continue"}
+              ? "Lanjutkan ke Pembayaran via WhatsApp"
+              : "Continue to Payment via WhatsApp"}
         </Button>
         {error && (
           <p className="text-sm text-red-500" role="alert">

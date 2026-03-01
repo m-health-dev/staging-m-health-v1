@@ -1004,7 +1004,11 @@ const CWDComponent = ({
                         </div>
 
                         <div className="border p-4 rounded-2xl">
-                          <p>Biaya Konsultasi</p>
+                          <p>
+                            {locale === routing.defaultLocale
+                              ? "Biaya Konsultasi"
+                              : "Consultation Fee"}
+                          </p>
                           <h6 className="font-semibold text-primary">
                             {formatRupiah(price ?? 0)}
                           </h6>
