@@ -751,9 +751,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             <div className="mt-3 mb-5 bg-white py-10 px-3 rounded-2xl border w-full">
               <Link
                 href={`/${locale}/connect?session=${sessionId || chatID}`}
-                className="flex items-center justify-center w-full gap-3 flex-col"
+                className="flex lg:items-center items-start lg:justify-center justify-start w-full gap-3 flex-col"
               >
-                <p className="text-center max-w-md">
+                <p className="lg:text-center text-start max-w-md">
                   {locale === routing.defaultLocale
                     ? "Jika anda ingin berkonsultasi dengan dokter untuk penanganan lebih lanjut, silakan klik tombol di bawah ini."
                     : "If you want to consult a doctor for further treatment, please click the button below."}
@@ -770,7 +770,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     : "Start Consultation with Doctor"}
                 </Button>
 
-                <p className="border lg:rounded-full rounded-2xl px-4 py-2 text-center mt-5">
+                <p className="border lg:rounded-full rounded-2xl p-3 lg:text-center text-start text-sm! mt-5 text-foreground">
                   {locale === routing.defaultLocale
                     ? "Konsultasi akan dilakukan secara daring menggunakan Google Meet"
                     : "Consultation will be conducted online using Google Meet"}

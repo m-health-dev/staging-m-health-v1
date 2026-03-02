@@ -19,7 +19,7 @@ export const WhatsAppRedirect = ({
   React.useEffect(() => {
     setTimeout(() => {
       window.location.href = waUrl;
-    }, 10000); // Delay to show the loading state
+    }, 5000); // Delay to show the loading state
   }, [waUrl]);
   return (
     <div className="min-h-screen flex justify-center items-center flex-col">

@@ -76,7 +76,7 @@ const NavHeader = ({
 }) => {
   const locale = useLocale();
   const path = usePathname();
-  const [openPublic, setOpenPublic] = useState(false);
+  const [openPublic, setOpenPublic] = useState(status === "public");
   const [copied, setCopied] = useState(false);
 
   const [scrolled, setScrolled] = useState(false);
@@ -91,14 +91,6 @@ const NavHeader = ({
   const [loadingAccessButton, setLoadingAccessButton] = useState(true);
 
   const [initialStatus, setInitialStatus] = useState(status);
-
-  useEffect(() => {
-    if (status === "private") {
-      setOpenPublic(false);
-    } else if (status === "public") {
-      setOpenPublic(true);
-    }
-  }, []);
 
   const sessionData = sessionId || "";
 
@@ -130,8 +122,6 @@ const NavHeader = ({
   // }, []);
 
   useEffect(() => {
-    setLoadingAccessButton(true);
-
     const fetchRole = async () => {
       setLoadingAccessButton(true);
 

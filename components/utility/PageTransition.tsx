@@ -30,6 +30,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
   // Keep displayChildren in sync when idle
   useEffect(() => {
     if (phase === "idle") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplayChildren(children);
     }
   }, [children, phase]);
@@ -96,6 +97,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
 
     // Pathname changed — new page is loading, wait for children to also update
     childrenUpdatedDuringHold.current = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDisplayChildren(children);
     const timer = setTimeout(() => setPhase("reveal"), 200);
     return () => clearTimeout(timer);
@@ -107,6 +109,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
     if (pathname === pathnameAtHoldStart.current) return;
 
     // Both pathname and children have updated — safe to reveal
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDisplayChildren(children);
     if (!childrenUpdatedDuringHold.current) {
       childrenUpdatedDuringHold.current = true;
