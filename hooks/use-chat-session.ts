@@ -12,10 +12,13 @@ export function useChatSession(
   const [selectedChat, setSelectedChat] = useState<Message[]>(session || []);
   const [isPending, startTransition] = useTransition();
   const [chatResetKey, setChatResetKey] = useState(0);
+  const [currentSessionID, setCurrentSessionID] = useState<string | null>(
+    sessionID || null,
+  );
   const pathname = useRealPathname();
 
-  // Extract actual sessionID from pathname
-  const currentSessionID = pathname.includes("/c/")
+  // Extract sessionID from pathname (used only for navigation detection)
+  const pathnameSessionID = pathname.includes("/c/")
     ? pathname.split("/c/")[1]?.split("/")[0] || null
     : null;
 
@@ -24,6 +27,7 @@ export function useChatSession(
     const forceNew = window.sessionStorage.getItem("force-new-chat");
     if (forceNew === "true") {
       setSelectedChat([]);
+      setCurrentSessionID(null);
       setChatResetKey((prev) => prev + 1);
       window.sessionStorage.removeItem("force-new-chat");
     }
@@ -34,17 +38,24 @@ export function useChatSession(
     const isRootChatPage =
       pathname === `/${locale}` || pathname === `/${locale}/`;
 
-    if (isRootChatPage && !currentSessionID) {
+    if (isRootChatPage && !pathnameSessionID) {
       // Force clear chat when at root with no session
       setSelectedChat([]);
+      setCurrentSessionID(null);
       setChatResetKey((prev) => prev + 1);
-    } else if (session && currentSessionID) {
-      // Load session chat
+    } else if (session && pathnameSessionID) {
+      // Only update currentSessionID when the server has provided actual
+      // session data — this avoids resetting the component when ChatStart
+      // silently updates the URL via history.replaceState().
       startTransition(() => {
         setSelectedChat(session);
+        setCurrentSessionID(pathnameSessionID);
       });
     }
-  }, [pathname, session, currentSessionID, locale]);
+    // When pathnameSessionID exists but session is undefined, it means the
+    // URL was updated via replaceState (silent update from ChatStart).
+    // Do NOT update currentSessionID so the key on ChatStart stays stable.
+  }, [pathname, session, pathnameSessionID, locale]);
 
   return {
     selectedChat,

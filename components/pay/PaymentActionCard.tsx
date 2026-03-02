@@ -10,6 +10,7 @@ import { calculateDiscount, calculateTaxes } from "@/helper/rupiah";
 import { Spinner } from "../ui/spinner";
 import { routing } from "@/i18n/routing";
 import { useRouter } from "next/navigation";
+import { apiFetch } from "@/helper/api-fetch";
 
 export type PaymentActionProps = {
   locale: string;
@@ -101,8 +102,32 @@ const PaymentActionCard = ({
     }
   };
 
-  const handlePayWhatsapp = () => {
-    router.push(`/pay/${productId}/whatsapp?type=${productType}`);
+  const handlePayWhatsapp = async () => {
+    try {
+      setIsLoading(true);
+
+      const res = await apiFetch("/api/encrypt-price", {
+        method: "POST",
+        body: JSON.stringify({ price: totalPrice }),
+      });
+
+      if (!res.ok) throw new Error("Encryption failed");
+
+      const { encrypted } = await res.json();
+
+      router.push(
+        `/pay/${productId}/whatsapp?type=${productType}&connect=${encrypted}`,
+      );
+    } catch (err) {
+      console.error("Encrypt price error:", err);
+      setError(
+        locale === routing.defaultLocale
+          ? "Gagal memproses harga. Coba lagi."
+          : "Failed to process price. Please retry.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

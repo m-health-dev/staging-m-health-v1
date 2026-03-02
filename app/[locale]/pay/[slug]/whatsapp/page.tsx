@@ -17,6 +17,7 @@ import {
 } from "@/lib/consult/get-consultation";
 import { getUserInfo } from "@/lib/auth/getUserInfo";
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { decryptPrice } from "@/helper/price-cipher";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -76,6 +77,18 @@ const WhatsappPaymentDetailPage = async ({ params, searchParams }: Props) => {
   const productType = search.type as string;
   const payID = slug as string;
   const productId = slug as string;
+
+  const encryptedPrice = search.connect as string;
+
+  // Decrypt the price from the encrypted URL parameter
+  const decryptedPrice = decryptPrice(encryptedPrice);
+
+  if (decryptedPrice === null) {
+    console.error("Failed to decrypt price parameter");
+    return notFound();
+  }
+
+  const price = decryptedPrice;
 
   let data = null;
   let productTypeTitle = "";
@@ -141,14 +154,19 @@ const WhatsappPaymentDetailPage = async ({ params, searchParams }: Props) => {
     locale === routing.defaultLocale
       ? productType === "consultation"
         ? `Halo, saya ingin melanjutkan konsultasi dengan ID Konsultasi ${productId}, mohon bantuannya untuk melanjutkan.\n`
-        : `Halo, saya tertarik dengan produk ini, mohon bantuannya untuk detail informasi tentang produk dibawah ini:\n`
+        : `Halo, saya tertarik dengan produk ini, mohon bantuannya untuk melanjutkan pembayaran produk dibawah ini:\n`
       : productType === "consultation"
         ? `Hello, I want to continue the consultation with Consultation ID ${productId}, please assist me to proceed.\n`
-        : `Hello, I'm interested in this product, please assist me with the details of the product below:\n`;
+        : `Hello, I'm interested in this product, please assist me to proceed with the payment:\n`;
+  const productTypeDisplay =
+    productType === "consultation"
+      ? productTypeTitle
+      : `${productTypeTitle} - ${locale === routing.defaultLocale ? data.id_title : data.en_title}`;
+  const productInfo = `${locale === routing.defaultLocale ? "Informasi Produk" : "Product Information"},\n${productTypeDisplay}\nRp${price.toLocaleString("id-ID")}`;
   const slugData = `\nURL: ${baseUrl + "/" + productType === "package" ? "package" : productType === "medical_equipment" ? "equipment" : productType === "wellness" ? "wellness" : productType === "medical" ? "medical" : "404"}/${data.slug}`;
   const name = `\nProduct: ${data.name ? data.name : productType === "consultation" ? "Consultation" : locale === routing.defaultLocale ? data.id_title : data.en_title}`;
 
-  const userDetail = `\n\n${locale === routing.defaultLocale ? "Informasi Pengguna" : "User Information"},\n${userData.fullname ? userData.fullname : userData.google_fullname}\n${userData.email}\n${userData.id.slice(0, 8).toUpperCase()}`;
+  const userDetail = `\n\n${locale === routing.defaultLocale ? "Informasi Pengguna" : "User Information"},\n${userData.id.slice(0, 8).toUpperCase()}\n${userData.fullname ? userData.fullname : userData.google_fullname}\n${userData.email}`;
   // const category =
   //   data.category && data.category.length
   //     ? `\n${data.category.join(", ")}`
@@ -158,7 +176,7 @@ const WhatsappPaymentDetailPage = async ({ params, searchParams }: Props) => {
   //     ? data.id_description
   //     : data.en_description;
   // const plainDesc = desc ? `\n${stripHtml(desc)}` : "";
-  const msg = `${intro}${name}${productType === "consultation" ? "" : slugData}${userDetail}`;
+  const msg = `${intro}${productInfo}${userDetail}`;
   const encodedMsg = encodeURIComponent(msg);
   const waUrl = `https://wa.me/628113061173?text=${encodedMsg}`;
 

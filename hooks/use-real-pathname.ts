@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
+import { useState, useEffect } from "react";
 
 /**
  * Tracks the real browser URL pathname, including changes made via
@@ -52,45 +52,38 @@ function patchHistory() {
 }
 
 // ---------------------------------------------------------------------------
-// External store helpers for useSyncExternalStore
-// ---------------------------------------------------------------------------
-function subscribe(callback: () => void) {
-  // Ensure history is patched
-  patchHistory();
-
-  window.addEventListener("locationchange", callback);
-  window.addEventListener("urlchange", callback);
-  window.addEventListener("popstate", callback);
-
-  return () => {
-    window.removeEventListener("locationchange", callback);
-    window.removeEventListener("urlchange", callback);
-    window.removeEventListener("popstate", callback);
-  };
-}
-
-function getSnapshot() {
-  return window.location.pathname;
-}
-
-function getServerSnapshot(): string {
-  // On the server we don't know the real URL; return empty and let Next.js
-  // `usePathname()` take over on the first client render.
-  return "";
-}
-
-// ---------------------------------------------------------------------------
 // Hook
 // ---------------------------------------------------------------------------
 export function useRealPathname(): string {
   const nextPathname = usePathname();
+  const [browserPathname, setBrowserPathname] = useState<string>("");
 
-  // useSyncExternalStore gives us a tear-free read of window.location.pathname
-  const browserPathname = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot,
-  );
+  useEffect(() => {
+    // Ensure history is patched
+    patchHistory();
+
+    // Set initial value
+    setBrowserPathname(window.location.pathname);
+
+    const handleChange = () => {
+      setBrowserPathname(window.location.pathname);
+    };
+
+    window.addEventListener("locationchange", handleChange);
+    window.addEventListener("urlchange", handleChange);
+    window.addEventListener("popstate", handleChange);
+
+    return () => {
+      window.removeEventListener("locationchange", handleChange);
+      window.removeEventListener("urlchange", handleChange);
+      window.removeEventListener("popstate", handleChange);
+    };
+  }, []);
+
+  // Also sync when Next.js pathname changes (normal navigations)
+  useEffect(() => {
+    setBrowserPathname(window.location.pathname);
+  }, [nextPathname]);
 
   // On the server (or first SSR render) browserPathname is "", so fall back
   // to the Next.js value. On the client the browser value is authoritative.

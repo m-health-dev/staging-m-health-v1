@@ -410,7 +410,9 @@ const ChatStart = ({
               //   router.replace(newUrl, { scroll: false });
               // });
 
-              window.dispatchEvent(new Event("urlchange"));
+              // Deferred — the patched replaceState already dispatches
+              // "locationchange" via setTimeout; this is a backup.
+              setTimeout(() => window.dispatchEvent(new Event("urlchange")), 0);
             }
 
             if (data.text) {
