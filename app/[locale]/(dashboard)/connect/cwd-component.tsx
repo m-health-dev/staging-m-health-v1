@@ -748,7 +748,9 @@ const CWDComponent = ({
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-primary font-semibold!">
-                                  Phone Number
+                                  {locale === routing.defaultLocale
+                                    ? "Nomor Telepon"
+                                    : "Phone Number"}
                                 </FormLabel>
                                 <FormControl>
                                   <PhoneInput defaultCountry="ID" {...field} />
@@ -766,7 +768,9 @@ const CWDComponent = ({
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="text-primary font-semibold!">
-                                Full Name
+                                {locale === routing.defaultLocale
+                                  ? "Nama Lengkap"
+                                  : "Full Name"}
                               </FormLabel>
                               <FormControl>
                                 <Input {...field} className="h-12" />
@@ -784,7 +788,9 @@ const CWDComponent = ({
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-primary font-semibold!">
-                                  Height
+                                  {locale === routing.defaultLocale
+                                    ? "Tinggi Badan"
+                                    : "Height"}
                                 </FormLabel>
                                 <FormControl>
                                   <div className="relative">
@@ -810,7 +816,9 @@ const CWDComponent = ({
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-primary font-semibold!">
-                                  Weight
+                                  {locale === routing.defaultLocale
+                                    ? "Berat Badan"
+                                    : "Weight"}
                                 </FormLabel>
                                 <FormControl>
                                   <div className="relative">
@@ -838,11 +846,19 @@ const CWDComponent = ({
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-primary font-semibold!">
-                                  Date of Birth{" "}
+                                  {locale === routing.defaultLocale
+                                    ? "Tanggal Lahir"
+                                    : "Date of Birth"}{" "}
                                   {field.value && (
                                     <span className="bg-accent px-2 py-1 rounded-lg inline-flex! w-fit text-muted-foreground">
-                                      {getAgeDetail(field.value).years} Tahun{" "}
-                                      {getAgeDetail(field.value).months} Bulan
+                                      {getAgeDetail(field.value).years}{" "}
+                                      {locale === routing.defaultLocale
+                                        ? "Tahun"
+                                        : "Years"}{" "}
+                                      {getAgeDetail(field.value).months}{" "}
+                                      {locale === routing.defaultLocale
+                                        ? "Bulan"
+                                        : "Months"}
                                     </span>
                                   )}
                                 </FormLabel>
@@ -865,7 +881,9 @@ const CWDComponent = ({
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-primary font-semibold!">
-                                  Gender
+                                  {locale === routing.defaultLocale
+                                    ? "Jenis Kelamin"
+                                    : "Gender"}
                                 </FormLabel>
 
                                 <RadioGroup
@@ -874,8 +892,20 @@ const CWDComponent = ({
                                   className="space-y-0"
                                 >
                                   {[
-                                    { id: "male", label: "Male" },
-                                    { id: "female", label: "Female" },
+                                    {
+                                      id: "male",
+                                      label:
+                                        locale === routing.defaultLocale
+                                          ? "Laki-laki"
+                                          : "Male",
+                                    },
+                                    {
+                                      id: "female",
+                                      label:
+                                        locale === routing.defaultLocale
+                                          ? "Perempuan"
+                                          : "Female",
+                                    },
                                   ].map((item) => (
                                     <FormItem
                                       key={item.id}

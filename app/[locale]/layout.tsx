@@ -28,6 +28,7 @@ import { headers } from "next/headers";
 import ScrollToTop from "@/components/utility/ScrollToTop";
 import Script from "next/script";
 import UserwayRouteControl from "@/components/utility/UserWayRouteControl";
+import ChunkErrorReload from "@/components/utility/ChunkErrorReload";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -123,6 +124,7 @@ export default async function RootLayout({ children, params }: Props) {
             <GoogleAnalytics gaId="G-P8LGDRYY19" />
             {/* <Analytics />
             <SpeedInsights /> */}
+            <ChunkErrorReload />
             <ScrollToTop />
             <DialogSwitchLang />
             {children}

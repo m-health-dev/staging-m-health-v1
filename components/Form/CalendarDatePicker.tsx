@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { ChevronDownIcon } from "lucide-react";
+import dayjs from "dayjs";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -11,7 +12,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import LocalDateTime from "../utility/lang/LocaleDateTime";
 
 export default function CalendarDatePicker({
   value,
@@ -32,7 +32,7 @@ export default function CalendarDatePicker({
             className="flex items-center border rounded-2xl h-12 px-2 w-full justify-between font-normal bg-white"
           >
             {value ? (
-              <LocalDateTime date={`${value}`} specificFormat="DD MMMM YYYY" />
+              dayjs(value).format("DD MMMM YYYY")
             ) : (
               "Select date"
             )}
