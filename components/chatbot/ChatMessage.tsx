@@ -805,19 +805,24 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             !isStreaming ? "opacity-100" : "opacity-0",
           )}
         >
-          <div className={cn(isUser && !urgent ? "block" : "hidden")}>
-            <button
-              onClick={() => onReply?.(cleanMessage)}
-              className="text-white hover:text-muted-foreground pointer-events-auto cursor-pointer bg-health hover:bg-white py-2 px-3 rounded-full inline-flex items-center justify-center gap-2 transition-colors duration-300"
-              title="Reply"
-            >
-              <Stethoscope className="size-4" />
-              <p className="text-sm!">
-                {locale === routing.defaultLocale
-                  ? "Telekonsultasi"
-                  : "Teleconsultation"}
-              </p>
-            </button>
+          <div
+            className={cn(
+              isUser && !urgent && (sessionId || chatID) ? "block" : "hidden",
+            )}
+          >
+            <Link href={`/${locale}/connect?session=${sessionId || chatID}`}>
+              <button
+                className="text-white hover:text-muted-foreground pointer-events-auto cursor-pointer bg-health hover:bg-white py-2 px-3 rounded-full inline-flex items-center justify-center gap-2 transition-colors duration-300"
+                title="Reply"
+              >
+                <Stethoscope className="size-4" />
+                <p className="text-sm!">
+                  {locale === routing.defaultLocale
+                    ? "Telekonsultasi"
+                    : "Teleconsultation"}
+                </p>
+              </button>
+            </Link>
           </div>
           <div
             className={`action_button  inline-flex gap-0.5 bg-white  px-2 py-1.5 ${
@@ -846,19 +851,24 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               )}
             </button>
           </div>
-          <div className={cn(!isUser && !urgent ? "block" : "hidden")}>
-            <button
-              onClick={() => onReply?.(cleanMessage)}
-              className="text-white hover:text-muted-foreground pointer-events-auto cursor-pointer bg-health hover:bg-white py-2 px-3 rounded-full inline-flex items-center justify-center gap-2 transition-colors duration-300"
-              title="Reply"
-            >
-              <Stethoscope className="size-4" />
-              <p className="text-sm!">
-                {locale === routing.defaultLocale
-                  ? "Telekonsultasi"
-                  : "Teleconsultation"}
-              </p>
-            </button>
+          <div
+            className={cn(
+              !isUser && !urgent && (sessionId || chatID) ? "block" : "hidden",
+            )}
+          >
+            <Link href={`/${locale}/connect?session=${sessionId || chatID}`}>
+              <button
+                className="text-white hover:text-muted-foreground pointer-events-auto cursor-pointer bg-health hover:bg-white py-2 px-3 rounded-full inline-flex items-center justify-center gap-2 transition-colors duration-300"
+                title="Reply"
+              >
+                <Stethoscope className="size-4" />
+                <p className="text-sm!">
+                  {locale === routing.defaultLocale
+                    ? "Telekonsultasi"
+                    : "Teleconsultation"}
+                </p>
+              </button>
+            </Link>
           </div>
         </div>
       </div>
