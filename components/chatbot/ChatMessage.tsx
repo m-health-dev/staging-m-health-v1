@@ -13,7 +13,7 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeSanitize from "rehype-sanitize";
 import LocalDateTime from "../utility/lang/LocaleDateTime";
-import { Check, ClipboardPlus, Copy, Undo2 } from "lucide-react";
+import { Check, ClipboardPlus, Copy, Stethoscope, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useLocale } from "next-intl";
@@ -800,11 +800,25 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         </div>
         <div
           className={cn(
-            `flex mt-2 group transition-all duration-300`,
+            `flex mt-2 group transition-all duration-300 gap-2`,
             isUser ? "justify-end" : "justify-start",
             !isStreaming ? "opacity-100" : "opacity-0",
           )}
         >
+          <div className={cn(isUser && !urgent ? "block" : "hidden")}>
+            <button
+              onClick={() => onReply?.(cleanMessage)}
+              className="text-white hover:text-muted-foreground pointer-events-auto cursor-pointer bg-health hover:bg-white py-2 px-3 rounded-full inline-flex items-center justify-center gap-2 transition-colors duration-300"
+              title="Reply"
+            >
+              <Stethoscope className="size-4" />
+              <p className="text-sm!">
+                {locale === routing.defaultLocale
+                  ? "Telekonsultasi"
+                  : "Teleconsultation"}
+              </p>
+            </button>
+          </div>
           <div
             className={`action_button  inline-flex gap-0.5 bg-white  px-2 py-1.5 ${
               isUser
@@ -830,6 +844,20 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               ) : (
                 <Copy className="size-3.5" />
               )}
+            </button>
+          </div>
+          <div className={cn(!isUser && !urgent ? "block" : "hidden")}>
+            <button
+              onClick={() => onReply?.(cleanMessage)}
+              className="text-white hover:text-muted-foreground pointer-events-auto cursor-pointer bg-health hover:bg-white py-2 px-3 rounded-full inline-flex items-center justify-center gap-2 transition-colors duration-300"
+              title="Reply"
+            >
+              <Stethoscope className="size-4" />
+              <p className="text-sm!">
+                {locale === routing.defaultLocale
+                  ? "Telekonsultasi"
+                  : "Teleconsultation"}
+              </p>
             </button>
           </div>
         </div>

@@ -11,6 +11,7 @@ import {
   GitCommitHorizontal,
   GitPullRequestCreateArrow,
   Turntable,
+  Undo2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,8 +28,10 @@ export default async function Changelog() {
             variant="outline"
             className="rounded-full mt-10 text-primary pointer-events-auto cursor-pointer"
           >
-            <ArrowLeftCircle className="mr-2 size-5" />
-            {locale === routing.defaultLocale ? "Kembali ke Beranda" : "Back to Home"}
+            <Undo2 className="mr-2 size-5" />
+            {locale === routing.defaultLocale
+              ? "Kembali ke Beranda"
+              : "Back to Home"}
           </Button>
         </Link>
       </div>
@@ -37,10 +40,15 @@ export default async function Changelog() {
           <div className="bg-white p-2 w-8 h-8 aspect-square rounded-full border border-primary flex justify-center items-center">
             <GitCommitHorizontal />
           </div>
-          <h2>{locale === routing.defaultLocale ? "Catatan Perubahan Deployment" : "Deployment Changelog"}</h2>
+          <h2>
+            {locale === routing.defaultLocale
+              ? "Catatan Perubahan Deployment"
+              : "Deployment Changelog"}
+          </h2>
         </div>
         <p className="text-sm! mt-5 font-normal text-health bg-white px-2 py-1 rounded-full border border-health inline-flex">
-          {commits.length} {locale === routing.defaultLocale ? "komit" : "commits"}
+          {commits.length}{" "}
+          {locale === routing.defaultLocale ? "komit" : "commits"}
         </p>
       </div>
       <div className="space-y-4 divide-y divide-primary/20 *:pb-4">

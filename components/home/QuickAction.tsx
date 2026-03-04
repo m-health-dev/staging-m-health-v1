@@ -140,9 +140,7 @@ const QuickAction = ({
       id: 0,
       href: `/${locale}/connect`,
       label: `${
-        locale === routing.defaultLocale
-          ? "Tele Konsultasi"
-          : "Tele Consultation"
+        locale === routing.defaultLocale ? "Telekonsultasi" : "Teleconsultation"
       }`,
       icon: <Camera />,
     },

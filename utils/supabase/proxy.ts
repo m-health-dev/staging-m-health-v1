@@ -174,6 +174,20 @@ export async function updateSession(
     return NextResponse.redirect(url);
   }
 
+  if (
+    user &&
+    request.nextUrl.pathname.startsWith(`/${locale}/changelog`) &&
+    readUserRole !== "admin"
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}/forbidden`;
+
+    // Opsional: Simpan halaman yang ingin diakses untuk redirect balik nanti
+    url.searchParams.set("request", request.nextUrl.pathname);
+
+    return NextResponse.redirect(url);
+  }
+
   // if (
   //   !user &&
   //   request.nextUrl.pathname.startsWith(`/${locale}/reset-password`)
