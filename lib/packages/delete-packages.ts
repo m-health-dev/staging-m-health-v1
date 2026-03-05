@@ -6,6 +6,8 @@ import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
 import { createClient } from "@/utils/supabase/client";
 import { getPackageByID } from "./get-packages";
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { getLocale } from "next-intl/server";
+import { revalidatePath } from "next/cache";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -34,6 +36,9 @@ export async function deletePackage(id: string) {
         error: `Failed to sent package/delete data. Cause : ${res.status} - ${data.message}`,
       };
     }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}/studio/packages`);
 
     return {
       success: true,

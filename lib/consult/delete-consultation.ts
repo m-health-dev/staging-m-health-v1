@@ -4,6 +4,8 @@ import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
 import { apiSecretKey } from "@/helper/api-secret-key";
 import { error } from "console";
 import { da } from "date-fns/locale";
+import { getLocale } from "next-intl/server";
+import { revalidatePath } from "next/cache";
 import { success } from "zod";
 import { meta } from "zod/v4/core";
 
@@ -32,6 +34,9 @@ export async function deleteConsultation(id: string) {
         error: `Failed to delete consultation data. Cause : ${json.message}`,
       };
     }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}/studio/consult/schedule`);
 
     // console.log({ json });
     return {

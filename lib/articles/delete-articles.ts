@@ -6,6 +6,8 @@ import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
 import { createClient } from "@/utils/supabase/client";
 import { getArticlesByID } from "./get-articles";
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { getLocale } from "next-intl/server";
+import { revalidatePath } from "next/cache";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -37,6 +39,9 @@ export async function deleteArticles(id: string) {
         error: `Failed to sent articles/delete data. Cause : ${res.status} - ${data.message}`,
       };
     }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}/studio/article`);
 
     return {
       success: true,

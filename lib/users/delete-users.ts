@@ -2,6 +2,8 @@
 
 import { createClientAdmin } from "@/utils/supabase/admin";
 import { deleteSingleFile } from "../image/deleteImage";
+import { getLocale } from "next-intl/server";
+import { revalidatePath } from "next/cache";
 
 export async function deleteUsers(id: string) {
   if (!id) {
@@ -38,6 +40,9 @@ export async function deleteUsers(id: string) {
         error: userError.message,
       };
     }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}/studio/users`);
 
     return {
       userData,

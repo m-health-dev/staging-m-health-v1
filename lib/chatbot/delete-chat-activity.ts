@@ -1,6 +1,8 @@
 "use server";
 
 import { getAccessToken } from "@/app/[locale]/(auth)/actions/auth.actions";
+import { getLocale } from "next-intl/server";
+import { revalidatePath } from "next/cache";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -23,7 +25,7 @@ export async function DeleteChatSession(session_id: string) {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!res.ok) {
@@ -32,6 +34,11 @@ export async function DeleteChatSession(session_id: string) {
       }
       throw new Error(`HTTP error! status: ${res.status}`);
     }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}`);
+    revalidatePath(`/${locale}/dashboard`);
+    revalidatePath(`/${locale}/chat-activity`);
 
     return {
       success: true,
@@ -62,7 +69,7 @@ export async function DeleteAllChatSession(user_id: string) {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!res.ok) {
@@ -71,6 +78,11 @@ export async function DeleteAllChatSession(user_id: string) {
       }
       throw new Error(`HTTP error! status: ${res.status}`);
     }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}`);
+    revalidatePath(`/${locale}/dashboard`);
+    revalidatePath(`/${locale}/chat-activity`);
 
     return {
       success: true,

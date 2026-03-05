@@ -4,7 +4,9 @@ import { error } from "console";
 import { success } from "zod";
 import { getArticleCategoryByID } from "./get-article-category";
 import { deleteMultipleFiles, deleteSingleFile } from "../image/deleteImage";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
+import { getLocale } from "next-intl/server";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "production"
@@ -16,13 +18,19 @@ export async function deleteArticleCategory(id: string) {
     console.log("Sending article-category/delete to BE:", id);
     const categoryData = (await getArticleCategoryByID(id)).data.data;
 
-    if (!categoryData)
+    const supabase = await createClient();
+
+    const { data: categoryDataInSupabase } = await supabase
+      .from("article_category")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (!categoryDataInSupabase)
       return {
         error: "Error article-category/read in article-category/delete ID:",
         id,
       };
-
-    const supabase = await createClient();
 
     const {
       data: deleteArticleCategory,
@@ -38,6 +46,9 @@ export async function deleteArticleCategory(id: string) {
         error: errorDeleteArticleCategory.message,
       };
     }
+
+    const locale = await getLocale();
+    revalidatePath(`/${locale}/studio/article/category`);
 
     return {
       deleteArticleCategory,
