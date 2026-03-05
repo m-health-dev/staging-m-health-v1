@@ -37,6 +37,7 @@ export async function deleteConsultation(id: string) {
 
     const locale = await getLocale();
     revalidatePath(`/${locale}/studio/consult/schedule`);
+    revalidatePath(`/${locale}/studio`);
 
     // console.log({ json });
     return {

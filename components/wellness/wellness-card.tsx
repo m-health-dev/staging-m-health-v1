@@ -25,11 +25,11 @@ const WellnessCard = ({
     <Link
       href={`/${locale}/wellness/${d.slug}`}
       key={d.id}
-      className="aspect-4/5 relative group cursor-pointer group"
+      className="aspect-square relative group cursor-pointer group"
       onMouseEnter={() => setHoveredIndex(i)}
       onMouseLeave={() => setHoveredIndex(null)}
     >
-      <div className="relative aspect-4/5 rounded-2xl group-hover:outline-2 group-hover:outline-health transition-all duration-100">
+      <div className="relative aspect-square rounded-2xl group-hover:outline-2 group-hover:outline-health transition-all duration-100">
         <div
           className={cn(
             "absolute inset-0 z-10 bg-white/20 backdrop-blur-2xl rounded-2xl flex w-full justify-center items-center transition-all duration-500",
@@ -50,7 +50,7 @@ const WellnessCard = ({
           onLoad={() => setImageLoaded(true)}
           loading="lazy"
           className={cn(
-            "w-full aspect-4/5 object-center object-cover rounded-2xl z-10 transition-all duration-500",
+            "w-full aspect-square object-center object-cover rounded-2xl z-10 transition-all duration-500",
             imageLoaded ? "opacity-100" : "opacity-0",
           )}
         />
@@ -60,7 +60,7 @@ const WellnessCard = ({
         width={500}
         height={500}
         alt={d.slug}
-        className="object-center w-full h-full aspect-4/5 object-cover rounded-2xl group-hover:outline-2 group-hover:outline-health transition-all duration-100"
+        className="object-center w-full h-full aspect-square object-cover rounded-2xl group-hover:outline-2 group-hover:outline-health transition-all duration-100"
       /> */}
       <motion.div
         initial={{ y: 0, z: 50 }}

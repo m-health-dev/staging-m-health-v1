@@ -79,7 +79,7 @@ export function NavUser({
       }
 
       // Redirect to login page after successful sign out
-      router.refresh();
+      router.push("/home");
 
       toast.success(
         locale === routing.defaultLocale

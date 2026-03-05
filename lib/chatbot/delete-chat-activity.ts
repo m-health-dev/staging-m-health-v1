@@ -38,6 +38,7 @@ export async function DeleteChatSession(session_id: string) {
     const locale = await getLocale();
     revalidatePath(`/${locale}`);
     revalidatePath(`/${locale}/dashboard`);
+    revalidatePath(`/${locale}/studio`);
     revalidatePath(`/${locale}/chat-activity`);
 
     return {
@@ -82,6 +83,7 @@ export async function DeleteAllChatSession(user_id: string) {
     const locale = await getLocale();
     revalidatePath(`/${locale}`);
     revalidatePath(`/${locale}/dashboard`);
+    revalidatePath(`/${locale}/studio`);
     revalidatePath(`/${locale}/chat-activity`);
 
     return {

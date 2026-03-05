@@ -56,11 +56,10 @@ export async function createPostTransaction(payload: {
       };
     }
 
-    const locale = await getLocale();
+    // const locale = await getLocale();
 
     // revalidatePath(`/${locale}/dashboard`);
-    // revalidatePath(`/${locale}/vendor`);
-    // revalidatePath(`/${locale}/vendor/${data.slug}`);
+    // revalidatePath(`/${locale}/studio`);
     // revalidatePath(`/${locale}/studio/vendor/${data.slug}`);
 
     return {
