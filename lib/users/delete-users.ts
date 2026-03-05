@@ -15,7 +15,7 @@ export async function deleteUsers(id: string) {
 
     const { data: user, error: userErr } = await supabase
       .from("accounts")
-      .select("id, avatar_url")
+      .select("id, avatar_url, email")
       .eq("id", id)
       .single();
 
@@ -28,6 +28,20 @@ export async function deleteUsers(id: string) {
 
     if (user?.avatar_url) {
       await deleteSingleFile(user.avatar_url);
+    }
+
+    const { error: deleteDataError } = await supabase
+      .from("accounts")
+      .delete()
+      .eq("id", user.id);
+
+    const { error: deleteDataRecoverAccountError } = await supabase
+      .from("recover_account")
+      .delete()
+      .eq("email", user.email);
+
+    if (deleteDataError || deleteDataRecoverAccountError) {
+      throw new Error("Failed to delete user data");
     }
 
     const { data: userData, error: userError } =

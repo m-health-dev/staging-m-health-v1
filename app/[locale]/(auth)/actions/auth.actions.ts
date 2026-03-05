@@ -642,7 +642,7 @@ export const forgotPasswordAction = async (
     .from("recover_account")
     .select("request")
     .eq("email", validatedData.data.email)
-    .single();
+    .maybeSingle();
 
   if (selectErr) {
     console.error("SELECT ERROR:", selectErr);
@@ -899,11 +899,16 @@ export async function deleteUser() {
 
     // Delete user data (replace 'your_data_table' with your actual table name)
     const { error: deleteDataError } = await supabase
-      .from("account")
+      .from("accounts")
       .delete()
       .eq("id", user.id);
 
-    if (deleteDataError) {
+    const { error: deleteDataRecoverAccountError } = await supabase
+      .from("recover_account")
+      .delete()
+      .eq("email", user.email);
+
+    if (deleteDataError || deleteDataRecoverAccountError) {
       throw new Error("Failed to delete user data");
     }
 
