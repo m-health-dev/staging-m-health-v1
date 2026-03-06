@@ -12,6 +12,9 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+export const dynamic = "force-static";
+export const revalidate = 86400;
+
 export async function generateMetadata(
   { params, searchParams }: Props,
   parent: ResolvingMetadata,
@@ -68,7 +71,9 @@ const TermsPage = async () => {
     <Wrapper>
       <ContainerWrap size="lg" className="py-10">
         <h1 className="text-3xl font-bold text-primary mb-5 mt-10">
-          {locale === routing.defaultLocale ? "Syarat Layanan" : "Terms of Service"}
+          {locale === routing.defaultLocale
+            ? "Syarat Layanan"
+            : "Terms of Service"}
         </h1>
 
         <p className="mb-20 text-muted-foreground">
