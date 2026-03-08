@@ -20,7 +20,7 @@ const OurNewsGrid = ({
   locale: string;
   labels: any;
 }) => {
-  console.log("Our News Grid data:", data.length);
+  // console.log("Our News Grid data:", data.length);
 
   if (!Array.isArray(data) || data.length <= 0) {
     return <FailedGetDataNotice />;

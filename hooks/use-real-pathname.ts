@@ -38,7 +38,9 @@ function patchHistory() {
     url?: string | URL | null,
   ) {
     originalReplaceState(data, unused, url);
-    window.dispatchEvent(new Event("locationchange"));
+    // Defer so setState is never called synchronously during React's commit
+    // phase (e.g. useInsertionEffect), which React 19 forbids.
+    setTimeout(() => window.dispatchEvent(new Event("locationchange")), 0);
   };
 
   window.history.pushState = function (
@@ -47,7 +49,7 @@ function patchHistory() {
     url?: string | URL | null,
   ) {
     originalPushState(data, unused, url);
-    window.dispatchEvent(new Event("locationchange"));
+    setTimeout(() => window.dispatchEvent(new Event("locationchange")), 0);
   };
 }
 

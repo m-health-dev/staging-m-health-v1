@@ -1,3 +1,5 @@
+export type ErrorLogStatus = "acknowledge" | "maintenance" | "resolved" | "recorded";
+
 export type ErrorLogType = {
   id: string;
   ray_id: string;
@@ -9,4 +11,5 @@ export type ErrorLogType = {
   device: string;
   error_message: string;
   error_code: string;
+  status: ErrorLogStatus | null;
 };

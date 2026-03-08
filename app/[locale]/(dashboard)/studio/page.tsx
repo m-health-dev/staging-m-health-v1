@@ -124,413 +124,419 @@ const StudioDashboard = async () => {
       </div>
 
       <ScrollReveal variant="fade-up" duration={600}>
-      <div className="md:grid lg:grid-cols-4 md:grid-cols-2 flex flex-col gap-5">
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{AccountTotal}</h3>
+        <div className="md:grid lg:grid-cols-4 md:grid-cols-2 flex flex-col gap-5">
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{AccountTotal}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Akun Telah Dibuat"
+                    : "Account Created"}
+                </p>
+              </div>
             </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Akun Telah Dibuat"
-                  : "Account Created"}
-              </p>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{ChatSession}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Sesi Percakapan"
+                    : "Chat Sessions"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Consultation}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Konsultasi Terjadwal"
+                    : "Consultation Scheduled"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Payment}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Transaksi Tercatat"
+                    : "Transaction Recorded"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Packages}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale ? "Program" : "Programs"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Wellness}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Paket Kebugaran"
+                    : "Wellness Packages"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Medical}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Paket Medis"
+                    : "Medical Packages"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Vendor}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Mitra & Rumah Sakit"
+                    : "Partner & Hospital"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Insurance}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale ? "Asuransi" : "Insurance"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Doctor}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>{locale === routing.defaultLocale ? "Dokter" : "Doctor"}</p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Hotel}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>{locale === routing.defaultLocale ? "Hotel" : "Hotel"}</p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Equipment}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Produk Medis"
+                    : "Medical Products"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Events}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>{locale === routing.defaultLocale ? "Acara" : "Events"}</p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Article}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale ? "Artikel" : "Article"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{ArticleAuthor}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Penulis Artikel"
+                    : "Article Author"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">
+                  {ArticleCategory}
+                </h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Kategori Artikel"
+                    : "Article Category"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Hero}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Banner Utama"
+                    : "Hero Banner"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{TOS}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Syarat Layanan"
+                    : "Terms of Service"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="group/stats">
+            <div className="bg-white rounded-2xl overflow-hidden relative border">
+              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                <h3 className="text-primary font-semibold">{Privacy}</h3>
+              </div>
+              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                <p>
+                  {locale === routing.defaultLocale
+                    ? "Kebijakan Privasi"
+                    : "Privacy Policy"}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{ChatSession}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Sesi Percakapan"
-                  : "Chat Sessions"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Consultation}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Konsultasi Terjadwal"
-                  : "Consultation Scheduled"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Payment}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Transaksi Tercatat"
-                  : "Transaction Recorded"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Packages}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Program" : "Programs"}</p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Wellness}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Paket Kebugaran"
-                  : "Wellness Packages"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Medical}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Paket Medis"
-                  : "Medical Packages"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Vendor}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Mitra & Rumah Sakit"
-                  : "Partner & Hospital"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Insurance}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale ? "Asuransi" : "Insurance"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Doctor}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Dokter" : "Doctor"}</p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Hotel}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Hotel" : "Hotel"}</p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Equipment}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Produk Medis"
-                  : "Medical Products"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Events}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Acara" : "Events"}</p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Article}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>{locale === routing.defaultLocale ? "Artikel" : "Article"}</p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{ArticleAuthor}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Penulis Artikel"
-                  : "Article Author"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{ArticleCategory}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Kategori Artikel"
-                  : "Article Category"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Hero}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Banner Utama"
-                  : "Hero Banner"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{TOS}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Syarat Layanan"
-                  : "Terms of Service"}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="group/stats">
-          <div className="bg-white rounded-2xl overflow-hidden relative border">
-            <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-              <h3 className="text-primary font-semibold">{Privacy}</h3>
-            </div>
-            <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-              <p>
-                {locale === routing.defaultLocale
-                  ? "Kebijakan Privasi"
-                  : "Privacy Policy"}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
       </ScrollReveal>
       <ScrollReveal variant="fade-up" duration={600}>
-      <div className="bg-white p-4 rounded-2xl mt-10">
-        <h6 className="font-bold text-primary mb-4">
-          {locale === routing.defaultLocale
-            ? "Statistik Penggunaan Token Gemini API"
-            : "Gemini API Token Usage Statistics"}
-        </h6>
+        <div className="bg-white p-4 rounded-2xl mt-10">
+          <h6 className="font-bold text-primary mb-4">
+            {locale === routing.defaultLocale
+              ? "Statistik Penggunaan Token Gemini API"
+              : "Gemini API Token Usage Statistics"}
+          </h6>
 
-        <div className="md:grid lg:grid-cols-3 md:grid-cols-2 flex flex-col gap-5">
-          <div className="group/stats">
-            <div className="bg-white rounded-2xl overflow-hidden relative border">
-              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-                <h3 className="text-primary font-semibold">
-                  {aiTokenStats.totals?.total_requests}
-                </h3>
+          <div className="md:grid lg:grid-cols-3 md:grid-cols-2 flex flex-col gap-5">
+            <div className="group/stats">
+              <div className="bg-white rounded-2xl overflow-hidden relative border">
+                <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                  <h3 className="text-primary font-semibold">
+                    {aiTokenStats.totals?.total_requests}
+                  </h3>
+                </div>
+                <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                  <p>
+                    {locale === routing.defaultLocale
+                      ? "Permintaan AI Chat"
+                      : "AI Chat Requests"}
+                  </p>
+                  <p className="text-sm! text-white/50">
+                    {locale === routing.defaultLocale
+                      ? "Percakapan"
+                      : "Conversations"}
+                  </p>
+                </div>
               </div>
-              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-                <p>
-                  {locale === routing.defaultLocale
-                    ? "Permintaan AI Chat"
-                    : "AI Chat Requests"}
-                </p>
-                <p className="text-sm! text-white/50">
-                  {locale === routing.defaultLocale
-                    ? "Percakapan"
-                    : "Conversations"}
-                </p>
+            </div>
+            <div className="group/stats">
+              <div className="bg-white rounded-2xl overflow-hidden relative border">
+                <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                  <h3 className="text-primary font-semibold">
+                    {aiTokenStats.totals?.total_all_tokens}
+                  </h3>
+                </div>
+                <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                  <p>
+                    {locale === routing.defaultLocale
+                      ? "Token AI Digunakan"
+                      : "AI Tokens Used"}
+                  </p>
+                  <p className="text-sm! text-white/50">
+                    {locale === routing.defaultLocale
+                      ? "Input + Output & Thinking + Candidates"
+                      : "Input + Output & Thinking + Candidates"}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="group/stats">
+              <div className="bg-white rounded-2xl overflow-hidden relative border">
+                <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                  <h3 className="text-primary font-semibold">
+                    {aiTokenStats.totals?.total_thoughts_tokens}
+                  </h3>
+                </div>
+                <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                  <p>
+                    {locale === routing.defaultLocale
+                      ? "Token Berpikir Digunakan"
+                      : "AI Thinking Tokens Used"}
+                  </p>
+                  <p className="text-sm! text-white/50">
+                    {locale === routing.defaultLocale
+                      ? "Berpikir/ Proses + Output"
+                      : "Thinking/ Processing + Output"}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="group/stats">
+              <div className="bg-white rounded-2xl overflow-hidden relative border">
+                <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                  <h3 className="text-primary font-semibold">
+                    {aiTokenStats.totals?.total_prompt_tokens}
+                  </h3>
+                </div>
+                <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                  <p>
+                    {locale === routing.defaultLocale
+                      ? "Token Prompt AI Digunakan"
+                      : "AI Prompt Tokens Used"}
+                  </p>
+                  <p className="text-sm! text-white/50">
+                    {locale === routing.defaultLocale
+                      ? "Prompt/ Input"
+                      : "Prompt/ Input"}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="group/stats">
+              <div className="bg-white rounded-2xl overflow-hidden relative border">
+                <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
+                  <h3 className="text-primary font-semibold">
+                    {aiTokenStats.totals?.total_candidates_tokens}
+                  </h3>
+                </div>
+                <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
+                  <p>
+                    {locale === routing.defaultLocale
+                      ? "Token Kandidat AI Digunakan"
+                      : "AI Candidate Tokens Used"}
+                  </p>
+                  <p className="text-sm! text-white/50">
+                    {locale === routing.defaultLocale
+                      ? "Kandidat Jawaban"
+                      : "Answer Candidates"}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-          <div className="group/stats">
-            <div className="bg-white rounded-2xl overflow-hidden relative border">
-              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-                <h3 className="text-primary font-semibold">
-                  {aiTokenStats.totals?.total_all_tokens}
-                </h3>
-              </div>
-              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-                <p>
-                  {locale === routing.defaultLocale
-                    ? "Token AI Digunakan"
-                    : "AI Tokens Used"}
-                </p>
-                <p className="text-sm! text-white/50">
-                  {locale === routing.defaultLocale
-                    ? "Input + Output & Thinking + Candidates"
-                    : "Input + Output & Thinking + Candidates"}
-                </p>
-              </div>
+          <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 w-full mt-6">
+            <div>
+              {aiTokenStats.daily?.length > 0 && (
+                <DailyTokenChart data={aiTokenStats.daily} locale={locale} />
+              )}
+            </div>
+            <div>
+              {aiTokenStats.by_model?.length > 0 && (
+                <ModelUsageChart data={aiTokenStats.by_model} locale={locale} />
+              )}
             </div>
           </div>
-          <div className="group/stats">
-            <div className="bg-white rounded-2xl overflow-hidden relative border">
-              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-                <h3 className="text-primary font-semibold">
-                  {aiTokenStats.totals?.total_thoughts_tokens}
-                </h3>
-              </div>
-              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-                <p>
-                  {locale === routing.defaultLocale
-                    ? "Token Berpikir Digunakan"
-                    : "AI Thinking Tokens Used"}
-                </p>
-                <p className="text-sm! text-white/50">
-                  {locale === routing.defaultLocale
-                    ? "Berpikir/ Proses + Output"
-                    : "Thinking/ Processing + Output"}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="group/stats">
-            <div className="bg-white rounded-2xl overflow-hidden relative border">
-              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-                <h3 className="text-primary font-semibold">
-                  {aiTokenStats.totals?.total_prompt_tokens}
-                </h3>
-              </div>
-              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-                <p>
-                  {locale === routing.defaultLocale
-                    ? "Token Prompt AI Digunakan"
-                    : "AI Prompt Tokens Used"}
-                </p>
-                <p className="text-sm! text-white/50">
-                  {locale === routing.defaultLocale
-                    ? "Prompt/ Input"
-                    : "Prompt/ Input"}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="group/stats">
-            <div className="bg-white rounded-2xl overflow-hidden relative border">
-              <div className="px-4 py-5 bg-white rounded-2xl relative z-10 shadow-sm">
-                <h3 className="text-primary font-semibold">
-                  {aiTokenStats.totals?.total_candidates_tokens}
-                </h3>
-              </div>
-              <div className="bg-primary text-white rounded-b-2xl px-4 pt-5 pb-2 -mt-3">
-                <p>
-                  {locale === routing.defaultLocale
-                    ? "Token Kandidat AI Digunakan"
-                    : "AI Candidate Tokens Used"}
-                </p>
-                <p className="text-sm! text-white/50">
-                  {locale === routing.defaultLocale
-                    ? "Kandidat Jawaban"
-                    : "Answer Candidates"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="grid lg:grid-cols-2 grid-cols-1 gap-5 w-full mt-6">
-          <div>
-            {aiTokenStats.daily?.length > 0 && (
-              <DailyTokenChart data={aiTokenStats.daily} locale={locale} />
-            )}
-          </div>
-          <div>
-            {aiTokenStats.by_model?.length > 0 && (
-              <ModelUsageChart data={aiTokenStats.by_model} locale={locale} />
-            )}
-          </div>
-        </div>
 
-        {/* <pre className="text-wrap wrap-anywhere text-sm!">
+          {/* <pre className="text-wrap wrap-anywhere text-sm!">
           {JSON.stringify(aiTokenStats, null, 2)}
         </pre> */}
-      </div>
+        </div>
       </ScrollReveal>
       <ScrollReveal variant="fade-up" duration={600}>
-      <div>
-        <StudioComponent
-          locale={locale}
-          initialDataConsult={consult}
-          initialDataTransaction={transaction}
-          initialChatData={chat}
-        />
-      </div>
+        <div>
+          <StudioComponent
+            locale={locale}
+            initialDataConsult={consult}
+            initialDataTransaction={transaction}
+            initialChatData={chat}
+          />
+        </div>
       </ScrollReveal>
       <ScrollReveal variant="fade-up" duration={600}>
-      <div className="bg-white p-4 border rounded-2xl mt-10">
-        <p className="text-sm! text-primary mb-1">
-          {locale === routing.defaultLocale
-            ? "Token Akses Anda"
-            : "Your Access Token"}
-        </p>
-        <pre className="text-wrap wrap-anywhere text-sm!">
-          {JSON.stringify(accessToken, null, 2)}
-        </pre>
-      </div>
+        <div className="bg-white p-4 border rounded-2xl mt-10">
+          <p className="text-sm! text-primary mb-1">
+            {locale === routing.defaultLocale
+              ? "Token Akses Anda"
+              : "Your Access Token"}
+          </p>
+          <pre className="text-wrap wrap-anywhere text-sm!">
+            {JSON.stringify(accessToken, null, 2)}
+          </pre>
+        </div>
       </ScrollReveal>
-      <ScrollReveal variant="fade" duration={600}>
+      {/* <ScrollReveal variant="fade" duration={600}>
       <div className="my-10">
         <UnderConstruction element />
       </div>
-      </ScrollReveal>
+      </ScrollReveal> */}
     </ContainerWrap>
   );
 };

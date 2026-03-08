@@ -45,6 +45,7 @@ import LoadingTableCard from "../utility/loading/loading-table-card";
 import SimplePagination from "../utility/simple-pagination";
 import StatusBadge from "../utility/status-badge";
 import Image from "next/image";
+import AvatarUser from "../utility/AvatarUser";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -117,7 +118,9 @@ export function Studio2DataTable<TData, TValue>({
   const [perPage, setPerPage] = React.useState(10);
 
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+    React.useState<VisibilityState>({
+      public_id: false,
+    });
 
   const goToPage = (page: number, per_page: number = 10) => {
     setLoading(true);
@@ -317,6 +320,26 @@ export function Studio2DataTable<TData, TValue>({
                           <h5 className="font-semibold text-primary text-lg capitalize">
                             {row.getValue("title")}
                           </h5>
+                          <div>
+                            {row.getValue("user_id") !== null &&
+                            row.getValue("user_id") !== undefined &&
+                            row.getValue("user_id") !== "" ? (
+                              <div className="mt-2">
+                                <AvatarUser
+                                  user={row.getValue("user_id")}
+                                  locale={locale}
+                                />
+                              </div>
+                            ) : (
+                              <div className=" my-2 bg-purple-100 text-purple-500 border border-purple-600 px-2 pb-0.5 pt-1 inline-flex items-center rounded-full">
+                                <p className="text-xs!">
+                                  {locale === routing.defaultLocale
+                                    ? "Pengguna Publik"
+                                    : "Public User"}
+                                </p>
+                              </div>
+                            )}
+                          </div>
                           {/* <p className="text-muted-foreground text-sm! mt-2">
                             {row.getValue("en_title")}
                           </p> */}
@@ -338,7 +361,7 @@ export function Studio2DataTable<TData, TValue>({
                           )} */}
                         </div>
                       </div>
-                      <div className="space-y-2 mt-3">
+                      <div className="space-y-2 mt-2">
                         <div>
                           <p className="text-xs! text-muted-foreground">
                             {locale === routing.defaultLocale
@@ -413,12 +436,12 @@ export function Studio2DataTable<TData, TValue>({
                       >
                         {row.getVisibleCells().map((cell) => (
                           <TableCell key={cell.id}>
-                            <p className="text-sm!">
+                            <div className="text-sm! font-sans">
                               {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext(),
                               )}
-                            </p>
+                            </div>
                           </TableCell>
                         ))}
                       </TableRow>

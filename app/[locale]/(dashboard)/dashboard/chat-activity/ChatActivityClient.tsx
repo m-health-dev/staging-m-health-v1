@@ -189,6 +189,7 @@ const ChatActivityClient = ({
                   history={h}
                   locale={locale}
                   account={account}
+                  adminView={false}
                 />
               );
             })}

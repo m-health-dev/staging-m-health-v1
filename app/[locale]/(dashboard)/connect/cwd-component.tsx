@@ -25,7 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, Eye, Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z, { check } from "zod";
+import z from "zod";
 import {
   Dropzone,
   DropzoneContent,
@@ -206,7 +206,7 @@ const CWDComponent = ({
       );
 
       const data = await res.json();
-      console.log("Uploaded:", data);
+      // console.log("Uploaded:", data);
 
       if (data.url) {
         toast.success("Image uploaded!", {

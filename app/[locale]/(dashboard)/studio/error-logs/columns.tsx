@@ -34,6 +34,7 @@ import {
 import { useLocale } from "next-intl";
 
 import { useRouter } from "next/navigation";
+import StatusErrorBadge from "./StatusErrorBadge";
 
 export const columns: ColumnDef<ErrorLogType>[] = [
   {
@@ -65,6 +66,16 @@ export const columns: ColumnDef<ErrorLogType>[] = [
     cell: ({ row }) => {
       const pathname: string = row.getValue("pathname");
       return <span>{pathname}</span>;
+    },
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) => {
+      const id: string = row.getValue("id");
+      return <StatusErrorBadge id={id} />;
     },
   },
 

@@ -8,6 +8,11 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { getUserByID } from "@/lib/users/get-users";
 import Link from "next/link";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const userCache: Record<string, any> = {};
 
@@ -112,6 +117,19 @@ const AvatarUser = ({
         />
       </div>
     </div>
+  ) : !data ? (
+    <div className=" bg-gray-100 text-gray-500 border border-gray-500 px-2 pt-1 pb-0.5 rounded-full inline-flex items-center">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <p className="text-xs! ">Unknown User</p>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="text-xs!">
+            User maybe have been deleted or is not available.
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </div>
   ) : // Jika data ada dan memiliki logo
   data.avatar_url !== null &&
     data.avatar_url !== "" &&
@@ -140,13 +158,56 @@ const AvatarUser = ({
           />
           <p
             className={cn(
-              " text-health normal-case line-clamp-1",
+              " text-health normal-case truncate",
               size === "sm" && "text-xs!",
               size === "md" && "text-sm!",
               size === "lg" && "text-base!",
             )}
           >
             {data.fullname}
+          </p>
+        </div>
+      </button>
+    </div>
+  ) : data.google_avatar !== null &&
+    data.google_avatar !== "" &&
+    data.google_avatar !== undefined ? (
+    <div>
+      <button
+        type="button"
+        onClick={() => router.push(`/${locale}/studio/users/view/${user}`)}
+        className="cursor-pointer"
+      >
+        <div className="inline-flex gap-2 items-center">
+          <Image
+            src={
+              imageError ? "https://placehold.co/80x80/png" : data.google_avatar
+            }
+            alt={
+              data.fullname ??
+              data.google_fullname ??
+              data.email ??
+              "user-profile-image"
+            }
+            width={80}
+            height={80}
+            className={cn(
+              "object-cover  rounded-full border",
+              size === "sm" && "w-7 h-7",
+              size === "md" && "w-10 h-10",
+              size === "lg" && "w-14 h-14",
+            )}
+            onError={() => setImageError(true)}
+          />
+          <p
+            className={cn(
+              " text-health normal-case line-clamp-1",
+              size === "sm" && "text-xs!",
+              size === "md" && "text-sm!",
+              size === "lg" && "text-base!",
+            )}
+          >
+            {data.fullname ?? data.google_fullname ?? data.email ?? "Unknown"}
           </p>
         </div>
       </button>
@@ -158,7 +219,7 @@ const AvatarUser = ({
       className="inline-flex gap-2 items-center"
     >
       <Avatar
-        name={data.email ?? data.email ?? "Unknown"}
+        name={data.email ?? data.fullname ?? data.google_fullname ?? "Unknown"}
         className={cn(
           "border rounded-full",
           size === "sm" && "w-7 h-7",
@@ -179,7 +240,7 @@ const AvatarUser = ({
             size === "lg" && "text-base!",
           )}
         >
-          {data.fullname ?? data.email ?? "Unknown"}
+          {data.fullname ?? data.google_fullname ?? data.email ?? "Unknown"}
         </p>
       </div>
     </button>

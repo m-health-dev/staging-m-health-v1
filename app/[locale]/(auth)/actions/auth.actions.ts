@@ -655,7 +655,7 @@ export const forgotPasswordAction = async (
     };
   }
 
-  console.log("Request Recover :", finalData?.request);
+  // console.log("Request Recover :", finalData?.request);
 
   // Cek apakah email ada di tabel accounts
   const { data: checkEmail, error: emailErr } = await supabase
@@ -865,10 +865,10 @@ export async function deleteUser() {
       search: `${user?.id}`,
     });
 
-  console.log(
-    "from bucket:",
-    files?.map((file) => `${file.name}`),
-  );
+  // console.log(
+  //   "from bucket:",
+  //   files?.map((file) => `${file.name}`),
+  // );
 
   if (!files) {
     return { error: "Avatar not found!" };

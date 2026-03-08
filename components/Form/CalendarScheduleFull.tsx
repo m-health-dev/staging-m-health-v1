@@ -39,16 +39,16 @@ export default function CalendarScheduleFull({
       .padStart(2, "0")}`;
   });
 
-  useEffect(() => {
-    console.log("dateBooked received:", dateBooked);
-  }, [dateBooked]);
+  // useEffect(() => {
+  //   console.log("dateBooked received:", dateBooked);
+  // }, [dateBooked]);
 
   const bookedDateTimes = useMemo(() => {
     if (!dateBooked || dateBooked.length === 0) return [];
     const result = dateBooked.map((item) =>
-      utcToIndonesiaTime(item.scheduled_datetime)
+      utcToIndonesiaTime(item.scheduled_datetime),
     );
-    console.log("bookedDateTimes (converted to WIB):", result);
+    // console.log("bookedDateTimes (converted to WIB):", result);
     return result;
   }, [dateBooked]);
 
@@ -58,7 +58,7 @@ export default function CalendarScheduleFull({
     const selectedDateOnly = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
-      selectedDate.getDate()
+      selectedDate.getDate(),
     );
 
     const bookedTimes = new Set<string>();
@@ -67,7 +67,7 @@ export default function CalendarScheduleFull({
       const bookedDateOnly = new Date(
         bookedDateTime.getFullYear(),
         bookedDateTime.getMonth(),
-        bookedDateTime.getDate()
+        bookedDateTime.getDate(),
       );
 
       // Check if the booked date matches selected date
@@ -78,8 +78,8 @@ export default function CalendarScheduleFull({
       }
     });
 
-    console.log("selectedDate:", selectedDate);
-    console.log("bookedTimeSlotsForSelectedDate:", Array.from(bookedTimes));
+    // console.log("selectedDate:", selectedDate);
+    // console.log("bookedTimeSlotsForSelectedDate:", Array.from(bookedTimes));
 
     return bookedTimes;
   }, [selectedDate, bookedDateTimes]);
@@ -111,7 +111,7 @@ export default function CalendarScheduleFull({
     const dateOnly = new Date(
       date.getFullYear(),
       date.getMonth(),
-      date.getDate()
+      date.getDate(),
     );
 
     // Disable past dates
@@ -122,7 +122,7 @@ export default function CalendarScheduleFull({
       (bookedDate) =>
         bookedDate.getFullYear() === dateOnly.getFullYear() &&
         bookedDate.getMonth() === dateOnly.getMonth() &&
-        bookedDate.getDate() === dateOnly.getDate()
+        bookedDate.getDate() === dateOnly.getDate(),
     );
   };
 
@@ -130,9 +130,9 @@ export default function CalendarScheduleFull({
   const isTimeDisabled = (timeStr: string): boolean => {
     const isBooked = bookedTimeSlotsForSelectedDate.has(timeStr);
 
-    if (isBooked) {
-      console.log("Time slot disabled (booked):", timeStr);
-    }
+    // if (isBooked) {
+    //   console.log("Time slot disabled (booked):", timeStr);
+    // }
 
     if (isBooked) {
       return true;
@@ -143,7 +143,7 @@ export default function CalendarScheduleFull({
     const pickedDay = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
-      selectedDate.getDate()
+      selectedDate.getDate(),
     );
 
     // Check if selected date is today
@@ -171,7 +171,7 @@ export default function CalendarScheduleFull({
       const pickedDay = new Date(
         tempSelectedDate.getFullYear(),
         tempSelectedDate.getMonth(),
-        tempSelectedDate.getDate()
+        tempSelectedDate.getDate(),
       );
 
       // Check if booked
@@ -179,7 +179,7 @@ export default function CalendarScheduleFull({
         const bookedDateOnly = new Date(
           bookedDateTime.getFullYear(),
           bookedDateTime.getMonth(),
-          bookedDateTime.getDate()
+          bookedDateTime.getDate(),
         );
         if (bookedDateOnly.getTime() !== pickedDay.getTime()) return false;
         const h = bookedDateTime.getHours().toString().padStart(2, "0");
@@ -247,8 +247,8 @@ export default function CalendarScheduleFull({
           new Date(
             bookedDateTime.getFullYear(),
             bookedDateTime.getMonth(),
-            bookedDateTime.getDate()
-          )
+            bookedDateTime.getDate(),
+          ),
         );
       }
     });

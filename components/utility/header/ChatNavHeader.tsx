@@ -167,7 +167,7 @@ const ChatNavHeader = ({
     try {
       const setPublic = await ChangeChatStatus(sessionData, "public");
 
-      console.log({ setPublic });
+      // console.log({ setPublic });
 
       if (setPublic.error) {
         toast.warning(
@@ -219,7 +219,7 @@ const ChatNavHeader = ({
     try {
       const setPrivate = await ChangeChatStatus(sessionData, "private");
 
-      console.log({ setPrivate });
+      // console.log({ setPrivate });
 
       if (setPrivate.error) {
         toast.warning(

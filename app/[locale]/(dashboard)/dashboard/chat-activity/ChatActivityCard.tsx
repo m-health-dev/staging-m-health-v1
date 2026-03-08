@@ -120,11 +120,20 @@ const ChatActivityCard = ({
           </div>
         </div>
         <h5 className="text-primary font-semibold  capitalize">{h.title}</h5>
-        {adminView && h.user_id && (
-          <div className="mt-2">
-            <AvatarUser user={h.user_id} locale={locale} />
-          </div>
-        )}
+        {adminView &&
+          (h.user_id ? (
+            <div className="mt-2">
+              <AvatarUser user={h.user_id} locale={locale} />
+            </div>
+          ) : (
+            <div className=" my-2 bg-purple-100 text-purple-500 border border-purple-600 px-2 pb-0.5 pt-1 inline-flex items-center rounded-full">
+              <p className="text-xs!">
+                {locale === routing.defaultLocale
+                  ? "Pengguna Publik"
+                  : "Public User"}
+              </p>
+            </div>
+          ))}
         <p className="text-sm! text-muted-foreground mt-1">
           <LocalDateTime date={h.created_at} />
         </p>

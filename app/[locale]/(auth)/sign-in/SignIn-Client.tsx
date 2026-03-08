@@ -99,7 +99,7 @@ const SignInClient = ({
     }
   }, [recordResetData]);
 
-  console.log("path:", path);
+  // console.log("path:", path);
 
   const form = useForm<z.infer<typeof AuthSignInSchema>>({
     resolver: zodResolver(AuthSignInSchema),

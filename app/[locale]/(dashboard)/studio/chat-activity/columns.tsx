@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import AvatarUser from "@/components/utility/AvatarUser";
 import LocalDateTime from "@/components/utility/lang/LocaleDateTime";
 
 import { DataTableColumnHeader } from "@/components/utility/table/data-table-column-header";
@@ -133,18 +134,18 @@ export const columns: ColumnDef<VendorType>[] = [
       const locale = useLocale();
       if (user_id) {
         return (
-          <Link href={`/${locale}/studio/users/preview/${user_id}`}>
-            <span className="uppercase inline-flex gap-2 items-center">
-              <span className="bg-green-500 w-2 h-2 rounded-full aspect-square" />
-              {user_id ? user_id.slice(0, 8) : "N/A"}{" "}
-            </span>
-          </Link>
+          <span>
+            <AvatarUser user={user_id} locale={locale} />
+          </span>
         );
       } else {
         return (
-          <span className="uppercase inline-flex gap-2 items-center">
-            <span className="bg-red-500 w-2 h-2 rounded-full aspect-square" />
-            {public_id ? public_id.slice(0, 8) : "N/A"}{" "}
+          <span className=" my-2 bg-purple-100 text-purple-500 border border-purple-600 px-2 pb-0.5 pt-1 inline-flex items-center rounded-full">
+            <span className="text-xs!">
+              {locale === routing.defaultLocale
+                ? "Pengguna Publik"
+                : "Public User"}
+            </span>
           </span>
         );
       }

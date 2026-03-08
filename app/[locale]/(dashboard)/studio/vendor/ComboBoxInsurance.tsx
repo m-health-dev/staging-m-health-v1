@@ -106,7 +106,7 @@ export function InsuranceMultiSelectField({ readInsuranceIds }: Props) {
 
   const removeInsurance = (index: number) => {
     const next = insuranceIds.filter((_: any, i: number) => i !== index);
-    form.setValue("insurance_id", next, {
+    form.setValue("insurance_id", next.length > 0 ? next : [""], {
       shouldDirty: true,
       shouldValidate: true,
     });
@@ -200,7 +200,7 @@ export function InsuranceMultiSelectField({ readInsuranceIds }: Props) {
                   </PopoverContent>
                 </Popover>
 
-                {insuranceIds.length > 1 && (
+                {insuranceId !== "" && (
                   <Button
                     type="button"
                     variant="destructive"

@@ -35,13 +35,24 @@ export async function deleteUsers(id: string) {
       .delete()
       .eq("id", user.id);
 
+    const { error: deleteDataPaymentError } = await supabase
+      .from("payment_records")
+      .delete()
+      .eq("email", user.email);
+
     const { error: deleteDataRecoverAccountError } = await supabase
       .from("recover_account")
       .delete()
       .eq("email", user.email);
 
-    if (deleteDataError || deleteDataRecoverAccountError) {
-      throw new Error("Failed to delete user data");
+    if (
+      deleteDataError ||
+      deleteDataPaymentError ||
+      deleteDataRecoverAccountError
+    ) {
+      throw new Error(
+        `Failed to delete user data, ${deleteDataError?.message || deleteDataPaymentError?.message || deleteDataRecoverAccountError?.message}`,
+      );
     }
 
     const { data: userData, error: userError } =

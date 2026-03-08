@@ -42,7 +42,7 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
 
   const authorIds = useWatch({ name: "author", control: form.control }) || [];
 
-  console.log("authorIds", authorIds);
+  // console.log("authorIds", authorIds);
 
   useEffect(() => {
     if (!authorIds || authorIds.length === 0) {
@@ -76,7 +76,7 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
   const filteredAuthors = useMemo(() => {
     if (!query.trim()) return authorData.slice(0, 10);
     return authorData.filter((a) =>
-      a.name.toLowerCase().includes(query.toLowerCase())
+      a.name.toLowerCase().includes(query.toLowerCase()),
     );
   }, [authorData, query]);
 
@@ -133,7 +133,7 @@ export function AuthorMultiSelectField({ readAuthorIds }: Props) {
                       disabled={loading}
                       className={cn(
                         "flex-1 h-12 rounded-2xl justify-between bg-white hover:ring-2 hover:ring-primary hover:bg-white focus:bg-white focus:ring-2 focus:ring-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:bg-white text-primary!",
-                        author && "text-primary font-semibold"
+                        author && "text-primary font-semibold",
                       )}
                     >
                       {loading ? (

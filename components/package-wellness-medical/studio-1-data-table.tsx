@@ -50,6 +50,7 @@ import { nanoid } from "nanoid";
 import { Skeleton } from "../ui/skeleton";
 import { routing } from "@/i18n/routing";
 import { formatRupiah } from "@/helper/rupiah";
+import StatusErrorBadge from "@/app/[locale]/(dashboard)/studio/error-logs/StatusErrorBadge";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[] | null | undefined;
@@ -582,6 +583,12 @@ export function Studio1DataTable<TData, TValue>({
                               }`,
                             )}
                           </h5>
+
+                          {type === "error-logs" && (
+                            <div className="mt-2">
+                              <StatusErrorBadge id={row.getValue("id")} />
+                            </div>
+                          )}
 
                           {type === "contact" && (
                             <div>

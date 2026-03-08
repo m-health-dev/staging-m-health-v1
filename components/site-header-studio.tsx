@@ -23,7 +23,9 @@ export function SiteHeaderStudio({ accounts }: { accounts: Account }) {
           <h4 className="text-base font-bold text-primary">Studio</h4>
         </Link>
         <div className="max-w-xs ml-auto">
-          <NavUser user={accounts} locale={locale} type="header" />
+          {accounts && (
+            <NavUser user={accounts} locale={locale} type="header" />
+          )}
         </div>
       </div>
     </header>

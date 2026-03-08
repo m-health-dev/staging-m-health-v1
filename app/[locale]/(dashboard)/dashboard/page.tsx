@@ -118,6 +118,7 @@ const DashboardPage = async () => {
                     history={h}
                     locale={locale}
                     account={userData}
+                    adminView={false}
                   />
                 );
               })

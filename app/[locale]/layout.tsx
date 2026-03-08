@@ -7,6 +7,9 @@ import {
   Manrope,
 } from "next/font/google";
 import "../globals.css";
+import { config as fontawesomeConfig } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+fontawesomeConfig.autoAddCss = false;
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
@@ -29,6 +32,7 @@ import ScrollToTop from "@/components/utility/ScrollToTop";
 import Script from "next/script";
 import UserwayRouteControl from "@/components/utility/UserWayRouteControl";
 import ChunkErrorReload from "@/components/utility/ChunkErrorReload";
+import FontAwesomeConfig from "@/components/utility/FontAwesomeConfig";
 
 const manrope = Manrope({
   variable: "--font-manrope-sans",
@@ -76,7 +80,9 @@ export default async function RootLayout({ children, params }: Props) {
     <html lang={locale}>
       <body
         className={`${manrope.variable} ${vietnamPro.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
+        <ChunkErrorReload />
         <LanguageProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <NextTopLoader
@@ -124,7 +130,7 @@ export default async function RootLayout({ children, params }: Props) {
             <GoogleAnalytics gaId="G-P8LGDRYY19" />
             {/* <Analytics />
             <SpeedInsights /> */}
-            <ChunkErrorReload />
+
             <ScrollToTop />
             <DialogSwitchLang />
             {children}

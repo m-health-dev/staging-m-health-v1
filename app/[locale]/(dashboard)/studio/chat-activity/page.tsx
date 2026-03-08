@@ -11,6 +11,8 @@ import { getAllChatActivity } from "@/lib/chatbot/getChatActivity";
 import { DeleteChatSession } from "@/lib/chatbot/delete-chat-activity";
 import { Studio2DataTable } from "@/components/package-wellness-medical/studio-2-data-table";
 
+export const revalidate = 600;
+
 const ChatActivityStudio = async ({
   searchParams,
 }: {

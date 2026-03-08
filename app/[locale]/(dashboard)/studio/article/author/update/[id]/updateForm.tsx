@@ -107,7 +107,7 @@ const UpdateArticleAuthorForm = ({ id, data }: UpdateForm) => {
       );
 
       const data = await res.json();
-      console.log("Uploaded:", data);
+      // console.log("Uploaded:", data);
 
       if (data.url) {
         toast.success("Image uploaded!", {

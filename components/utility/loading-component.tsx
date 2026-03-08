@@ -27,7 +27,11 @@ const LoadingComponent = ({ className }: { className?: string }) => {
   }, []);
 
   const text =
-    phase === 0 ? "Loading" : phase === 1 ? "Fetch Data" : "Please Wait";
+    phase === 0
+      ? "Loading..."
+      : phase === 1
+        ? "Please Wait..."
+        : "Just a Moment...";
 
   return (
     <ContainerWrap
@@ -35,9 +39,11 @@ const LoadingComponent = ({ className }: { className?: string }) => {
     >
       <motion.div
         layout
+        initial={{ x: 20 }}
+        animate={{ x: 0 }}
         transition={{ duration: 0.3 }}
         className={cn(
-          "inline-flex items-center justify-center px-3 py-4 rounded-2xl gap-2 text-primary",
+          "inline-flex items-center justify-center px-2 py-1 gap-2 text-primary animate-pulse",
           "min-w-40",
         )}
       >
