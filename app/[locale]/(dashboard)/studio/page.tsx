@@ -521,7 +521,7 @@ const StudioDashboard = async () => {
         </div>
       </ScrollReveal>
       <ScrollReveal variant="fade-up" duration={600}>
-        <div className="bg-white p-4 border rounded-2xl mt-10">
+        <div className="bg-white p-4 border rounded-2xl mt-10 mb-20">
           <p className="text-sm! text-primary mb-1">
             {locale === routing.defaultLocale
               ? "Token Akses Anda"
