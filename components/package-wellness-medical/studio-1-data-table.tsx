@@ -600,13 +600,13 @@ export function Studio1DataTable<TData, TValue>({
 
                           {type === "error-logs" && (
                             <div>
-                              <p className="text-sm! text-muted-foreground mt-2">
+                              <p className="text-sm! text-muted-foreground mt-2 line-clamp-2 text-wrap break-all">
                                 {row.getValue("ip_address")}
                               </p>
-                              <p className="text-sm! text-muted-foreground mt-2">
+                              <p className="text-sm! text-muted-foreground mt-2 line-clamp-2 text-wrap break-all">
                                 {row.getValue("pathname")}
                               </p>
-                              <p className="text-sm! text-muted-foreground mt-2">
+                              <p className="text-sm! text-muted-foreground mt-2 line-clamp-2 text-wrap break-all">
                                 {row.getValue("error_message")}
                               </p>
                             </div>

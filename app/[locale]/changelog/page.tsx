@@ -51,15 +51,20 @@ export default async function Changelog() {
           {locale === routing.defaultLocale ? "komit" : "commits"}
         </p>
       </div>
-      <div className="space-y-4 divide-y divide-primary/20 *:pb-4">
+      <div className="grid grid-cols-2 gap-4">
         {commits.map((c) => (
-          <div key={c.sha}>
-            <p className="text-muted-foreground text-sm!">
+          <div key={c.sha} className="bg-white p-4 rounded-2xl">
+            <p className="text-muted-foreground uppercase text-sm!">
               {c.sha.slice(0, 7)}
             </p>
-            <h5 className="text-primary font-bold">{c.commit.message}</h5>
+            <p className="text-primary font-bold text-xl! my-2">
+              {c.commit.message}
+            </p>
             <div className="text-health">
-              <LocalDateTime date={c.commit.committer.date} />
+              <p className="text-sm!">
+                {new Date(c.commit.committer.date).toLocaleString()}
+              </p>
+              {/* <LocalDateTime date={c.commit.committer.date} /> */}
             </div>
             <div className="flex items-center gap-2 mt-2">
               <Image

@@ -1,7 +1,8 @@
-import LoadingComponent from "@/components/utility/loading-component";
+import LoadingVariantDashboard from "@/components/utility/loading-variant-dashboard";
+import React from "react";
 
 const Loading = () => {
-  return <LoadingComponent />;
+  return <LoadingVariantDashboard />;
 };
 
 export default Loading;

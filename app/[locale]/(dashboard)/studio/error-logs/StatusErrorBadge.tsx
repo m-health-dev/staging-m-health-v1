@@ -69,7 +69,10 @@ const StatusErrorBadge = ({ id }: { id: string }) => {
     return () => clearInterval(interval);
   }, [id]);
 
-  return (
+  return data?.data?.status === "recorded" ||
+    data?.data?.status === "acknowledge" ||
+    data?.data?.status === "maintenance" ||
+    data?.data?.status === "resolved" ? (
     <span
       className={cn(
         "capitalize py-1 px-2 rounded-full text-xs! border inline-flex items-center gap-1 font-sans",
@@ -95,6 +98,16 @@ const StatusErrorBadge = ({ id }: { id: string }) => {
       {data?.data?.status === "resolved" && <Check className="size-3" />}
       {loading && <Spinner className="size-3" />}
       {loading ? "Loading..." : data.data.status || "Unknown Status"}
+    </span>
+  ) : (
+    <span
+      className={cn(
+        "capitalize py-1 px-2 rounded-full text-xs! border inline-flex items-center gap-1 font-sans",
+        loading && "animate-pulse",
+      )}
+    >
+      {loading && <Spinner className="size-3" />}
+      {loading ? "Loading..." : "Unknown Status"}
     </span>
   );
 };

@@ -1,8 +1,8 @@
-import LoadingComponent from "@/components/utility/loading-component";
+import LoadingVariantStudio from "@/components/utility/loading-variant-studio";
 import React from "react";
 
 const Loading = () => {
-  return <LoadingComponent />;
+  return <LoadingVariantStudio />;
 };
 
 export default Loading;

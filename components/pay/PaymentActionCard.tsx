@@ -11,6 +11,7 @@ import { Spinner } from "../ui/spinner";
 import { routing } from "@/i18n/routing";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/helper/api-fetch";
+import Link from "next/link";
 
 export type PaymentActionProps = {
   locale: string;
@@ -93,8 +94,8 @@ const PaymentActionCard = ({
       console.error("Payment error:", err);
       setError(
         locale === routing.defaultLocale
-          ? "Gagal memulai pembayaran. Coba lagi."
-          : "Failed to start payment. Please retry.",
+          ? "Gagal memulai pembayaran, silahkan coba kembali dalam beberapa saat lagi. Jika kejadian ini terus berlanjut silahkan hubungi kami."
+          : "Failed to start payment, please try again later. If this keeps happening please contact us.",
       );
       setIsProcessingPayment(false);
     } finally {
@@ -102,33 +103,33 @@ const PaymentActionCard = ({
     }
   };
 
-  const handlePayWhatsapp = async () => {
-    try {
-      setIsLoading(true);
+  // const handlePayWhatsapp = async () => {
+  //   try {
+  //     setIsLoading(true);
 
-      const res = await apiFetch("/api/encrypt-price", {
-        method: "POST",
-        body: JSON.stringify({ price: totalPrice }),
-      });
+  //     const res = await apiFetch("/api/encrypt-price", {
+  //       method: "POST",
+  //       body: JSON.stringify({ price: totalPrice }),
+  //     });
 
-      if (!res.ok) throw new Error("Encryption failed");
+  //     if (!res.ok) throw new Error("Encryption failed");
 
-      const { encrypted } = await res.json();
+  //     const { encrypted } = await res.json();
 
-      router.push(
-        `/pay/${productId}/whatsapp?type=${productType}&connect=${encrypted}`,
-      );
-    } catch (err) {
-      console.error("Encrypt price error:", err);
-      setError(
-        locale === routing.defaultLocale
-          ? "Gagal memproses harga. Coba lagi."
-          : "Failed to process price. Please retry.",
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     router.push(
+  //       `/pay/${productId}/whatsapp?type=${productType}&connect=${encrypted}`,
+  //     );
+  //   } catch (err) {
+  //     console.error("Encrypt price error:", err);
+  //     setError(
+  //       locale === routing.defaultLocale
+  //         ? "Gagal memproses harga. Coba lagi."
+  //         : "Failed to process price. Please retry.",
+  //     );
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <>
@@ -176,7 +177,7 @@ const PaymentActionCard = ({
         </div>
         <Button
           className="h-12 bg-health hover:bg-health rounded-full w-full"
-          onClick={handlePayWhatsapp}
+          onClick={handlePay}
           disabled={isLoading || bookingLoading}
         >
           {(isLoading || bookingLoading) && <Spinner />}
@@ -185,14 +186,35 @@ const PaymentActionCard = ({
               ? "Memproses..."
               : "Processing..."
             : locale === routing.defaultLocale
-              ? "Lanjutkan ke Pembayaran via WhatsApp"
-              : "Continue to Payment via WhatsApp"}
+              ? "Lanjutkan ke Pembayaran"
+              : "Continue to Payment"}
         </Button>
         {error && (
-          <p className="text-sm text-red-500" role="alert">
-            {error}
-          </p>
+          <div>
+            <p
+              className=" bg-yellow-50 text-yellow-600 border border-yellow-600 p-3 rounded-xl text-sm!"
+              role="alert"
+            >
+              {error}
+            </p>
+          </div>
         )}
+
+        <div className="border-l-4 border-health px-4 py-2">
+          <p className="text-muted-foreground text-sm!">
+            {locale === routing.defaultLocale
+              ? "Mengalami kendala saat pembayaran atau memiliki pertanyaan mengenai pembelian?"
+              : "Having trouble with your payment or have questions about your purchase?"}
+          </p>
+          <p className="text-sm! mt-1">
+            <Link
+              href="https://wa.me/628113061173"
+              className="text-health font-semibold"
+            >
+              {locale === routing.defaultLocale ? "Hubungi Kami" : "Contact Us"}
+            </Link>
+          </p>
+        </div>
       </div>
     </>
   );

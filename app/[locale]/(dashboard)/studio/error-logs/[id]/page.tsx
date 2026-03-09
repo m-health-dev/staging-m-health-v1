@@ -45,11 +45,15 @@ const ErrorLogDetailMessage = async ({
           <p className="text-sm! text-muted-foreground">
             Database Recorded Logs:
           </p>
-          <pre className="text-wrap">{JSON.stringify(data, null, 2)}</pre>
+          <pre className="text-wrap break-all">
+            {JSON.stringify(data, null, 2)}
+          </pre>
         </div>
         <div className="space-y-5 bg-white p-6 rounded-2xl mt-5 ">
           <p className="text-sm! text-muted-foreground">Location Data:</p>
-          <pre className="text-wrap">{JSON.stringify(location, null, 2)}</pre>
+          <pre className="text-wrap break-all">
+            {JSON.stringify(location, null, 2)}
+          </pre>
         </div>
       </div>
     </ContainerWrap>
