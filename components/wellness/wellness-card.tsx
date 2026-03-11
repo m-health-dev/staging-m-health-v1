@@ -69,9 +69,9 @@ const WellnessCard = ({
         className="absolute bottom-0 z-10 lg:p-5 p-3 transition-all duration-300 h-auto"
       >
         <div className="overflow-hidden mb-2">
-          <h5 className="text-white font-bold capitalize line-clamp-3">
+          <p className="text-white font-bold capitalize line-clamp-3">
             {locale === routing.defaultLocale ? d.id_title : d.en_title}
-          </h5>
+          </p>
         </div>
 
         <div
@@ -80,7 +80,7 @@ const WellnessCard = ({
           }`}
         >
           <div>
-            <p className="text-white/50 lg:line-clamp-3 lg:text-base! text-sm! line-clamp-2">
+            <p className="text-white/50 lg:line-clamp-2  text-sm! line-clamp-1">
               {locale === routing.defaultLocale ? d.id_tagline : d.en_tagline}
             </p>
             <div className="flex w-full! mt-5">

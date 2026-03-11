@@ -79,7 +79,7 @@ export function NavUser({
       }
 
       // Redirect to login page after successful sign out
-      router.push("/home");
+      window.location.replace("/home");
 
       toast.success(
         locale === routing.defaultLocale
@@ -150,17 +150,17 @@ export function NavUser({
               )}
               {type === "side" && (
                 <>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
+                  <div className="grid flex-1 text-left text-xs! truncate leading-tight">
                     {user.fullname ||
                       (user.google_fullname && (
-                        <span className="truncate font-medium">
+                        <p className="text-xs!">
                           {user.fullname || user.google_fullname}
-                        </span>
+                        </p>
                       ))}
 
-                    <span className="text-muted-foreground truncate text-xs">
+                    <p className="text-muted-foreground truncate text-xs!">
                       {user.email}
-                    </span>
+                    </p>
                   </div>
                   <IconDotsVertical className="ml-auto size-4" />
                 </>

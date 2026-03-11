@@ -139,110 +139,94 @@ const ErrorContent = ({
     fetchGeoData();
   }, []);
 
+  const handleOnRetry = () => {
+    if (onRetry) {
+      onRetry();
+      window.location.reload();
+    } else {
+      // If no onRetry provided, just reload the page
+      window.location.reload();
+    }
+  };
+
   return (
-    <ContainerWrap
-      size="xl"
-      className="relative flex lg:flex-row flex-col w-full min-h-screen items-center"
-    >
-      <div className="flex flex-col items-center justify-center min-h-screen w-full">
-        <div className="max-w-md">
-          <div className="bg-white border p-4 rounded-3xl">
-            <Image
-              src={
-                "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/mhealth_logo_crop.PNG"
-              }
-              width={100}
-              height={100}
-              unoptimized
-              alt="icon-m-health"
-              className="object-contain w-12 h-12 mb-3"
-            />
-            <h3 className="text-primary font-semibold">
+    <>
+      <ContainerWrap size="xxl" className="">
+        <div className="flex flex-col items-center justify-center min-h-[92vh] w-full">
+          <div className="max-w-xl">
+            <div className="flex flex-col lg:items-center items-start lg:text-center text-start">
+              <Image
+                src={
+                  "https://hoocfkzapbmnldwmedrq.supabase.co/storage/v1/object/public/m-health-public/static/mhealth_logo_crop.PNG"
+                }
+                width={100}
+                height={100}
+                unoptimized
+                alt="icon-m-health"
+                className="object-contain w-12 h-12 mb-3"
+              />
+              <h3 className="text-primary font-semibold">
+                {locale === routing.defaultLocale
+                  ? "Ups, Sepertinya ada yang salah"
+                  : "Oops, Something Went Wrong"}
+              </h3>
+              {/* <p className="text-health">
               {locale === routing.defaultLocale
-                ? "500 Kesalahan Server"
-                : "500 Server Error"}
-            </h3>
-            <p className="text-health">
-              {locale === routing.defaultLocale
-                ? "Gagal Memuat Data"
-                : "Failed to Load Data"}
-            </p>
-            <p className="text-sm! text-muted-foreground mt-5">
-              {locale === routing.defaultLocale
-                ? "Sepertinya terjadi kesalahan pada server kami. Mohon tunggu beberapa saat agar masalah ini dapat kami perbaiki."
-                : "It seems there was an error on our server. Please wait a moment while we fix this issue."}
-            </p>
-            <div className="flex justify-start items-center gap-3 mt-5">
-              <Button
-                variant={"outline"}
-                className="rounded-2xl"
-                onClick={() => router.back()}
-              >
-                <ArrowLeft />
-                {locale === routing.defaultLocale ? "Kembali" : "Back"}
-              </Button>
-              <Button
-                className="rounded-2xl"
-                onClick={() => router.replace("/home")}
-              >
-                <Home />
-                {locale === routing.defaultLocale ? "Beranda" : "Home"}
-              </Button>
-              {onRetry && (
+                ? "Halaman Tidak Ditemukan"
+                : "Page Not Found"}
+            </p> */}
+              <p className="text-sm! text-muted-foreground mt-2">
+                {locale === routing.defaultLocale
+                  ? "Terjadi kesalahan pada sistem saat memproses permintaan Anda. Silakan muat ulang halaman atau coba kembali beberapa saat lagi."
+                  : "An error occurred while processing your request. Please reload the page or try again later."}
+              </p>
+              <div className="flex justify-start items-center gap-3 mt-5">
                 <Button
-                  onClick={onRetry}
-                  variant={"destructive_outline"}
-                  className="rounded-full"
+                  variant={"outline"}
+                  className="rounded-2xl"
+                  onClick={() => router.back()}
                 >
-                  <RefreshCw />{" "}
-                  {locale === routing.defaultLocale ? "Coba lagi" : "Try again"}
+                  <ArrowLeft />
+                  {locale === routing.defaultLocale ? "Kembali" : "Back"}
                 </Button>
-              )}
+                <Button
+                  className="rounded-2xl"
+                  onClick={() => window.location.replace("/home")}
+                >
+                  <Home />
+                  {locale === routing.defaultLocale ? "Beranda" : "Home"}
+                </Button>
+                {onRetry && (
+                  <Button
+                    onClick={handleOnRetry}
+                    variant={"outline"}
+                    className=""
+                  >
+                    <RefreshCw />{" "}
+                    {locale === routing.defaultLocale
+                      ? "Coba lagi"
+                      : "Try again"}
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
-          <Collapsible
-            open={detailsOpen}
-            onOpenChange={setDetailsOpen}
-            className="mt-2 border rounded-3xl p-4 bg-white w-full"
-          >
-            <CollapsibleTrigger className="flex items-center justify-between text-primary w-full bg-white h-7">
-              <p className="text-sm!">
-                {locale === routing.defaultLocale
-                  ? "Informasi Teknis"
-                  : "Technical Information"}
-              </p>
-              {detailsOpen ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-2 text-muted-foreground space-y-1">
-              <p className="text-xs!">
-                {" "}
-                {rayId ||
-                  (locale === routing.defaultLocale
-                    ? "Tidak tersedia"
-                    : "Not available")}
-              </p>
-              <p className="text-xs!">
-                {" "}
-                {dataIP ||
-                  (locale === routing.defaultLocale
-                    ? "Tidak tersedia"
-                    : "Not available")}
-              </p>
-              <p className="text-xs!">
-                {pathname + (params.toString() ? "?" + params.toString() : "")}
-              </p>
-              <p className="text-xs!">
-                {digest} - {message}
-              </p>
-            </CollapsibleContent>
-          </Collapsible>
         </div>
-      </div>
-    </ContainerWrap>
+        <div className="text-muted-foreground! flex lg:justify-center justify-start w-full gap-1 my-2">
+          <p className="text-xs!">
+            {rayId ||
+              (locale === routing.defaultLocale
+                ? "Tidak tersedia"
+                : "Not available")}{" "}
+            -{" "}
+            {dataIP ||
+              (locale === routing.defaultLocale
+                ? "Tidak tersedia"
+                : "Not available")}
+          </p>
+        </div>
+      </ContainerWrap>
+    </>
   );
 };
 

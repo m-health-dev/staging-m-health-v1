@@ -75,6 +75,9 @@ export function DailyTokenChart({
   data: DailyStat[];
   locale: string;
 }) {
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+
   const [range, setRange] = React.useState("30");
 
   // Sort by date ascending and slice by range
@@ -125,6 +128,9 @@ export function DailyTokenChart({
         </Select>
       </CardHeader>
       <CardContent className="px-0">
+        {!mounted ? (
+          <div className="h-[280px] w-full" />
+        ) : (
         <ChartContainer
           config={dailyChartConfig}
           className="aspect-auto h-[280px] w-full"
@@ -193,6 +199,7 @@ export function DailyTokenChart({
             <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>
         </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );
@@ -205,6 +212,9 @@ export function ModelUsageChart({
   data: ModelStat[];
   locale: string;
 }) {
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+
   // Format model names for display
   const chartData = React.useMemo(() => {
     return data.map((stat) => ({
@@ -230,6 +240,9 @@ export function ModelUsageChart({
         </div>
       </CardHeader>
       <CardContent className="px-0">
+        {!mounted ? (
+          <div className="h-[280px] w-full" />
+        ) : (
         <ChartContainer
           config={modelChartConfig}
           className="aspect-auto h-[280px] w-full"
@@ -279,6 +292,7 @@ export function ModelUsageChart({
             <ChartLegend content={<ChartLegendContent />} />
           </BarChart>
         </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );

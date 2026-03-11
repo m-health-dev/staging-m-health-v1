@@ -614,7 +614,7 @@ const UpdateInsuranceForm = ({
                   disabled={loading}
                   className="rounded-full flex lg:w-fit w-full"
                 >
-                  {loading ? <Spinner /> : "Udpate"}
+                  {loading ? <Spinner /> : "Update"}
                 </Button>
               </div>
             </div>

@@ -48,13 +48,15 @@ const ConsultScheduleHistoryClient = ({
             })}
       </div>
 
-      <SimplePagination
-        links={links}
-        meta={meta}
-        show={[10, 25, 50]}
-        defaultPerPage={10}
-        onLoadingChange={setLoading}
-      />
+      {c.length >= 10 && !loading && (
+        <SimplePagination
+          links={links}
+          meta={meta}
+          show={[10, 25, 50]}
+          defaultPerPage={10}
+          onLoadingChange={setLoading}
+        />
+      )}
     </div>
   );
 };

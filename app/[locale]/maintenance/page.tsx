@@ -101,7 +101,7 @@ const MaintenanceMode = () => {
         <Image
           src={"/batik_2.jpg"}
           fill
-          className="w-full min-h-screen object-cover opacity-2.5 absolute top-0 left-0 h-32 -full bg-repeat"
+          className="w-full min-h-screen object-cover opacity-5 absolute top-0 left-0 h-32 -full bg-repeat"
           alt="M-HEALTH Logo"
         />
       </div>
@@ -126,7 +126,7 @@ const MaintenanceMode = () => {
               ? "Sedang Pemeliharaan"
               : "Under Maintenance"}
           </h4>
-          <p className="text-muted-foreground lg:text-center lg:max-w-3/5 w-full lg:text-base! text-sm!">
+          <p className="text-muted-foreground lg:text-center lg:max-w-4/5 w-full lg:text-base! text-sm!">
             {locale === routing.defaultLocale
               ? "Saat ini kami sedang dalam tahap pemeliharaan demi memberikan pengalaman yang terbaik untuk kamu. Kami akan segera kembali."
               : "We are currently undergoing maintenance stage to provide the best experience for you. We will be back shortly."}

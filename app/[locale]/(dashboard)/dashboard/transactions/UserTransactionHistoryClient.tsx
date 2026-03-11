@@ -55,7 +55,7 @@ const UserTransactionHistoryClient = ({
             })}
       </div>
 
-      {history.length === 0 && !loading && (
+      {history.length >= 10 && !loading && (
         <SimplePagination
           links={links}
           meta={meta}
